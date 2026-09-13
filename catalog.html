@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalog — Find Your Next Story | Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER (identical to index.html / novel.html — same classes,
+             so the shared script.js dropdowns/search/etc. all work as-is) -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <div class="catalog-menu">
+                    <button class="catalog-button">
+                        Catalog
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="catalog-dropdown">
+                        <a href="catalog.html">Novels</a>
+                        <a href="author.html">Authors</a>
+                        <a href="#">Genres</a>
+                    </div>
+                </div>
+                <a href="#">Announcements</a>
+                <a href="#">About</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search">
+                    <input type="text" placeholder="Search novels, authors...">
+                    <img src="images/icons/search.svg" alt="">
+                </div>
+
+                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+
+                <div class="language-menu">
+                    <button class="language-button"><img src="images/icons/globe.svg" alt=""></button>
+                    <div class="language-dropdown">
+                        <button class="language-option">Русский</button>
+                        <button class="language-option active">English</button>
+                    </div>
+                </div>
+
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <span class="user-name">Tatyana <img src="images/icons/chevron-down.svg" alt=""></span>
+                    </button>
+                    <div class="user-dropdown">
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> My Library</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Bookmarks</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Favorites</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> My Quotes</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> My Notes</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> My Collections</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Achievements</a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings</a>
+                        <button type="button" class="user-dropdown-item theme-toggle"><img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme</button>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="catalog-container">
+
+            <!-- HERO SEARCH SECTION -->
+            <section class="catalog-hero">
+                <div class="hero-content">
+                    <h1>Find your next story</h1>
+                    <p class="hero-sub">Search by title, author, genre, tags, or translator notes</p>
+
+                    <div class="hero-search-box">
+                        <img src="images/icons/search.svg" alt="">
+                        <input type="text" id="catalogSearchInput" placeholder="Search novels, authors, genres...">
+                        <button type="button" class="btn-hero-search" id="catalogSearchBtn">Search</button>
+                    </div>
+
+                    <div class="popular-searches">
+                        <span class="popular-label">Popular searches:</span>
+                        <a href="#" class="search-tag" data-search="historical">Historical</a>
+                        <a href="#" class="search-tag" data-search="romance">Romance</a>
+                        <a href="#" class="search-tag" data-search="revenge">Revenge</a>
+                        <a href="#" class="search-tag" data-search="politics">Politics</a>
+                        <a href="#" class="search-tag" data-search="fantasy">Fantasy</a>
+                        <a href="#" class="search-tag" data-status="completed">Completed novels</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOOLBAR / CONTROL BAR -->
+            <div class="catalog-toolbar">
+                <div class="toolbar-left">
+                    <button type="button" class="btn-toggle-filters" id="toggleFilters">
+                        <img src="images/icons/filter.svg" alt="">
+                        <span>Filters</span>
+                    </button>
+                    <button type="button" class="btn-clear-all" id="clearAllFilters">Clear all</button>
+                    <span class="results-count" id="resultsCount">1,245 stories found</span>
+                </div>
+
+                <div class="toolbar-right">
+                    <div class="sort-menu">
+                        <span class="sort-label">Sort by</span>
+                        <button type="button" class="sort-button" id="sortButton">
+                            <span id="sortButtonLabel">Recently Updated</span>
+                            <img src="images/icons/chevron-down.svg" alt="">
+                        </button>
+                        <div class="sort-dropdown" id="sortDropdown">
+                            <button type="button" class="sort-option active">Recently Updated</button>
+                            <button type="button" class="sort-option">Most Popular</button>
+                            <button type="button" class="sort-option">Highest Rated</button>
+                            <button type="button" class="sort-option">Newest Added</button>
+                        </div>
+                    </div>
+
+                    <!-- Grid/List icons don't exist yet — see note to Tatyana.
+                         Until then these render with just the alt text. -->
+                    <div class="view-switchers">
+                        <button type="button" class="view-btn active" data-view="grid" title="Grid View">
+                            <img src="images/icons/grid-view.svg" alt="Grid">
+                            <span>Grid</span>
+                        </button>
+                        <button type="button" class="view-btn" data-view="list" title="List View">
+                            <img src="images/icons/list-view.svg" alt="List">
+                            <span>List</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MAIN TWO COLUMN LAYOUT (FILTERS + NOVELS GRID) -->
+            <div class="catalog-layout">
+
+                <!-- SIDEBAR FILTERS -->
+                <aside class="catalog-sidebar" id="catalogSidebar">
+
+                    <!-- Status Filter -->
+                    <div class="filter-group" data-filter-group="status">
+                        <h3>Status</h3>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="completed">
+                            <span>Completed</span>
+                            <span class="count">742</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="ongoing">
+                            <span>Ongoing</span>
+                            <span class="count">503</span>
+                        </label>
+                    </div>
+
+                    <!-- Reading Length -->
+                    <div class="filter-group" data-filter-group="length">
+                        <h3>Reading Length</h3>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="short">
+                            <span>Short (1–100 ch.)</span>
+                            <span class="count">210</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="medium">
+                            <span>Medium (101–300 ch.)</span>
+                            <span class="count">782</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="long">
+                            <span>Long (300+ ch.)</span>
+                            <span class="count">253</span>
+                        </label>
+                    </div>
+
+                    <!-- Genres -->
+                    <div class="filter-group" data-filter-group="genre">
+                        <h3>Genres</h3>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="romance">
+                            <span>Romance</span>
+                            <span class="count">436</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="historical">
+                            <span>Historical</span>
+                            <span class="count">352</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="fantasy">
+                            <span>Fantasy</span>
+                            <span class="count">631</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="mystery">
+                            <span>Mystery</span>
+                            <span class="count">198</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="drama">
+                            <span>Drama</span>
+                            <span class="count">287</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="politics">
+                            <span>Politics</span>
+                            <span class="count">209</span>
+                        </label>
+                        <button type="button" class="btn-show-more">Show more ▾</button>
+                    </div>
+
+                    <!-- Author Select -->
+                    <div class="filter-group">
+                        <h3>Author</h3>
+                        <select class="filter-select">
+                            <option value="">Search authors...</option>
+                        </select>
+                    </div>
+
+                    <!-- Translator Select -->
+                    <div class="filter-group">
+                        <h3>Translator</h3>
+                        <select class="filter-select">
+                            <option value="">Search translators...</option>
+                        </select>
+                    </div>
+
+                    <!-- Release Status -->
+                    <div class="filter-group">
+                        <h3>Release Status</h3>
+                        <label class="filter-checkbox">
+                            <input type="checkbox">
+                            <span>Recently Updated</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox">
+                            <span>New Translations</span>
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn-more-filters">More Filters ▾</button>
+                </aside>
+
+                <!-- NOVELS GRID -->
+                <section class="catalog-grid">
+
+                    <!-- Card 1 -->
+                    <article class="novel-card" data-rating="4.8">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>Pursuit of Jade</h3>
+                            <span class="author-name">Tuan Zi Lai Xi</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Fantasy</span>
+                                <span>Historical</span>
+                            </div>
+
+                            <div class="card-progress-zone">
+                                <span class="chapter-status">Chapter 85 of 120</span>
+                                <div class="mini-progress-bar">
+                                    <div class="fill" style="width: 71%;"></div>
+                                </div>
+                                <span class="percent-val">71%</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-primary-action">Continue</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 2 -->
+                    <article class="novel-card" data-rating="4.7">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>The Top Couple Is a Bit Sweet</h3>
+                            <span class="author-name">Tu Yang Xian Sen</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Romance</span>
+                                <span>Comedy</span>
+                            </div>
+
+                            <div class="card-progress-zone">
+                                <span class="chapter-status">Chapter 78 of 110</span>
+                                <div class="mini-progress-bar">
+                                    <div class="fill" style="width: 71%;"></div>
+                                </div>
+                                <span class="percent-val">71%</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn active" aria-label="Like" aria-pressed="true"><img src="images/icons/heart-filled.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-primary-action">Continue</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 3 -->
+                    <article class="novel-card" data-rating="4.9">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Completed</span>
+                            <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>A Dream Within a Dream</h3>
+                            <span class="orig-title">重生之嫡女祸妃</span>
+                            <span class="author-name">Qian Shan Cha Ke</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Revenge</span>
+                                <span>Historical</span>
+                                <span>Romance</span>
+                                <span>Drama</span>
+                            </div>
+
+                            <div class="card-progress-zone">
+                                <span class="chapter-status">Chapter 124 of 259</span>
+                                <div class="mini-progress-bar">
+                                    <div class="fill" style="width: 48%;"></div>
+                                </div>
+                                <span class="percent-val">48%</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark active" aria-label="Save to bookmarks" aria-pressed="true"><img src="images/icons/bookmark-filled-gold.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-primary-action">Continue</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 4 -->
+                    <article class="novel-card" data-rating="4.6">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>Everyone Loves Me</h3>
+                            <span class="author-name">Qiao Yao</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Comedy</span>
+                                <span>Drama</span>
+                            </div>
+
+                            <div class="card-progress-zone">
+                                <span class="chapter-status">Chapter 63 of 95</span>
+                                <div class="mini-progress-bar">
+                                    <div class="fill" style="width: 66%;"></div>
+                                </div>
+                                <span class="percent-val">66%</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-primary-action">Continue</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 5 -->
+                    <article class="novel-card" data-rating="4.5">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <img src="https://placehold.co/180x240" alt="A Dream in Winter">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>A Dream in Winter</h3>
+                            <span class="orig-title">一梦入冬</span>
+                            <span class="author-name">Lin Yi</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Romance</span>
+                                <span>Drama</span>
+                            </div>
+
+                            <div class="card-progress-zone">
+                                <span class="chapter-status">Chapter 98 of 152</span>
+                                <div class="mini-progress-bar">
+                                    <div class="fill" style="width: 64%;"></div>
+                                </div>
+                                <span class="percent-val">64%</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-primary-action">Continue</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 6 -->
+                    <article class="novel-card" data-rating="4.4">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Completed</span>
+                            <img src="https://placehold.co/180x240" alt="The Imperial Tutor">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>The Imperial Tutor</h3>
+                            <span class="orig-title">帝师</span>
+                            <span class="author-name">Qing Dynasty Customs</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Historical</span>
+                                <span>Politics</span>
+                                <span>Drama</span>
+                            </div>
+
+                            <div class="card-progress-zone text-only">
+                                <span class="chapter-status">152 Chapters</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-secondary-action">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 7 -->
+                    <article class="novel-card" data-rating="4.3">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <img src="https://placehold.co/180x240" alt="The Villainess's Slow Life">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>The Villainess's Slow Life</h3>
+                            <span class="orig-title">反派大小姐的悠闲生活</span>
+                            <span class="author-name">Yan Qing</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Slice of Life</span>
+                                <span>Romance</span>
+                            </div>
+
+                            <div class="card-progress-zone">
+                                <span class="chapter-status">Chapter 34 of 120</span>
+                                <div class="mini-progress-bar">
+                                    <div class="fill" style="width: 28%;"></div>
+                                </div>
+                                <span class="percent-val">28%</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-primary-action">Continue</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Card 8 -->
+                    <article class="novel-card" data-rating="4.2">
+                        <div class="novel-cover-wrap">
+                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Completed</span>
+                            <img src="https://placehold.co/180x240" alt="No Regrets in This Life">
+                        </div>
+                        <div class="card-menu">
+                                <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                                <div class="card-menu-dropdown">
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <div class="card-menu-divider"></div>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                </div>
+                            </div>
+                        <div class="novel-card-body">
+                            <h3>No Regrets in This Life</h3>
+                            <span class="orig-title">此生无悔</span>
+                            <span class="author-name">Shui Qian Cheng</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+
+                            <div class="novel-tags">
+                                <span>Historical</span>
+                                <span>Drama</span>
+                            </div>
+
+                            <div class="card-progress-zone text-only">
+                                <span class="chapter-status">116 Chapters</span>
+                            </div>
+
+                            <div class="card-actions">
+                                <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                <button type="button" class="btn-secondary-action">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                </section>
+
+                <p class="no-results-notice catalog-no-results" hidden>The bee couldn't find anything matching those filters. Try clearing a few.</p>
+            </div>
+
+            <!-- Catalog pagination — same component as the chapters table
+                 on the novel page (.chapters-pagination / .page-arrow /
+                 .page-number). With only 8 demo cards there's nothing real
+                 to page through yet, so this is wired up visually (click a
+                 number to make it active) rather than actually slicing
+                 results — once real novel data exists, swap in the same
+                 slicing logic used for the chapters table. -->
+            <nav class="chapters-pagination catalog-pagination" aria-label="Catalog pages">
+                <button type="button" class="page-arrow" id="catalogPagePrevBtn" aria-label="Previous page" disabled>‹</button>
+                <div class="page-numbers">
+                    <button type="button" class="page-number active">1</button>
+                    <button type="button" class="page-number">2</button>
+                    <button type="button" class="page-number">3</button>
+                    <span class="page-ellipsis">…</span>
+                    <button type="button" class="page-number">156</button>
+                </div>
+                <button type="button" class="page-arrow" id="catalogPageNextBtn" aria-label="Next page">›</button>
+            </nav>
+
+            <!-- TWO COLUMN BOTTOM LAYOUT: left stacks Recommends + Genres +
+                 Category banners; right is one tall Recently Updated panel
+                 that spans the full height of everything on the left -->
+            <div class="catalog-bottom-grid">
+
+                <!-- Left Column -->
+                <div class="bottom-left-col">
+
+                    <!-- BUSY BEE RECOMMENDS -->
+                    <section class="section-recommends">
+                        <div class="recommends-inner">
+                            <div class="section-header">
+                                <h2 class="section-title">Busy Bee Recommends</h2>
+                                <a href="#" class="view-all">View all</a>
+                            </div>
+
+                            <div class="recommends-carousel">
+                                <button type="button" class="carousel-arrow" aria-label="Previous">‹</button>
+
+                            <div class="recommends-track carousel-track">
+                                <div class="mini-recommend-card">
+                                    <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                                    <strong>Pursuit of Jade</strong>
+                                    <span>Tuan Zi Lai Xi</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                                    <strong>The Top Couple Is a Bit Sweet</strong>
+                                    <span>Tu Yang Xian Sen</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                                    <strong>A Dream Within a Dream</strong>
+                                    <span>Qian Shan Cha Ke</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                                    <strong>Everyone Loves Me</strong>
+                                    <span>Qiao Yao</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="https://placehold.co/80x110" alt="The Imperial Tutor">
+                                    <strong>The Imperial Tutor</strong>
+                                    <span>Qing Dynasty</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="https://placehold.co/80x110" alt="Silent Suffering, Boundless Love">
+                                    <strong>Silent Suffering, Boundless Love</strong>
+                                    <span>Bai Lu Cheng Shuang</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="https://placehold.co/80x110" alt="No Regrets in This Life">
+                                    <strong>No Regrets in This Life</strong>
+                                    <span>Shui Qian Cheng</span>
+                                </div>
+                                <div class="mini-recommend-card">
+                                    <img src="https://placehold.co/80x110" alt="The Villainess's Slow Life">
+                                    <strong>The Villainess's Slow Life</strong>
+                                    <span>Yan Qing</span>
+                                </div>
+                            </div>
+
+                            <button type="button" class="carousel-arrow" aria-label="Next">›</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Busy Bee Collections — reused 1:1 from the homepage
+                         (same classes, so the arrows work for free). Genres
+                         are already covered by the sidebar filter, so a
+                         separate genre carousel here would be redundant. -->
+                    <div class="collections-section-catalog">
+                        <div class="section-header">
+                            <h3 class="section-title">Busy Bee Collections</h3>
+                            <a href="#" class="view-all">View all</a>
+                        </div>
+
+                        <div class="collection-carousel">
+                            <button type="button" class="carousel-arrow" aria-label="Previous collections">‹</button>
+
+                            <div class="collection-list carousel-track">
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/atmospheric-stories.png" alt="Atmospheric Stories">
+                                    <div class="collection-card-info">
+                                        <h3>Atmospheric Stories</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/second-chances.png" alt="Second Chances">
+                                    <div class="collection-card-info">
+                                        <h3>Second Chances</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/unforgettable-heroes.png" alt="Unforgettable Heroes">
+                                    <div class="collection-card-info">
+                                        <h3>Unforgettable Heroes</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/court-intrigues.png" alt="Court Intrigues">
+                                    <div class="collection-card-info">
+                                        <h3>Court Intrigues</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/for-a-quiet-evening.png" alt="For a Quiet Evening">
+                                    <div class="collection-card-info">
+                                        <h3>For a Quiet Evening</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/late-night-reads.png" alt="Late Night Reads">
+                                    <div class="collection-card-info">
+                                        <h3>Late Night Reads</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/completed-stories.png" alt="Completed Stories">
+                                    <div class="collection-card-info">
+                                        <h3>Completed Stories</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/revenge-stories.png" alt="Revenge Stories">
+                                    <div class="collection-card-info">
+                                        <h3>Revenge Stories</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/when-plans-fall-apart.png" alt="When Plans Fall Apart">
+                                    <div class="collection-card-info">
+                                        <h3>When Plans Fall Apart</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/slow-burn-romance.png" alt="Slow Burn Romance">
+                                    <div class="collection-card-info">
+                                        <h3>Slow Burn Romance</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/rebirth.png" alt="Rebirth">
+                                    <div class="collection-card-info">
+                                        <h3>Rebirth</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/grab-the-tissues.png" alt="Grab the Tissues">
+                                    <div class="collection-card-info">
+                                        <h3>Grab the Tissues</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/strong-heroines.png" alt="Strong Heroines">
+                                    <div class="collection-card-info">
+                                        <h3>Strong Heroines</h3>
+                                    </div>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <img src="images/collections/cozy-reads.png" alt="Cozy Reads">
+                                    <div class="collection-card-info">
+                                        <h3>Cozy Reads</h3>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <button type="button" class="carousel-arrow" aria-label="Next collections">›</button>
+                        </div>
+                    </div>
+
+                    <!-- 4 Category Banner Grid -->
+                    <div class="category-banners-grid">
+                        <div class="cat-banner-card banner-completed">
+                            <div>
+                                <strong>Completed Stories</strong>
+                                <span>742 stories</span>
+                            </div>
+                        </div>
+
+                        <div class="cat-banner-card banner-gems">
+                            <div>
+                                <strong>Hidden Gems</strong>
+                                <span>312 stories</span>
+                            </div>
+                        </div>
+
+                        <div class="cat-banner-card banner-popular">
+                            <div>
+                                <strong>Popular Among Readers</strong>
+                                <span>Top rated by our community</span>
+                            </div>
+                        </div>
+
+                        <div class="cat-banner-card banner-authors">
+                            <div>
+                                <strong>New Authors</strong>
+                                <span>Discover fresh voices</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Column: Recently Updated, same list format as
+                     the homepage's Latest Releases -->
+                <div class="bottom-right-col">
+                    <div class="recently-updated-panel">
+                        <div class="section-header">
+                            <h3 class="section-title">Recently Updated</h3>
+                            <a href="#" class="view-all">View all</a>
+                        </div>
+
+                        <div class="release-list">
+                            <article class="release-item">
+                                <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                                <div class="release-info">
+                                    <h3><a href="#" class="hero-title-link">Pursuit of Jade</a></h3>
+                                    <p>Chapter 85</p>
+                                </div>
+                                <div class="release-right">
+                                    <span>2 hours ago</span>
+                                    <b>New</b>
+                                </div>
+                            </article>
+
+                            <article class="release-item">
+                                <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                                <div class="release-info">
+                                    <h3><a href="#" class="hero-title-link">The Top Couple Is a Bit Sweet</a></h3>
+                                    <p>Chapter 78</p>
+                                </div>
+                                <div class="release-right">
+                                    <span>5 hours ago</span>
+                                    <b>New</b>
+                                </div>
+                            </article>
+
+                            <article class="release-item">
+                                <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                                <div class="release-info">
+                                    <h3><a href="#" class="hero-title-link">A Dream Within a Dream</a></h3>
+                                    <p>Chapter 124</p>
+                                </div>
+                                <div class="release-right">
+                                    <span>Yesterday</span>
+                                    <b>New</b>
+                                </div>
+                            </article>
+
+                            <article class="release-item">
+                                <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                                <div class="release-info">
+                                    <h3><a href="#" class="hero-title-link">Everyone Loves Me</a></h3>
+                                    <p>Chapter 63</p>
+                                </div>
+                                <div class="release-right">
+                                    <span>Yesterday</span>
+                                    <b>New</b>
+                                </div>
+                            </article>
+
+                            <article class="release-item">
+                                <img src="https://placehold.co/42x50" alt="">
+                                <div class="release-info">
+                                    <h3><a href="#" class="hero-title-link">Rebirth of the Malicious Empress</a></h3>
+                                    <p>Chapter 89</p>
+                                </div>
+                                <div class="release-right">
+                                    <span>1 day ago</span>
+                                </div>
+                            </article>
+
+                            <article class="release-item">
+                                <img src="https://placehold.co/42x50" alt="">
+                                <div class="release-info">
+                                    <h3><a href="#" class="hero-title-link">The Imperial Tutor</a></h3>
+                                    <p>Chapter 152</p>
+                                </div>
+                                <div class="release-right">
+                                    <span>2 days ago</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- NEWSLETTER SIGNUP (same component as the homepage) -->
+            <section class="newsletter">
+                <div class="newsletter-text">
+                    <h2>Stories stay with you.</h2>
+                    <p>Get the best recommendations, new releases, and special updates from Busy Bee.</p>
+                </div>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </section>
+
+        </main>
+
+        <!-- FOOTER (identical to index.html / novel.html) -->
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Platform</h3>
+                    <a href="catalog.html">Catalog</a>
+                    <a href="#">Authors</a>
+                    <a href="#">Genres</a>
+                    <a href="#">Announcements</a>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Report a Problem</a>
+                    <a href="#">Suggest a Novel</a>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Community</h3>
+                    <a href="#">Discord</a>
+                    <a href="#">Telegram</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">Pinterest</a>
+                </div>
+
+                <div class="footer-support">
+                    <h3>Support Busy Bee</h3>
+                    <p>Love our translations? Support us and help us keep going.</p>
+                    <button type="button" class="coffee-button">
+                        <img src="images/icons/coffee.svg" alt="">
+                        Buy Us a Coffee
+                    </button>
+                    <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

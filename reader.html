@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 124: The Price of Ambition — The Moon That Rises in the Night | Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Literata:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="reader-page theme-warm font-literata">
+
+    <!-- TOP READER HEADER -->
+    <header class="reader-header">
+        <div class="header-left">
+            <a href="novel.html" class="btn-exit">
+                <span class="arrow">‹</span> Exit Reading
+            </a>
+            <a href="chapter.html" id="webVersionLink" class="btn-exit btn-web-version">
+                Web Version
+            </a>
+        </div>
+
+        <div class="header-center">
+            <a href="novel.html" class="novel-title">A Dream Within a Dream</a>
+            <button class="chapter-selector-btn" id="chapterSelectorBtn">
+                <span class="chapter-subtitle" id="chapterSubtitle">Chapter 124: The Price of Ambition</span>
+                <img class="caret-icon" src="images/icons/chevron-down.svg" alt="">
+            </button>
+        </div>
+
+        <div class="header-right">
+            <button class="tool-btn" id="toggleReadingMode" title="Switch to Book mode">
+                <span class="tool-icon"><img src="images/icons/scroll.svg" alt=""></span>
+                <span class="tool-label" id="readingModeLabel">Scroll</span>
+            </button>
+
+            <button class="tool-btn" id="btnQuotesPanel" title="Quotes saved from this chapter">
+                <span class="tool-icon"><img src="images/icons/quote.svg" alt=""></span>
+                <span class="tool-label">Quotes</span>
+            </button>
+            
+            <button class="tool-btn" id="btnNotesPanel" title="Notes saved from this chapter">
+                <span class="tool-icon"><img src="images/icons/notes.svg" alt=""></span>
+                <span class="tool-label">Notes</span>
+            </button>
+            
+            <button class="tool-btn" id="toggleSettings" title="Formatting Settings">
+                <span class="tool-icon"><img src="images/icons/settings.svg" alt=""></span>
+                <span class="tool-label">Settings</span>
+            </button>
+            
+            <button class="tool-btn" id="btnBookmark" title="Bookmark Chapter" aria-pressed="false">
+                <span class="tool-icon"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled.svg"></span>
+                <span class="tool-label">Bookmark</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN READING VIEWPORT -->
+    <main class="reader-viewport">
+        
+        <button class="page-nav nav-prev" title="Previous Page">‹</button>
+
+        <article class="reader-container" id="readerContainer">
+            <div class="prose" id="readingProse">
+                <header class="chapter-head">
+                    <span class="chapter-label" id="chapterLabel">Chapter 124</span>
+                    <div class="chapter-divider">
+                        <img class="ornament" src="images/icons/chapter-divider.png" alt="">
+                    </div>
+                    <h1 class="chapter-title" id="chapterTitle">The Price of Ambition</h1>
+                </header>
+
+                <div id="proseParagraphs">
+                    <p>Loading chapter…</p>
+                </div>
+            </div>
+        </article>
+
+        <button class="page-nav nav-next" title="Next Page">›</button>
+
+    </main>
+
+    <!-- FLOATING READING CONTROLS PANEL -->
+    <div class="floating-settings-panel" id="settingsPanel" style="display: none;">
+        <div class="panel-group">
+            <label>Font</label>
+            <div class="panel-dropdown" id="fontDropdown">
+                <button type="button" class="panel-dropdown-button" id="fontDropdownBtn">
+                    <span id="fontDropdownLabel">Literata</span>
+                    <img src="images/icons/chevron-down.svg" alt="">
+                </button>
+                <div class="panel-dropdown-menu">
+                    <button type="button" class="panel-dropdown-option active" data-font-class="font-literata">Literata</button>
+                    <button type="button" class="panel-dropdown-option" data-font-class="font-serif">EB Garamond</button>
+                    <button type="button" class="panel-dropdown-option" data-font-class="font-merriweather">Merriweather</button>
+                    <button type="button" class="panel-dropdown-option" data-font-class="font-georgia">Georgia</button>
+                    <button type="button" class="panel-dropdown-option" data-font-class="font-playfair">Playfair Display</button>
+                    <button type="button" class="panel-dropdown-option" data-font-class="font-sans">Inter</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <div class="panel-group">
+            <label>Size</label>
+            <div class="size-controls">
+                <span class="size-val" id="fontSizeVal">20</span>
+                <button class="btn-step" id="btnDecreaseFont">−</button>
+                <button class="btn-step" id="btnIncreaseFont">+</button>
+            </div>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <div class="panel-group">
+            <label>Spacing</label>
+            <div class="panel-dropdown" id="spacingDropdown">
+                <button type="button" class="panel-dropdown-button" id="spacingDropdownBtn">
+                    <span id="spacingDropdownLabel">1.8</span>
+                    <img src="images/icons/chevron-down.svg" alt="">
+                </button>
+                <div class="panel-dropdown-menu">
+                    <button type="button" class="panel-dropdown-option" data-spacing="1.4">1.4</button>
+                    <button type="button" class="panel-dropdown-option" data-spacing="1.6">1.6</button>
+                    <button type="button" class="panel-dropdown-option active" data-spacing="1.8">1.8</button>
+                    <button type="button" class="panel-dropdown-option" data-spacing="2.0">2.0</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <div class="panel-group">
+            <label>Width</label>
+            <div class="panel-dropdown" id="widthDropdown">
+                <button type="button" class="panel-dropdown-button" id="widthDropdownBtn">
+                    <span id="widthDropdownLabel">700px</span>
+                    <img src="images/icons/chevron-down.svg" alt="">
+                </button>
+                <div class="panel-dropdown-menu">
+                    <button type="button" class="panel-dropdown-option" data-width="600px">600px</button>
+                    <button type="button" class="panel-dropdown-option active" data-width="700px">700px</button>
+                    <button type="button" class="panel-dropdown-option" data-width="800px">800px</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <!-- Color Themes -->
+        <div class="panel-group theme-swatches">
+            <button class="swatch swatch-white" data-theme="theme-light" title="Light"></button>
+            <button class="swatch swatch-warm active" data-theme="theme-warm" title="Warm Sepia"></button>
+            <button class="swatch swatch-sepia" data-theme="theme-sepia" title="Tan"></button>
+            <button class="swatch swatch-dark" data-theme="theme-dark" title="Dark"></button>
+        </div>
+    </div>
+
+    <!-- BOTTOM PROGRESS FOOTER — values below are placeholders,
+         updated live by script.js based on actual scroll position -->
+    <footer class="reader-footer">
+        <span class="progress-text">0% through the chapter</span>
+        
+        <div class="progress-bar-container">
+            <div class="progress-track">
+                <div class="progress-fill" style="width: 0%;"></div>
+                <div class="progress-thumb" style="left: 0%;"></div>
+            </div>
+        </div>
+
+        <div class="footer-right">
+            <span class="pages-remaining">— pages left in chapter</span>
+            
+            <div class="chapter-nav-links">
+                <a href="#" class="nav-link">‹ Previous</a>
+                <a href="#" class="nav-link">Next ›</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SAVED QUOTES / NOTES PANEL — opened by the Quotes and Notes
+         buttons in the header. Same modal shell as the chapter list
+         above, just showing this chapter's saved quotes or notes
+         (from localStorage) instead of a table of contents. -->
+    <div class="chapter-list-backdrop" id="savedItemsBackdrop" style="display: none;">
+        <div class="chapter-list-modal">
+            <div class="chapter-list-head">
+                <h3 id="savedItemsTitle">Quotes</h3>
+                <button type="button" class="chapter-list-close" id="savedItemsClose">✕</button>
+            </div>
+            <div class="chapter-list-items" id="savedItemsList">
+                <!-- populated by script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAPTER LIST MODAL — quick-jump panel, opens on top of the
+         page (dimmed backdrop, page stays visible underneath).
+         Shared with chapter.html; data comes from
+         chapters/chapter-list.json (see script.js). -->
+    <div class="chapter-list-backdrop" id="chapterListBackdrop" style="display: none;">
+        <div class="chapter-list-modal">
+            <div class="chapter-list-head">
+                <h3>Table of Contents</h3>
+                <button type="button" class="chapter-list-close" id="chapterListClose">✕</button>
+            </div>
+            <div class="chapter-list-items" id="chapterListItems">
+                <!-- populated by script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SELECTION TOOLBAR — appears above any text the reader selects
+         inside the chapter. Positioned by script.js, never in CSS,
+         since it has to track wherever the selection actually is. -->
+    <div class="selection-toolbar" id="selectionToolbar" style="display: none;">
+        <button class="sel-btn" id="selCopyBtn" title="Copy">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="6" width="9" height="9" rx="1.5"></rect>
+                <path d="M3.5 11.5V4a1.5 1.5 0 0 1 1.5-1.5h7.5"></path>
+            </svg>
+            <span>Copy</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selBookmarkBtn" title="Bookmark this passage">
+            <img src="images/icons/bookmark.svg" alt="">
+            <span>Bookmark</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selQuoteBtn" title="Save as quote">
+            <img src="images/icons/quote.svg" alt="">
+            <span>Quote</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selCommentBtn" title="Leave a comment">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 4.5A1.5 1.5 0 0 1 4 3h10a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 14 12H7l-3.2 2.6a.5.5 0 0 1-.8-.4V12h-.5A1.5 1.5 0 0 1 1 10.5v-6a1.5 1.5 0 0 1 1.5-1.5Z"></path>
+            </svg>
+            <span>Comment</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selNoteBtn" title="Add a note">
+            <img src="images/icons/edit.svg" alt="">
+            <span>Note</span>
+        </button>
+    </div>
+
+    <!-- Small composer that opens under the toolbar for Comment / Note —
+         same markup serves both, script.js swaps the label/placeholder
+         and the localStorage key it saves into. -->
+    <div class="selection-composer" id="selectionComposer" style="display: none;">
+        <div class="selection-composer-quoted" id="selectionComposerQuoted"></div>
+        <div class="selection-composer-label" id="selectionComposerLabel">Add a note</div>
+        <textarea class="selection-composer-input" id="selectionComposerInput" rows="3" placeholder="Jot something down…"></textarea>
+        <div class="selection-composer-actions">
+            <button type="button" class="btn-composer-cancel" id="selectionComposerCancel">Cancel</button>
+            <button type="button" class="btn-composer-save" id="selectionComposerSave">Save</button>
+        </div>
+    </div>
+
+    <!-- Brief bottom-center confirmation ("Copied to clipboard", "Saved
+         as quote"...) shown after any selection-toolbar action -->
+    <div class="reader-toast" id="readerToast"></div>
+
+    <!-- FOOTNOTE POPOVER — opens when a reader clicks one of the
+         small numbered markers inside the chapter text. Content and
+         position depend on which marker was clicked, so it's just an
+         empty shell here, filled in by script.js. -->
+    <div class="footnote-popover" id="footnotePopover" style="display: none;">
+        <div class="footnote-popover-term" id="footnotePopoverTerm"></div>
+        <div class="footnote-popover-pinyin" id="footnotePopoverPinyin"></div>
+        <div class="footnote-popover-definition" id="footnotePopoverDefinition"></div>
+        <a href="glossary.html" class="footnote-popover-link" id="footnotePopoverLink">Подробнее в Глоссарии →</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

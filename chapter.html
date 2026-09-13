@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter — A Dream Within a Dream — Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Literata added here (on top of the site's usual Inter/Playfair)
+         just for the chapter body text — same serif Reading mode uses,
+         so switching between Web mode and Reading mode feels like the
+         same book rather than a different site -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Literata:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER (Скопирован из главной / novel.html — same component everywhere) -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <div class="catalog-menu">
+                    <button class="catalog-button">
+                        Catalog
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="catalog-dropdown">
+                        <a href="#">Novels</a>
+                        <a href="#">Authors</a>
+                        <a href="#">Genres</a>
+                    </div>
+                </div>
+                <a href="#">Announcements</a>
+                <a href="#">About</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search">
+                    <input type="text" placeholder="Search novels, authors...">
+                    <img src="images/icons/search.svg" alt="">
+                </div>
+
+                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+
+                <div class="language-menu">
+                    <button class="language-button"><img src="images/icons/globe.svg" alt=""></button>
+                    <div class="language-dropdown">
+                        <button class="language-option">Русский</button>
+                        <button class="language-option active">English</button>
+                    </div>
+                </div>
+
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <span class="user-name">Tatyana <img src="images/icons/chevron-down.svg" alt=""></span>
+                    </button>
+                    <div class="user-dropdown">
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> My Library</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Bookmarks</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Favorites</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> My Quotes</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> My Notes</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> My Collections</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Achievements</a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings</a>
+                        <button type="button" class="user-dropdown-item theme-toggle"><img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme</button>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Log Out</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Full-width bar under the header: breadcrumbs on the left
+             (lines up under the logo) and Reading Mode on the right
+             (lines up under the profile menu) — same left/right edges
+             as .header itself, unlike the narrower reading column
+             below it -->
+        <div class="chapter-top-bar">
+            <nav class="breadcrumbs">
+                <a href="index.html">Home</a> <span>›</span>
+                <a href="novel.html">A Dream Within a Dream</a> <span>›</span>
+                <span class="current" id="breadcrumbChapter">Chapter</span>
+            </nav>
+
+            <a href="reader.html" id="readingModeBtn" class="btn-reading-mode">
+                <img src="images/icons/focus.svg" alt="">
+                <span>Reading Mode</span>
+            </a>
+        </div>
+
+        <!-- MAIN CHAPTER CONTENT (Web mode) -->
+        <main class="chapter-web-main">
+
+            <!-- Chapter meta: label, ornament, title, subtitle -->
+            <section class="chapter-web-meta">
+                <span class="chapter-label" id="chapterLabel">Chapter</span>
+                <div class="chapter-divider">
+                    <img class="ornament" src="images/icons/chapter-divider.png" alt="">
+                </div>
+                <h1 class="chapter-title" id="chapterTitle">Loading…</h1>
+
+                <p class="chapter-web-subtitle">
+                    <a href="novel.html">A Dream Within a Dream</a> · Qian Shan Cha Ke
+                </p>
+                <p class="chapter-web-info" id="chapterWebInfo">Chapter · — min read</p>
+            </section>
+
+            <!-- Chapter text -->
+            <article class="chapter-web-text" id="chapterWebText">
+                <p>Loading chapter…</p>
+            </article>
+
+            <!-- Static ad placeholder — no real ad logic, just holding
+                 the visual space called out in the mockup -->
+            <div class="chapter-ad-banner">
+                <span class="ad-label">Advertisement</span>
+                <img class="ad-icon" src="https://placehold.co/56x56" alt="">
+                <div class="ad-copy">
+                    <h3>Books that stay with you</h3>
+                    <p>Premium editions · Cozy atmosphere · For true readers</p>
+                </div>
+                <button type="button" class="btn-action">Learn More</button>
+            </div>
+
+            <!-- Previous / Table of Contents / Next -->
+            <nav class="chapter-nav-row">
+                <a href="#" id="prevChapterBtn" class="chapter-nav-btn">‹ Previous Chapter</a>
+                <button type="button" id="chapterTocBtn" class="chapter-nav-btn chapter-toc-btn">Table of Contents</button>
+                <a href="#" id="nextChapterBtn" class="chapter-nav-btn">Next Chapter ›</a>
+            </nav>
+
+            <!-- Comments — static mock content, no backend yet -->
+            <section class="chapter-comments">
+                <div class="chapter-comments-head">
+                    <h2>Comments</h2>
+                    <button type="button" class="chapter-comments-sort">Newest first ⌄</button>
+                </div>
+                <p class="chapter-comments-subtitle">Discuss the chapter — no spoilers.</p>
+
+                <div class="comment-item">
+                    <img class="comment-avatar" src="https://placehold.co/36x36" alt="">
+                    <div class="comment-body">
+                        <div class="comment-meta">
+                            <span class="comment-author">Liana</span>
+                            <span class="comment-date">May 12, 2025</span>
+                        </div>
+                        <p class="comment-text">Such a beautiful chapter! You can already feel that something important is coming. 💛</p>
+                        <div class="comment-actions">
+                            <button type="button"><img src="images/icons/heart.svg" alt="" style="width:14px;height:14px;"> 24</button>
+                            <button type="button">Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-item">
+                    <img class="comment-avatar" src="https://placehold.co/36x36" alt="">
+                    <div class="comment-body">
+                        <div class="comment-meta">
+                            <span class="comment-author">Echo</span>
+                            <span class="comment-date">May 12, 2025</span>
+                        </div>
+                        <p class="comment-text">Interesting — what was on that sealed letter? Any theories?</p>
+                        <div class="comment-actions">
+                            <button type="button"><img src="images/icons/heart.svg" alt="" style="width:14px;height:14px;"> 12</button>
+                            <button type="button">Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-item">
+                    <img class="comment-avatar" src="https://placehold.co/36x36" alt="">
+                    <div class="comment-body">
+                        <div class="comment-meta">
+                            <span class="comment-author">Svetlana</span>
+                            <span class="comment-date">May 12, 2025</span>
+                        </div>
+                        <p class="comment-text">I love this writing style so much. Easy to read but still so deep.</p>
+                        <div class="comment-actions">
+                            <button type="button"><img src="images/icons/heart.svg" alt="" style="width:14px;height:14px;"> 8</button>
+                            <button type="button">Reply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comment-composer">
+                    <input type="text" id="commentInput" placeholder="Leave a comment…">
+                    <button type="button" class="btn-post" id="commentPostBtn">Post</button>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER (same component as everywhere else) -->
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Platform</h3>
+                    <a href="#">Catalog</a>
+                    <a href="#">Authors</a>
+                    <a href="#">Genres</a>
+                    <a href="#">Announcements</a>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Report a Problem</a>
+                    <a href="#">Suggest a Novel</a>
+                </div>
+
+                <div class="footer-column">
+                    <h3>Community</h3>
+                    <a href="#">Discord</a>
+                    <a href="#">Telegram</a>
+                    <a href="#">Twitter</a>
+                    <a href="#">Pinterest</a>
+                </div>
+
+                <div class="footer-support">
+                    <h3>Support Busy Bee</h3>
+                    <p>Love our translations? Support us and help us keep going.</p>
+                    <button type="button" class="coffee-button">
+                        <img src="images/icons/coffee.svg" alt="">
+                        Buy Us a Coffee
+                    </button>
+                    <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+
+    <!-- CHAPTER LIST MODAL — quick-jump panel, opens on top of the
+         page (dimmed backdrop, page stays visible underneath).
+         Shared with reader.html; data comes from
+         chapters/chapter-list.json (see script.js). -->
+    <div class="chapter-list-backdrop" id="chapterListBackdrop" style="display: none;">
+        <div class="chapter-list-modal">
+            <div class="chapter-list-head">
+                <h3>Table of Contents</h3>
+                <button type="button" class="chapter-list-close" id="chapterListClose">✕</button>
+            </div>
+            <div class="chapter-list-items" id="chapterListItems">
+                <!-- populated by script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SELECTION TOOLBAR — appears above any text the reader selects
+         inside the chapter. Positioned by script.js, never in CSS,
+         since it has to track wherever the selection actually is. -->
+    <div class="selection-toolbar" id="selectionToolbar" style="display: none;">
+        <button class="sel-btn" id="selCopyBtn" title="Copy">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="6" width="9" height="9" rx="1.5"></rect>
+                <path d="M3.5 11.5V4a1.5 1.5 0 0 1 1.5-1.5h7.5"></path>
+            </svg>
+            <span>Copy</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selBookmarkBtn" title="Bookmark this passage">
+            <img src="images/icons/bookmark.svg" alt="">
+            <span>Bookmark</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selQuoteBtn" title="Save as quote">
+            <img src="images/icons/quote.svg" alt="">
+            <span>Quote</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selCommentBtn" title="Leave a comment">
+            <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2.5 4.5A1.5 1.5 0 0 1 4 3h10a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 14 12H7l-3.2 2.6a.5.5 0 0 1-.8-.4V12h-.5A1.5 1.5 0 0 1 1 10.5v-6a1.5 1.5 0 0 1 1.5-1.5Z"></path>
+            </svg>
+            <span>Comment</span>
+        </button>
+        <div class="sel-divider"></div>
+        <button class="sel-btn" id="selNoteBtn" title="Add a note">
+            <img src="images/icons/edit.svg" alt="">
+            <span>Note</span>
+        </button>
+    </div>
+
+    <!-- Small composer that opens under the toolbar for Comment / Note —
+         same markup serves both, script.js swaps the label/placeholder
+         and the localStorage key it saves into. -->
+    <div class="selection-composer" id="selectionComposer" style="display: none;">
+        <div class="selection-composer-quoted" id="selectionComposerQuoted"></div>
+        <div class="selection-composer-label" id="selectionComposerLabel">Add a note</div>
+        <textarea class="selection-composer-input" id="selectionComposerInput" rows="3" placeholder="Jot something down…"></textarea>
+        <div class="selection-composer-actions">
+            <button type="button" class="btn-composer-cancel" id="selectionComposerCancel">Cancel</button>
+            <button type="button" class="btn-composer-save" id="selectionComposerSave">Save</button>
+        </div>
+    </div>
+
+    <!-- Brief bottom-center confirmation ("Copied to clipboard", "Saved
+         as quote"...) shown after any selection-toolbar action -->
+    <div class="reader-toast" id="readerToast"></div>
+
+    <!-- FOOTNOTE POPOVER — opens when a reader clicks one of the
+         small numbered markers inside the chapter text. Content and
+         position depend on which marker was clicked, so it's just an
+         empty shell here, filled in by script.js. -->
+    <div class="footnote-popover" id="footnotePopover" style="display: none;">
+        <div class="footnote-popover-term" id="footnotePopoverTerm"></div>
+        <div class="footnote-popover-pinyin" id="footnotePopoverPinyin"></div>
+        <div class="footnote-popover-definition" id="footnotePopoverDefinition"></div>
+        <a href="glossary.html" class="footnote-popover-link" id="footnotePopoverLink">Подробнее в Глоссарии →</a>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

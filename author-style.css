@@ -1,0 +1,552 @@
+/* ========================================
+   BUSY BEE — AUTHOR PAGE STYLES
+   ======================================== */
+
+.author-container {
+    padding: 0 32px 50px;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 16px 0 20px;
+}
+
+.breadcrumbs a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.breadcrumbs .current {
+    color: var(--text-secondary);
+}
+
+/* Author Hero Card */
+.author-hero-card {
+    background: var(--surface) url("images/backgrounds/author-hero-bg.png") right center / contain no-repeat;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+}
+
+.author-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--white);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.author-hero-content {
+    flex: 1;
+}
+
+.author-header-title {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+}
+
+.author-header-title h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 32px;
+    margin: 0;
+}
+
+.chinese-name {
+    font-size: 20px;
+    color: var(--text-secondary);
+}
+
+.author-meta-line {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 8px 0 4px;
+}
+
+.highlight-tag {
+    background: #F3E5D8;
+    color: #8C561E;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.author-origin-line {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.author-bio {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 580px;
+    margin: 0 0 16px;
+}
+
+.author-pills-row {
+    display: flex;
+    gap: 16px;
+}
+
+.pill-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface-warm);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px;
+}
+
+.pill-label {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.pill-items {
+    color: var(--text-primary);
+}
+
+/* Stats Cards Grid */
+.author-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-icon { font-size: 14px; margin-bottom: 6px; }
+.stat-title { font-size: 10px; color: var(--text-muted); }
+.stat-value { font-size: 22px; font-weight: 600; color: var(--text-primary); margin: 4px 0; }
+.stat-sub { font-size: 9px; color: var(--text-muted); }
+.stat-link { font-size: 10px; color: var(--honey); text-decoration: none; margin-top: auto; }
+
+.rating-box { display: flex; align-items: center; gap: 6px; }
+.stars { color: #F2C94C; font-size: 11px; letter-spacing: 1px; }
+
+.stat-text-val { font-size: 11px; color: var(--text-secondary); margin: 6px 0 0; line-height: 1.3; }
+
+/* Tabs Navigation */
+.author-tabs {
+    display: flex;
+    gap: 28px;
+    border-bottom: 1px solid var(--border);
+    margin: 28px 0 24px;
+}
+
+.author-tabs .tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+}
+
+.author-tabs .tab-btn.active {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.author-tabs .tab-btn.active::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--honey);
+}
+
+/* Two Column Grid */
+.author-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 28px;
+}
+
+/* Works Section */
+.works-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.works-header h2 {
+    font-family: "Playfair Display", serif;
+    font-size: 20px;
+    margin: 0;
+}
+
+.sort-dropdown {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.works-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.work-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.work-cover-box {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.work-cover-box img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.badge-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(4px);
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: var(--text-secondary);
+}
+
+.badge-ongoing {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: var(--honey);
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    color: white;
+}
+
+.btn-dots {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.work-card h3 {
+    font-size: 12px;
+    margin: 0 0 2px;
+    line-height: 1.3;
+}
+
+.work-card .orig-title {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+}
+
+.translator-info {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.translator-info span { color: var(--text-secondary); }
+
+.work-tags {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.work-tags span {
+    font-size: 8px;
+    background: var(--surface-warm);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-muted);
+}
+
+.work-footer {
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 9px;
+    color: var(--text-muted);
+}
+
+.check-icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--honey);
+    color: var(--honey);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+}
+
+.btn-continue {
+    color: var(--honey);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-all-works-btn-wrap {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.btn-view-all-works {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+/* Sidebar Widgets */
+.sidebar-widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.sidebar-widget.warm-card {
+    background: var(--surface-warm);
+}
+
+.sidebar-widget h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 15px;
+    margin: 0 0 14px;
+}
+
+.reasons-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.reasons-list li {
+    display: flex;
+    gap: 10px;
+}
+
+.reason-icon { font-size: 12px; }
+
+.reasons-list strong {
+    display: block;
+    font-size: 10px;
+    color: var(--text-primary);
+}
+
+.reasons-list p {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+    line-height: 1.3;
+}
+
+.widget-link {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--honey);
+    text-decoration: none;
+}
+
+.widget-link.center {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* Note Card */
+.note-card-bg {
+    background: var(--surface-warm) url("images/backgrounds/feather-bg.png") right bottom / contain no-repeat;
+}
+
+.translator-quote {
+    font-size: 10px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: 0 0 12px;
+    font-style: italic;
+}
+
+.signature {
+    font-size: 10px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Quotes Widget */
+.quotes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.quote-card {
+    background: var(--surface-warm);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.quote-body {
+    font-size: 10px;
+    font-style: italic;
+    color: var(--text-secondary);
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+.quote-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.quote-source {
+    font-size: 8px;
+    color: var(--text-muted);
+}
+
+.btn-like {
+    border: none;
+    background: none;
+    font-size: 9px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* Related Authors */
+.related-authors-section {
+    margin-top: 40px;
+}
+
+.related-authors-section h3 {
+    font-family: "Playfair Display", serif;
+    font-size: 16px;
+    margin: 0 0 16px;
+}
+
+.authors-horizontal-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+}
+
+.author-mini-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+}
+
+.author-mini-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.author-mini-card strong {
+    display: block;
+    font-size: 10px;
+    margin-bottom: 6px;
+}
+
+.mini-tags {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+}
+
+.mini-tags span {
+    font-size: 8px;
+    background: var(--surface-warm);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-muted);
+}
+
+.author-explore-more {
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 14px;
+    color: var(--text-muted);
+}
+
+.dashed-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    color: var(--honey);
+}
+
+.author-explore-more span {
+    font-size: 9px;
+    text-align: center;
+}

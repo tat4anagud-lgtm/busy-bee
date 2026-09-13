@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Library — Tatyana | Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="profile-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <a href="#">Catalog</a>
+                <a href="#">Authors</a>
+                <a href="#">Genres</a>
+                <a href="#">Announcements</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search">
+                    <input type="text" placeholder="Search novels, authors...">
+                    <span class="search-key">⌘ K</span>
+                </div>
+
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+                
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <span class="user-name">Tatyana ▾</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- LAYOUT GRID: SIDEBAR + MAIN CONTENT -->
+        <div class="profile-layout">
+            
+            <!-- LEFT SIDEBAR NAVIGATION -->
+            <aside class="profile-sidebar">
+                <nav class="sidebar-menu">
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">🏠</span>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">📖</span>
+                        <span>Catalog</span>
+                    </a>
+                    <a href="#" class="sidebar-item active">
+                        <span class="sidebar-icon">📚</span>
+                        <span>My Library</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">🔖</span>
+                        <span>Bookmarks</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">💬</span>
+                        <span>Quotes</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">📝</span>
+                        <span>Notes</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">📁</span>
+                        <span>Collections</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">🏆</span>
+                        <span>Achievements</span>
+                    </a>
+                    <a href="#" class="sidebar-item">
+                        <span class="sidebar-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-decoration">
+                    <p class="sidebar-quote">Reading is a beautiful journey.</p>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="profile-main">
+
+                <!-- USER HERO BANNER -->
+                <section class="profile-hero-card">
+                    <div class="user-avatar-wrapper">
+                        <img src="https://placehold.co/120x120" alt="Tatyana" class="profile-user-avatar">
+                        <button class="btn-edit-avatar">✏️</button>
+                    </div>
+
+                    <div class="profile-hero-info">
+                        <div class="user-title-row">
+                            <h1>Tatyana</h1>
+                            <span class="user-badge">🐝 Busy Reader</span>
+                        </div>
+
+                        <div class="level-progress-row">
+                            <span class="level-title">Level 18 • <strong>Honey Scholar</strong></span>
+                            <div class="xp-bar">
+                                <div class="xp-progress" style="width: 62.5%;"></div>
+                            </div>
+                            <span class="xp-text">1,250 / 2,000 EXP</span>
+                        </div>
+
+                        <div class="user-joined-date">Joined April 12, 2024</div>
+                        <p class="user-bio">“One more chapter.” — we’ve all been there. 🌿</p>
+                    </div>
+                </section>
+
+                <!-- STATS GRID -->
+                <section class="user-stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-icon">📖</span>
+                        <span class="stat-title">Novels Read</span>
+                        <strong class="stat-value">37</strong>
+                        <a href="#" class="stat-link">View all</a>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">📑</span>
+                        <span class="stat-title">Chapters Read</span>
+                        <strong class="stat-value">2,541</strong>
+                        <a href="#" class="stat-link">View all</a>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🕒</span>
+                        <span class="stat-title">Reading Time</span>
+                        <strong class="stat-value">128h 34m</strong>
+                        <a href="#" class="stat-link">View more</a>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🔥</span>
+                        <span class="stat-title">Reading Streak</span>
+                        <strong class="stat-value">28</strong>
+                        <span class="stat-sub">days</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">🏰</span>
+                        <span class="stat-title">Favorite Genre</span>
+                        <strong class="stat-text-value">Historical Fantasy</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-icon">👤</span>
+                        <span class="stat-title">Favorite Author</span>
+                        <strong class="stat-text-value">Mo Xiang Tong Xiu</strong>
+                    </div>
+                </section>
+
+                <!-- CONTINUE READING -->
+                <section class="section-block">
+                    <div class="section-header">
+                        <h2>Continue Reading</h2>
+                        <div class="section-controls">
+                            <a href="#" class="link-view-all">View all</a>
+                            <button class="nav-arrow">‹</button>
+                            <button class="nav-arrow">›</button>
+                        </div>
+                    </div>
+
+                    <div class="reading-cards-grid">
+                        <article class="reading-card">
+                            <div class="reading-cover-wrap">
+                                <img src="https://placehold.co/140x190" alt="The Moon That Rises in the Night">
+                                <button class="btn-dots">⋮</button>
+                            </div>
+                            <h3>The Moon That Rises in the Night</h3>
+                            <span class="chapter-info">Chapter 124 of 164</span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 76%;"></div>
+                            </div>
+                            <span class="progress-percent">76%</span>
+                        </article>
+
+                        <article class="reading-card">
+                            <div class="reading-cover-wrap">
+                                <img src="https://placehold.co/140x190" alt="Rebirth of the Malicious Empress">
+                                <button class="btn-dots">⋮</button>
+                            </div>
+                            <h3>Rebirth of the Malicious Empress</h3>
+                            <span class="chapter-info">Chapter 89 of 132</span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 68%;"></div>
+                            </div>
+                            <span class="progress-percent">68%</span>
+                        </article>
+
+                        <article class="reading-card">
+                            <div class="reading-cover-wrap">
+                                <img src="https://placehold.co/140x190" alt="The Crown Prince's Secret Lover">
+                                <button class="btn-dots">⋮</button>
+                            </div>
+                            <h3>The Crown Prince's Secret Lover</h3>
+                            <span class="chapter-info">Chapter 63 of 101</span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 62%;"></div>
+                            </div>
+                            <span class="progress-percent">62%</span>
+                        </article>
+
+                        <article class="reading-card">
+                            <div class="reading-cover-wrap">
+                                <img src="https://placehold.co/140x190" alt="Silent Suffering, Boundless Love">
+                                <button class="btn-dots">⋮</button>
+                            </div>
+                            <h3>Silent Suffering, Boundless Love</h3>
+                            <span class="chapter-info">Chapter 40 of 88</span>
+                            <div class="progress-bar-wrap">
+                                <div class="progress-bar-fill" style="width: 45%;"></div>
+                            </div>
+                            <span class="progress-percent">45%</span>
+                        </article>
+                    </div>
+                </section>
+
+                <!-- PERSONAL BOOKSHELVES -->
+                <section class="section-block">
+                    <div class="section-header">
+                        <h2>Personal Bookshelves</h2>
+                    </div>
+
+                    <div class="bookshelves-grid">
+                        <div class="bookshelf-card">
+                            <span class="shelf-icon">♡</span>
+                            <strong>Favorites</strong>
+                            <span class="shelf-count">23</span>
+                        </div>
+                        <div class="bookshelf-card">
+                            <span class="shelf-icon">📖</span>
+                            <strong>Reading</strong>
+                            <span class="shelf-count">6</span>
+                        </div>
+                        <div class="bookshelf-card">
+                            <span class="shelf-icon">🔖</span>
+                            <strong>Want to Read</strong>
+                            <span class="shelf-count">38</span>
+                        </div>
+                        <div class="bookshelf-card">
+                            <span class="shelf-icon">⏸</span>
+                            <strong>On Hold</strong>
+                            <span class="shelf-count">4</span>
+                        </div>
+                        <div class="bookshelf-card">
+                            <span class="shelf-icon">✓</span>
+                            <strong>Completed</strong>
+                            <span class="shelf-count">31</span>
+                        </div>
+                        <div class="bookshelf-card">
+                            <span class="shelf-icon">✕</span>
+                            <strong>Dropped</strong>
+                            <span class="shelf-count">3</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- BUSY BEE COLLECTIONS -->
+                <section class="section-block">
+                    <div class="section-header">
+                        <h2>Busy Bee Collections</h2>
+                        <div class="section-controls">
+                            <a href="#" class="link-view-all">View all</a>
+                            <button class="nav-arrow">‹</button>
+                            <button class="nav-arrow">›</button>
+                        </div>
+                    </div>
+
+                    <div class="collections-grid">
+                        <div class="collection-card">
+                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                            <h4>Court Intrigues and Power Plays</h4>
+                            <span class="collection-count">12 novels</span>
+                        </div>
+                        <div class="collection-card">
+                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                            <h4>Slow Burn Romance</h4>
+                            <span class="collection-count">18 novels</span>
+                        </div>
+                        <div class="collection-card">
+                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                            <h4>Time Travel Adventures</h4>
+                            <span class="collection-count">9 novels</span>
+                        </div>
+                        <div class="collection-card">
+                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                            <h4>Cultivation and Legends</h4>
+                            <span class="collection-count">14 novels</span>
+                        </div>
+                        <div class="collection-card create-new-collection">
+                            <span class="plus-icon">+</span>
+                            <span>Create New Collection</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- THREE-COLUMN GRID: QUOTES / NOTES / ACHIEVEMENTS -->
+                <div class="widgets-three-column">
+                    
+                    <!-- Favorite Quotes -->
+                    <div class="column-widget">
+                        <div class="widget-header">
+                            <h3>Favorite Quotes</h3>
+                            <a href="#">View all</a>
+                        </div>
+                        <div class="widget-content">
+                            <div class="user-quote-item">
+                                <p class="quote-text">“In the end, what we regret most are the chances we never took.”</p>
+                                <span class="quote-book">— The Moon That Rises in the Night</span>
+                                <div class="quote-meta">
+                                    <button class="btn-like">♥ 892</button>
+                                    <button class="btn-dots">⋮</button>
+                                </div>
+                            </div>
+                            <div class="user-quote-item">
+                                <p class="quote-text">“Even the darkest night will end and the sun will rise again.”</p>
+                                <span class="quote-book">— Silent Suffering, Boundless Love</span>
+                                <div class="quote-meta">
+                                    <button class="btn-like">♥ 721</button>
+                                    <button class="btn-dots">⋮</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal Notes -->
+                    <div class="column-widget">
+                        <div class="widget-header">
+                            <h3>Personal Notes</h3>
+                            <a href="#">View all</a>
+                        </div>
+                        <div class="widget-content">
+                            <div class="note-item">
+                                <span class="note-icon">📋</span>
+                                <div class="note-info">
+                                    <strong>Note about the Northern Territory political structure and titles.</strong>
+                                    <span class="note-date">May 18, 2025</span>
+                                </div>
+                            </div>
+                            <div class="note-item">
+                                <span class="note-icon">📋</span>
+                                <div class="note-info">
+                                    <strong>Character relationships in The Crown Prince's Secret Lover</strong>
+                                    <span class="note-date">May 12, 2025</span>
+                                </div>
+                            </div>
+                            <div class="note-item">
+                                <span class="note-icon">📋</span>
+                                <div class="note-info">
+                                    <strong>Qing Dynasty customs and etiquette notes</strong>
+                                    <span class="note-date">May 3, 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="column-widget">
+                        <div class="widget-header">
+                            <h3>Achievements</h3>
+                            <a href="#">View all</a>
+                        </div>
+                        <div class="achievements-hex-grid">
+                            <div class="achievement-item">
+                                <div class="hex-badge">🏹</div>
+                                <strong>Early Bird</strong>
+                                <span>7 days</span>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="hex-badge">🏛️</div>
+                                <strong>Marathon Reader</strong>
+                                <span>Read 50 chapters in a day</span>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="hex-badge">🐝</div>
+                                <strong>Dedicated Bee</strong>
+                                <span>Read 7 days in a row</span>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="hex-badge">📚</div>
+                                <strong>Book Collector</strong>
+                                <span>Add 50 novels to your library</span>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="hex-badge">👑</div>
+                                <strong>Honey Scholar</strong>
+                                <span>Reach level 10</span>
+                            </div>
+                            <div class="achievement-item">
+                                <div class="hex-badge">🛡️</div>
+                                <strong>Quote Keeper</strong>
+                                <span>Save 100 quotes</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RECENT ACTIVITY -->
+                <section class="recent-activity-card">
+                    <div class="activity-content">
+                        <div class="widget-header">
+                            <h3>Recent Activity</h3>
+                            <a href="#">View all</a>
+                        </div>
+                        <ul class="activity-feed">
+                            <li>
+                                <span class="activity-icon">📖</span>
+                                <span class="activity-text">Read Chapter 124 of <strong>The Moon That Rises in the Night</strong></span>
+                                <span class="activity-time">2 minutes ago</span>
+                            </li>
+                            <li>
+                                <span class="activity-icon">🔖</span>
+                                <span class="activity-text">Added <strong>The Villainess's Slow Life</strong> to Want to Read</span>
+                                <span class="activity-time">1 hour ago</span>
+                            </li>
+                            <li>
+                                <span class="activity-icon">💬</span>
+                                <span class="activity-text">Saved a quote from <strong>Rebirth of the Malicious Empress</strong></span>
+                                <span class="activity-time">3 hours ago</span>
+                            </li>
+                            <li>
+                                <span class="activity-icon">✓</span>
+                                <span class="activity-text">Completed <strong>The Imperial Tutor</strong></span>
+                                <span class="activity-time">Yesterday</span>
+                            </li>
+                            <li>
+                                <span class="activity-icon">📁</span>
+                                <span class="activity-text">Created a new collection: <strong>Hidden Gems</strong></span>
+                                <span class="activity-time">2 days ago</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="profile-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="page-shell">
+    <header class="header">
+        <a href="#" class="logo">
+            <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+            <span>Busy Bee</span>
+        </a>
+
+        <!-- Main navigation: Catalog dropdown + simple links -->
+        <nav class="navigation">
+
+            <div class="catalog-menu">
+
+                <button class="catalog-button">
+                    Catalog
+                    <img src="images/icons/chevron-down.svg" alt="Chevron-down">
+                </button>
+
+                <div class="catalog-dropdown">
+                    <a href="#">Novels</a>
+                    <a href="#">Authors</a>
+                    <a href="#">Genres</a>
+                </div>
+
+            </div>
+
+            <a href="#">Announcements</a>
+            <a href="#">About</a>
+
+        </nav>
+
+        <!-- Search, notification icons, language switcher, profile menu -->
+        <div class="header-actions">
+
+            <div class="search">
+                <input type="text" placeholder="Search novels, authors...">
+                <img src="images/icons/search.svg" alt="Search">
+            </div>
+
+            <button class="header-bookmark-button">
+                <img src="images/icons/bookmark.svg" alt="Bookmark">
+            </button>
+            
+            <button class="bell-button">
+                <img src="images/icons/bell.svg" alt="Bell">
+            </button>
+            
+            <!-- Language switcher: click the globe to open, pick RU/EN -->
+            <div class="language-menu">
+
+                <button class="language-button">
+                    <img src="images/icons/globe.svg" alt="Language">
+                </button>
+
+                <div class="language-dropdown">
+                    <button class="language-option">Русский</button>
+                    <button class="language-option active">English</button>
+                </div>
+
+            </div>
+
+            <!-- Profile menu: avatar + name, opens the full account dropdown -->
+            <div class="user-menu">
+
+                <button class="user-button">
+                    <div class="user-avatar"></div>
+                    <span class="user-name">
+                        Tatyana
+                        <img src="images/icons/chevron-down.svg" alt="Chevron-down">
+                    </span>
+                </button>
+
+                <div class="user-dropdown">
+
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile
+                    </a>
+
+                    <div class="user-dropdown-spacer"></div>
+
+                    <!-- Reading-related sections -->
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> My Library
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Bookmarks
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Favorites
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> My Quotes
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> My Notes
+                    </a>
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> My Collections
+                    </a>
+
+                    <div class="user-dropdown-spacer"></div>
+
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Achievements
+                    </a>
+
+                    <div class="user-dropdown-divider"></div>
+
+                    <!-- App settings -->
+                    <a href="#" class="user-dropdown-item">
+                        <img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings
+                    </a>
+
+                    <!-- Theme toggle: swaps moon/sun icon on click (styling not wired up yet) -->
+                    <button type="button" class="user-dropdown-item theme-toggle">
+                        <img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme
+                    </button>
+
+                    <div class="user-dropdown-divider"></div>
+
+                    <a href="#" class="user-dropdown-item user-dropdown-item-danger">
+                        <img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Log Out
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <!-- ====================================================
+             HERO — two variants, only one shown at a time.
+             Which one is visible is controlled by HAS_ACTIVE_NOVEL
+             in script.js (search for "TESTING TOGGLE").
+             ==================================================== -->
+
+        <!-- Variant 1: user has a novel in progress -->
+        <section class="hero hero-continue">
+
+            <div class="hero-cover">
+                <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+            </div>
+
+            <div class="hero-info">
+
+                <p class="hero-label">✦ Latest Translation</p>
+
+                <h1><a href="#" class="hero-title-link">A Dream<br>Within a Dream</a></h1>
+
+                <p class="author">
+                    by <a href="#" class="hero-text-link"><strong>Qian Shan Cha Ke</strong></a>
+                    <span>•</span>
+                    Translated by <a href="#" class="hero-text-link">Busy Bee</a>
+                </p>
+
+                <p class="description">
+                    In a world where cultivation and destiny intertwine,
+                    she chose a path no one else dared to walk.
+                    A story of courage, love, and the price of ambition.
+                </p>
+
+                <div class="progress-info">
+                    <span>Chapter 124 of 164</span>
+                    <span>76%</span>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar"></div>
+                </div>
+
+                <div class="hero-buttons">
+                    <button class="continue-button">
+                         <img src="images/icons/book-open.svg" alt="Book"> 
+                         Continue Reading
+                    </button>
+
+                    <button type="button" class="hero-bookmark-button" aria-label="Save to bookmarks" aria-pressed="false">
+                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Variant 2: new user, or just finished their last novel —
+             search-first instead of "continue reading" -->
+        <section class="hero hero-welcome">
+
+            <div class="hero-welcome-content">
+
+                <h1>Welcome to Busy Bee</h1>
+                <p class="hero-welcome-subtitle">Find your next story.</p>
+
+                <div class="hero-search">
+                    <img src="images/icons/search.svg" alt="">
+                    <input type="text" placeholder="Search novels, authors, genres...">
+                    <button type="button" class="hero-search-button">Search</button>
+                </div>
+
+                <div class="popular-searches">
+                    <span>Popular searches:</span>
+                    <button type="button">Historical</button>
+                    <button type="button">Romance</button>
+                    <button type="button">Revenge</button>
+                    <button type="button">Politics</button>
+                    <button type="button">Completed novels</button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- 3-column layout: Recommendations | Latest Releases | Featured Authors.
+             All three must stay direct children of .content-grid (see style.css) -->
+        <section class="content-grid">
+
+            <!-- "Busy Bee Recommends": card carousel with prev/next arrows -->
+            <section class="recommendations">
+
+                <div class="section-header">
+                    <h2 class="section-title">Busy Bee Recommends</h2>
+                    <a href="#" class="view-all">View all</a>
+                </div>
+
+                <div class="book-carousel">
+
+                    <button type="button" class="carousel-arrow" aria-label="Previous">‹</button>
+
+                    <div class="book-list carousel-track">
+
+                        <article class="book-card">
+                            <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                            <div class="book-card-info">
+                                <h3><a href="#" class="hero-title-link">Pursuit of Jade</a></h3>
+                                <p>by <a href="#" class="hero-text-link">Tuan Zi Lai Xi</a></p>
+                                <div class="book-meta">
+                                    <span class="rating">★ 4.8</span>
+                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
+                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="book-card">
+                            <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                            <div class="book-card-info">
+                                <h3><a href="#" class="hero-title-link">The Top Couple Is a Bit Sweet</a></h3>
+                                <p>by <a href="#" class="hero-text-link">Tu Yang Xian Sen</a></p>
+                                <div class="book-meta">
+                                    <span class="rating">★ 4.7</span>
+                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
+                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="book-card">
+                            <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                            <div class="book-card-info">
+                                <h3><a href="#" class="hero-title-link">A Dream Within a Dream</a></h3>
+                                <p>by <a href="#" class="hero-text-link">Qian Shan Cha Ke</a></p>
+                                <div class="book-meta">
+                                    <span class="rating">★ 4.9</span>
+                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
+                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="book-card">
+                            <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                            <div class="book-card-info">
+                                <h3><a href="#" class="hero-title-link">Everyone Loves Me</a></h3>
+                                <p>by <a href="#" class="hero-text-link">Qiao Yao</a></p>
+                                <div class="book-meta">
+                                    <span class="rating">★ 4.6</span>
+                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
+                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <button type="button" class="carousel-arrow" aria-label="Next">›</button>
+
+                </div>
+
+                <div class="genre-section">
+
+                    <div class="section-header">
+                        <h2 class="section-title">Explore by Genre</h2>
+                        <a href="#" class="view-all">View all</a>
+                    </div>
+
+                    <div class="genre-carousel">
+
+                        <button type="button" class="carousel-arrow" aria-label="Previous genres">‹</button>
+
+                        <div class="genre-list carousel-track">
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/army.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Army</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/court-intrigue.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Court Intrigue</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/drama.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Drama</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/historical.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Historical</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/comedy.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Comedy</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/revenge.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Revenge</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/mystery.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Mystery</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/romance.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Romance</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/modern.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Modern</span>
+                            </a>
+                            <a href="#" class="genre-card">
+                                <img src="images/genres/fantasy.png" alt="">
+                                <div class="genre-overlay"></div>
+                                <span>Fantasy</span>
+                            </a>
+                        </div>
+
+                        <button type="button" class="carousel-arrow" aria-label="Next genres">›</button>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="latest-releases">
+
+                <div class="section-header">
+                    <h2 class="section-title">Latest Releases</h2>
+                    <a href="#" class="view-all">View all</a>
+                </div>
+
+                <div class="release-list">
+
+                    <article class="release-item">
+                        <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                        <div class="release-info">
+                            <h3><a href="#" class="hero-title-link">Pursuit of Jade</a></h3>
+                            <p>Chapter 85</p>
+                        </div>
+                        <div class="release-right">
+                            <span>2 hours ago</span>
+                            <b>New</b>
+                        </div>
+                    </article>
+
+                    <article class="release-item">
+                        <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                        <div class="release-info">
+                            <h3><a href="#" class="hero-title-link">The Top Couple Is a Bit Sweet</a></h3>
+                            <p>Chapter 78</p>
+                        </div>
+                        <div class="release-right">
+                            <span>5 hours ago</span>
+                            <b>New</b>
+                        </div>
+                    </article>
+
+                    <article class="release-item">
+                        <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                        <div class="release-info">
+                            <h3><a href="#" class="hero-title-link">A Dream Within a Dream</a></h3>
+                            <p>Chapter 124</p>
+                        </div>
+                        <div class="release-right">
+                            <span>Yesterday</span>
+                            <b>New</b>
+                        </div>
+                    </article>
+
+                    <article class="release-item">
+                        <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                        <div class="release-info">
+                            <h3><a href="#" class="hero-title-link">Everyone Loves Me</a></h3>
+                            <p>Chapter 63</p>
+                        </div>
+                        <div class="release-right">
+                            <span>Yesterday</span>
+                            <b>New</b>
+                        </div>
+                    </article>
+
+                </div>
+
+            </section>
+
+            <section class="featured-authors">
+
+                <div class="section-header">
+                    <h2 class="section-title">Featured Authors</h2>
+                    <a href="#" class="view-all">View all</a>
+                </div>
+
+                <div class="author-list">
+
+                    <article class="author-card">
+                        <img class="author-avatar" src="images/authors/tuan-zi-lai-xi.png" alt="Tuan Zi Lai Xi">
+
+                        <div class="author-info">
+                            <h3><a href="#" class="hero-title-link">Tuan Zi Lai Xi</a></h3>
+                            <p>12 Novels</p>
+                        </div>
+
+                        <button type="button" class="follow-button">Follow</button>
+                    </article>
+
+                    <article class="author-card">
+                        <img class="author-avatar" src="images/authors/qian-shan-cha-ke.png" alt="Qian Shan Cha Ke">
+
+                        <div class="author-info">
+                            <h3><a href="#" class="hero-title-link">Qian Shan Cha Ke</a></h3>
+                            <p>8 Novels</p>
+                        </div>
+
+                        <button type="button" class="follow-button">Follow</button>
+                    </article>
+
+                    <article class="author-card">
+                        <img class="author-avatar" src="images/authors/tu-yang-xian-sen.png" alt="Tu Yang Xian Sen">
+
+                        <div class="author-info">
+                            <h3><a href="#" class="hero-title-link">Tu Yang Xian Sen</a></h3>
+                            <p>5 Novels</p>
+                        </div>
+
+                        <button type="button" class="follow-button following">Following</button>
+                    </article>
+
+                    <article class="author-card">
+                        <img class="author-avatar" src="images/authors/qiao-yao.png" alt="Qiao Yao">
+
+                        <div class="author-info">
+                            <h3><a href="#" class="hero-title-link">Qiao Yao</a></h3>
+                            <p>7 Novels</p>
+                        </div>
+
+                        <button type="button" class="follow-button">Follow</button>
+                    </article>
+
+                </div>
+
+            </section>
+
+        </section>
+
+        <!-- Busy Bee Collections: curated themed lists, full-width band
+             between the 3-column grid above and the newsletter below.
+             Same carousel pattern as the book/genre lists. -->
+        <section class="collections-section">
+
+            <div class="section-header">
+                <h2 class="section-title">Busy Bee Collections</h2>
+                <a href="#" class="view-all">View all</a>
+            </div>
+
+            <div class="collection-carousel">
+
+                <button type="button" class="carousel-arrow" aria-label="Previous collections">‹</button>
+
+                <div class="collection-list carousel-track">
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/atmospheric-stories.png" alt="Atmospheric Stories">
+                        <div class="collection-card-info">
+                            <h3>Atmospheric Stories</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/second-chances.png" alt="Second Chances">
+                        <div class="collection-card-info">
+                            <h3>Second Chances</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/unforgettable-heroes.png" alt="Unforgettable Heroes">
+                        <div class="collection-card-info">
+                            <h3>Unforgettable Heroes</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/court-intrigues.png" alt="Court Intrigues">
+                        <div class="collection-card-info">
+                            <h3>Court Intrigues</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/for-a-quiet-evening.png" alt="For a Quiet Evening">
+                        <div class="collection-card-info">
+                            <h3>For a Quiet Evening</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/late-night-reads.png" alt="Late Night Reads">
+                        <div class="collection-card-info">
+                            <h3>Late Night Reads</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/completed-stories.png" alt="Completed Stories">
+                        <div class="collection-card-info">
+                            <h3>Completed Stories</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/revenge-stories.png" alt="Revenge Stories">
+                        <div class="collection-card-info">
+                            <h3>Revenge Stories</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/when-plans-fall-apart.png" alt="When Plans Fall Apart">
+                        <div class="collection-card-info">
+                            <h3>When Plans Fall Apart</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/slow-burn-romance.png" alt="Slow Burn Romance">
+                        <div class="collection-card-info">
+                            <h3>Slow Burn Romance</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/rebirth.png" alt="Rebirth">
+                        <div class="collection-card-info">
+                            <h3>Rebirth</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/grab-the-tissues.png" alt="Grab the Tissues">
+                        <div class="collection-card-info">
+                            <h3>Grab the Tissues</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/strong-heroines.png" alt="Strong Heroines">
+                        <div class="collection-card-info">
+                            <h3>Strong Heroines</h3>
+                        </div>
+                    </a>
+
+                    <a href="#" class="collection-card">
+                        <img src="images/collections/cozy-reads.png" alt="Cozy Reads">
+                        <div class="collection-card-info">
+                            <h3>Cozy Reads</h3>
+                        </div>
+                    </a>
+
+                </div>
+
+                <button type="button" class="carousel-arrow" aria-label="Next collections">›</button>
+
+            </div>
+
+        </section>
+
+        <!-- Newsletter signup -->
+        <section class="newsletter">
+            <div class="newsletter-text">
+                <h2>Stories stay with you.</h2>
+                <p>Get the best recommendations, new releases, and special updates from Busy Bee.</p>
+            </div>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- ====================================================
+         FOOTER — brand blurb, three link columns, and a
+         "Support Busy Bee" donation card on the right.
+         ==================================================== -->
+    <footer class="footer">
+
+        <div class="footer-top">
+
+            <div class="footer-brand">
+                <a href="#" class="logo footer-logo">
+                    <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                    <span>Busy Bee</span>
+                </a>
+                <p>Bringing stories to life, one chapter at a time.</p>
+            </div>
+
+            <div class="footer-column">
+                <h3>Platform</h3>
+                <a href="#">Catalog</a>
+                <a href="#">Authors</a>
+                <a href="#">Genres</a>
+                <a href="#">Announcements</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Support</h3>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Report a Problem</a>
+                <a href="#">Suggest a Novel</a>
+            </div>
+
+            <div class="footer-column">
+                <h3>Community</h3>
+                <a href="#">Discord</a>
+                <a href="#">Telegram</a>
+                <a href="#">Twitter</a>
+                <a href="#">Pinterest</a>
+            </div>
+
+            <div class="footer-support">
+                <h3>Support Busy Bee</h3>
+                <p>Love our translations? Support us and help us keep going.</p>
+                <button type="button" class="coffee-button">
+                    <img src="images/icons/coffee.svg" alt="">
+                    Buy Us a Coffee
+                </button>
+                <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+            </div>
+
+        </div>
+
+    </footer>
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>

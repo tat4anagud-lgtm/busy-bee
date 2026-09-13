@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Коллекция «Перерождение» | Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="collection-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <div class="nav-dropdown">
+                    <a href="catalog.html" class="nav-link">Catalog <span class="arrow">▾</span></a>
+                </div>
+                <a href="#" class="nav-link">Announcements</a>
+                <a href="#" class="nav-link">About</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" placeholder="Поиск по книгам, авторам, жанрам...">
+                    <span class="search-key">⌘ K</span>
+                </div>
+
+                <div class="lang-switcher">
+                    <span class="active-lang">Ru</span> / <span>Eng</span>
+                </div>
+
+                <button class="header-icon-btn" title="Bookmarks">🔖</button>
+                <button class="header-icon-btn badge-btn" title="Notifications">
+                    🔔 <span class="badge">3</span>
+                </button>
+                
+                <div class="user-profile">
+                    <img src="https://placehold.co/36x36" alt="Avatar" class="avatar">
+                    <span class="profile-arrow">▾</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="collection-container">
+
+            <!-- HERO BANNER & COLLECTION INFO -->
+            <section class="collection-hero">
+                <div class="hero-banner-frame">
+                    <img src="https://placehold.co/1200x260/FAF0E6/8C8275?text=Header+Banner+Illustration" alt="Перерождение" class="hero-banner-img">
+                </div>
+
+                <div class="collection-header-row">
+                    <div class="collection-intro">
+                        <h1 class="collection-title">Перерождение</h1>
+                        <div class="ornament-divider">⁕ ---</div>
+                        <p class="collection-description">
+                            Истории о втором шансе, новой жизни и героях, которым судьба подарила возможность начать всё заново.
+                        </p>
+                        <div class="collection-meta">
+                            <span>12 novels</span>
+                            <span class="dot">•</span>
+                            <span>Historical</span>
+                            <span class="dot">•</span>
+                            <span>Romance</span>
+                            <span class="dot">•</span>
+                            <span>Drama</span>
+                            <span class="dot">•</span>
+                            <span>Fantasy</span>
+                        </div>
+                    </div>
+
+                    <div class="collection-actions">
+                        <button class="btn-follow" id="btnFollow">
+                            <span class="heart-icon">♡</span>
+                            <span>Follow collection</span>
+                        </button>
+                        <span class="followers-count">2,184 readers follow this collection</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TOOLBAR: COUNTER, SORTING & VIEW MODE -->
+            <section class="collection-toolbar">
+                <div class="toolbar-left">
+                    <span class="novels-count">12 novels</span>
+                </div>
+
+                <div class="toolbar-right">
+                    <div class="sort-box">
+                        <label>Sort by:</label>
+                        <select id="sortSelect" class="sort-dropdown">
+                            <option value="recent">Recently added</option>
+                            <option value="popular">Most popular</option>
+                            <option value="rating">Highest rated</option>
+                        </select>
+                    </div>
+
+                    <div class="view-switch">
+                        <span class="view-label">View:</span>
+                        <button class="view-btn active" id="viewGrid" title="Grid View">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        </button>
+                        <button class="view-btn" id="viewList" title="List View">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- NOVELS GRID -->
+            <section class="novels-grid" id="novelsGrid">
+
+                <!-- Card 1 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/e2d1c3/3b332b?text=Cover+1" alt="Возвращение блудной принцессы" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Возвращение блудной принцессы</h3>
+                        <span class="author-name">Чэн Юань</span>
+                        <div class="card-tags">
+                            <span class="tag">Historical</span>
+                            <span class="tag">Romance</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Completed • 176 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 2 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/d4c3b5/3b332b?text=Cover+2" alt="Жена генерала переродилась" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Жена генерала переродилась</h3>
+                        <span class="author-name">Бай Ло Чэн Шуан</span>
+                        <div class="card-tags">
+                            <span class="tag">Historical</span>
+                            <span class="tag">Drama</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Completed • 142 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 3 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/c8b7a9/3b332b?text=Cover+3" alt="Этот раз я не ошибусь" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Этот раз я не ошибусь</h3>
+                        <span class="author-name">Цянь Шань Ча Кэ</span>
+                        <div class="card-tags">
+                            <span class="tag">Romance</span>
+                            <span class="tag">Drama</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Ongoing • 98 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 4 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/bcaba1/3b332b?text=Cover+4" alt="Второй шанс для злодейки" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Второй шанс для злодейки</h3>
+                        <span class="author-name">Цзю Ло</span>
+                        <div class="card-tags">
+                            <span class="tag">Romance</span>
+                            <span class="tag">Fantasy</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Completed • 133 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 5 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/b09f95/3b332b?text=Cover+5" alt="Переродившись, я выбираю себя" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Переродившись, я выбираю себя</h3>
+                        <span class="author-name">Му Юэ Лин</span>
+                        <div class="card-tags">
+                            <span class="tag">Romance</span>
+                            <span class="tag">Drama</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Completed • 121 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 6 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/a49389/3b332b?text=Cover+6" alt="Вторая жизнь императрицы" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Вторая жизнь императрицы</h3>
+                        <span class="author-name">Юй Цянь Чэн</span>
+                        <div class="card-tags">
+                            <span class="tag">Historical</span>
+                            <span class="tag">Drama</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Completed • 98 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 7 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/98877d/3b332b?text=Cover+7" alt="Снова в семнадцать" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Снова в семнадцать</h3>
+                        <span class="author-name">Су И Шуан</span>
+                        <div class="card-tags">
+                            <span class="tag">Romance</span>
+                            <span class="tag">Drama</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Ongoing • 84 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Card 8 -->
+                <article class="novel-card">
+                    <div class="cover-wrapper">
+                        <img src="https://placehold.co/240x260/8c7b71/3b332b?text=Cover+8" alt="Пока сердце бьётся вновь" class="cover-img">
+                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="novel-title">Пока сердце бьётся вновь</h3>
+                        <span class="author-name">Линь Вань Жо</span>
+                        <div class="card-tags">
+                            <span class="tag">Romance</span>
+                            <span class="tag">Fantasy</span>
+                        </div>
+                        <div class="card-footer">
+                            <span class="status-info">Ongoing • 75 chapters</span>
+                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- SHOW MORE ACTION -->
+            <div class="show-more-wrapper">
+                <button class="btn-show-more" id="btnShowMore">
+                    <span>Show more</span>
+                    <span class="arrow">▾</span>
+                </button>
+            </div>
+
+            <!-- ABOUT THIS COLLECTION FOOTER BANNER -->
+            <section class="about-collection-section">
+                <div class="about-text-content">
+                    <h2 class="about-title">About this collection</h2>
+                    <div class="ornament-divider">⁕ ---</div>
+                    <p>
+                        Эти истории объединяет одно — герои получают второй шанс. Они возвращаются в прошлое, просыпаются в новом теле или получают возможность начать всё заново. Каждая книга — это путь к исцелению, мудрости и новой судьбе. Если вам близки сильные персонажи, глубокие эмоции и истории о том, как можно изменить свою жизнь — эта коллекция для вас.
+                    </p>
+                </div>
+                <div class="about-illustration">
+                    <img src="https://placehold.co/380x160/FAF0E6/8C8275?text=Illustration+Flowers+%26+Books" alt="Illustration" class="about-img">
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="collection-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <clipPath id="beeBodyClip">
+      <ellipse cx="12" cy="15.5" rx="5" ry="6.5"/>
+    </clipPath>
+  </defs>
+
+  <!-- wings -->
+  <ellipse cx="6.5" cy="11" rx="4" ry="2.6" transform="rotate(-25 6.5 11)" fill="#FFFFFF" stroke="#6B5846" stroke-width="1"/>
+  <ellipse cx="17.5" cy="11" rx="4" ry="2.6" transform="rotate(25 17.5 11)" fill="#FFFFFF" stroke="#6B5846" stroke-width="1"/>
+
+  <!-- antennae -->
+  <path d="M10.3 4.2 9 1.3" stroke="#6B5846" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <path d="M13.7 4.2 15 1.3" stroke="#6B5846" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  <circle cx="9" cy="1.1" r="0.9" fill="#6B5846"/>
+  <circle cx="15" cy="1.1" r="0.9" fill="#6B5846"/>
+
+  <!-- striped body -->
+  <ellipse cx="12" cy="15.5" rx="5" ry="6.5" fill="#D8A03A"/>
+  <g clip-path="url(#beeBodyClip)">
+    <rect x="6" y="11.7" width="12" height="2.1" fill="#6B5846"/>
+    <rect x="6" y="15.9" width="12" height="2.1" fill="#6B5846"/>
+    <rect x="6" y="20.1" width="12" height="2.1" fill="#6B5846"/>
+  </g>
+  <ellipse cx="12" cy="15.5" rx="5" ry="6.5" fill="none" stroke="#6B5846" stroke-width="1"/>
+
+  <!-- head -->
+  <circle cx="12" cy="7" r="4.2" fill="#F0C860" stroke="#6B5846" stroke-width="1"/>
+</svg>
