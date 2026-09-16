@@ -28,67 +28,75 @@
             <nav class="navigation">
                 <div class="catalog-menu">
                     <button class="catalog-button">
-                        Catalog
+                        Каталог
                         <img src="images/icons/chevron-down.svg" alt="">
                     </button>
                     <div class="catalog-dropdown">
-                        <a href="#">Novels</a>
-                        <a href="#">Authors</a>
-                        <a href="#">Genres</a>
+                        <a href="#">Новеллы</a>
+                        <a href="#">Авторы</a>
+                        <a href="#">Жанры</a>
+                        <a href="#">Коллекции</a>
+                        <a href="#">Глоссарий</a>
                     </div>
                 </div>
-                <a href="#">Announcements</a>
-                <a href="#">About</a>
+                <a href="#">Анонсы</a>
+                <a href="#">О Busy Bee</a>
             </nav>
 
             <div class="header-actions">
                 <div class="search">
-                    <input type="text" placeholder="Search novels, authors...">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
                     <img src="images/icons/search.svg" alt="">
                 </div>
 
                 <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
                 <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
 
-                <div class="language-menu">
-                    <button class="language-button"><img src="images/icons/globe.svg" alt=""></button>
-                    <div class="language-dropdown">
-                        <button class="language-option">Русский</button>
-                        <button class="language-option active">English</button>
-                    </div>
-                </div>
+                <button class="theme-toggle-button theme-toggle" title="Toggle theme"><img src="images/icons/moon.svg" alt=""></button>
 
                 <div class="user-menu">
                     <button class="user-button">
                         <div class="user-avatar"></div>
-                        <span class="user-name">Tatyana <img src="images/icons/chevron-down.svg" alt=""></span>
+                        <img src="images/icons/chevron-down.svg" alt="">
                     </button>
                     <div class="user-dropdown">
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> My Library</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Bookmarks</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Favorites</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> My Quotes</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> My Notes</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> My Collections</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Achievements</a>
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
 
                         <div class="user-dropdown-divider"></div>
 
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings</a>
-                        <button type="button" class="user-dropdown-item theme-toggle"><img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme</button>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Закладки</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
 
                         <div class="user-dropdown-divider"></div>
 
-                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Log Out</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
+                            <div class="language-dropdown">
+                                <button class="language-option">Русский</button>
+                                <button class="language-option active">English</button>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
                     </div>
                 </div>
+
+                <button class="header-login-button" title="Log In"><img src="images/icons/log-in.svg" alt=""></button>
             </div>
         </header>
 
@@ -99,14 +107,14 @@
              below it -->
         <div class="chapter-top-bar">
             <nav class="breadcrumbs">
-                <a href="index.html">Home</a> <span>›</span>
+                <a href="index.html">Главная</a> <span>›</span>
                 <a href="novel.html">A Dream Within a Dream</a> <span>›</span>
                 <span class="current" id="breadcrumbChapter">Chapter</span>
             </nav>
 
             <a href="reader.html" id="readingModeBtn" class="btn-reading-mode">
                 <img src="images/icons/focus.svg" alt="">
-                <span>Reading Mode</span>
+                <span>Режим чтения</span>
             </a>
         </div>
 
@@ -135,41 +143,41 @@
             <!-- Static ad placeholder — no real ad logic, just holding
                  the visual space called out in the mockup -->
             <div class="chapter-ad-banner">
-                <span class="ad-label">Advertisement</span>
+                <span class="ad-label">Реклама</span>
                 <img class="ad-icon" src="https://placehold.co/56x56" alt="">
                 <div class="ad-copy">
-                    <h3>Books that stay with you</h3>
-                    <p>Premium editions · Cozy atmosphere · For true readers</p>
+                    <h3>Книги, которые остаются с вами надолго</h3>
+                    <p>Премиальные издания · Уютная атмосфера</p>
                 </div>
-                <button type="button" class="btn-action">Learn More</button>
+                <button type="button" class="btn-action">Узнать больше</button>
             </div>
 
             <!-- Previous / Table of Contents / Next -->
             <nav class="chapter-nav-row">
-                <a href="#" id="prevChapterBtn" class="chapter-nav-btn">‹ Previous Chapter</a>
-                <button type="button" id="chapterTocBtn" class="chapter-nav-btn chapter-toc-btn">Table of Contents</button>
-                <a href="#" id="nextChapterBtn" class="chapter-nav-btn">Next Chapter ›</a>
+                <a href="#" id="prevChapterBtn" class="chapter-nav-btn">‹ Предыдущая глава</a>
+                <button type="button" id="chapterTocBtn" class="chapter-nav-btn chapter-toc-btn">Оглавление</button>
+                <a href="#" id="nextChapterBtn" class="chapter-nav-btn">Следующая глава ›</a>
             </nav>
 
             <!-- Comments — static mock content, no backend yet -->
             <section class="chapter-comments">
                 <div class="chapter-comments-head">
-                    <h2>Comments</h2>
-                    <button type="button" class="chapter-comments-sort">Newest first ⌄</button>
+                    <h2>Комментарии</h2>
+                    <button type="button" class="chapter-comments-sort">Сначала новые ⌄</button>
                 </div>
-                <p class="chapter-comments-subtitle">Discuss the chapter — no spoilers.</p>
+                <p class="chapter-comments-subtitle">Обсудите главу — без спойлеров.</p>
 
                 <div class="comment-item">
                     <img class="comment-avatar" src="https://placehold.co/36x36" alt="">
                     <div class="comment-body">
                         <div class="comment-meta">
-                            <span class="comment-author">Liana</span>
-                            <span class="comment-date">May 12, 2025</span>
+                            <span class="comment-author">Лиана</span>
+                            <span class="comment-date">12 мая, 2025</span>
                         </div>
-                        <p class="comment-text">Such a beautiful chapter! You can already feel that something important is coming. 💛</p>
+                        <p class="comment-text">Какая красивая глава! Уже чувствуется, что впереди что-то очень важное. 💛</p>
                         <div class="comment-actions">
                             <button type="button"><img src="images/icons/heart.svg" alt="" style="width:14px;height:14px;"> 24</button>
-                            <button type="button">Reply</button>
+                            <button type="button">Ответить</button>
                         </div>
                     </div>
                 </div>
@@ -178,13 +186,13 @@
                     <img class="comment-avatar" src="https://placehold.co/36x36" alt="">
                     <div class="comment-body">
                         <div class="comment-meta">
-                            <span class="comment-author">Echo</span>
-                            <span class="comment-date">May 12, 2025</span>
+                            <span class="comment-author">Эхо</span>
+                            <span class="comment-date">12 мая, 2025</span>
                         </div>
-                        <p class="comment-text">Interesting — what was on that sealed letter? Any theories?</p>
+                        <p class="comment-text">Интересно, что за печать была на письме? Есть ли у кого-то догадки?</p>
                         <div class="comment-actions">
                             <button type="button"><img src="images/icons/heart.svg" alt="" style="width:14px;height:14px;"> 12</button>
-                            <button type="button">Reply</button>
+                            <button type="button">Ответить</button>
                         </div>
                     </div>
                 </div>
@@ -193,20 +201,20 @@
                     <img class="comment-avatar" src="https://placehold.co/36x36" alt="">
                     <div class="comment-body">
                         <div class="comment-meta">
-                            <span class="comment-author">Svetlana</span>
-                            <span class="comment-date">May 12, 2025</span>
+                            <span class="comment-author">Светлана</span>
+                            <span class="comment-date">12 мая, 2025</span>
                         </div>
-                        <p class="comment-text">I love this writing style so much. Easy to read but still so deep.</p>
+                        <p class="comment-text">Как же я люблю этот стиль повествования! Читается очень легко, но при этом глубоко.</p>
                         <div class="comment-actions">
                             <button type="button"><img src="images/icons/heart.svg" alt="" style="width:14px;height:14px;"> 8</button>
-                            <button type="button">Reply</button>
+                            <button type="button">Ответить</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="comment-composer">
-                    <input type="text" id="commentInput" placeholder="Leave a comment…">
-                    <button type="button" class="btn-post" id="commentPostBtn">Post</button>
+                    <input type="text" id="commentInput" placeholder="Оставить комментарий…">
+                    <button type="button" class="btn-post" id="commentPostBtn">Отправить</button>
                 </div>
             </section>
 
@@ -225,38 +233,63 @@
                     <p>Bringing stories to life, one chapter at a time.</p>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Platform</h3>
-                    <a href="#">Catalog</a>
-                    <a href="#">Authors</a>
-                    <a href="#">Genres</a>
-                    <a href="#">Announcements</a>
-                </div>
+                <!-- Placeholder wording — rewrite in your own voice -->
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
 
-                <div class="footer-column">
-                    <h3>Support</h3>
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
                     <a href="#">Help Center</a>
                     <a href="#">Contact Us</a>
-                    <a href="#">Report a Problem</a>
-                    <a href="#">Suggest a Novel</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Community</h3>
-                    <a href="#">Discord</a>
-                    <a href="#">Telegram</a>
-                    <a href="#">Twitter</a>
-                    <a href="#">Pinterest</a>
-                </div>
+                <div class="footer-bottom-right">
 
-                <div class="footer-support">
-                    <h3>Support Busy Bee</h3>
-                    <p>Love our translations? Support us and help us keep going.</p>
-                    <button type="button" class="coffee-button">
-                        <img src="images/icons/coffee.svg" alt="">
-                        Buy Us a Coffee
-                    </button>
-                    <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+                    <!-- Community, as icons instead of a text column — each
+                         needs a real href once the accounts exist -->
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <!-- Visual only for now, same as the header's language
+                         switcher — doesn't actually translate the page yet -->
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
                 </div>
 
             </div>

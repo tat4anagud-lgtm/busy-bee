@@ -34,6 +34,30 @@ if (heroContinue && heroWelcome) {
 }
 
 
+/* ========================================
+   TESTING TOGGLE — Header signed-in state
+   ========================================
+   The header has two states, same idea as the hero toggle above:
+   - IS_LOGGED_IN = true  -> profile menu (.user-menu)
+   - IS_LOGGED_IN = false -> single icon-only login button (.header-login-button)
+
+   Bookmarks / bell / theme stay visible either way — they're not
+   account-specific enough to hide from guests.
+
+   Change this one value and reload the page to preview either state.
+   Later this will come from real auth state instead of being hardcoded here.
+   ======================================== */
+const IS_LOGGED_IN = true;
+
+const userMenu = document.querySelector(".user-menu");
+const headerLoginButton = document.querySelector(".header-login-button");
+
+if (userMenu && headerLoginButton) {
+    userMenu.style.display = IS_LOGGED_IN ? "block" : "none";
+    headerLoginButton.style.display = IS_LOGGED_IN ? "none" : "flex";
+}
+
+
 /* ---------- Catalog dropdown ---------- */
 
 const catalogButton = document.querySelector(".catalog-button");
@@ -75,6 +99,21 @@ languageOptions.forEach((option) => {
 });
 
 
+/* ---------- Footer language switcher (Ru / Eng) ---------- */
+
+// Same idea as the header's language dropdown above, just flattened —
+// two plain buttons instead of a button that opens a dropdown, so no
+// open/close logic needed, just swap which one is .active on click.
+const footerLanguageOptions = document.querySelectorAll(".footer-language-option");
+
+footerLanguageOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+        footerLanguageOptions.forEach((item) => item.classList.remove("active"));
+        option.classList.add("active");
+    });
+});
+
+
 /* ---------- Profile dropdown ---------- */
 
 const userButton = document.querySelector(".user-button");
@@ -87,8 +126,9 @@ if (userButton && userDropdown) {
     });
 }
 
-// "Theme" row inside the profile dropdown: swaps the moon/sun icon.
-// Placeholder for now — it doesn't switch the site's colors yet.
+// Theme icon in the header: swaps the moon/sun icon, visible to guests
+// and signed-in users alike. Placeholder for now — it doesn't switch
+// the site's colors yet.
 const themeToggle = document.querySelector(".theme-toggle");
 
 if (themeToggle) {
@@ -96,7 +136,8 @@ if (themeToggle) {
     let isDarkTheme = false;
 
     themeToggle.addEventListener("click", (event) => {
-        // Keep the profile dropdown open so the icon swap stays visible
+        // No longer needed for a dropdown-closing reason (this button
+        // isn't inside a dropdown anymore), left in as a harmless no-op
         event.stopPropagation();
 
         isDarkTheme = !isDarkTheme;
@@ -542,15 +583,59 @@ if (toggleFiltersBtn && catalogLayout) {
     });
 }
 
+/* ---------- Searchable filter checklists ---------- */
+// Generic: wires up any .filter-search-input to narrow down the
+// .filter-checkbox labels inside its .filter-checklist as you type.
+// Built for Author, but reusable as-is for Translator or anything
+// else later — just reuse the same markup pattern.
+
+document.querySelectorAll(".filter-search-input").forEach((input) => {
+    const checklist = input.closest(".filter-group")?.querySelector(".filter-checklist");
+    if (!checklist) return;
+
+    const labels = Array.from(checklist.querySelectorAll(".filter-checkbox"));
+    const noResults = checklist.querySelector(".filter-no-results");
+
+    // Explicitly hidden on setup — don't rely solely on the "hidden"
+    // HTML attribute, since nothing has been searched yet
+    if (noResults) noResults.hidden = true;
+
+    input.addEventListener("input", () => {
+        const term = input.value.trim().toLowerCase();
+        let anyVisible = false;
+
+        labels.forEach((label) => {
+            const matches = label.textContent.trim().toLowerCase().includes(term);
+            label.style.display = matches ? "" : "none";
+            if (matches) anyVisible = true;
+        });
+
+        if (noResults) noResults.hidden = anyVisible;
+    });
+});
+
+/* ---------- "Show more" genres ---------- */
+
+const btnShowMoreGenres = document.getElementById("btnShowMoreGenres");
+const extraGenres = document.getElementById("extraGenres");
+
+if (btnShowMoreGenres && extraGenres) {
+    btnShowMoreGenres.addEventListener("click", () => {
+        const isHidden = extraGenres.hidden;
+        extraGenres.hidden = !isHidden;
+        btnShowMoreGenres.textContent = isHidden ? "Скрыть ▴" : "Показать ещё ▾";
+    });
+}
+
 /* ---------- Filters + search + sort (combined) ---------- */
 // Same idea as the chapters table's applyChapterFilters: every control
 // narrows down the same set of cards together, instead of one control
 // overriding another. Status/Length/Genre are OR'd within their own
 // group and AND'd across groups; search matches title or author.
 //
-// Sort by Highest Rated / Most Popular uses each card's data-rating —
+// Sort by "Высокий рейтинг" / "Популярные" uses each card's data-rating —
 // there's no separate "popularity" number in the mock data, so both
-// options sort by the same value for now. Newest Added has no real
+// options sort by the same value for now. "Новые поступления" has no real
 // "date added" either, so it just reverses the default card order.
 
 const catalogCards = Array.from(document.querySelectorAll(".catalog-grid > .novel-card"));
@@ -587,6 +672,7 @@ if (catalogCards.length && catalogGrid) {
         const statusFilters = getCheckedValues("status");
         const lengthFilters = getCheckedValues("length");
         const genreFilters = getCheckedValues("genre");
+        const authorFilters = getCheckedValues("author");
         const searchTerm = catalogSearchInput ? catalogSearchInput.value.trim().toLowerCase() : "";
 
         let visibleCount = 0;
@@ -600,15 +686,16 @@ if (catalogCards.length && catalogGrid) {
             const matchesStatus = statusFilters.length === 0 || statusFilters.includes(cardStatus);
             const matchesLength = lengthFilters.length === 0 || lengthFilters.includes(getCardLengthBucket(card));
             const matchesGenre = genreFilters.length === 0 || genreFilters.some((g) => cardGenres.includes(g));
+            const matchesAuthor = authorFilters.length === 0 || authorFilters.includes(cardAuthor);
             const matchesSearch = searchTerm === "" || cardTitle.includes(searchTerm) || cardAuthor.includes(searchTerm) || cardGenres.some((g) => g.includes(searchTerm));
 
-            const isVisible = matchesStatus && matchesLength && matchesGenre && matchesSearch;
+            const isVisible = matchesStatus && matchesLength && matchesGenre && matchesAuthor && matchesSearch;
             card.style.display = isVisible ? "" : "none";
             if (isVisible) visibleCount += 1;
         });
 
         if (resultsCountEl) {
-            resultsCountEl.textContent = `${visibleCount} of ${catalogCards.length} demo stories shown`;
+            resultsCountEl.textContent = `Показано ${visibleCount} из ${catalogCards.length}`;
         }
 
         if (catalogNoResults) catalogNoResults.hidden = visibleCount !== 0;
@@ -618,9 +705,9 @@ if (catalogCards.length && catalogGrid) {
         const activeSort = sortDropdown?.querySelector(".sort-option.active")?.textContent.trim();
         let sorted;
 
-        if (activeSort === "Highest Rated" || activeSort === "Most Popular") {
+        if (activeSort === "Высокий рейтинг" || activeSort === "Популярные") {
             sorted = catalogCards.slice().sort((a, b) => parseFloat(b.dataset.rating || 0) - parseFloat(a.dataset.rating || 0));
-        } else if (activeSort === "Newest Added") {
+        } else if (activeSort === "Новые поступления") {
             sorted = originalOrder.slice().reverse();
         } else {
             sorted = originalOrder;
@@ -664,6 +751,14 @@ if (catalogCards.length && catalogGrid) {
         clearAllFiltersBtn.addEventListener("click", () => {
             document.querySelectorAll('.filter-group[data-filter-group] input[type="checkbox"]').forEach((input) => { input.checked = false; });
             if (catalogSearchInput) catalogSearchInput.value = "";
+
+            // Also reset any searchable checklists (Author, etc.) back
+            // to their unfiltered state
+            document.querySelectorAll(".filter-search-input").forEach((input) => {
+                input.value = "";
+                input.dispatchEvent(new Event("input"));
+            });
+
             applyCatalogFilters();
         });
     }
@@ -671,6 +766,12 @@ if (catalogCards.length && catalogGrid) {
     // Exposed so the sort dropdown (defined below) can trigger a re-sort
     // right after it updates which option is active
     window.applyCatalogSort = applyCatalogSort;
+
+    // Run once on load: some browsers (Firefox especially) restore
+    // checkbox states after a refresh without firing a "change" event,
+    // which could otherwise leave the result count/no-results message
+    // out of sync with what's actually checked
+    applyCatalogFilters();
 }
 
 /* ---------- "Sort by" dropdown ---------- */

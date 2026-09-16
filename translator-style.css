@@ -6,20 +6,46 @@
     padding: 0 32px 40px;
 }
 
-/* Profile Hero Card */
+/* Profile Hero Card — now holds both the identity row (avatar/name/stats)
+   and the About Busy Bee text below it, so no decorative background
+   image is needed to fill empty space anymore */
 .profile-hero-card {
-    background: var(--surface) url("images/backgrounds/hero-decor.png") right center / contain no-repeat;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 30px;
-    display: flex;
-    align-items: center;
-    gap: 30px;
     margin-top: 20px;
     position: relative;
 }
 
+.profile-hero-top {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+/* Small decorative image at the end of the row — doesn't shrink, and
+   its height is capped to the row's natural height (set by the avatar)
+   so it can never stretch the card taller */
+/* Takes over the leftover space that .profile-info-main used to grab —
+   grows/shrinks with the card's width, image stays anchored to the
+   right edge and never stretches past the row's own height */
+.hero-decor {
+    flex: 1;
+    min-width: 0;
+}
+
+.hero-decor img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 140px;
+    object-fit: contain;
+    object-position: right center;
+}
+
 .profile-avatar-wrapper {
+    flex-shrink: 0;
     position: relative;
 }
 
@@ -33,7 +59,8 @@
 }
 
 .profile-info-main {
-    flex: 1;
+    flex: 0 0 auto;
+    max-width: 340px;
 }
 
 .profile-name-row {
@@ -76,14 +103,8 @@
     margin: 0 0 14px;
 }
 
-.profile-meta-details {
-    display: flex;
-    gap: 20px;
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
 .profile-stats-box {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -94,10 +115,33 @@
     padding: 16px 28px;
 }
 
+/* First cell of the stats table — joined date + location, stacked,
+   left-aligned (unlike the centered number cells next to it) */
+.stat-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
 .stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.stat-icon {
+    width: 16px;
+    height: 16px;
+    margin-bottom: 6px;
+    /* Forces the icon to render as a dark silhouette regardless of
+       whatever color is baked into the source SVG (book-open.svg is
+       white internally — fine on its honey button elsewhere, invisible
+       here on a light background) — brightness(0) turns it solid
+       black, then opacity fades it to match the muted style */
+    filter: brightness(0);
+    opacity: 0.55;
 }
 
 .stat-item strong {
@@ -329,21 +373,8 @@
     margin: 0;
 }
 
-.nav-controls {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.arrow-btn {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    cursor: pointer;
-    font-size: 12px;
-}
+/* .nav-controls / .arrow-btn removed — every widget now uses the side
+   .carousel-arrow buttons instead of arrows inside the header */
 
 /* Posts List */
 .posts-list {
@@ -469,14 +500,20 @@
    использует общий .collection-carousel / .collection-card из style.css,
    как и на главной странице */
 
-/* Translations Grid */
+/* Translations Grid — now the scrollable track inside .book-carousel,
+   same pattern as .collection-list: flex row, own overflow clipping,
+   side arrow buttons control the scroll instead of grid columns */
 .translations-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    flex: 1;
+    display: flex;
     gap: 14px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    min-width: 0;
 }
 
 .translation-card {
+    flex: 0 0 calc((100% - 42px) / 4);
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -529,13 +566,19 @@
    the buttons inside — no extra styling needed here anymore */
 
 /* Recommends Grid */
+/* Recommends Grid — same conversion as Translations Grid above: flex
+   track inside .recommends-carousel, scrolled by the side arrows */
 .recommends-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    flex: 1;
+    display: flex;
     gap: 12px;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    min-width: 0;
 }
 
 .recommend-card {
+    flex: 0 0 calc((100% - 36px) / 4);
     background: var(--surface-warm);
     border-radius: 12px;
     padding: 12px;
@@ -543,7 +586,8 @@
     position: relative;
 }
 
-.recommend-card > img {
+.recommend-card > img,
+.recommend-card > a > img {
     width: 70px;
     height: 95px;
     object-fit: cover;
@@ -582,27 +626,17 @@
     right: 8px;
 }
 
-/* About Card */
-.about-card-bg {
-    background: var(--surface) url("images/backgrounds/tea-bg.png") right center / contain no-repeat;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    margin-top: 20px;
-}
-
-.about-card-bg h3 {
-    font-family: "Playfair Display", serif;
-    font-size: 18px;
-    margin: 0 0 12px;
-}
-
-.about-card-bg p {
+.hero-about-link {
+    display: inline-block;
+    margin-top: 10px;
     font-size: 11px;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    max-width: 420px;
-    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--honey);
+    text-decoration: none;
+}
+
+.hero-about-link:hover {
+    text-decoration: underline;
 }
 
 /* Support Banner */

@@ -31,6 +31,8 @@
                         <a href="#">Novels</a>
                         <a href="#">Authors</a>
                         <a href="#">Genres</a>
+                        <a href="#">Collections</a>
+                        <a href="#">Glossary</a>
                     </div>
                 </div>
                 <a href="#">Announcements</a>
@@ -46,20 +48,18 @@
                 <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
                 <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
                 
-                <div class="language-menu">
-                    <button class="language-button"><img src="images/icons/globe.svg" alt=""></button>
-                    <div class="language-dropdown">
-                        <button class="language-option">Русский</button>
-                        <button class="language-option active">English</button>
-                    </div>
-                </div>
+                <button class="theme-toggle-button theme-toggle" title="Toggle theme"><img src="images/icons/moon.svg" alt=""></button>
 
                 <div class="user-menu">
                     <button class="user-button">
                         <div class="user-avatar"></div>
-                        <span class="user-name">Tatyana <img src="images/icons/chevron-down.svg" alt=""></span>
+                        <img src="images/icons/chevron-down.svg" alt="">
                     </button>
                     <div class="user-dropdown">
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
+
                         <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile</a>
 
                         <div class="user-dropdown-spacer"></div>
@@ -78,13 +78,21 @@
                         <div class="user-dropdown-divider"></div>
 
                         <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings</a>
-                        <button type="button" class="user-dropdown-item theme-toggle"><img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme</button>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Language</button>
+                            <div class="language-dropdown">
+                                <button class="language-option">Русский</button>
+                                <button class="language-option active">English</button>
+                            </div>
+                        </div>
 
                         <div class="user-dropdown-divider"></div>
 
                         <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Log Out</a>
                     </div>
                 </div>
+
+                <button class="header-login-button" title="Log In"><img src="images/icons/log-in.svg" alt=""></button>
             </div>
         </header>
 
@@ -147,10 +155,10 @@
 
                     <!-- Action Buttons -->
                     <div class="status-actions">
-                        <button class="btn-action primary">
+                        <a href="chapter.html" class="btn-action primary">
                             <img src="images/icons/book-open.svg" alt="">
                             <span>Continue Reading</span>
-                        </button>
+                        </a>
 
                         <button type="button" class="btn-action square" id="favoriteStatusBtn" aria-pressed="false">
                             <img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg">
@@ -1861,7 +1869,7 @@
                                         <div class="col-actions-inner">
                                             <div class="row-progress"><div style="width: 76%;"></div></div>
                                             <span class="progress-num">76%</span>
-                                            <button class="btn-continue-small">Continue</button>
+                                            <a href="chapter.html" class="btn-continue-small">Continue</a>
                                             <button type="button" class="btn-icon favorite-btn" aria-label="Save chapter" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                             <button class="btn-icon">···</button>
                                         </div>
@@ -3375,38 +3383,63 @@
                     <p>Bringing stories to life, one chapter at a time.</p>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Platform</h3>
-                    <a href="#">Catalog</a>
-                    <a href="#">Authors</a>
-                    <a href="#">Genres</a>
-                    <a href="#">Announcements</a>
-                </div>
+                <!-- Placeholder wording — rewrite in your own voice -->
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
 
-                <div class="footer-column">
-                    <h3>Support</h3>
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
                     <a href="#">Help Center</a>
                     <a href="#">Contact Us</a>
-                    <a href="#">Report a Problem</a>
-                    <a href="#">Suggest a Novel</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Community</h3>
-                    <a href="#">Discord</a>
-                    <a href="#">Telegram</a>
-                    <a href="#">Twitter</a>
-                    <a href="#">Pinterest</a>
-                </div>
+                <div class="footer-bottom-right">
 
-                <div class="footer-support">
-                    <h3>Support Busy Bee</h3>
-                    <p>Love our translations? Support us and help us keep going.</p>
-                    <button type="button" class="coffee-button">
-                        <img src="images/icons/coffee.svg" alt="">
-                        Buy Us a Coffee
-                    </button>
-                    <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+                    <!-- Community, as icons instead of a text column — each
+                         needs a real href once the accounts exist -->
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <!-- Visual only for now, same as the header's language
+                         switcher — doesn't actually translate the page yet -->
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
                 </div>
 
             </div>

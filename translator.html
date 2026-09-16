@@ -36,6 +36,8 @@
                         <a href="catalog.html">Novels</a>
                         <a href="#">Authors</a>
                         <a href="#">Genres</a>
+                        <a href="#">Collections</a>
+                        <a href="#">Glossary</a>
                     </div>
 
                 </div>
@@ -61,32 +63,26 @@
                     <img src="images/icons/bell.svg" alt="Bell">
                 </button>
 
-                <!-- Language switcher: click the globe to open, pick RU/EN -->
-                <div class="language-menu">
+                <!-- Theme toggle: a device/browser preference, not an account
+                     setting, so it lives in the header itself now and stays
+                     visible in both the guest and signed-in states -->
+                <button class="theme-toggle-button theme-toggle" title="Toggle theme">
+                    <img src="images/icons/moon.svg" alt="Theme">
+                </button>
 
-                    <button class="language-button">
-                        <img src="images/icons/globe.svg" alt="Language">
-                    </button>
-
-                    <div class="language-dropdown">
-                        <button class="language-option">Русский</button>
-                        <button class="language-option active">English</button>
-                    </div>
-
-                </div>
-
-                <!-- Profile menu: avatar + name, opens the full account dropdown -->
+                <!-- Profile menu: just the avatar now, opens the full account dropdown -->
                 <div class="user-menu">
 
                     <button class="user-button">
                         <div class="user-avatar"></div>
-                        <span class="user-name">
-                            Tatyana
-                            <img src="images/icons/chevron-down.svg" alt="Chevron-down">
-                        </span>
+                        <img src="images/icons/chevron-down.svg" alt="Chevron-down">
                     </button>
 
                     <div class="user-dropdown">
+
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
 
                         <a href="#" class="user-dropdown-item">
                             <img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile
@@ -125,10 +121,20 @@
                             <img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings
                         </a>
 
-                        <!-- Theme toggle: swaps moon/sun icon on click (styling not wired up yet) -->
-                        <button type="button" class="user-dropdown-item theme-toggle">
-                            <img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme
-                        </button>
+                        <!-- Language switcher: same open/close logic as before, just moved
+                             here from the header. Temporary — for the GitHub demo only. -->
+                        <div class="language-menu">
+
+                            <button type="button" class="user-dropdown-item language-button">
+                                <img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Language
+                            </button>
+
+                            <div class="language-dropdown">
+                                <button class="language-option">Русский</button>
+                                <button class="language-option active">English</button>
+                            </div>
+
+                        </div>
 
                         <div class="user-dropdown-divider"></div>
 
@@ -140,6 +146,12 @@
 
                 </div>
 
+                <!-- Guest state: just a single icon-only login button, no text.
+                     Shown when IS_LOGGED_IN is false (see script.js). -->
+                <button class="header-login-button" title="Log In">
+                    <img src="images/icons/log-in.svg" alt="Log In">
+                </button>
+
             </div>
         </header>
 
@@ -147,50 +159,54 @@
 
             <!-- PROFILE HERO BANNER -->
             <section class="profile-hero-card">
-                <div class="profile-avatar-wrapper">
-                    <img src="https://placehold.co/160x160" alt="Busy Bee Avatar" class="profile-avatar-img">
+
+                <div class="profile-hero-top">
+                    <div class="profile-avatar-wrapper">
+                        <img src="https://placehold.co/160x160" alt="Busy Bee Avatar" class="profile-avatar-img">
+                    </div>
+
+                    <div class="profile-info-main">
+                        <div class="profile-name-row">
+                            <h1>Busy Bee</h1>
+                            <span class="verified-badge">✓</span>
+                        </div>
+                        <span class="official-tag">Official</span>
+
+                        <p class="profile-bio">Independent translation project and digital reading library</p>
+
+                        <a href="#" class="hero-about-link">About Busy Bee →</a>
+                    </div>
+
+                    <div class="profile-stats-box">
+                        <div class="stat-meta">
+                            <span class="meta-item"><img src="images/icons/calendar.svg" alt=""> Joined May 12, 2021</span>
+                            <span class="meta-item"><img src="images/icons/globe.svg" alt=""> Russia</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <img src="images/icons/book-open.svg" alt="" class="stat-icon">
+                            <strong>15</strong>
+                            <span>Translated Novels</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <img src="images/icons/notes.svg" alt="" class="stat-icon">
+                            <strong>2,743</strong>
+                            <span>Published Chapters</span>
+                        </div>
+                        <div class="stat-divider"></div>
+                        <div class="stat-item">
+                            <img src="images/icons/user.svg" alt="" class="stat-icon">
+                            <strong>86.1K</strong>
+                            <span>Readers</span>
+                        </div>
+                    </div>
+
+                    <div class="hero-decor">
+                        <img src="images/backgrounds/hero-decor.png" alt="">
+                    </div>
                 </div>
 
-                <div class="profile-info-main">
-                    <div class="profile-name-row">
-                        <h1>Busy Bee</h1>
-                        <span class="verified-badge">✓</span>
-                    </div>
-                    <span class="official-tag">Official</span>
-
-                    <p class="profile-bio">Independent translation project and digital reading library</p>
-
-                    <div class="profile-meta-details">
-                        <span class="meta-item"><img src="images/icons/calendar.svg" alt=""> Joined May 12, 2021</span>
-                        <span class="meta-item"><img src="images/icons/globe.svg" alt=""> Russia</span>
-                    </div>
-                </div>
-
-                <div class="profile-stats-box">
-                    <div class="stat-item">
-                        <strong>15</strong>
-                        <span>Translated Novels</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <strong>2,743</strong>
-                        <span>Published Chapters</span>
-                    </div>
-                    <div class="stat-divider"></div>
-                    <div class="stat-item">
-                        <strong>86.1K</strong>
-                        <span>Readers</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- About Busy Bee Card -->
-            <section class="about-card-bg">
-                <h3>About Busy Bee</h3>
-                <p>Busy Bee is a small independent translation project created out of my love for stories.</p>
-                <p>I translate novels that moved me, inspired me, or stayed in my heart for a long time.</p>
-                <p>My goal is to share these stories with readers in Russian so that more people can experience the beauty of Chinese literature.</p>
-                <p>Thank you for being here. You are the reason Busy Bee continues to grow. 💛</p>
             </section>
 
             <!-- PROFILE TABS NAVIGATION -->
@@ -358,69 +374,73 @@
                     <section class="widget-box">
                         <div class="widget-header">
                             <h3>Latest Translations</h3>
-                            <div class="nav-controls">
-                                <a href="#" class="view-all">View all</a>
-                                <button class="arrow-btn">‹</button>
-                                <button class="arrow-btn">›</button>
-                            </div>
+                            <a href="#" class="view-all">View all</a>
                         </div>
 
-                        <div class="translations-grid">
-                            <div class="translation-card">
-                                <div class="cover-box">
-                                    <span class="badge-ongoing">Ongoing</span>
-                                    <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                        <div class="book-carousel">
+
+                            <button type="button" class="carousel-arrow" aria-label="Previous translations">‹</button>
+
+                            <div class="translations-grid carousel-track">
+                                <div class="translation-card">
+                                    <div class="cover-box">
+                                        <span class="badge-ongoing">Ongoing</span>
+                                        <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                                    </div>
+                                    <h4>Pursuit of Jade</h4>
+                                    <p class="author">Tuan Zi Lai Xi</p>
+                                    <p class="ch-info">Chapter 124 / 164</p>
+                                    <div class="card-footer">
+                                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                    </div>
                                 </div>
-                                <h4>Pursuit of Jade</h4>
-                                <p class="author">Tuan Zi Lai Xi</p>
-                                <p class="ch-info">Chapter 124 / 164</p>
-                                <div class="card-footer">
-                                    <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+
+                                <div class="translation-card">
+                                    <div class="cover-box">
+                                        <span class="badge-completed">Completed</span>
+                                        <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                                    </div>
+                                    <h4>The Top Couple Is a Bit Sweet</h4>
+                                    <p class="author">Tu Yang Xian Sen</p>
+                                    <p class="ch-info">164 Chapters</p>
+                                    <div class="card-footer">
+                                        <button type="button" class="favorite-btn active" aria-label="Like" aria-pressed="true"><img src="images/icons/heart-filled.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                    </div>
+                                </div>
+
+                                <div class="translation-card">
+                                    <div class="cover-box">
+                                        <span class="badge-ongoing">Ongoing</span>
+                                        <a href="novel.html"><img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream"></a>
+                                    </div>
+                                    <h4><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h4>
+                                    <p class="author">Qian Shan Cha Ke</p>
+                                    <p class="ch-info">Chapter 63 / 101</p>
+                                    <div class="card-footer">
+                                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                    </div>
+                                </div>
+
+                                <div class="translation-card">
+                                    <div class="cover-box">
+                                        <span class="badge-completed">Completed</span>
+                                        <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                                    </div>
+                                    <h4>Everyone Loves Me</h4>
+                                    <p class="author">Qiao Yao</p>
+                                    <p class="ch-info">88 Chapters</p>
+                                    <div class="card-footer">
+                                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="translation-card">
-                                <div class="cover-box">
-                                    <span class="badge-completed">Completed</span>
-                                    <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
-                                </div>
-                                <h4>The Top Couple Is a Bit Sweet</h4>
-                                <p class="author">Tu Yang Xian Sen</p>
-                                <p class="ch-info">164 Chapters</p>
-                                <div class="card-footer">
-                                    <button type="button" class="favorite-btn active" aria-label="Like" aria-pressed="true"><img src="images/icons/heart-filled.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                </div>
-                            </div>
+                            <button type="button" class="carousel-arrow" aria-label="Next translations">›</button>
 
-                            <div class="translation-card">
-                                <div class="cover-box">
-                                    <span class="badge-ongoing">Ongoing</span>
-                                    <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
-                                </div>
-                                <h4>A Dream Within a Dream</h4>
-                                <p class="author">Qian Shan Cha Ke</p>
-                                <p class="ch-info">Chapter 63 / 101</p>
-                                <div class="card-footer">
-                                    <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                </div>
-                            </div>
-
-                            <div class="translation-card">
-                                <div class="cover-box">
-                                    <span class="badge-completed">Completed</span>
-                                    <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
-                                </div>
-                                <h4>Everyone Loves Me</h4>
-                                <p class="author">Qiao Yao</p>
-                                <p class="ch-info">88 Chapters</p>
-                                <div class="card-footer">
-                                    <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                </div>
-                            </div>
                         </div>
                     </section>
 
@@ -428,45 +448,49 @@
                     <section class="widget-box">
                         <div class="widget-header">
                             <h3>🐝 Busy Bee Recommends</h3>
-                            <div class="nav-controls">
-                                <a href="#" class="view-all">View all</a>
-                                <button class="arrow-btn">‹</button>
-                                <button class="arrow-btn">›</button>
-                            </div>
+                            <a href="#" class="view-all">View all</a>
                         </div>
 
-                        <div class="recommends-grid">
-                            <div class="recommend-card">
-                                <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
-                                <h4>Pursuit of Jade</h4>
-                                <p class="author">by Tuan Zi Lai Xi</p>
-                                <blockquote class="quote">“Brilliant plot, unforgettable characters.”</blockquote>
-                                <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                        <div class="recommends-carousel">
+
+                            <button type="button" class="carousel-arrow" aria-label="Previous recommends">‹</button>
+
+                            <div class="recommends-grid carousel-track">
+                                <div class="recommend-card">
+                                    <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
+                                    <h4>Pursuit of Jade</h4>
+                                    <p class="author">by Tuan Zi Lai Xi</p>
+                                    <blockquote class="quote">“Brilliant plot, unforgettable characters.”</blockquote>
+                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                </div>
+
+                                <div class="recommend-card">
+                                    <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
+                                    <h4>The Top Couple Is a Bit Sweet</h4>
+                                    <p class="author">by Tu Yang Xian Sen</p>
+                                    <blockquote class="quote">“A poetic story that stays with you.”</blockquote>
+                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                </div>
+
+                                <div class="recommend-card">
+                                    <a href="novel.html"><img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream"></a>
+                                    <h4><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h4>
+                                    <p class="author">by Qian Shan Cha Ke</p>
+                                    <blockquote class="quote">“Strong heroine, realistic and inspiring.”</blockquote>
+                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                </div>
+
+                                <div class="recommend-card">
+                                    <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
+                                    <h4>Everyone Loves Me</h4>
+                                    <p class="author">by Qiao Yao</p>
+                                    <blockquote class="quote">“Political mastery at its finest.”</blockquote>
+                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                </div>
                             </div>
 
-                            <div class="recommend-card">
-                                <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
-                                <h4>The Top Couple Is a Bit Sweet</h4>
-                                <p class="author">by Tu Yang Xian Sen</p>
-                                <blockquote class="quote">“A poetic story that stays with you.”</blockquote>
-                                <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                            </div>
+                            <button type="button" class="carousel-arrow" aria-label="Next recommends">›</button>
 
-                            <div class="recommend-card">
-                                <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
-                                <h4>A Dream Within a Dream</h4>
-                                <p class="author">by Qian Shan Cha Ke</p>
-                                <blockquote class="quote">“Strong heroine, realistic and inspiring.”</blockquote>
-                                <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                            </div>
-
-                            <div class="recommend-card">
-                                <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
-                                <h4>Everyone Loves Me</h4>
-                                <p class="author">by Qiao Yao</p>
-                                <blockquote class="quote">“Political mastery at its finest.”</blockquote>
-                                <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                            </div>
                         </div>
                     </section>
 
@@ -631,38 +655,63 @@
                     <p>Bringing stories to life, one chapter at a time.</p>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Platform</h3>
-                    <a href="catalog.html">Catalog</a>
-                    <a href="#">Authors</a>
-                    <a href="#">Genres</a>
-                    <a href="#">Announcements</a>
-                </div>
+                <!-- Placeholder wording — rewrite in your own voice -->
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
 
-                <div class="footer-column">
-                    <h3>Support</h3>
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
                     <a href="#">Help Center</a>
                     <a href="#">Contact Us</a>
-                    <a href="#">Report a Problem</a>
-                    <a href="#">Suggest a Novel</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Community</h3>
-                    <a href="#">Discord</a>
-                    <a href="#">Telegram</a>
-                    <a href="#">Twitter</a>
-                    <a href="#">Pinterest</a>
-                </div>
+                <div class="footer-bottom-right">
 
-                <div class="footer-support">
-                    <h3>Support Busy Bee</h3>
-                    <p>Love our translations? Support us and help us keep going.</p>
-                    <button type="button" class="coffee-button">
-                        <img src="images/icons/coffee.svg" alt="">
-                        Buy Us a Coffee
-                    </button>
-                    <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+                    <!-- Community, as icons instead of a text column — each
+                         needs a real href once the accounts exist -->
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <!-- Visual only for now, same as the header's language
+                         switcher — doesn't actually translate the page yet -->
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
                 </div>
 
             </div>

@@ -25,67 +25,75 @@
             <nav class="navigation">
                 <div class="catalog-menu">
                     <button class="catalog-button">
-                        Catalog
+                        Каталог
                         <img src="images/icons/chevron-down.svg" alt="">
                     </button>
                     <div class="catalog-dropdown">
-                        <a href="catalog.html">Novels</a>
-                        <a href="author.html">Authors</a>
-                        <a href="#">Genres</a>
+                        <a href="catalog.html">Новеллы</a>
+                        <a href="author.html">Авторы</a>
+                        <a href="#">Жанры</a>
+                        <a href="#">Коллекции</a>
+                        <a href="#">Глоссарий</a>
                     </div>
                 </div>
-                <a href="#">Announcements</a>
-                <a href="#">About</a>
+                <a href="#">Анонсы</a>
+                <a href="#">О Busy Bee</a>
             </nav>
 
             <div class="header-actions">
                 <div class="search">
-                    <input type="text" placeholder="Search novels, authors...">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
                     <img src="images/icons/search.svg" alt="">
                 </div>
 
                 <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
                 <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
 
-                <div class="language-menu">
-                    <button class="language-button"><img src="images/icons/globe.svg" alt=""></button>
-                    <div class="language-dropdown">
-                        <button class="language-option">Русский</button>
-                        <button class="language-option active">English</button>
-                    </div>
-                </div>
+                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
 
                 <div class="user-menu">
                     <button class="user-button">
                         <div class="user-avatar"></div>
-                        <span class="user-name">Tatyana <img src="images/icons/chevron-down.svg" alt=""></span>
+                        <img src="images/icons/chevron-down.svg" alt="">
                     </button>
                     <div class="user-dropdown">
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> My Profile</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> My Library</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Bookmarks</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Favorites</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> My Quotes</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> My Notes</a>
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> My Collections</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Achievements</a>
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
 
                         <div class="user-dropdown-divider"></div>
 
-                        <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Settings</a>
-                        <button type="button" class="user-dropdown-item theme-toggle"><img src="images/icons/moon.svg" alt="" class="user-dropdown-icon"> Theme</button>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Закладки</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
 
                         <div class="user-dropdown-divider"></div>
 
-                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Log Out</a>
+                        <a href="#" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
+                            <div class="language-dropdown">
+                                <button class="language-option">Русский</button>
+                                <button class="language-option active">English</button>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
                     </div>
                 </div>
+
+                <button class="header-login-button" title="Log In"><img src="images/icons/log-in.svg" alt=""></button>
             </div>
         </header>
 
@@ -94,23 +102,23 @@
             <!-- HERO SEARCH SECTION -->
             <section class="catalog-hero">
                 <div class="hero-content">
-                    <h1>Find your next story</h1>
-                    <p class="hero-sub">Search by title, author, genre, tags, or translator notes</p>
+                    <h1>Открой свою следующую историю</h1>
+                    <p class="hero-sub">Ищи по названию, автору, жанру, тегам или заметкам переводчика</p>
 
                     <div class="hero-search-box">
                         <img src="images/icons/search.svg" alt="">
-                        <input type="text" id="catalogSearchInput" placeholder="Search novels, authors, genres...">
-                        <button type="button" class="btn-hero-search" id="catalogSearchBtn">Search</button>
+                        <input type="text" id="catalogSearchInput" placeholder="Поиск по книгам, авторам, жанрам...">
+                        <button type="button" class="btn-hero-search" id="catalogSearchBtn">Поиск</button>
                     </div>
 
                     <div class="popular-searches">
-                        <span class="popular-label">Popular searches:</span>
-                        <a href="#" class="search-tag" data-search="historical">Historical</a>
-                        <a href="#" class="search-tag" data-search="romance">Romance</a>
-                        <a href="#" class="search-tag" data-search="revenge">Revenge</a>
-                        <a href="#" class="search-tag" data-search="politics">Politics</a>
-                        <a href="#" class="search-tag" data-search="fantasy">Fantasy</a>
-                        <a href="#" class="search-tag" data-status="completed">Completed novels</a>
+                        <span class="popular-label">Популярные запросы:</span>
+                        <a href="#" class="search-tag" data-search="исторические">Исторические</a>
+                        <a href="#" class="search-tag" data-search="романтика">Романтика</a>
+                        <a href="#" class="search-tag" data-search="месть">Месть</a>
+                        <a href="#" class="search-tag" data-search="современные">Современные</a>
+                        <a href="#" class="search-tag" data-search="фэнтези">Фэнтези</a>
+                        <a href="#" class="search-tag" data-status="завершенные">Завершенные новеллы</a>
                     </div>
                 </div>
             </section>
@@ -120,37 +128,37 @@
                 <div class="toolbar-left">
                     <button type="button" class="btn-toggle-filters" id="toggleFilters">
                         <img src="images/icons/filter.svg" alt="">
-                        <span>Filters</span>
+                        <span>Фильтр</span>
                     </button>
-                    <button type="button" class="btn-clear-all" id="clearAllFilters">Clear all</button>
-                    <span class="results-count" id="resultsCount">1,245 stories found</span>
+                    <button type="button" class="btn-clear-all" id="clearAllFilters">Очистить всё</button>
+                    <span class="results-count" id="resultsCount">1,245 историй найдено</span>
                 </div>
 
                 <div class="toolbar-right">
                     <div class="sort-menu">
-                        <span class="sort-label">Sort by</span>
+                        <span class="sort-label">Сортировка</span>
                         <button type="button" class="sort-button" id="sortButton">
-                            <span id="sortButtonLabel">Recently Updated</span>
+                            <span id="sortButtonLabel">Недавно обновлённые</span>
                             <img src="images/icons/chevron-down.svg" alt="">
                         </button>
                         <div class="sort-dropdown" id="sortDropdown">
-                            <button type="button" class="sort-option active">Recently Updated</button>
-                            <button type="button" class="sort-option">Most Popular</button>
-                            <button type="button" class="sort-option">Highest Rated</button>
-                            <button type="button" class="sort-option">Newest Added</button>
+                            <button type="button" class="sort-option active">Недавно обновлённые</button>
+                            <button type="button" class="sort-option">Популярные</button>
+                            <button type="button" class="sort-option">Высокий рейтинг</button>
+                            <button type="button" class="sort-option">Новые поступления</button>
                         </div>
                     </div>
 
                     <!-- Grid/List icons don't exist yet — see note to Tatyana.
                          Until then these render with just the alt text. -->
                     <div class="view-switchers">
-                        <button type="button" class="view-btn active" data-view="grid" title="Grid View">
-                            <img src="images/icons/grid-view.svg" alt="Grid">
-                            <span>Grid</span>
+                        <button type="button" class="view-btn active" data-view="grid" title="Плитка">
+                            <img src="images/icons/grid-view.svg" alt="Плитка">
+                            <span>Плитка</span>
                         </button>
-                        <button type="button" class="view-btn" data-view="list" title="List View">
-                            <img src="images/icons/list-view.svg" alt="List">
-                            <span>List</span>
+                        <button type="button" class="view-btn" data-view="list" title="Список">
+                            <img src="images/icons/list-view.svg" alt="Список">
+                            <span>Список</span>
                         </button>
                     </div>
                 </div>
@@ -162,107 +170,150 @@
                 <!-- SIDEBAR FILTERS -->
                 <aside class="catalog-sidebar" id="catalogSidebar">
 
-                    <!-- Status Filter -->
+                    <!-- Release Status Filter (matches the Ongoing/
+                         Completed badge shown on the novel's cover) -->
                     <div class="filter-group" data-filter-group="status">
-                        <h3>Status</h3>
+                        <h3>Статус выхода</h3>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="completed">
-                            <span>Completed</span>
+                            <span>Завершено</span>
                             <span class="count">742</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="ongoing">
-                            <span>Ongoing</span>
+                            <span>Выходит</span>
                             <span class="count">503</span>
+                        </label>
+                    </div>
+
+                    <!-- Translation Status (separate from Release Status
+                         above — a novel can be finished by its author but
+                         still only partly translated, or vice versa) -->
+                    <div class="filter-group" data-filter-group="translation">
+                        <h3>Статус перевода</h3>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="fully-translated">
+                            <span>Переведено полностью</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="in-progress">
+                            <span>Переводится</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="on-hiatus">
+                            <span>На паузе</span>
                         </label>
                     </div>
 
                     <!-- Reading Length -->
                     <div class="filter-group" data-filter-group="length">
-                        <h3>Reading Length</h3>
+                        <h3>Объём</h3>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="short">
-                            <span>Short (1–100 ch.)</span>
+                            <span>Короткие (1–100 гл.)</span>
                             <span class="count">210</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="medium">
-                            <span>Medium (101–300 ch.)</span>
+                            <span>Средние (101–300 гл.)</span>
                             <span class="count">782</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="long">
-                            <span>Long (300+ ch.)</span>
+                            <span>Длинные (300+ гл.)</span>
                             <span class="count">253</span>
                         </label>
                     </div>
 
                     <!-- Genres -->
                     <div class="filter-group" data-filter-group="genre">
-                        <h3>Genres</h3>
+                        <h3>Жанры</h3>
                         <label class="filter-checkbox">
-                            <input type="checkbox" data-value="romance">
-                            <span>Romance</span>
-                            <span class="count">436</span>
+                            <input type="checkbox" data-value="армия">
+                            <span>Армия</span>
+                            <span class="count">164</span>
                         </label>
                         <label class="filter-checkbox">
-                            <input type="checkbox" data-value="historical">
-                            <span>Historical</span>
-                            <span class="count">352</span>
+                            <input type="checkbox" data-value="дворцовые интриги">
+                            <span>Дворцовые интриги</span>
+                            <span class="count">221</span>
                         </label>
                         <label class="filter-checkbox">
-                            <input type="checkbox" data-value="fantasy">
-                            <span>Fantasy</span>
-                            <span class="count">631</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="mystery">
-                            <span>Mystery</span>
-                            <span class="count">198</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="drama">
-                            <span>Drama</span>
+                            <input type="checkbox" data-value="драма">
+                            <span>Драма</span>
                             <span class="count">287</span>
                         </label>
                         <label class="filter-checkbox">
-                            <input type="checkbox" data-value="politics">
-                            <span>Politics</span>
-                            <span class="count">209</span>
-                        </label>
-                        <button type="button" class="btn-show-more">Show more ▾</button>
-                    </div>
-
-                    <!-- Author Select -->
-                    <div class="filter-group">
-                        <h3>Author</h3>
-                        <select class="filter-select">
-                            <option value="">Search authors...</option>
-                        </select>
-                    </div>
-
-                    <!-- Translator Select -->
-                    <div class="filter-group">
-                        <h3>Translator</h3>
-                        <select class="filter-select">
-                            <option value="">Search translators...</option>
-                        </select>
-                    </div>
-
-                    <!-- Release Status -->
-                    <div class="filter-group">
-                        <h3>Release Status</h3>
-                        <label class="filter-checkbox">
-                            <input type="checkbox">
-                            <span>Recently Updated</span>
+                            <input type="checkbox" data-value="исторические">
+                            <span>Исторические</span>
+                            <span class="count">352</span>
                         </label>
                         <label class="filter-checkbox">
-                            <input type="checkbox">
-                            <span>New Translations</span>
+                            <input type="checkbox" data-value="комедия">
+                            <span>Комедия</span>
+                            <span class="count">178</span>
                         </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" data-value="месть">
+                            <span>Месть</span>
+                            <span class="count">245</span>
+                        </label>
+                        <div class="extra-genres" id="extraGenres" hidden>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="мистика">
+                                <span>Мистика</span>
+                                <span class="count">198</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="романтика">
+                                <span>Романтика</span>
+                                <span class="count">436</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="современные">
+                                <span>Современные</span>
+                                <span class="count">156</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="фэнтези">
+                                <span>Фэнтези</span>
+                                <span class="count">631</span>
+                            </label>
+                        </div>
+                        <button type="button" class="btn-show-more" id="btnShowMoreGenres">Показать ещё ▾</button>
                     </div>
 
-                    <button type="button" class="btn-more-filters">More Filters ▾</button>
+                    <!-- Author — searchable checklist, same idea as a
+                         "brand" filter in shopping sites: type to narrow
+                         the list, then check one or more -->
+                    <div class="filter-group" data-filter-group="author">
+                        <h3>Автор</h3>
+                        <div class="filter-search-box">
+                            <img src="images/icons/search.svg" alt="">
+                            <input type="text" class="filter-search-input" id="authorSearchInput" placeholder="Поиск по авторам...">
+                        </div>
+                        <div class="filter-checklist" id="authorChecklist">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="tuan zi lai xi">
+                                <span>Tuan Zi Lai Xi</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="tu yang xian sen">
+                                <span>Tu Yang Xian Sen</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="qian shan cha ke">
+                                <span>Qian Shan Cha Ke</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" data-value="qiao yao">
+                                <span>Qiao Yao</span>
+                            </label>
+                            <p class="no-results-notice filter-no-results" hidden>Авторы не найдены.</p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-more-filters">Больше фильтров ▾</button>
                 </aside>
 
                 <!-- NOVELS GRID -->
@@ -271,24 +322,24 @@
                     <!-- Card 1 -->
                     <article class="novel-card" data-rating="4.8">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Выходит</span>
                             <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>Pursuit of Jade</h3>
                             <span class="author-name">Tuan Zi Lai Xi</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Fantasy</span>
@@ -296,7 +347,7 @@
                             </div>
 
                             <div class="card-progress-zone">
-                                <span class="chapter-status">Chapter 85 of 120</span>
+                                <span class="chapter-status">Глава 85 из 120</span>
                                 <div class="mini-progress-bar">
                                     <div class="fill" style="width: 71%;"></div>
                                 </div>
@@ -306,7 +357,7 @@
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-primary-action">Continue</button>
+                                <button type="button" class="btn-primary-action">Продолжить</button>
                             </div>
                         </div>
                     </article>
@@ -314,24 +365,24 @@
                     <!-- Card 2 -->
                     <article class="novel-card" data-rating="4.7">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Выходит</span>
                             <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>The Top Couple Is a Bit Sweet</h3>
                             <span class="author-name">Tu Yang Xian Sen</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Romance</span>
@@ -339,7 +390,7 @@
                             </div>
 
                             <div class="card-progress-zone">
-                                <span class="chapter-status">Chapter 78 of 110</span>
+                                <span class="chapter-status">Глава 78 из 110</span>
                                 <div class="mini-progress-bar">
                                     <div class="fill" style="width: 71%;"></div>
                                 </div>
@@ -349,7 +400,7 @@
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn active" aria-label="Like" aria-pressed="true"><img src="images/icons/heart-filled.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-primary-action">Continue</button>
+                                <button type="button" class="btn-primary-action">Продолжить</button>
                             </div>
                         </div>
                     </article>
@@ -357,25 +408,25 @@
                     <!-- Card 3 -->
                     <article class="novel-card" data-rating="4.9">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Completed</span>
-                            <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Завершено</span>
+                            <a href="novel.html"><img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream"></a>
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
-                            <h3>A Dream Within a Dream</h3>
+                            <h3><a href="novel.html">A Dream Within a Dream</a></h3>
                             <span class="orig-title">重生之嫡女祸妃</span>
                             <span class="author-name">Qian Shan Cha Ke</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Revenge</span>
@@ -385,7 +436,7 @@
                             </div>
 
                             <div class="card-progress-zone">
-                                <span class="chapter-status">Chapter 124 of 259</span>
+                                <span class="chapter-status">Глава 124 из 259</span>
                                 <div class="mini-progress-bar">
                                     <div class="fill" style="width: 48%;"></div>
                                 </div>
@@ -395,7 +446,7 @@
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark active" aria-label="Save to bookmarks" aria-pressed="true"><img src="images/icons/bookmark-filled-gold.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-primary-action">Continue</button>
+                                <a href="chapter.html" class="btn-primary-action">Продолжить</a>
                             </div>
                         </div>
                     </article>
@@ -403,24 +454,24 @@
                     <!-- Card 4 -->
                     <article class="novel-card" data-rating="4.6">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Выходит</span>
                             <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>Everyone Loves Me</h3>
                             <span class="author-name">Qiao Yao</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Comedy</span>
@@ -428,7 +479,7 @@
                             </div>
 
                             <div class="card-progress-zone">
-                                <span class="chapter-status">Chapter 63 of 95</span>
+                                <span class="chapter-status">Глава 63 из 95</span>
                                 <div class="mini-progress-bar">
                                     <div class="fill" style="width: 66%;"></div>
                                 </div>
@@ -438,7 +489,7 @@
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-primary-action">Continue</button>
+                                <button type="button" class="btn-primary-action">Продолжить</button>
                             </div>
                         </div>
                     </article>
@@ -446,25 +497,25 @@
                     <!-- Card 5 -->
                     <article class="novel-card" data-rating="4.5">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Выходит</span>
                             <img src="https://placehold.co/180x240" alt="A Dream in Winter">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>A Dream in Winter</h3>
                             <span class="orig-title">一梦入冬</span>
                             <span class="author-name">Lin Yi</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Romance</span>
@@ -472,7 +523,7 @@
                             </div>
 
                             <div class="card-progress-zone">
-                                <span class="chapter-status">Chapter 98 of 152</span>
+                                <span class="chapter-status">Глава 98 из 152</span>
                                 <div class="mini-progress-bar">
                                     <div class="fill" style="width: 64%;"></div>
                                 </div>
@@ -482,7 +533,7 @@
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-primary-action">Continue</button>
+                                <button type="button" class="btn-primary-action">Продолжить</button>
                             </div>
                         </div>
                     </article>
@@ -490,25 +541,25 @@
                     <!-- Card 6 -->
                     <article class="novel-card" data-rating="4.4">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Completed</span>
+                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Завершено</span>
                             <img src="https://placehold.co/180x240" alt="The Imperial Tutor">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>The Imperial Tutor</h3>
                             <span class="orig-title">帝师</span>
                             <span class="author-name">Qing Dynasty Customs</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Historical</span>
@@ -517,13 +568,13 @@
                             </div>
 
                             <div class="card-progress-zone text-only">
-                                <span class="chapter-status">152 Chapters</span>
+                                <span class="chapter-status">152 главы</span>
                             </div>
 
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-secondary-action">Details</button>
+                                <button type="button" class="btn-secondary-action">Подробнее</button>
                             </div>
                         </div>
                     </article>
@@ -531,25 +582,25 @@
                     <!-- Card 7 -->
                     <article class="novel-card" data-rating="4.3">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Ongoing</span>
+                            <span class="badge badge-ongoing"><img src="images/icons/clock.svg" alt="">Выходит</span>
                             <img src="https://placehold.co/180x240" alt="The Villainess's Slow Life">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>The Villainess's Slow Life</h3>
                             <span class="orig-title">反派大小姐的悠闲生活</span>
                             <span class="author-name">Yan Qing</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Slice of Life</span>
@@ -557,7 +608,7 @@
                             </div>
 
                             <div class="card-progress-zone">
-                                <span class="chapter-status">Chapter 34 of 120</span>
+                                <span class="chapter-status">Глава 34 из 120</span>
                                 <div class="mini-progress-bar">
                                     <div class="fill" style="width: 28%;"></div>
                                 </div>
@@ -567,7 +618,7 @@
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-primary-action">Continue</button>
+                                <button type="button" class="btn-primary-action">Продолжить</button>
                             </div>
                         </div>
                     </article>
@@ -575,25 +626,25 @@
                     <!-- Card 8 -->
                     <article class="novel-card" data-rating="4.2">
                         <div class="novel-cover-wrap">
-                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Completed</span>
+                            <span class="badge badge-completed"><img src="images/icons/check-circle.svg" alt="">Завершено</span>
                             <img src="https://placehold.co/180x240" alt="No Regrets in This Life">
                         </div>
                         <div class="card-menu">
                                 <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
                                 <div class="card-menu-dropdown">
-                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Add to Collection</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Share</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Suggest a Correction</button>
-                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Hide This Novel</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                                    <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
                                     <div class="card-menu-divider"></div>
-                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Report</button>
+                                    <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
                                 </div>
                             </div>
                         <div class="novel-card-body">
                             <h3>No Regrets in This Life</h3>
                             <span class="orig-title">此生无悔</span>
                             <span class="author-name">Shui Qian Cheng</span>
-                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Translated by Busy Bee</span>
+                            <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено Busy Bee</span>
 
                             <div class="novel-tags">
                                 <span>Historical</span>
@@ -601,20 +652,20 @@
                             </div>
 
                             <div class="card-progress-zone text-only">
-                                <span class="chapter-status">116 Chapters</span>
+                                <span class="chapter-status">116 глав</span>
                             </div>
 
                             <div class="card-actions">
                                 <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
                                 <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                <button type="button" class="btn-secondary-action">Details</button>
+                                <button type="button" class="btn-secondary-action">Подробнее</button>
                             </div>
                         </div>
                     </article>
 
                 </section>
 
-                <p class="no-results-notice catalog-no-results" hidden>The bee couldn't find anything matching those filters. Try clearing a few.</p>
+                <p class="no-results-notice catalog-no-results" hidden>Пчела не нашла ничего подходящего под эти фильтры. Попробуй сбросить пару из них.</p>
             </div>
 
             <!-- Catalog pagination — same component as the chapters table
@@ -648,8 +699,8 @@
                     <section class="section-recommends">
                         <div class="recommends-inner">
                             <div class="section-header">
-                                <h2 class="section-title">Busy Bee Recommends</h2>
-                                <a href="#" class="view-all">View all</a>
+                                <h2 class="section-title">Busy Bee рекомендует</h2>
+                                <a href="#" class="view-all">Посмотреть всё</a>
                             </div>
 
                             <div class="recommends-carousel">
@@ -666,11 +717,11 @@
                                     <strong>The Top Couple Is a Bit Sweet</strong>
                                     <span>Tu Yang Xian Sen</span>
                                 </div>
-                                <div class="mini-recommend-card">
+                                <a href="novel.html" class="mini-recommend-card">
                                     <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
                                     <strong>A Dream Within a Dream</strong>
                                     <span>Qian Shan Cha Ke</span>
-                                </div>
+                                </a>
                                 <div class="mini-recommend-card">
                                     <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
                                     <strong>Everyone Loves Me</strong>
@@ -709,8 +760,8 @@
                          separate genre carousel here would be redundant. -->
                     <div class="collections-section-catalog">
                         <div class="section-header">
-                            <h3 class="section-title">Busy Bee Collections</h3>
-                            <a href="#" class="view-all">View all</a>
+                            <h3 class="section-title">Коллекции Busy Bee</h3>
+                            <a href="#" class="view-all">Посмотреть все</a>
                         </div>
 
                         <div class="collection-carousel">
@@ -720,85 +771,85 @@
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/atmospheric-stories.png" alt="Atmospheric Stories">
                                     <div class="collection-card-info">
-                                        <h3>Atmospheric Stories</h3>
+                                        <h3>Атмосферные истории</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/second-chances.png" alt="Second Chances">
                                     <div class="collection-card-info">
-                                        <h3>Second Chances</h3>
+                                        <h3>Второй шанс</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/unforgettable-heroes.png" alt="Unforgettable Heroes">
                                     <div class="collection-card-info">
-                                        <h3>Unforgettable Heroes</h3>
+                                        <h3>Герои, которых невозможно забыть</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/court-intrigues.png" alt="Court Intrigues">
                                     <div class="collection-card-info">
-                                        <h3>Court Intrigues</h3>
+                                        <h3>Дворцовые интриги</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/for-a-quiet-evening.png" alt="For a Quiet Evening">
                                     <div class="collection-card-info">
-                                        <h3>For a Quiet Evening</h3>
+                                        <h3>Для спокойного вечера</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/late-night-reads.png" alt="Late Night Reads">
                                     <div class="collection-card-info">
-                                        <h3>Late Night Reads</h3>
+                                        <h3>Для чтения поздним вечером</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/completed-stories.png" alt="Completed Stories">
                                     <div class="collection-card-info">
-                                        <h3>Completed Stories</h3>
+                                        <h3>Завершённые истории</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/revenge-stories.png" alt="Revenge Stories">
                                     <div class="collection-card-info">
-                                        <h3>Revenge Stories</h3>
+                                        <h3>Истории о мести</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/when-plans-fall-apart.png" alt="When Plans Fall Apart">
                                     <div class="collection-card-info">
-                                        <h3>When Plans Fall Apart</h3>
+                                        <h3>Когда всё пошло не по плану</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/slow-burn-romance.png" alt="Slow Burn Romance">
                                     <div class="collection-card-info">
-                                        <h3>Slow Burn Romance</h3>
+                                        <h3>Медленная любовь</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/rebirth.png" alt="Rebirth">
                                     <div class="collection-card-info">
-                                        <h3>Rebirth</h3>
+                                        <h3>Перерождение</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/grab-the-tissues.png" alt="Grab the Tissues">
                                     <div class="collection-card-info">
-                                        <h3>Grab the Tissues</h3>
+                                        <h3>Приготовьте салфетки</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/strong-heroines.png" alt="Strong Heroines">
                                     <div class="collection-card-info">
-                                        <h3>Strong Heroines</h3>
+                                        <h3>Сильные героини</h3>
                                     </div>
                                 </a>
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/cozy-reads.png" alt="Cozy Reads">
                                     <div class="collection-card-info">
-                                        <h3>Cozy Reads</h3>
+                                        <h3>Уютное чтение</h3>
                                     </div>
                                 </a>
                             </div>
@@ -811,29 +862,29 @@
                     <div class="category-banners-grid">
                         <div class="cat-banner-card banner-completed">
                             <div>
-                                <strong>Completed Stories</strong>
-                                <span>742 stories</span>
+                                <strong>Завершённые истории</strong>
+                                <span>742 историй</span>
                             </div>
                         </div>
 
                         <div class="cat-banner-card banner-gems">
                             <div>
-                                <strong>Hidden Gems</strong>
-                                <span>312 stories</span>
+                                <strong>Скрытые жемчужины</strong>
+                                <span>312 историй</span>
                             </div>
                         </div>
 
                         <div class="cat-banner-card banner-popular">
                             <div>
-                                <strong>Popular Among Readers</strong>
-                                <span>Top rated by our community</span>
+                                <strong>Популярное среди читателей</strong>
+                                <span>Высоко оценено нашим сообществом</span>
                             </div>
                         </div>
 
                         <div class="cat-banner-card banner-authors">
                             <div>
-                                <strong>New Authors</strong>
-                                <span>Discover fresh voices</span>
+                                <strong>Новые авторы</strong>
+                                <span>Откройте для себя новые голоса</span>
                             </div>
                         </div>
                     </div>
@@ -845,8 +896,8 @@
                 <div class="bottom-right-col">
                     <div class="recently-updated-panel">
                         <div class="section-header">
-                            <h3 class="section-title">Recently Updated</h3>
-                            <a href="#" class="view-all">View all</a>
+                            <h3 class="section-title">Последние обновления</h3>
+                            <a href="#" class="view-all">Посмотреть всё</a>
                         </div>
 
                         <div class="release-list">
@@ -857,8 +908,8 @@
                                     <p>Chapter 85</p>
                                 </div>
                                 <div class="release-right">
-                                    <span>2 hours ago</span>
-                                    <b>New</b>
+                                    <span>2 часа назад</span>
+                                    <b>Новое</b>
                                 </div>
                             </article>
 
@@ -869,20 +920,20 @@
                                     <p>Chapter 78</p>
                                 </div>
                                 <div class="release-right">
-                                    <span>5 hours ago</span>
-                                    <b>New</b>
+                                    <span>5 часов назад</span>
+                                    <b>Новое</b>
                                 </div>
                             </article>
 
                             <article class="release-item">
                                 <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
                                 <div class="release-info">
-                                    <h3><a href="#" class="hero-title-link">A Dream Within a Dream</a></h3>
+                                    <h3><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h3>
                                     <p>Chapter 124</p>
                                 </div>
                                 <div class="release-right">
-                                    <span>Yesterday</span>
-                                    <b>New</b>
+                                    <span>Вчера</span>
+                                    <b>Новое</b>
                                 </div>
                             </article>
 
@@ -893,8 +944,8 @@
                                     <p>Chapter 63</p>
                                 </div>
                                 <div class="release-right">
-                                    <span>Yesterday</span>
-                                    <b>New</b>
+                                    <span>Вчера</span>
+                                    <b>Новое</b>
                                 </div>
                             </article>
 
@@ -905,7 +956,8 @@
                                     <p>Chapter 89</p>
                                 </div>
                                 <div class="release-right">
-                                    <span>1 day ago</span>
+                                    <span>Вчера</span>
+                                    <b>Новое</b>
                                 </div>
                             </article>
 
@@ -916,7 +968,8 @@
                                     <p>Chapter 152</p>
                                 </div>
                                 <div class="release-right">
-                                    <span>2 days ago</span>
+                                    <span>2 дня назад</span>
+                                    <b>Новое</b>
                                 </div>
                             </article>
                         </div>
@@ -952,38 +1005,63 @@
                     <p>Bringing stories to life, one chapter at a time.</p>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Platform</h3>
-                    <a href="catalog.html">Catalog</a>
-                    <a href="#">Authors</a>
-                    <a href="#">Genres</a>
-                    <a href="#">Announcements</a>
-                </div>
+                <!-- Placeholder wording — rewrite in your own voice -->
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
 
-                <div class="footer-column">
-                    <h3>Support</h3>
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
                     <a href="#">Help Center</a>
                     <a href="#">Contact Us</a>
-                    <a href="#">Report a Problem</a>
-                    <a href="#">Suggest a Novel</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
                 </div>
 
-                <div class="footer-column">
-                    <h3>Community</h3>
-                    <a href="#">Discord</a>
-                    <a href="#">Telegram</a>
-                    <a href="#">Twitter</a>
-                    <a href="#">Pinterest</a>
-                </div>
+                <div class="footer-bottom-right">
 
-                <div class="footer-support">
-                    <h3>Support Busy Bee</h3>
-                    <p>Love our translations? Support us and help us keep going.</p>
-                    <button type="button" class="coffee-button">
-                        <img src="images/icons/coffee.svg" alt="">
-                        Buy Us a Coffee
-                    </button>
-                    <img class="footer-plant" src="https://placehold.co/90x90" alt="">
+                    <!-- Community, as icons instead of a text column — each
+                         needs a real href once the accounts exist -->
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <!-- Visual only for now, same as the header's language
+                         switcher — doesn't actually translate the page yet -->
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
                 </div>
 
             </div>
