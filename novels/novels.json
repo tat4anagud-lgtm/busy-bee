@@ -1,0 +1,16 @@
+[
+  {
+    "id": "kniga-grez",
+    "title": "Книга грёз",
+    "cover": "images/novels/a-dream-within-a-dream.png",
+    "author": "Цяньшань Чакэ",
+    "jsonUrl": "novels/kniga-grez/kniga-grez.json"
+  },
+  {
+    "id": "v-pogone-za-nefritom",
+    "title": "В погоне за нефритом",
+    "cover": "images/novels/pursuit-of-jade.png",
+    "author": "Туаньцзы Лайси",
+    "jsonUrl": "novels/v-pogone-za-nefritom/v-pogone-za-nefritom.json"
+  }
+]

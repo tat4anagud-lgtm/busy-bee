@@ -240,9 +240,15 @@ favoriteButtons.forEach((button) => {
 const followButtons = document.querySelectorAll(".follow-button");
 
 followButtons.forEach((button) => {
+    const icon = button.querySelector("img");
+
     button.addEventListener("click", () => {
         const isFollowing = button.classList.toggle("following");
-        button.textContent = isFollowing ? "Following" : "Follow";
+
+        if (icon) {
+            icon.src = isFollowing ? "images/icons/following.svg" : "images/icons/follow.svg";
+            icon.alt = isFollowing ? "Following" : "Follow";
+        }
     });
 });
 
