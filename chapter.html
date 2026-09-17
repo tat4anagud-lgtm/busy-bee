@@ -108,8 +108,8 @@
         <div class="chapter-top-bar">
             <nav class="breadcrumbs">
                 <a href="index.html">Главная</a> <span>›</span>
-                <a href="novel.html">A Dream Within a Dream</a> <span>›</span>
-                <span class="current" id="breadcrumbChapter">Chapter</span>
+                <a href="novel.html" id="breadcrumbNovelLink">Загрузка…</a> <span>›</span>
+                <span class="current" id="breadcrumbChapter">Глава</span>
             </nav>
 
             <a href="reader.html" id="readingModeBtn" class="btn-reading-mode">
@@ -123,21 +123,21 @@
 
             <!-- Chapter meta: label, ornament, title, subtitle -->
             <section class="chapter-web-meta">
-                <span class="chapter-label" id="chapterLabel">Chapter</span>
+                <span class="chapter-label" id="chapterLabel">Глава</span>
                 <div class="chapter-divider">
                     <img class="ornament" src="images/icons/chapter-divider.png" alt="">
                 </div>
-                <h1 class="chapter-title" id="chapterTitle">Loading…</h1>
+                <h1 class="chapter-title" id="chapterTitle">Загрузка…</h1>
 
                 <p class="chapter-web-subtitle">
-                    <a href="novel.html">A Dream Within a Dream</a> · Qian Shan Cha Ke
+                    <a href="novel.html" id="chapterWebNovelLink">Загрузка…</a> · <span id="chapterWebAuthor"></span>
                 </p>
-                <p class="chapter-web-info" id="chapterWebInfo">Chapter · — min read</p>
+                <p class="chapter-web-info" id="chapterWebInfo">Глава · — мин чтения</p>
             </section>
 
             <!-- Chapter text -->
             <article class="chapter-web-text" id="chapterWebText">
-                <p>Loading chapter…</p>
+                <p>Загрузка главы…</p>
             </article>
 
             <!-- Static ad placeholder — no real ad logic, just holding
@@ -304,7 +304,7 @@
     <div class="chapter-list-backdrop" id="chapterListBackdrop" style="display: none;">
         <div class="chapter-list-modal">
             <div class="chapter-list-head">
-                <h3>Table of Contents</h3>
+                <h3>Оглавление</h3>
                 <button type="button" class="chapter-list-close" id="chapterListClose">✕</button>
             </div>
             <div class="chapter-list-items" id="chapterListItems">
@@ -317,34 +317,34 @@
          inside the chapter. Positioned by script.js, never in CSS,
          since it has to track wherever the selection actually is. -->
     <div class="selection-toolbar" id="selectionToolbar" style="display: none;">
-        <button class="sel-btn" id="selCopyBtn" title="Copy">
+        <button class="sel-btn" id="selCopyBtn" title="Копировать">
             <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="6" y="6" width="9" height="9" rx="1.5"></rect>
                 <path d="M3.5 11.5V4a1.5 1.5 0 0 1 1.5-1.5h7.5"></path>
             </svg>
-            <span>Copy</span>
+            <span>Копировать</span>
         </button>
         <div class="sel-divider"></div>
-        <button class="sel-btn" id="selBookmarkBtn" title="Bookmark this passage">
+        <button class="sel-btn" id="selBookmarkBtn" title="Добавить отрывок в закладки">
             <img src="images/icons/bookmark.svg" alt="">
-            <span>Bookmark</span>
+            <span>Закладка</span>
         </button>
         <div class="sel-divider"></div>
-        <button class="sel-btn" id="selQuoteBtn" title="Save as quote">
+        <button class="sel-btn" id="selQuoteBtn" title="Сохранить как цитату">
             <img src="images/icons/quote.svg" alt="">
-            <span>Quote</span>
+            <span>Цитата</span>
         </button>
         <div class="sel-divider"></div>
-        <button class="sel-btn" id="selCommentBtn" title="Leave a comment">
+        <button class="sel-btn" id="selCommentBtn" title="Оставить комментарий">
             <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M2.5 4.5A1.5 1.5 0 0 1 4 3h10a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 14 12H7l-3.2 2.6a.5.5 0 0 1-.8-.4V12h-.5A1.5 1.5 0 0 1 1 10.5v-6a1.5 1.5 0 0 1 1.5-1.5Z"></path>
             </svg>
-            <span>Comment</span>
+            <span>Комментарий</span>
         </button>
         <div class="sel-divider"></div>
-        <button class="sel-btn" id="selNoteBtn" title="Add a note">
+        <button class="sel-btn" id="selNoteBtn" title="Добавить заметку">
             <img src="images/icons/edit.svg" alt="">
-            <span>Note</span>
+            <span>Заметка</span>
         </button>
     </div>
 
@@ -353,11 +353,11 @@
          and the localStorage key it saves into. -->
     <div class="selection-composer" id="selectionComposer" style="display: none;">
         <div class="selection-composer-quoted" id="selectionComposerQuoted"></div>
-        <div class="selection-composer-label" id="selectionComposerLabel">Add a note</div>
-        <textarea class="selection-composer-input" id="selectionComposerInput" rows="3" placeholder="Jot something down…"></textarea>
+        <div class="selection-composer-label" id="selectionComposerLabel">Добавить заметку</div>
+        <textarea class="selection-composer-input" id="selectionComposerInput" rows="3" placeholder="Запишите что-нибудь…"></textarea>
         <div class="selection-composer-actions">
-            <button type="button" class="btn-composer-cancel" id="selectionComposerCancel">Cancel</button>
-            <button type="button" class="btn-composer-save" id="selectionComposerSave">Save</button>
+            <button type="button" class="btn-composer-cancel" id="selectionComposerCancel">Отмена</button>
+            <button type="button" class="btn-composer-save" id="selectionComposerSave">Сохранить</button>
         </div>
     </div>
 

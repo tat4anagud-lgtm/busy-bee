@@ -688,6 +688,12 @@ body {
 
 .hero-continue {
     background-image: url("images/hero/hero-continue-bg.png");
+
+    /* Hidden by default, same reasoning as .hero-welcome below —
+       script.js decides which one to reveal once it has actually
+       checked localStorage (and, for hero-continue, fetched the
+       novel's data), so nothing flashes on screen before then */
+    display: none;
 }
 
 /* ---------- Novel cover ---------- */
@@ -811,6 +817,14 @@ body {
 
     font-size: 11px;
     line-height: 1.6;
+
+    /* Cap the synopsis at 3 lines so a long annotation can't stretch
+       the hero card — anything past that is cut with an ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 
@@ -1002,131 +1016,14 @@ body {
     font-size: 13px;
 }
 
-/* Big pill-shaped search bar */
-.hero-search {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    width: 100%;
-    max-width: 480px;
-
-    height: 52px;
-
-    margin: 28px auto 0;
-    padding: 0 6px 0 20px;
-
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-    border-radius: 14px;
-
-    box-shadow: 0 6px 18px var(--shadow);
-}
-
-.hero-search > img {
-    width: 16px;
-    height: 16px;
-
-    flex-shrink: 0;
-
-    object-fit: contain;
-}
-
-.hero-search input {
-    flex: 1;
-
-    min-width: 0;
-
-    border: none;
-    outline: none;
-
-    background: transparent;
-
-    font-family: inherit;
-    font-size: 13px;
-
-    color: var(--text-primary);
-}
-
-.hero-search input::placeholder {
-    color: #A49B91;
-}
-
-.hero-search-button {
-    flex-shrink: 0;
-
-    padding: 0 22px;
-
-    height: 40px;
-
-    border: none;
-    border-radius: 10px;
-
-    background: var(--honey);
-    color: var(--white);
-
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 500;
-
-    cursor: pointer;
-
-    transition: background 0.2s ease;
-}
-
-.hero-search-button:hover {
-    background: #C7962F;
+/* A bit more breathing room than the catalog's version gets — here
+   the search box sits right under a subtitle line instead of at the
+   top of the hero, so it needs extra clearance to avoid crowding it */
+.hero-welcome-content .hero-search-box {
+    margin-top: 24px;
 }
 
 /* ---------- Popular searches ---------- */
-
-.popular-searches {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    margin-top: 16px;
-}
-
-.popular-searches span {
-    margin-right: 2px;
-
-    color: var(--text-secondary);
-
-    font-size: 12px;
-}
-
-.popular-searches button {
-    flex-shrink: 0;
-
-    padding: 6px 14px;
-
-    border: 1px solid var(--border);
-    border-radius: 999px;
-
-    background: var(--surface);
-    color: var(--text-secondary);
-
-    font-family: inherit;
-    font-size: 12px;
-    white-space: nowrap;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease;
-}
-
-.popular-searches button:hover {
-    background: var(--surface-warm);
-    border-color: var(--honey);
-    color: var(--text-primary);
-}
 
 
 /* ========================================
@@ -2186,7 +2083,8 @@ body {
 
 .meta-tags {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    gap: 10px;
     font-size: 12px;
     color: var(--text-secondary);
     margin-bottom: 20px;
@@ -2201,6 +2099,11 @@ body {
 .meta-item img {
     width: 14px;
     height: 14px;
+}
+
+.meta-label {
+    font-weight: 600;
+    color: var(--text-muted);
 }
 
 /* User Progress Box */
@@ -3737,6 +3640,17 @@ a.pill:hover {
     color: var(--text-secondary);
 }
 
+/* Translation status: "Приостановлено" — same shape as badge-completed,
+   just muted so it doesn't read as a positive/finished state */
+.badge-hiatus {
+    background: rgba(120, 113, 108, 0.85);
+    color: white;
+}
+
+.badge-hiatus img {
+    filter: brightness(0) invert(1);
+}
+
 .card-menu {
     position: absolute;
     top: 16px;
@@ -3979,14 +3893,17 @@ a.pill:hover {
     margin-bottom: 32px;
 }
 
-/* Wraps the heading + carousel together and shrinks to the carousel's
-   actual width (not the full page width) — so "View all" lines up
-   above the right arrow instead of drifting off to the page edge */
+/* Wraps the heading + carousel together. Used to shrink to the
+   carousel's actual content width so "View all" would line up above
+   the arrow — but that meant the whole block's width depended on how
+   many novels existed (narrow with only a few, matching the page only
+   once there were enough to fill a row). Full width instead, same as
+   .collections-section-catalog below, so this block is always as wide
+   as the Collections section regardless of novel count. */
 .recommends-inner {
-    display: inline-flex;
+    display: flex;
     flex-direction: column;
-    width: fit-content;
-    max-width: 100%;
+    width: 100%;
 }
 
 .recommends-inner .section-header {
@@ -4000,6 +3917,7 @@ a.pill:hover {
 }
 
 .recommends-track {
+    flex: 1;
     display: flex;
     gap: 12px;
     overflow-x: hidden;
@@ -4856,7 +4774,7 @@ body.reader-page.theme-dark .btn-step:hover {
     height: 36px;
     padding: 0 24px;
     display: grid;
-    grid-template-columns: 180px 1fr 240px;
+    grid-template-columns: 160px 1fr 340px;
     align-items: center;
     font-family: 'Inter', sans-serif;
     font-size: 10px;
@@ -4901,17 +4819,20 @@ body.reader-page.theme-dark .progress-track {
     align-items: center;
     justify-content: flex-end;
     gap: 20px;
+    white-space: nowrap;
 }
 
 .chapter-nav-links {
     display: flex;
     gap: 12px;
+    flex-shrink: 0;
 }
 
 .nav-link {
     color: var(--text-warm);
     text-decoration: none;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 body.reader-page.theme-dark .nav-link {

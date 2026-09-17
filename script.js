@@ -11,17 +11,12 @@
 
 
 /* ========================================
-   TESTING TOGGLE — Homepage hero variant
+   Homepage hero — "Continue Reading" vs "Welcome" search
    ========================================
-   The homepage has two hero states:
-   - HAS_ACTIVE_NOVEL = true  -> "Continue Reading" hero (.hero-continue)
-   - HAS_ACTIVE_NOVEL = false -> "Welcome" search hero  (.hero-welcome)
-
-   Change this one value and reload the page to preview either state.
-   Later this will come from real data (does the user have a novel
-   in progress?) instead of being hardcoded here.
-   ======================================== */
-const HAS_ACTIVE_NOVEL = true;
+   Shows .hero-continue (last chapter the reader had open, picked from
+   getReadingProgress — see the shared helpers further down this file)
+   if there's any reading history in this browser, otherwise falls
+   back to .hero-welcome. */
 
 const heroContinue = document.querySelector(".hero-continue");
 const heroWelcome = document.querySelector(".hero-welcome");
@@ -29,8 +24,79 @@ const heroWelcome = document.querySelector(".hero-welcome");
 // Guarded: only the homepage has a hero section at all, so this is a
 // no-op (not an error) on every other page, like the novel page
 if (heroContinue && heroWelcome) {
-    heroContinue.style.display = HAS_ACTIVE_NOVEL ? "flex" : "none";
-    heroWelcome.style.display = HAS_ACTIVE_NOVEL ? "none" : "flex";
+    // Most recently updated novel across everything in localStorage —
+    // that's "the thing I was last reading", regardless of which novel
+    let mostRecentNovelId = null;
+    let mostRecentChapterNumber = null;
+    try {
+        const allProgress = JSON.parse(localStorage.getItem("busybee_reading_progress")) || {};
+        Object.entries(allProgress).forEach(([novelId, entry]) => {
+            if (!mostRecentNovelId || entry.updatedAt > allProgress[mostRecentNovelId].updatedAt) {
+                mostRecentNovelId = novelId;
+                mostRecentChapterNumber = entry.chapter;
+            }
+        });
+    } catch (error) {
+        // No valid progress saved — falls through to the welcome hero below
+    }
+
+    if (mostRecentNovelId) {
+        getNovelData(mostRecentNovelId)
+            .then((novel) => {
+                const coverImg = document.getElementById("heroCoverImg");
+                if (coverImg) {
+                    coverImg.src = novel.cover;
+                    coverImg.alt = novel.title;
+                }
+
+                const titleLink = document.getElementById("heroTitleLink");
+                if (titleLink) {
+                    titleLink.textContent = novel.title;
+                    titleLink.href = `novel.html?id=${mostRecentNovelId}`;
+                }
+
+                if (novel.author) {
+                    const authorName = document.getElementById("heroAuthorName");
+                    const authorLink = document.getElementById("heroAuthorLink");
+                    if (authorName) authorName.textContent = novel.author.name;
+                    if (authorLink) authorLink.href = novel.author.href || "#";
+                }
+
+                const translatorLink = document.getElementById("heroTranslatorLink");
+                if (translatorLink && novel.translator) {
+                    translatorLink.textContent = novel.translator.name;
+                    translatorLink.href = novel.translator.href || "#";
+                }
+
+                const descriptionEl = document.getElementById("heroDescription");
+                if (descriptionEl) descriptionEl.textContent = (novel.synopsis || []).join(" ");
+
+                const progressLabel = document.getElementById("heroProgressLabel");
+                const progressPercent = document.getElementById("heroProgressPercent");
+                const progressBar = document.getElementById("heroProgressBar");
+                if (novel.totalChapters) {
+                    const percent = Math.min(100, Math.round((mostRecentChapterNumber / novel.totalChapters) * 100));
+                    if (progressLabel) progressLabel.textContent = `Глава ${mostRecentChapterNumber} из ${novel.totalChapters}`;
+                    if (progressPercent) progressPercent.textContent = `${percent}%`;
+                    if (progressBar) progressBar.style.width = `${percent}%`;
+                }
+
+                const continueBtn = document.getElementById("heroContinueBtn");
+                if (continueBtn) continueBtn.href = `chapter.html?novel=${mostRecentNovelId}&chapter=${mostRecentChapterNumber}`;
+
+                heroContinue.style.display = "flex";
+                heroWelcome.style.display = "none";
+            })
+            .catch(() => {
+                // Saved novel no longer exists (renamed/removed) — fall
+                // back to the welcome hero rather than showing a broken card
+                heroContinue.style.display = "none";
+                heroWelcome.style.display = "flex";
+            });
+    } else {
+        heroContinue.style.display = "none";
+        heroWelcome.style.display = "flex";
+    }
 }
 
 
@@ -500,10 +566,9 @@ if (filterButton && filterMenu) {
 
 
 /* ---------- Chapter list sort order (oldest first / newest first) ---------- */
-// Table starts newest-first (chapter 124 at the top, then Extras last).
-// Clicking the other arrow reverses the whole list — Extras included —
-// so the numbers/dates/progress stay attached to the correct chapter
-// instead of just re-labeling them.
+// Table starts newest-first (highest chapter number at the top).
+// Clicking the other arrow reverses the whole list so the numbers/dates
+// stay attached to the correct chapter instead of just re-labeling them.
 
 const sortButtons = document.querySelectorAll(".sort-toggle");
 const chaptersTable = document.querySelector(".chapters-table");
@@ -644,7 +709,6 @@ if (btnShowMoreGenres && extraGenres) {
 // options sort by the same value for now. "Новые поступления" has no real
 // "date added" either, so it just reverses the default card order.
 
-const catalogCards = Array.from(document.querySelectorAll(".catalog-grid > .novel-card"));
 const catalogSearchInput = document.getElementById("catalogSearchInput");
 const catalogSearchBtn = document.getElementById("catalogSearchBtn");
 const resultsCountEl = document.getElementById("resultsCount");
@@ -658,9 +722,9 @@ function getCheckedValues(groupName) {
 
 function getCardChapterCount(card) {
     const statusText = card.querySelector(".chapter-status")?.textContent || "";
-    const ofMatch = statusText.match(/of (\d+)/);
+    const ofMatch = statusText.match(/из (\d+)/);
     if (ofMatch) return parseInt(ofMatch[1], 10);
-    const totalMatch = statusText.match(/(\d+) Chapters/);
+    const totalMatch = statusText.match(/(\d+)/);
     return totalMatch ? parseInt(totalMatch[1], 10) : 0;
 }
 
@@ -671,8 +735,21 @@ function getCardLengthBucket(card) {
     return "long";
 }
 
-if (catalogCards.length && catalogGrid) {
+// Called once the grid actually has cards in it — either these ran
+// against nothing before (catalog.html loaded before its cards were
+// fetched), so this lives in a function callable again once
+// populateCatalogGrid() (further down this file) has finished
+function initCatalogFiltering() {
+    const catalogCards = Array.from(document.querySelectorAll(".catalog-grid > .novel-card"));
+    if (!catalogCards.length || !catalogGrid) return;
+
     const originalOrder = catalogCards.slice();
+
+    const CATALOG_CARDS_PER_PAGE = 12;
+    const catalogPagePrevBtn = document.getElementById("catalogPagePrevBtn");
+    const catalogPageNextBtn = document.getElementById("catalogPageNextBtn");
+    const catalogPageNumbersEl = document.getElementById("catalogPageNumbers");
+    let currentCatalogPage = 1;
 
     function applyCatalogFilters() {
         const statusFilters = getCheckedValues("status");
@@ -681,9 +758,7 @@ if (catalogCards.length && catalogGrid) {
         const authorFilters = getCheckedValues("author");
         const searchTerm = catalogSearchInput ? catalogSearchInput.value.trim().toLowerCase() : "";
 
-        let visibleCount = 0;
-
-        catalogCards.forEach((card) => {
+        const matchedCards = catalogCards.filter((card) => {
             const cardStatus = card.querySelector(".badge-completed") ? "completed" : "ongoing";
             const cardGenres = Array.from(card.querySelectorAll(".novel-tags span")).map((el) => el.textContent.trim().toLowerCase());
             const cardTitle = (card.querySelector("h3")?.textContent || "").toLowerCase();
@@ -695,16 +770,84 @@ if (catalogCards.length && catalogGrid) {
             const matchesAuthor = authorFilters.length === 0 || authorFilters.includes(cardAuthor);
             const matchesSearch = searchTerm === "" || cardTitle.includes(searchTerm) || cardAuthor.includes(searchTerm) || cardGenres.some((g) => g.includes(searchTerm));
 
-            const isVisible = matchesStatus && matchesLength && matchesGenre && matchesAuthor && matchesSearch;
-            card.style.display = isVisible ? "" : "none";
-            if (isVisible) visibleCount += 1;
+            return matchesStatus && matchesLength && matchesGenre && matchesAuthor && matchesSearch;
         });
 
+        const totalPages = Math.max(1, Math.ceil(matchedCards.length / CATALOG_CARDS_PER_PAGE));
+        if (currentCatalogPage > totalPages) currentCatalogPage = totalPages;
+        if (currentCatalogPage < 1) currentCatalogPage = 1;
+
+        const pageStart = (currentCatalogPage - 1) * CATALOG_CARDS_PER_PAGE;
+        const pageEnd = pageStart + CATALOG_CARDS_PER_PAGE;
+        const pageCards = matchedCards.slice(pageStart, pageEnd);
+
+        // Everything outside the filter match is hidden outright; cards
+        // that match but fall on a different page are hidden too, just
+        // for a different reason — only the current page's slice shows
+        catalogCards.forEach((card) => { card.style.display = "none"; });
+        pageCards.forEach((card) => { card.style.display = ""; });
+
         if (resultsCountEl) {
-            resultsCountEl.textContent = `Показано ${visibleCount} из ${catalogCards.length}`;
+            resultsCountEl.textContent = `Показано ${pageCards.length} из ${matchedCards.length}`;
         }
 
-        if (catalogNoResults) catalogNoResults.hidden = visibleCount !== 0;
+        if (catalogNoResults) catalogNoResults.hidden = matchedCards.length !== 0;
+
+        renderCatalogPagination(totalPages, currentCatalogPage);
+    }
+
+    function renderCatalogPagination(totalPages, activePage) {
+        if (!catalogPageNumbersEl) return;
+
+        if (catalogPagePrevBtn) catalogPagePrevBtn.disabled = activePage <= 1;
+        if (catalogPageNextBtn) catalogPageNextBtn.disabled = activePage >= totalPages;
+
+        // Compact page list: first/last page, the current page and its
+        // immediate neighbours, "…" for any gap — same approach as the
+        // chapters table's pagination on the novel page
+        const pagesToShow = new Set([1, totalPages, activePage, activePage - 1, activePage + 1]);
+        const sortedPages = Array.from(pagesToShow).filter((p) => p >= 1 && p <= totalPages).sort((a, b) => a - b);
+
+        catalogPageNumbersEl.innerHTML = "";
+        let previousPage = 0;
+
+        sortedPages.forEach((pageNum) => {
+            if (pageNum - previousPage > 1) {
+                const ellipsis = document.createElement("span");
+                ellipsis.className = "page-ellipsis";
+                ellipsis.textContent = "…";
+                catalogPageNumbersEl.appendChild(ellipsis);
+            }
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "page-number" + (pageNum === activePage ? " active" : "");
+            btn.textContent = pageNum;
+            btn.addEventListener("click", () => {
+                currentCatalogPage = pageNum;
+                applyCatalogFilters();
+                catalogGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
+            catalogPageNumbersEl.appendChild(btn);
+
+            previousPage = pageNum;
+        });
+    }
+
+    if (catalogPagePrevBtn) {
+        catalogPagePrevBtn.addEventListener("click", () => {
+            currentCatalogPage -= 1;
+            applyCatalogFilters();
+            catalogGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    }
+
+    if (catalogPageNextBtn) {
+        catalogPageNextBtn.addEventListener("click", () => {
+            currentCatalogPage += 1;
+            applyCatalogFilters();
+            catalogGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
     }
 
     function applyCatalogSort() {
@@ -720,20 +863,31 @@ if (catalogCards.length && catalogGrid) {
         }
 
         sorted.forEach((card) => catalogGrid.appendChild(card));
+        currentCatalogPage = 1;
+        applyCatalogFilters();
     }
 
     document.querySelectorAll('.filter-group[data-filter-group] input[type="checkbox"]').forEach((input) => {
-        input.addEventListener("change", applyCatalogFilters);
+        input.addEventListener("change", () => {
+            currentCatalogPage = 1;
+            applyCatalogFilters();
+        });
     });
 
     if (catalogSearchInput) {
         catalogSearchInput.addEventListener("keydown", (event) => {
-            if (event.key === "Enter") applyCatalogFilters();
+            if (event.key === "Enter") {
+                currentCatalogPage = 1;
+                applyCatalogFilters();
+            }
         });
     }
 
     if (catalogSearchBtn) {
-        catalogSearchBtn.addEventListener("click", applyCatalogFilters);
+        catalogSearchBtn.addEventListener("click", () => {
+            currentCatalogPage = 1;
+            applyCatalogFilters();
+        });
     }
 
     document.querySelectorAll(".search-tag").forEach((tag) => {
@@ -749,6 +903,7 @@ if (catalogCards.length && catalogGrid) {
                 if (checkbox) checkbox.checked = true;
             }
 
+            currentCatalogPage = 1;
             applyCatalogFilters();
         });
     });
@@ -765,6 +920,7 @@ if (catalogCards.length && catalogGrid) {
                 input.dispatchEvent(new Event("input"));
             });
 
+            currentCatalogPage = 1;
             applyCatalogFilters();
         });
     }
@@ -827,26 +983,32 @@ viewButtons.forEach((btn) => {
 });
 
 /* ---------- Card "···" menu (Add to Collection / Share / Report...) ---------- */
+// Wrapped in a function (called after the grid is actually populated)
+// for the same reason as initCatalogFiltering above — nothing to bind
+// to yet at the point this file first runs
 
-document.querySelectorAll(".card-menu").forEach((menu) => {
-    const toggleBtn = menu.querySelector(".btn-card-menu");
-    const dropdown = menu.querySelector(".card-menu-dropdown");
-    if (!toggleBtn || !dropdown) return;
+function bindCatalogCardMenus() {
+    document.querySelectorAll(".card-menu").forEach((menu) => {
+        const toggleBtn = menu.querySelector(".btn-card-menu");
+        const dropdown = menu.querySelector(".card-menu-dropdown");
+        if (!toggleBtn || !dropdown || toggleBtn.dataset.bound) return;
+        toggleBtn.dataset.bound = "true";
 
-    toggleBtn.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const isOpen = dropdown.classList.contains("open");
+        toggleBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const isOpen = dropdown.classList.contains("open");
 
-        // Only one card menu open at a time
-        document.querySelectorAll(".card-menu-dropdown.open").forEach((d) => d.classList.remove("open"));
-        document.querySelectorAll(".btn-card-menu[aria-expanded='true']").forEach((b) => b.setAttribute("aria-expanded", "false"));
+            // Only one card menu open at a time
+            document.querySelectorAll(".card-menu-dropdown.open").forEach((d) => d.classList.remove("open"));
+            document.querySelectorAll(".btn-card-menu[aria-expanded='true']").forEach((b) => b.setAttribute("aria-expanded", "false"));
 
-        if (!isOpen) {
-            dropdown.classList.add("open");
-            toggleBtn.setAttribute("aria-expanded", "true");
-        }
+            if (!isOpen) {
+                dropdown.classList.add("open");
+                toggleBtn.setAttribute("aria-expanded", "true");
+            }
+        });
     });
-});
+}
 
 document.addEventListener("click", (event) => {
     if (!event.target.closest(".card-menu")) {
@@ -855,46 +1017,78 @@ document.addEventListener("click", (event) => {
     }
 });
 
-/* ---------- Pagination (visual only for now) ---------- */
-// Only 8 demo cards exist, so there's nothing real to page through yet —
-// this just makes the control feel alive (active state, arrow disabling).
-// Once real novel data exists, wire this up the same way as the chapters
-// table's pagination (see applyChapterFilters / renderChapterPagination).
+/* ---------- Pagination ----------
+   Real prev/next + page-number logic now lives inside
+   initCatalogFiltering() above (renderCatalogPagination), since the
+   page buttons need to be rebuilt every time the filtered/sorted set
+   of cards changes — nothing left to do here. */
 
-const catalogPagination = document.querySelector(".catalog-pagination");
+/* ========================================
+   CHAPTER DATA — shared helpers (reader.html + chapter.html)
+   ========================================
+   Both the Reading-mode block and the Web-mode block below (plus the
+   Chapter List modal) need the same two things: the novel's own data
+   file (for its title + full chapter list, used for prev/next and the
+   table of contents) and the individual chapter's text. Both now come
+   from /novels/<id>/... instead of the old flat /chapters/ test files.
 
-if (catalogPagination) {
-    const pagePrev = document.getElementById("catalogPagePrevBtn");
-    const pageNext = document.getElementById("catalogPageNextBtn");
-    const pageNumberBtns = Array.from(catalogPagination.querySelectorAll(".page-number"));
+   getNovelData() is memoized so that all three blocks can call it
+   independently without triggering three separate fetches of the same
+   novel file.
+   ======================================== */
 
-    const setActivePage = (btn) => {
-        pageNumberBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+const novelDataCache = {};
 
-        const pageNum = parseInt(btn.textContent, 10);
-        if (pagePrev) pagePrev.disabled = pageNum <= 1;
-        if (pageNext) pageNext.disabled = pageNum >= parseInt(pageNumberBtns[pageNumberBtns.length - 1].textContent, 10);
-    };
+async function getNovelData(novelId) {
+    if (novelDataCache[novelId]) return novelDataCache[novelId];
+    const response = await fetch(`novels/${novelId}/${novelId}.json`);
+    if (!response.ok) throw new Error(`Novel "${novelId}" not found`);
+    const data = await response.json();
+    novelDataCache[novelId] = data;
+    return data;
+}
 
-    pageNumberBtns.forEach((btn) => {
-        btn.addEventListener("click", () => setActivePage(btn));
-    });
+function chapterContentUrl(novelId, chapterNumber) {
+    return `novels/${novelId}/chapters/glava-${chapterNumber}.json`;
+}
 
-    if (pagePrev) {
-        pagePrev.addEventListener("click", () => {
-            const active = catalogPagination.querySelector(".page-number.active");
-            const currentIndex = pageNumberBtns.indexOf(active);
-            if (currentIndex > 0) setActivePage(pageNumberBtns[currentIndex - 1]);
-        });
+// novel=<id> is passed along so chapter.html / reader.html know which
+// novel's chapter to load
+function chapterHref(novelId, chapterNumber) {
+    return `chapter.html?novel=${encodeURIComponent(novelId)}&chapter=${chapterNumber}`;
+}
+
+// Reads ?novel=<id>&chapter=<n> from the current page's URL — shared
+// so every block below agrees on the same defaults
+function getNovelAndChapterFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const novelId = params.get("novel") || "kniga-grez";
+    const chapterNumber = parseInt(params.get("chapter"), 10) || 1;
+    return { novelId, chapterNumber };
+}
+
+/* ---------- Reading progress (localStorage) ----------
+   Remembers, per novel, the last chapter the reader opened — no
+   backend yet, so this is purely a per-browser convenience for now.
+   Storage shape: { "<novelId>": { chapter: <number>, updatedAt: <ISO> } } */
+const READING_PROGRESS_KEY = "busybee_reading_progress";
+
+function getReadingProgress(novelId) {
+    try {
+        const all = JSON.parse(localStorage.getItem(READING_PROGRESS_KEY)) || {};
+        return all[novelId] ? all[novelId].chapter : null;
+    } catch (error) {
+        return null;
     }
+}
 
-    if (pageNext) {
-        pageNext.addEventListener("click", () => {
-            const active = catalogPagination.querySelector(".page-number.active");
-            const currentIndex = pageNumberBtns.indexOf(active);
-            if (currentIndex < pageNumberBtns.length - 1) setActivePage(pageNumberBtns[currentIndex + 1]);
-        });
+function saveReadingProgress(novelId, chapterNumber) {
+    try {
+        const all = JSON.parse(localStorage.getItem(READING_PROGRESS_KEY)) || {};
+        all[novelId] = { chapter: chapterNumber, updatedAt: new Date().toISOString() };
+        localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify(all));
+    } catch (error) {
+        console.error("Couldn't save reading progress:", error);
     }
 }
 
@@ -1011,9 +1205,9 @@ if (readerHeader) {
         document.body.classList.toggle("book-mode", enabled);
 
         if (toggleReadingModeBtn) {
-            toggleReadingModeBtn.title = enabled ? "Switch to Scroll mode" : "Switch to Book mode";
+            toggleReadingModeBtn.title = enabled ? "Переключить на прокрутку" : "Переключить на постраничный режим";
         }
-        if (readingModeLabel) readingModeLabel.textContent = enabled ? "Book" : "Scroll";
+        if (readingModeLabel) readingModeLabel.textContent = enabled ? "Книга" : "Прокрутка";
 
         // Same pattern as the moon/sun theme icon swap: the icon itself
         // communicates the state, no color highlight needed on the button
@@ -1153,40 +1347,44 @@ if (readerHeader) {
         },
     });
 
-    /* 8. Chapter loading (test data) — fetches chapters/chapter-N.json
-       and renders it into the prose. Only chapters 124–126 exist for
-       now; swap this for a real API call once there's a backend. */
+    /* 8. Chapter loading — fetches the novel's own data file (for the
+       full chapter list, used for prev/next) plus the individual
+       chapter's text from /novels/<id>/chapters/glava-<n>.json */
     const chapterLabel = document.getElementById("chapterLabel");
     const chapterTitleEl = document.getElementById("chapterTitle");
     const chapterSubtitle = document.getElementById("chapterSubtitle");
     const novelTitle = readerHeader.querySelector(".novel-title");
 
-    const AVAILABLE_CHAPTERS = [123, 124, 125, 126];
-
-    // Lets chapter.html hand off to a specific chapter via
-    // reader.html?chapter=125 — falls back to 124 if the param is
-    // missing or isn't one of the chapters we actually have
-    const readerUrlParams = new URLSearchParams(window.location.search);
-    const readerChapterFromUrl = parseInt(readerUrlParams.get("chapter"), 10);
-    let currentChapterNumber = AVAILABLE_CHAPTERS.includes(readerChapterFromUrl)
-        ? readerChapterFromUrl
-        : 124;
+    const { novelId: readerNovelId, chapterNumber: readerChapterFromUrl } = getNovelAndChapterFromUrl();
+    let currentChapterNumber = readerChapterFromUrl;
+    let availableChapters = [currentChapterNumber];
 
     async function loadChapter(chapterNumber) {
         try {
-            const response = await fetch(`chapters/chapter-${chapterNumber}.json`);
-            if (!response.ok) throw new Error(`Chapter ${chapterNumber} not found`);
+            const novel = await getNovelData(readerNovelId);
+            availableChapters = [...novel.chapters].map((c) => c.number).sort((a, b) => a - b);
+
+            const response = await fetch(chapterContentUrl(readerNovelId, chapterNumber));
+            if (!response.ok) throw new Error(`Глава ${chapterNumber} не найдена`);
             const chapter = await response.json();
 
             currentChapterNumber = chapter.number;
+            saveReadingProgress(readerNovelId, chapter.number);
 
             const webVersionLink = document.getElementById("webVersionLink");
-            if (webVersionLink) webVersionLink.href = `chapter.html?chapter=${chapter.number}`;
+            if (webVersionLink) webVersionLink.href = `chapter.html?novel=${readerNovelId}&chapter=${chapter.number}`;
 
-            if (chapterLabel) chapterLabel.textContent = `Chapter ${chapter.number}`;
+            const exitReadingLink = document.getElementById("exitReadingLink");
+            if (exitReadingLink) exitReadingLink.href = `novel.html?id=${readerNovelId}`;
+
+            if (chapterLabel) chapterLabel.textContent = `Глава ${chapter.number}`;
             if (chapterTitleEl) chapterTitleEl.textContent = chapter.title;
-            if (chapterSubtitle) chapterSubtitle.textContent = `Chapter ${chapter.number}: ${chapter.title}`;
-            document.title = `Chapter ${chapter.number}: ${chapter.title} — ${novelTitle ? novelTitle.textContent : "Busy Bee"}`;
+            if (chapterSubtitle) chapterSubtitle.textContent = `Глава ${chapter.number}: ${chapter.title}`;
+            document.title = `Глава ${chapter.number}: ${chapter.title} — ${novel.title || (novelTitle ? novelTitle.textContent : "Busy Bee")}`;
+            if (novelTitle) {
+                novelTitle.textContent = novel.title;
+                novelTitle.href = `novel.html?id=${readerNovelId}`;
+            }
 
             if (prose) {
                 const paragraphsContainer = document.getElementById("proseParagraphs");
@@ -1225,7 +1423,7 @@ if (readerHeader) {
             updateReadingProgress();
         } catch (error) {
             const paragraphsContainer = document.getElementById("proseParagraphs");
-            const errorHtml = `<p>Couldn't load this chapter (${chapterNumber}). ${error.message}</p>`;
+            const errorHtml = `<p>Не удалось загрузить главу (${chapterNumber}). ${error.message}</p>`;
             if (paragraphsContainer) {
                 paragraphsContainer.innerHTML = errorHtml;
             } else if (prose) {
@@ -1241,7 +1439,7 @@ if (readerHeader) {
     const nextChapterLink = document.querySelector(".chapter-nav-links .nav-link:last-child");
 
     function updateChapterNavLinks() {
-        const index = AVAILABLE_CHAPTERS.indexOf(currentChapterNumber);
+        const index = availableChapters.indexOf(currentChapterNumber);
 
         if (prevChapterLink) {
             const hasPrev = index > 0;
@@ -1249,7 +1447,7 @@ if (readerHeader) {
             prevChapterLink.style.pointerEvents = hasPrev ? "auto" : "none";
         }
         if (nextChapterLink) {
-            const hasNext = index >= 0 && index < AVAILABLE_CHAPTERS.length - 1;
+            const hasNext = index >= 0 && index < availableChapters.length - 1;
             nextChapterLink.style.opacity = hasNext ? "1" : "0.3";
             nextChapterLink.style.pointerEvents = hasNext ? "auto" : "none";
         }
@@ -1258,16 +1456,16 @@ if (readerHeader) {
     if (prevChapterLink) {
         prevChapterLink.addEventListener("click", (event) => {
             event.preventDefault();
-            const index = AVAILABLE_CHAPTERS.indexOf(currentChapterNumber);
-            if (index > 0) loadChapter(AVAILABLE_CHAPTERS[index - 1]);
+            const index = availableChapters.indexOf(currentChapterNumber);
+            if (index > 0) loadChapter(availableChapters[index - 1]);
         });
     }
 
     if (nextChapterLink) {
         nextChapterLink.addEventListener("click", (event) => {
             event.preventDefault();
-            const index = AVAILABLE_CHAPTERS.indexOf(currentChapterNumber);
-            if (index < AVAILABLE_CHAPTERS.length - 1) loadChapter(AVAILABLE_CHAPTERS[index + 1]);
+            const index = availableChapters.indexOf(currentChapterNumber);
+            if (index < availableChapters.length - 1) loadChapter(availableChapters[index + 1]);
         });
     }
 
@@ -1284,6 +1482,16 @@ if (readerHeader) {
     const progressTrack = document.querySelector(".progress-track");
     const WORDS_PER_PAGE = 300;
     let currentChapterTotalPages = 1;
+
+    // "1 страница", "2 страницы", "5 страниц" — Russian plural forms
+    function pagesLeftLabel(n) {
+        const mod10 = n % 10;
+        const mod100 = n % 100;
+        let word = "страниц";
+        if (mod10 === 1 && mod100 !== 11) word = "страница";
+        else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) word = "страницы";
+        return `${n} ${word} осталось`;
+    }
 
     function updateReadingProgress() {
         if (!prose) return;
@@ -1307,7 +1515,7 @@ if (readerHeader) {
 
         if (progressFill) progressFill.style.width = `${percent}%`;
         if (progressThumb) progressThumb.style.left = `${percent}%`;
-        if (progressText) progressText.textContent = `${percent}% through the chapter`;
+        if (progressText) progressText.textContent = `${percent}% главы`;
 
         if (pagesRemainingEl) {
             if (isBookMode) {
@@ -1315,15 +1523,13 @@ if (readerHeader) {
                 const totalPages = Math.max(1, Math.round((prose.scrollWidth + BOOK_COLUMN_GAP) / pageWidth));
                 const currentPage = Math.round((prose.scrollLeft / pageWidth)) + 1;
                 const pagesLeft = Math.max(0, totalPages - currentPage);
-                pagesRemainingEl.textContent =
-                    pagesLeft === 1 ? "1 page left in chapter" : `${pagesLeft} pages left in chapter`;
+                pagesRemainingEl.textContent = pagesLeftLabel(pagesLeft);
             } else {
                 const pagesLeft = Math.max(
                     0,
                     currentChapterTotalPages - Math.round((currentChapterTotalPages * percent) / 100)
                 );
-                pagesRemainingEl.textContent =
-                    pagesLeft === 1 ? "1 page left in chapter" : `${pagesLeft} pages left in chapter`;
+                pagesRemainingEl.textContent = pagesLeftLabel(pagesLeft);
             }
         }
     }
@@ -1361,11 +1567,11 @@ if (readerHeader) {
             const pageWidth = prose.clientWidth + BOOK_COLUMN_GAP;
             prose.scrollBy({ left: direction * pageWidth, behavior: "smooth" });
         } else {
-            const index = AVAILABLE_CHAPTERS.indexOf(currentChapterNumber);
+            const index = availableChapters.indexOf(currentChapterNumber);
             if (direction < 0 && index > 0) {
-                loadChapter(AVAILABLE_CHAPTERS[index - 1]);
-            } else if (direction > 0 && index >= 0 && index < AVAILABLE_CHAPTERS.length - 1) {
-                loadChapter(AVAILABLE_CHAPTERS[index + 1]);
+                loadChapter(availableChapters[index - 1]);
+            } else if (direction > 0 && index >= 0 && index < availableChapters.length - 1) {
+                loadChapter(availableChapters[index + 1]);
             }
         }
     }
@@ -1394,33 +1600,44 @@ if (readerHeader) {
 const chapterWebText = document.getElementById("chapterWebText");
 
 if (chapterWebText) {
-    // Same set as the Reading-mode block — duplicated here rather than
-    // shared, since the two blocks live on different pages and don't
-    // share a scope. If chapters are ever added/removed, update both.
-    const WEB_AVAILABLE_CHAPTERS = [123, 124, 125, 126];
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const chapterFromUrl = parseInt(urlParams.get("chapter"), 10);
-    const webChapterNumber = WEB_AVAILABLE_CHAPTERS.includes(chapterFromUrl)
-        ? chapterFromUrl
-        : 124;
+    const { novelId: webNovelId, chapterNumber: webChapterNumber } = getNovelAndChapterFromUrl();
+    let webAvailableChapters = [webChapterNumber];
 
     const breadcrumbChapter = document.getElementById("breadcrumbChapter");
+    const breadcrumbNovelLink = document.getElementById("breadcrumbNovelLink");
     const chapterLabel = document.getElementById("chapterLabel");
     const chapterTitle = document.getElementById("chapterTitle");
     const chapterWebInfo = document.getElementById("chapterWebInfo");
+    const chapterWebNovelLink = document.getElementById("chapterWebNovelLink");
+    const chapterWebAuthor = document.getElementById("chapterWebAuthor");
     const readingModeBtn = document.getElementById("readingModeBtn");
     const prevChapterBtn = document.getElementById("prevChapterBtn");
     const nextChapterBtn = document.getElementById("nextChapterBtn");
 
     async function loadWebChapter(chapterNumber) {
         try {
-            const response = await fetch(`chapters/chapter-${chapterNumber}.json`);
-            const chapter = await response.json();
+            const novel = await getNovelData(webNovelId);
+            webAvailableChapters = [...novel.chapters].map((c) => c.number).sort((a, b) => a - b);
 
-            document.title = `Chapter ${chapter.number}: ${chapter.title} — A Dream Within a Dream | Busy Bee`;
-            if (breadcrumbChapter) breadcrumbChapter.textContent = `Chapter ${chapter.number}`;
-            if (chapterLabel) chapterLabel.textContent = `Chapter ${chapter.number}`;
+            const novelHref = `novel.html?id=${webNovelId}`;
+            if (breadcrumbNovelLink) {
+                breadcrumbNovelLink.textContent = novel.title;
+                breadcrumbNovelLink.href = novelHref;
+            }
+            if (chapterWebNovelLink) {
+                chapterWebNovelLink.textContent = novel.title;
+                chapterWebNovelLink.href = novelHref;
+            }
+            if (chapterWebAuthor) chapterWebAuthor.textContent = novel.author ? novel.author.name : "";
+
+            const response = await fetch(chapterContentUrl(webNovelId, chapterNumber));
+            if (!response.ok) throw new Error(`Глава ${chapterNumber} не найдена`);
+            const chapter = await response.json();
+            saveReadingProgress(webNovelId, chapter.number);
+
+            document.title = `Глава ${chapter.number}: ${chapter.title} — ${novel.title} | Busy Bee`;
+            if (breadcrumbChapter) breadcrumbChapter.textContent = `Глава ${chapter.number}`;
+            if (chapterLabel) chapterLabel.textContent = `Глава ${chapter.number}`;
             if (chapterTitle) chapterTitle.textContent = chapter.title;
 
             // Rough reading-time estimate (~200 words/minute) — just a
@@ -1428,7 +1645,7 @@ if (chapterWebText) {
             const wordCount = chapter.paragraphs.join(" ").trim().split(/\s+/).length;
             const minutes = Math.max(1, Math.round(wordCount / 200));
             if (chapterWebInfo) {
-                chapterWebInfo.textContent = `Chapter ${chapter.number} · ~${minutes} min read`;
+                chapterWebInfo.textContent = `Глава ${chapter.number} · ~${minutes} мин чтения`;
             }
 
             chapterWebText.innerHTML = chapter.paragraphs
@@ -1437,27 +1654,27 @@ if (chapterWebText) {
 
             // Carry the chapter number over into Reading mode, so
             // switching modes lands on the same chapter you were on
-            if (readingModeBtn) readingModeBtn.href = `reader.html?chapter=${chapter.number}`;
+            if (readingModeBtn) readingModeBtn.href = `reader.html?novel=${webNovelId}&chapter=${chapter.number}`;
 
-            const index = WEB_AVAILABLE_CHAPTERS.indexOf(chapterNumber);
+            const index = webAvailableChapters.indexOf(chapterNumber);
             if (prevChapterBtn) {
                 const hasPrev = index > 0;
                 prevChapterBtn.classList.toggle("disabled", !hasPrev);
                 prevChapterBtn.href = hasPrev
-                    ? `chapter.html?chapter=${WEB_AVAILABLE_CHAPTERS[index - 1]}`
+                    ? `chapter.html?novel=${webNovelId}&chapter=${webAvailableChapters[index - 1]}`
                     : "#";
             }
             if (nextChapterBtn) {
-                const hasNext = index >= 0 && index < WEB_AVAILABLE_CHAPTERS.length - 1;
+                const hasNext = index >= 0 && index < webAvailableChapters.length - 1;
                 nextChapterBtn.classList.toggle("disabled", !hasNext);
                 nextChapterBtn.href = hasNext
-                    ? `chapter.html?chapter=${WEB_AVAILABLE_CHAPTERS[index + 1]}`
+                    ? `chapter.html?novel=${webNovelId}&chapter=${webAvailableChapters[index + 1]}`
                     : "#";
             }
 
             window.scrollTo({ top: 0 });
         } catch (error) {
-            chapterWebText.innerHTML = "<p>Couldn't load this chapter.</p>";
+            chapterWebText.innerHTML = "<p>Не удалось загрузить главу.</p>";
             console.error("Failed to load chapter:", error);
         }
     }
@@ -1493,9 +1710,8 @@ if (chapterListBackdrop) {
     const isOnReaderPage = Boolean(document.getElementById("readingProse"));
     const targetPage = isOnReaderPage ? "reader.html" : "chapter.html";
 
-    const listUrlParams = new URLSearchParams(window.location.search);
-    const listChapterFromUrl = parseInt(listUrlParams.get("chapter"), 10);
-    const currentListChapter = Number.isInteger(listChapterFromUrl) ? listChapterFromUrl : 124;
+    const { novelId: listNovelId, chapterNumber: listChapterFromUrl } = getNovelAndChapterFromUrl();
+    const currentListChapter = listChapterFromUrl;
 
     function scrollToCurrentChapter() {
         const currentItem = chapterListItems.querySelector(".chapter-list-item.is-current");
@@ -1532,10 +1748,11 @@ if (chapterListBackdrop) {
     const chapterTocBtn = document.getElementById("chapterTocBtn");
     if (chapterTocBtn) chapterTocBtn.addEventListener("click", openChapterList);
 
-    fetch("chapters/chapter-list.json")
-        .then((response) => response.json())
-        .then((chapters) => {
-            // Table already comes sorted newest-first from novel.html
+    getNovelData(listNovelId)
+        .then((novel) => {
+            // Newest-first, same order the novel page's chapters table uses
+            const chapters = [...novel.chapters].sort((a, b) => b.number - a.number);
+
             chapterListItems.innerHTML = chapters
                 .map((chapter) => {
                     const isCurrent = chapter.number === currentListChapter;
@@ -1558,7 +1775,7 @@ if (chapterListBackdrop) {
                     return `
                         <button type="button" class="${classes}" data-chapter="${chapter.number}" ${isLocked ? "disabled" : ""}>
                             <span class="item-num">${chapter.number}</span>
-                            <span class="item-title">${chapter.title || "Not yet translated"}</span>
+                            <span class="item-title">${chapter.title || "Ещё не переведено"}</span>
                             ${statusHtml}
                         </button>
                     `;
@@ -1567,7 +1784,7 @@ if (chapterListBackdrop) {
 
             chapterListItems.querySelectorAll(".chapter-list-item:not(.is-locked)").forEach((item) => {
                 item.addEventListener("click", () => {
-                    window.location.href = `${targetPage}?chapter=${item.dataset.chapter}`;
+                    window.location.href = `${targetPage}?novel=${listNovelId}&chapter=${item.dataset.chapter}`;
                 });
             });
 
@@ -1706,7 +1923,7 @@ if (selectionToolbar) {
         // show to just this chapter
         const title = document.getElementById("chapterTitle");
         const params = new URLSearchParams(window.location.search);
-        const chapterNumber = parseInt(params.get("chapter"), 10) || 124;
+        const chapterNumber = parseInt(params.get("chapter"), 10) || 1;
         return {
             title: title ? title.textContent : document.title,
             number: chapterNumber,
@@ -1718,8 +1935,8 @@ if (selectionToolbar) {
         selCopyBtn.addEventListener("click", () => {
             navigator.clipboard
                 .writeText(pendingSelectedText)
-                .then(() => showToast("Copied to clipboard"))
-                .catch(() => showToast("Couldn't copy — try again"));
+                .then(() => showToast("Скопировано"))
+                .catch(() => showToast("Не удалось скопировать — попробуйте ещё раз"));
             hideSelectionToolbar();
         });
     }
@@ -1733,7 +1950,7 @@ if (selectionToolbar) {
                 chapterNumber: currentChapterContext().number,
                 url: window.location.href,
             });
-            showToast("Passage bookmarked");
+            showToast("Отрывок добавлен в закладки");
             hideSelectionToolbar();
         });
     }
@@ -1747,7 +1964,7 @@ if (selectionToolbar) {
                 chapterNumber: currentChapterContext().number,
                 url: window.location.href,
             });
-            showToast("Saved as quote");
+            showToast("Сохранено как цитата");
             hideSelectionToolbar();
         });
     }
@@ -1757,11 +1974,11 @@ if (selectionToolbar) {
         pendingComposerKey = mode === "note" ? "busybee_notes" : "busybee_comments";
 
         if (selectionComposerLabel) {
-            selectionComposerLabel.textContent = mode === "note" ? "Add a note" : "Add a comment";
+            selectionComposerLabel.textContent = mode === "note" ? "Добавить заметку" : "Добавить комментарий";
         }
         if (selectionComposerInput) {
             selectionComposerInput.placeholder =
-                mode === "note" ? "Jot something down…" : "Share your thoughts…";
+                mode === "note" ? "Запишите что-нибудь…" : "Поделитесь мыслями…";
         }
         if (selectionComposerQuoted) {
             selectionComposerQuoted.textContent = `"${pendingSelectedText}"`;
@@ -1791,7 +2008,7 @@ if (selectionToolbar) {
         selectionComposerSave.addEventListener("click", () => {
             const content = selectionComposerInput ? selectionComposerInput.value.trim() : "";
             if (!content) {
-                showToast("Write something first");
+                showToast("Сначала что-нибудь напишите");
                 return;
             }
             saveToLocalList(pendingComposerKey, {
@@ -1801,7 +2018,7 @@ if (selectionToolbar) {
                 chapterNumber: currentChapterContext().number,
                 url: window.location.href,
             });
-            showToast(pendingComposerKey === "busybee_notes" ? "Note saved" : "Comment posted");
+            showToast(pendingComposerKey === "busybee_notes" ? "Заметка сохранена" : "Комментарий опубликован");
             hideComposer();
         });
     }
@@ -1833,13 +2050,13 @@ if (btnQuotesPanel || btnNotesPanel) {
 
     function currentReaderChapterNumber() {
         const params = new URLSearchParams(window.location.search);
-        return parseInt(params.get("chapter"), 10) || 124;
+        return parseInt(params.get("chapter"), 10) || 1;
     }
 
     function formatSavedDate(isoString) {
         const date = new Date(isoString);
         if (Number.isNaN(date.getTime())) return "";
-        return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+        return date.toLocaleDateString("ru-RU", { month: "short", day: "numeric" });
     }
 
     function renderSavedItems(storageKey) {
@@ -1850,10 +2067,10 @@ if (btnQuotesPanel || btnNotesPanel) {
             .map((item, index) => ({ ...item, originalIndex: index }))
             .filter((item) => item.chapterNumber === chapterNumber);
 
-        if (savedItemsTitle) savedItemsTitle.textContent = isNotes ? "Notes" : "Quotes";
+        if (savedItemsTitle) savedItemsTitle.textContent = isNotes ? "Заметки" : "Цитаты";
 
         if (items.length === 0) {
-            savedItemsList.innerHTML = `<div class="saved-items-empty">No ${isNotes ? "notes" : "quotes"} saved from this chapter yet.</div>`;
+            savedItemsList.innerHTML = `<div class="saved-items-empty">Пока нет сохранённых ${isNotes ? "заметок" : "цитат"} из этой главы.</div>`;
             return;
         }
 
@@ -1870,7 +2087,7 @@ if (btnQuotesPanel || btnNotesPanel) {
                         ${noteHtml}
                         <div class="saved-item-meta">
                             <span>${formatSavedDate(item.savedAt)}</span>
-                            <button type="button" class="saved-item-delete" data-storage-key="${storageKey}">Remove</button>
+                            <button type="button" class="saved-item-delete" data-storage-key="${storageKey}">Удалить</button>
                         </div>
                     </div>
                 `;
@@ -1911,4 +2128,637 @@ if (btnQuotesPanel || btnNotesPanel) {
     document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") closeSavedItems();
     });
+}
+
+/* ====================================================================
+   NOVEL PAGE — dynamic data loading from /novels/<id>/<id>.json
+   ==================================================================== */
+
+const novelPageTitleEl = document.getElementById("novelTitle");
+
+if (novelPageTitleEl) {
+
+    // Russian pluralization: pluralizeRu(5, "глава", "главы", "глав") -> "глав"
+    function pluralizeRu(n, one, few, many) {
+        const mod10 = n % 10;
+        const mod100 = n % 100;
+        if (mod10 === 1 && mod100 !== 11) return one;
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+        return many;
+    }
+
+    function formatDateRu(isoDate) {
+        const parsed = new Date(isoDate);
+        if (isNaN(parsed)) return isoDate;
+        return parsed.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    async function loadNovelPage() {
+        const params = new URLSearchParams(window.location.search);
+        const novelId = params.get("id") || "kniga-grez";
+
+        let novel;
+        try {
+            const response = await fetch(`novels/${novelId}/${novelId}.json`);
+            if (!response.ok) throw new Error("Not found");
+            novel = await response.json();
+        } catch (err) {
+            novelPageTitleEl.textContent = "Новелла не найдена";
+            return;
+        }
+
+        /* ---- Page title & breadcrumb ---- */
+        const pageTitleEl = document.getElementById("pageTitle");
+        if (pageTitleEl) pageTitleEl.textContent = `${novel.title} — Busy Bee`;
+        const breadcrumbEl = document.getElementById("breadcrumbNovelTitle");
+        if (breadcrumbEl) breadcrumbEl.textContent = novel.title;
+
+        /* ---- Cover ---- */
+        const coverImg = document.getElementById("novelCoverImg");
+        if (coverImg) {
+            coverImg.src = novel.cover;
+            coverImg.alt = novel.title;
+        }
+
+        /* ---- Title / original title / author / translator ---- */
+        novelPageTitleEl.textContent = novel.title;
+        const originalTitleEl = document.getElementById("novelOriginalTitle");
+        if (originalTitleEl) originalTitleEl.textContent = novel.originalTitle || "";
+
+        if (novel.author) {
+            const authorLinkTop = document.getElementById("novelAuthorLinkTop");
+            const authorNameTop = document.getElementById("novelAuthorNameTop");
+            const authorLinkMeta = document.getElementById("novelAuthorLinkMeta");
+            if (authorNameTop) authorNameTop.textContent = novel.author.name;
+            if (authorLinkTop) authorLinkTop.href = novel.author.href || "#";
+            if (authorLinkMeta) {
+                authorLinkMeta.textContent = novel.author.name;
+                authorLinkMeta.href = novel.author.href || "#";
+            }
+        }
+
+        if (novel.translator) {
+            const translatorName = document.getElementById("novelTranslatorName");
+            const translatorLink = document.getElementById("novelTranslatorLink");
+            const translatorVerified = document.getElementById("novelTranslatorVerified");
+            if (translatorName) translatorName.textContent = novel.translator.name;
+            if (translatorLink) translatorLink.href = novel.translator.href || "#";
+            if (translatorVerified) translatorVerified.hidden = !novel.translator.verified;
+        }
+
+        /* ---- Meta line: original status / chapter count / genres ---- */
+        const metaStatusEl = document.getElementById("metaOriginalStatus");
+        if (metaStatusEl) metaStatusEl.textContent = novel.status || "";
+
+        const metaChaptersEl = document.getElementById("metaChaptersCount");
+        if (metaChaptersEl && novel.totalChapters) {
+            metaChaptersEl.textContent =
+                `${novel.totalChapters} ${pluralizeRu(novel.totalChapters, "глава", "главы", "глав")}`;
+        }
+
+        const metaGenresEl = document.getElementById("metaGenresLine");
+        if (metaGenresEl) metaGenresEl.textContent = (novel.genres || []).join(", ");
+
+        const metaTranslationEl = document.getElementById("metaTranslationStatus");
+        const metaTranslationIconEl = document.getElementById("metaTranslationStatusIcon");
+        if (metaTranslationEl && novel.translationStatus) {
+            metaTranslationEl.textContent = novel.translationStatus;
+            if (metaTranslationIconEl) {
+                if (novel.translationStatus === "Полностью переведено") {
+                    metaTranslationIconEl.src = "images/icons/check-circle.svg";
+                } else if (novel.translationStatus === "Приостановлено") {
+                    metaTranslationIconEl.src = "images/icons/pause-circle.svg";
+                } else {
+                    metaTranslationIconEl.src = "images/icons/clock.svg";
+                }
+            }
+        }
+
+        /* ---- Rating ---- */
+        if (novel.rating) {
+            const scoreEl = document.getElementById("novelRatingScore");
+            const starsEl = document.getElementById("novelRatingStars");
+            const votesEl = document.getElementById("novelVotesCount");
+            if (scoreEl) scoreEl.textContent = novel.rating.score.toFixed(1);
+            if (starsEl) {
+                const fullStars = Math.round(novel.rating.score);
+                starsEl.textContent = "★".repeat(fullStars) + "☆".repeat(Math.max(0, 5 - fullStars));
+            }
+            if (votesEl) {
+                const votesLabel = pluralizeRu(novel.rating.votes, "голос", "голоса", "голосов");
+                votesEl.textContent = `(${novel.rating.votes.toLocaleString("ru-RU")} ${votesLabel})`;
+            }
+        }
+
+        /* ---- Genres pills ---- */
+        const genresPillsEl = document.getElementById("novelGenresPills");
+        if (genresPillsEl) {
+            genresPillsEl.innerHTML = (novel.genres || [])
+                .map((genre) => `<a href="#" class="pill">${genre}</a>`)
+                .join("");
+        }
+
+        /* ---- Series ---- */
+        if (novel.series) {
+            const seriesNameEl = document.getElementById("novelSeriesName");
+            const seriesBookLabelEl = document.getElementById("novelSeriesBookLabel");
+            if (seriesNameEl) seriesNameEl.textContent = novel.series.name;
+            if (seriesBookLabelEl) seriesBookLabelEl.textContent = novel.series.bookLabel || "";
+        }
+
+        /* ---- Alternative titles ---- */
+        const altTitlesEl = document.getElementById("novelAltTitles");
+        if (altTitlesEl) altTitlesEl.innerHTML = (novel.alternativeTitles || []).join("<br>");
+
+        /* ---- Content warnings ---- */
+        const warningsPillsEl = document.getElementById("novelWarningsPills");
+        if (warningsPillsEl) {
+            warningsPillsEl.innerHTML = (novel.contentWarnings || [])
+                .map((warning) => `<span class="pill warning">${warning}</span>`)
+                .join("");
+        }
+
+        /* ---- Synopsis ---- */
+        const synopsisEl = document.getElementById("novelSynopsisContent");
+        if (synopsisEl) synopsisEl.innerHTML = (novel.synopsis || []).map((p) => `<p>${p}</p>`).join("");
+
+        /* ---- Busy Bee Notes ---- */
+        const beeNotesEl = document.getElementById("novelBeeNotesText");
+        if (beeNotesEl) beeNotesEl.textContent = novel.busyBeeNotes || "";
+
+        /* ---- Quotes carousel ---- */
+        const quotesTrackEl = document.getElementById("novelQuotesTrack");
+        if (quotesTrackEl) {
+            quotesTrackEl.innerHTML = (novel.quotes || [])
+                .map((quote) => `
+                    <div class="quote-card">
+                        <span class="quote-mark">“</span>
+                        <p class="quote-text">«${quote.text}»</p>
+                        <div class="quote-footer">
+                            <span>— Глава ${quote.chapter}</span>
+                            <button type="button" class="like-btn"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> ${quote.likes}</button>
+                        </div>
+                    </div>`)
+                .join("");
+
+            // Same like-toggle behaviour as everywhere else — bound here
+            // since these buttons didn't exist yet when script.js's own
+            // quote-like handler ran further up this file
+            quotesTrackEl.querySelectorAll(".like-btn").forEach((likeBtn) => {
+                const icon = likeBtn.querySelector("img");
+                likeBtn.addEventListener("click", () => {
+                    const isLiked = likeBtn.classList.toggle("liked");
+                    icon.src = isLiked ? icon.dataset.filled : icon.dataset.outline;
+                });
+            });
+        }
+
+        /* ---- Chapters: volumes sidebar + table rows ---- */
+        const chapters = [...(novel.chapters || [])].sort((a, b) => b.number - a.number);
+        const chaptersPerVolume = novel.chaptersPerVolume || 50;
+        const totalVolumes = Math.max(1, Math.ceil((novel.totalChapters || 0) / chaptersPerVolume));
+        const volumeForChapter = (num) => Math.ceil(num / chaptersPerVolume);
+
+        const volumeListEl = document.getElementById("volumeSidebarList");
+        if (volumeListEl) {
+            let volumesHtml = `<li class="active" data-volume="all"><span>Все главы</span> <small>${novel.totalChapters || 0}</small></li>`;
+            for (let v = 1; v <= totalVolumes; v++) {
+                const start = (v - 1) * chaptersPerVolume + 1;
+                const end = Math.min(v * chaptersPerVolume, novel.totalChapters || 0);
+                volumesHtml += `<li data-volume="${v}"><span>Том ${v}</span> <small>${start}–${end}</small></li>`;
+            }
+            volumeListEl.innerHTML = volumesHtml;
+
+            // Delegated click — works no matter when these <li>s were
+            // created, unlike the old querySelectorAll(".volume-sidebar
+            // li") binding further up this file (which ran before this
+            // list existed and so never found anything to bind to)
+            volumeListEl.addEventListener("click", (event) => {
+                const item = event.target.closest("li");
+                if (!item) return;
+                volumeListEl.querySelectorAll("li").forEach((li) => li.classList.remove("active"));
+                item.classList.add("active");
+                if (typeof currentChapterPage !== "undefined") currentChapterPage = 1;
+                if (typeof applyChapterFilters === "function") applyChapterFilters();
+            });
+        }
+
+        const tbodyEl = document.getElementById("chaptersTableBody");
+        if (tbodyEl) {
+            tbodyEl.innerHTML = chapters
+                .map((chapter) => {
+                    const href = chapterHref(novelId, chapter.number);
+                    return `
+                    <tr data-volume="${volumeForChapter(chapter.number)}">
+                        <td class="col-num">${chapter.number}</td>
+                        <td class="col-title"><a href="${href}">${chapter.title || ""}</a></td>
+                        <td class="col-date">${formatDateRu(chapter.date)}</td>
+                        <td class="col-actions">
+                            <div class="col-actions-inner">
+                                <button type="button" class="btn-icon favorite-btn" aria-label="Сохранить главу" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button class="btn-icon">···</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                })
+                .join("");
+
+            // Same reasoning as the volume list above — bind the
+            // favorite-heart toggle directly on these freshly-created rows
+            tbodyEl.querySelectorAll(".favorite-btn").forEach((button) => {
+                const icon = button.querySelector("img");
+                button.addEventListener("click", () => {
+                    const isSaved = button.classList.toggle("active");
+                    button.setAttribute("aria-pressed", isSaved);
+                    icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+                    if (typeof applyChapterFilters === "function") applyChapterFilters();
+                });
+            });
+        }
+
+        /* ---- Continue Reading / floating button ----
+           Resumes at the last chapter this browser has open for this
+           novel (see getReadingProgress — localStorage only for now,
+           no accounts/backend yet), falling back to the first chapter
+           for a brand new reader. */
+        if (chapters.length > 0) {
+            const firstChapterNumber = Math.min(...chapters.map((c) => c.number));
+            const savedChapterNumber = getReadingProgress(novelId);
+            const hasSavedChapter =
+                savedChapterNumber && chapters.some((c) => c.number === savedChapterNumber);
+            const targetChapterNumber = hasSavedChapter ? savedChapterNumber : firstChapterNumber;
+            const startHref = chapterHref(novelId, targetChapterNumber);
+
+            const continueBtn = document.getElementById("continueReadingBtn");
+            if (continueBtn) {
+                continueBtn.href = startHref;
+                const label = continueBtn.querySelector("span");
+                if (label) label.textContent = hasSavedChapter ? "Продолжить чтение" : "Читать";
+            }
+
+            const floatingBtn = document.getElementById("floatingReadingBtn");
+            if (floatingBtn) floatingBtn.addEventListener("click", () => { window.location.href = startHref; });
+
+            // Progress box: only shown once there's actually something
+            // to report — a brand-new reader has no chapter to show yet
+            const progressBox = document.getElementById("userProgressBox");
+            if (progressBox && hasSavedChapter && novel.totalChapters) {
+                const percent = Math.min(100, Math.round((savedChapterNumber / novel.totalChapters) * 100));
+                const percentLabel = document.getElementById("userProgressPercentLabel");
+                const fill = document.getElementById("userProgressFill");
+                if (percentLabel) percentLabel.textContent = `${percent}%`;
+                if (fill) fill.style.width = `${percent}%`;
+                progressBox.hidden = false;
+            }
+        }
+
+        // Now that real rows exist, kick off the table's own
+        // filter/search/pagination system (defined further up this file)
+        if (typeof applyChapterFilters === "function") applyChapterFilters();
+    }
+
+    loadNovelPage();
+}
+
+/* ====================================================================
+   HOME PAGE — "Busy Bee рекомендует" carousel, populated from
+   novels.json (the shared index) instead of hardcoded cards. As more
+   novels get added there, they'll show up here automatically.
+   ==================================================================== */
+
+const recommendationsTrack = document.getElementById("recommendationsTrack");
+
+if (recommendationsTrack) {
+    fetch("novels/novels.json")
+        .then((response) => response.json())
+        .then((novelsIndex) => Promise.all(novelsIndex.map((entry) => getNovelData(entry.id))))
+        .then((novels) => {
+            recommendationsTrack.innerHTML = novels
+                .map((novel) => `
+                    <article class="book-card">
+                        <img src="${novel.cover}" alt="${novel.title}">
+                        <div class="book-card-info">
+                            <h3><a href="novel.html?id=${novel.id}" class="hero-title-link">${novel.title}</a></h3>
+                            <p><a href="${novel.author?.href || "#"}" class="hero-text-link">${novel.author?.name || ""}</a></p>
+                            <div class="book-meta">
+                                <span class="rating">★ ${novel.rating ? novel.rating.score.toFixed(1) : "—"}</span>
+                                <button type="button" class="mini-bookmark" aria-label="Сохранить в закладки" aria-pressed="false">
+                                    <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+                                </button>
+                            </div>
+                        </div>
+                    </article>`)
+                .join("");
+
+            // Same bookmark-toggle behaviour as everywhere else — bound
+            // here since these buttons didn't exist yet when script.js's
+            // own global .mini-bookmark binding ran further up this file
+            recommendationsTrack.querySelectorAll(".mini-bookmark").forEach((button) => {
+                const icon = button.querySelector("img");
+                button.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    const isSaved = button.classList.toggle("active");
+                    button.setAttribute("aria-pressed", isSaved);
+                    icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+                });
+            });
+        })
+        .catch((error) => console.error("Failed to load recommendations:", error));
+}
+
+/* ====================================================================
+   HOME PAGE — "Последние обновления", also built from novels.json:
+   takes each novel's most recent chapter, sorts everything by date,
+   and shows at most 4 — capped so this block can't stretch past its
+   4-item design as more novels/chapters get added.
+   ==================================================================== */
+
+const latestReleasesList = document.getElementById("latestReleasesList");
+const MAX_LATEST_RELEASES = 4;
+
+if (latestReleasesList) {
+    // "2 дня назад" / "Вчера" / "Сегодня" — falls back to a plain date
+    // once it's more than a week old, since "13 дней назад" reads worse
+    // than just the date at that point
+    function formatRelativeRu(isoDate) {
+        const date = new Date(isoDate);
+        if (isNaN(date)) return "";
+        const diffDays = Math.floor((new Date() - date) / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 0) return "Сегодня";
+        if (diffDays === 1) return "Вчера";
+        if (diffDays < 7) {
+            const mod10 = diffDays % 10;
+            const mod100 = diffDays % 100;
+            let word = "дней";
+            if (mod10 === 1 && mod100 !== 11) word = "день";
+            else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) word = "дня";
+            return `${diffDays} ${word} назад`;
+        }
+        return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+    }
+
+    fetch("novels/novels.json")
+        .then((response) => response.json())
+        .then((novelsIndex) => Promise.all(novelsIndex.map((entry) => getNovelData(entry.id))))
+        .then((novels) => {
+            // One entry per novel — its own latest chapter
+            const latestPerNovel = novels
+                .map((novel) => {
+                    if (!novel.chapters || novel.chapters.length === 0) return null;
+                    const latestChapter = [...novel.chapters].sort(
+                        (a, b) => new Date(b.date) - new Date(a.date)
+                    )[0];
+                    return { novel, chapter: latestChapter };
+                })
+                .filter(Boolean)
+                .sort((a, b) => new Date(b.chapter.date) - new Date(a.chapter.date))
+                .slice(0, MAX_LATEST_RELEASES);
+
+            latestReleasesList.innerHTML = latestPerNovel
+                .map(({ novel, chapter }) => {
+                    const daysOld = Math.floor((new Date() - new Date(chapter.date)) / (1000 * 60 * 60 * 24));
+                    const isNew = daysOld <= 3;
+                    return `
+                        <article class="release-item">
+                            <img src="${novel.cover}" alt="${novel.title}">
+                            <div class="release-info">
+                                <h3><a href="novel.html?id=${novel.id}" class="hero-title-link">${novel.title}</a></h3>
+                                <p>Глава ${chapter.number}</p>
+                            </div>
+                            <div class="release-right">
+                                <span>${formatRelativeRu(chapter.date)}</span>
+                                ${isNew ? "<b>Новое</b>" : ""}
+                            </div>
+                        </article>`;
+                })
+                .join("");
+        })
+        .catch((error) => console.error("Failed to load latest releases:", error));
+}
+
+/* ====================================================================
+   CATALOG PAGE — novel grid, populated from novels.json instead of
+   the old hardcoded cards. Only handles the grid itself + the results
+   count for now — the filter sidebar's checkbox lists (genres,
+   authors, status counts) are still static/demo and need their own
+   pass later once there's more real data to build them from.
+   ==================================================================== */
+
+if (catalogGrid) {
+    // "116 глав" / "1 глава" / "3 главы" — same pattern as the other
+    // pluralizers elsewhere in this file, duplicated locally since this
+    // block doesn't share scope with them
+    function pluralizeChaptersLabel(n) {
+        const mod10 = n % 10;
+        const mod100 = n % 100;
+        let word = "глав";
+        if (mod10 === 1 && mod100 !== 11) word = "глава";
+        else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) word = "главы";
+        return `${n} ${word}`;
+    }
+
+    function catalogCardHtml(novel) {
+        const novelHref = `novel.html?id=${novel.id}`;
+        const savedChapter = getReadingProgress(novel.id);
+        const hasProgress = savedChapter && (novel.chapters || []).some((c) => c.number === savedChapter);
+
+        let badgeClass = "badge-ongoing";
+        let badgeIcon = "images/icons/clock.svg";
+        let badgeText = "Выходит";
+        if (novel.translationStatus === "Полностью переведено") {
+            badgeClass = "badge-completed";
+            badgeIcon = "images/icons/check-circle.svg";
+            badgeText = "Завершено";
+        } else if (novel.translationStatus === "Приостановлено") {
+            badgeClass = "badge-hiatus";
+            badgeIcon = "images/icons/pause-circle.svg";
+            badgeText = "На паузе";
+        }
+
+        const genresHtml = (novel.genres || [])
+            .slice(0, 4)
+            .map((genre) => `<span>${genre}</span>`)
+            .join("");
+
+        let progressZoneHtml;
+        let actionButtonHtml;
+        if (hasProgress) {
+            const percent = Math.min(100, Math.round((savedChapter / novel.totalChapters) * 100));
+            progressZoneHtml = `
+                <div class="card-progress-zone">
+                    <span class="chapter-status">Глава ${savedChapter} из ${novel.totalChapters}</span>
+                    <div class="mini-progress-bar"><div class="fill" style="width: ${percent}%;"></div></div>
+                    <span class="percent-val">${percent}%</span>
+                </div>`;
+            actionButtonHtml = `<a href="${chapterHref(novel.id, savedChapter)}" class="btn-primary-action">Продолжить</a>`;
+        } else {
+            progressZoneHtml = `
+                <div class="card-progress-zone text-only">
+                    <span class="chapter-status">${pluralizeChaptersLabel(novel.totalChapters || 0)}</span>
+                </div>`;
+            actionButtonHtml = `<a href="${novelHref}" class="btn-secondary-action">Подробнее</a>`;
+        }
+
+        return `
+            <article class="novel-card" data-rating="${novel.rating ? novel.rating.score : 0}">
+                <div class="novel-cover-wrap">
+                    <span class="badge ${badgeClass}"><img src="${badgeIcon}" alt="">${badgeText}</span>
+                    <a href="${novelHref}"><img src="${novel.cover}" alt="${novel.title}"></a>
+                </div>
+                <div class="card-menu">
+                    <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                    <div class="card-menu-dropdown">
+                        <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
+                        <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
+                        <button type="button" class="card-menu-item"><img src="images/icons/edit.svg" alt="">Предложить исправление</button>
+                        <button type="button" class="card-menu-item"><img src="images/icons/x-circle.svg" alt="">Скрыть новеллу</button>
+                        <div class="card-menu-divider"></div>
+                        <button type="button" class="card-menu-item card-menu-item-danger"><img src="images/icons/flag.svg" alt="">Пожаловаться</button>
+                    </div>
+                </div>
+                <div class="novel-card-body">
+                    <h3><a href="${novelHref}">${novel.title}</a></h3>
+                    <span class="orig-title">${novel.originalTitle || ""}</span>
+                    <span class="author-name">${novel.author ? novel.author.name : ""}</span>
+                    <span class="translator-tag"><img src="images/icons/bee-icon.svg" alt=""> Переведено ${novel.translator ? novel.translator.name : "Busy Bee"}</span>
+
+                    <div class="novel-tags">${genresHtml}</div>
+
+                    ${progressZoneHtml}
+
+                    <div class="card-actions">
+                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                        ${actionButtonHtml}
+                    </div>
+                </div>
+            </article>`;
+    }
+
+    fetch("novels/novels.json")
+        .then((response) => response.json())
+        .then((novelsIndex) => Promise.all(novelsIndex.map((entry) => getNovelData(entry.id))))
+        .then((novels) => {
+            catalogGrid.innerHTML = novels.map(catalogCardHtml).join("");
+
+            // Same manual-bind reasoning as everywhere else dynamic in
+            // this file — these buttons didn't exist yet when the
+            // global .favorite-btn / .mini-bookmark bindings ran earlier
+            catalogGrid.querySelectorAll(".favorite-btn").forEach((button) => {
+                const icon = button.querySelector("img");
+                button.addEventListener("click", () => {
+                    const isSaved = button.classList.toggle("active");
+                    button.setAttribute("aria-pressed", isSaved);
+                    icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+                });
+            });
+            catalogGrid.querySelectorAll(".mini-bookmark").forEach((button) => {
+                const icon = button.querySelector("img");
+                button.addEventListener("click", (event) => {
+                    event.stopPropagation();
+                    const isSaved = button.classList.toggle("active");
+                    button.setAttribute("aria-pressed", isSaved);
+                    icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+                });
+            });
+
+            bindCatalogCardMenus();
+            initCatalogFiltering();
+        })
+        .catch((error) => console.error("Failed to load catalog:", error));
+}
+
+/* ====================================================================
+   CATALOG PAGE — "Busy Bee рекомендует" mini carousel, same novels.json
+   source as the grid above (and the homepage's own recommends section).
+   ==================================================================== */
+
+const catalogRecommendsTrack = document.getElementById("catalogRecommendsTrack");
+
+if (catalogRecommendsTrack) {
+    fetch("novels/novels.json")
+        .then((response) => response.json())
+        .then((novelsIndex) => Promise.all(novelsIndex.map((entry) => getNovelData(entry.id))))
+        .then((novels) => {
+            catalogRecommendsTrack.innerHTML = novels
+                .map((novel) => `
+                    <a href="novel.html?id=${novel.id}" class="mini-recommend-card">
+                        <img src="${novel.cover}" alt="${novel.title}">
+                        <strong>${novel.title}</strong>
+                        <span>${novel.author ? novel.author.name : ""}</span>
+                    </a>`)
+                .join("");
+        })
+        .catch((error) => console.error("Failed to load catalog recommends:", error));
+}
+
+/* ====================================================================
+   CATALOG PAGE — "Последние обновления" panel, same idea as the
+   homepage's version (one latest chapter per novel, newest first),
+   just capped at 6 here instead of 4 to match this panel's taller
+   sidebar spot.
+   ==================================================================== */
+
+const catalogLatestReleasesList = document.getElementById("catalogLatestReleasesList");
+const MAX_CATALOG_LATEST_RELEASES = 6;
+
+if (catalogLatestReleasesList) {
+    // Same relative-time formatting as the homepage's version —
+    // duplicated locally rather than shared, since that one lives
+    // inside a block scoped to the homepage only
+    function formatRelativeRuCatalog(isoDate) {
+        const date = new Date(isoDate);
+        if (isNaN(date)) return "";
+        const diffDays = Math.floor((new Date() - date) / (1000 * 60 * 60 * 24));
+
+        if (diffDays <= 0) return "Сегодня";
+        if (diffDays === 1) return "Вчера";
+        if (diffDays < 7) {
+            const mod10 = diffDays % 10;
+            const mod100 = diffDays % 100;
+            let word = "дней";
+            if (mod10 === 1 && mod100 !== 11) word = "день";
+            else if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) word = "дня";
+            return `${diffDays} ${word} назад`;
+        }
+        return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+    }
+
+    fetch("novels/novels.json")
+        .then((response) => response.json())
+        .then((novelsIndex) => Promise.all(novelsIndex.map((entry) => getNovelData(entry.id))))
+        .then((novels) => {
+            const latestPerNovel = novels
+                .map((novel) => {
+                    if (!novel.chapters || novel.chapters.length === 0) return null;
+                    const latestChapter = [...novel.chapters].sort(
+                        (a, b) => new Date(b.date) - new Date(a.date)
+                    )[0];
+                    return { novel, chapter: latestChapter };
+                })
+                .filter(Boolean)
+                .sort((a, b) => new Date(b.chapter.date) - new Date(a.chapter.date))
+                .slice(0, MAX_CATALOG_LATEST_RELEASES);
+
+            catalogLatestReleasesList.innerHTML = latestPerNovel
+                .map(({ novel, chapter }) => {
+                    const daysOld = Math.floor((new Date() - new Date(chapter.date)) / (1000 * 60 * 60 * 24));
+                    const isNew = daysOld <= 3;
+                    return `
+                        <article class="release-item">
+                            <img src="${novel.cover}" alt="${novel.title}">
+                            <div class="release-info">
+                                <h3><a href="novel.html?id=${novel.id}" class="hero-title-link">${novel.title}</a></h3>
+                                <p>Глава ${chapter.number}</p>
+                            </div>
+                            <div class="release-right">
+                                <span>${formatRelativeRuCatalog(chapter.date)}</span>
+                                ${isNew ? "<b>Новое</b>" : ""}
+                            </div>
+                        </article>`;
+                })
+                .join("");
+        })
+        .catch((error) => console.error("Failed to load catalog latest releases:", error));
 }

@@ -35,7 +35,7 @@
                 </button>
 
                 <div class="catalog-dropdown">
-                    <a href="#">Новеллы</a>
+                    <a href="catalog.html">Новеллы</a>
                     <a href="#">Авторы</a>
                     <a href="#">Жанры</a>
                     <a href="#">Коллекции</a>
@@ -175,44 +175,40 @@
         <section class="hero hero-continue">
 
             <div class="hero-cover">
-                <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
+                <img src="" alt="" id="heroCoverImg">
             </div>
 
             <div class="hero-info">
 
                 <div class="hero-info-top">
 
-                    <p class="hero-label">✦ Новый перевод</p>
+                    <p class="hero-label">✦ Продолжить чтение</p>
 
-                    <h1><a href="novel.html" class="hero-title-link">Книга грёз</a></h1>
+                    <h1><a href="novel.html" class="hero-title-link" id="heroTitleLink">Загрузка…</a></h1>
 
                     <p class="author">
-                        <a href="#" class="hero-text-link"><strong>Цяньшань Чакэ</strong></a>
+                        <a href="#" class="hero-text-link" id="heroAuthorLink"><strong id="heroAuthorName"></strong></a>
                         <span>•</span>
-                        Переведено <a href="#" class="hero-text-link">Busy Bee</a>
+                        Переведено <a href="#" class="hero-text-link" id="heroTranslatorLink">Busy Bee</a>
                     </p>
 
-                    <p class="description">
-                        In a world where cultivation and destiny intertwine,
-                        she chose a path no one else dared to walk.
-                        A story of courage, love, and the price of ambition.
-                    </p>
+                    <p class="description" id="heroDescription"></p>
 
                 </div>
 
                 <div class="hero-info-bottom">
 
                     <div class="progress-info">
-                        <span>Глава 124 из 164</span>
-                        <span>76%</span>
+                        <span id="heroProgressLabel">Глава — из —</span>
+                        <span id="heroProgressPercent">0%</span>
                     </div>
 
                     <div class="progress">
-                        <div class="progress-bar"></div>
+                        <div class="progress-bar" id="heroProgressBar"></div>
                     </div>
 
                     <div class="hero-buttons">
-                        <a href="chapter.html" class="continue-button">
+                        <a href="chapter.html" class="continue-button" id="heroContinueBtn">
                              <img src="images/icons/book-open.svg" alt="Book"> 
                              Продолжить чтение
                         </a>
@@ -235,21 +231,21 @@
             <div class="hero-welcome-content">
 
                 <h1>Добро пожаловать в Busy Bee</h1>
-                <p class="hero-welcome-subtitle">Найдите свою следующую историю.</p>
+                <p class="hero-welcome-subtitle">Открой свою следующую историю.</p>
 
-                <div class="hero-search">
+                <div class="hero-search-box">
                     <img src="images/icons/search.svg" alt="">
                     <input type="text" placeholder="Поиск по новеллам, авторам, жанрам...">
-                    <button type="button" class="hero-search-button">Искать</button>
+                    <button type="button" class="btn-hero-search">Искать</button>
                 </div>
 
                 <div class="popular-searches">
-                    <span>Популярные запросы:</span>
-                    <button type="button">Исторические</button>
-                    <button type="button">Романтика</button>
-                    <button type="button">Месть</button>
-                    <button type="button">Политика</button>
-                    <button type="button">Завершённые</button>
+                    <span class="popular-label">Популярные запросы:</span>
+                    <a href="#" class="search-tag">Исторические</a>
+                    <a href="#" class="search-tag">Романтика</a>
+                    <a href="#" class="search-tag">Месть</a>
+                    <a href="#" class="search-tag">Политика</a>
+                    <a href="#" class="search-tag">Завершённые</a>
                 </div>
 
             </div>
@@ -272,65 +268,7 @@
 
                     <button type="button" class="carousel-arrow" aria-label="Previous">‹</button>
 
-                    <div class="book-list carousel-track">
-
-                        <article class="book-card">
-                            <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
-                            <div class="book-card-info">
-                                <h3><a href="#" class="hero-title-link">Pursuit of Jade</a></h3>
-                                <p><a href="#" class="hero-text-link">Tuan Zi Lai Xi</a></p>
-                                <div class="book-meta">
-                                    <span class="rating">★ 4.8</span>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
-                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-
-                        <article class="book-card">
-                            <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
-                            <div class="book-card-info">
-                                <h3><a href="#" class="hero-title-link">The Top Couple Is a Bit Sweet</a></h3>
-                                <p><a href="#" class="hero-text-link">Tu Yang Xian Sen</a></p>
-                                <div class="book-meta">
-                                    <span class="rating">★ 4.7</span>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
-                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-
-                        <article class="book-card">
-                            <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
-                            <div class="book-card-info">
-                                <h3><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h3>
-                                <p><a href="#" class="hero-text-link">Qian Shan Cha Ke</a></p>
-                                <div class="book-meta">
-                                    <span class="rating">★ 4.9</span>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
-                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-
-                        <article class="book-card">
-                            <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
-                            <div class="book-card-info">
-                                <h3><a href="#" class="hero-title-link">Everyone Loves Me</a></h3>
-                                <p><a href="#" class="hero-text-link">Qiao Yao</a></p>
-                                <div class="book-meta">
-                                    <span class="rating">★ 4.6</span>
-                                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false">
-                                        <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-
-                    </div>
+                    <div class="book-list carousel-track" id="recommendationsTrack"></div>
 
                     <button type="button" class="carousel-arrow" aria-label="Next">›</button>
 
@@ -415,57 +353,7 @@
                     <a href="#" class="view-all">Посмотреть всё</a>
                 </div>
 
-                <div class="release-list">
-
-                    <article class="release-item">
-                        <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
-                        <div class="release-info">
-                            <h3><a href="#" class="hero-title-link">Pursuit of Jade</a></h3>
-                            <p>Глава 85</p>
-                        </div>
-                        <div class="release-right">
-                            <span>2 часа назад</span>
-                            <b>Новое</b>
-                        </div>
-                    </article>
-
-                    <article class="release-item">
-                        <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
-                        <div class="release-info">
-                            <h3><a href="#" class="hero-title-link">The Top Couple Is a Bit Sweet</a></h3>
-                            <p>Глава 78</p>
-                        </div>
-                        <div class="release-right">
-                            <span>5 часов назад</span>
-                            <b>Новое</b>
-                        </div>
-                    </article>
-
-                    <article class="release-item">
-                        <img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream">
-                        <div class="release-info">
-                            <h3><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h3>
-                            <p>Глава 124</p>
-                        </div>
-                        <div class="release-right">
-                            <span>Вчера</span>
-                            <b>Новое</b>
-                        </div>
-                    </article>
-
-                    <article class="release-item">
-                        <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
-                        <div class="release-info">
-                            <h3><a href="#" class="hero-title-link">Everyone Loves Me</a></h3>
-                            <p>Глава 63</p>
-                        </div>
-                        <div class="release-right">
-                            <span>Вчера</span>
-                            <b>Новое</b>
-                        </div>
-                    </article>
-
-                </div>
+                <div class="release-list" id="latestReleasesList"></div>
 
             </section>
 

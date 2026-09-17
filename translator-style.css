@@ -75,16 +75,62 @@
     margin: 0;
 }
 
-.verified-badge {
-    background: var(--honey);
-    color: var(--white);
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
+/* Interactive SVG bee — replaces the old ✓ checkmark badge next to the
+   name. Floats gently, wings flap continuously, and a click sends it
+   into a one-second "loop-the-loop" (see translator-script.js). */
+.bee-box {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    vertical-align: middle;
+    cursor: pointer;
+    /* .profile-name-row already has gap: 8px between its flex children,
+       so no extra margin here */
+    animation: floatBee 3s ease-in-out infinite;
+}
+
+.custom-bee {
+    width: 100%;
+    height: 100%;
+}
+
+.bee-body { fill: var(--honey); }
+.bee-stripe { fill: #2c2c2c; }
+
+.wing {
+    fill: var(--surface-warm);
+    fill-opacity: 0.9;
+    stroke: var(--border);
+    stroke-width: 1.5;
+    /* Точка, вокруг которой машут крылья — px здесь равны единицам
+       viewBox (0 0 100 100), а не экранным пикселям 45×45 */
+    transform-origin: 45px 35px;
+}
+
+.front-wing { animation: flap 0.15s ease-in-out infinite alternate; }
+.back-wing { animation: flap 0.15s ease-in-out infinite alternate-reverse; }
+
+@keyframes flap {
+    0% { transform: scaleY(1) rotate(0deg); }
+    100% { transform: scaleY(0.3) rotate(-10deg); }
+}
+
+@keyframes floatBee {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+.do-loop {
+    animation: loop-de-loop 1s cubic-bezier(0.42, 0, 0.58, 1) forwards !important;
+}
+
+@keyframes loop-de-loop {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    30% { transform: translate(-10px, 10px) rotate(-45deg); }
+    60% { transform: translate(25px, -35px) rotate(-180deg); }
+    80% { transform: translate(45px, 0px) rotate(-315deg); }
+    100% { transform: translate(0, 0) rotate(-360deg); }
 }
 
 .official-tag {
@@ -105,6 +151,7 @@
 
 .profile-stats-box {
     flex-shrink: 0;
+    align-self: flex-end;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -113,16 +160,6 @@
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 16px 28px;
-}
-
-/* First cell of the stats table — joined date + location, stacked,
-   left-aligned (unlike the centered number cells next to it) */
-.stat-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text-muted);
 }
 
 .stat-item {
@@ -267,6 +304,10 @@
     color: var(--text-secondary);
     margin-bottom: 14px;
     max-width: 480px;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .featured-tags {
@@ -324,6 +365,11 @@
     font-weight: 500;
     cursor: pointer;
     margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 .btn-view-details {
@@ -335,6 +381,11 @@
     font-size: 12px;
     color: var(--text-secondary);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-sizing: border-box;
 }
 
 /* Two-Column Grid */

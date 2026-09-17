@@ -12,5 +12,19 @@
     "cover": "images/novels/pursuit-of-jade.png",
     "author": "Туаньцзы Лайси",
     "jsonUrl": "novels/v-pogone-za-nefritom/v-pogone-za-nefritom.json"
+  },
+  {
+    "id": "vlyubit'sya",
+    "title": "Влюбиться",
+    "cover": "images/novels/everyone-loves-me.png",
+    "author": "Цяо Яо",
+    "jsonUrl": "novels/vlyubit'sya/vlyubit'sya.json"
+  },
+  {
+    "id": "eta-topovaya-para-slegka-sladkovata",
+    "title": "Эта топовая пара слегка сладковата",
+    "cover": "images/novels/the-top-couple-is-a-bit-sweet.png",
+    "author": "Ту Ян Сянь Шэн",
+    "jsonUrl": "novels/eta-topovaya-para-slegka-sladkovata/eta-topovaya-para-slegka-sladkovata.json"
   }
 ]

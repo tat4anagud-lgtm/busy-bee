@@ -162,43 +162,61 @@
 
                 <div class="profile-hero-top">
                     <div class="profile-avatar-wrapper">
-                        <img src="https://placehold.co/160x160" alt="Busy Bee Avatar" class="profile-avatar-img">
+                        <img src="images/avatars/busybee-avatar.png" alt="Busy Bee Avatar" class="profile-avatar-img">
                     </div>
 
                     <div class="profile-info-main">
                         <div class="profile-name-row">
                             <h1>Busy Bee</h1>
-                            <span class="verified-badge">✓</span>
+                            <div id="interactive-bee" class="bee-box" title="Клик — и пчёлка сделает мёртвую петлю!">
+                                <svg class="custom-bee" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <clipPath id="beeBodyClip">
+                                            <ellipse cx="50" cy="50" rx="30" ry="20" />
+                                        </clipPath>
+                                    </defs>
+                                    <!-- Заднее крыло (машет) -->
+                                    <ellipse class="wing back-wing" cx="35" cy="25" rx="10" ry="18" />
+                                    <!-- Тело пчелы -->
+                                    <ellipse class="bee-body" cx="50" cy="50" rx="30" ry="20" />
+                                    <!-- Полоски (обрезаны по форме тела, чтобы получились
+                                         аккуратные вертикальные полосы, а не два пятна) -->
+                                    <g clip-path="url(#beeBodyClip)">
+                                        <rect class="bee-stripe" x="38" y="25" width="8" height="50" />
+                                        <rect class="bee-stripe" x="56" y="25" width="8" height="50" />
+                                    </g>
+                                    <!-- Глазик и улыбка -->
+                                    <circle cx="68" cy="46" r="3" fill="#2c2c2c" />
+                                    <path d="M 68 54 Q 72 54 71 50" stroke="#2c2c2c" stroke-width="2" fill="none" stroke-linecap="round" />
+                                    <!-- Переднее крыло (машет) -->
+                                    <ellipse class="wing front-wing" cx="48" cy="22" rx="12" ry="22" />
+                                </svg>
+                            </div>
                         </div>
                         <span class="official-tag">Official</span>
 
-                        <p class="profile-bio">Independent translation project and digital reading library</p>
+                        <p class="profile-bio">Независимый переводческий проект</p>
 
-                        <a href="#" class="hero-about-link">About Busy Bee →</a>
+                        <a href="#" class="hero-about-link">О Busy Bee →</a>
                     </div>
 
                     <div class="profile-stats-box">
-                        <div class="stat-meta">
-                            <span class="meta-item"><img src="images/icons/calendar.svg" alt=""> Joined May 12, 2021</span>
-                            <span class="meta-item"><img src="images/icons/globe.svg" alt=""> Russia</span>
-                        </div>
-                        <div class="stat-divider"></div>
                         <div class="stat-item">
                             <img src="images/icons/book-open.svg" alt="" class="stat-icon">
                             <strong>15</strong>
-                            <span>Translated Novels</span>
+                            <span>Переведено новелл</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat-item">
                             <img src="images/icons/notes.svg" alt="" class="stat-icon">
                             <strong>2,743</strong>
-                            <span>Published Chapters</span>
+                            <span>Опубликовано глав</span>
                         </div>
                         <div class="stat-divider"></div>
                         <div class="stat-item">
                             <img src="images/icons/user.svg" alt="" class="stat-icon">
                             <strong>86.1K</strong>
-                            <span>Readers</span>
+                            <span>Читателей</span>
                         </div>
                     </div>
 
@@ -211,26 +229,26 @@
 
             <!-- PROFILE TABS NAVIGATION -->
             <nav class="profile-tabs">
-                <button class="tab-btn active">Overview</button>
-                <button class="tab-btn">Posts</button>
-                <button class="tab-btn">Translations</button>
-                <button class="tab-btn">Collections</button>
-                <button class="tab-btn">Recommendations</button>
-                <button class="tab-btn">Announcements</button>
+                <button class="tab-btn active">Обзор</button>
+                <button class="tab-btn">Публикации</button>
+                <button class="tab-btn">Переводы</button>
+                <button class="tab-btn">Коллекции</button>
+                <button class="tab-btn">Рекомендации</button>
+                <button class="tab-btn">Анонсы</button>
             </nav>
 
             <!-- FEATURED PROJECT BANNER -->
             <section class="featured-project-card">
                 <div class="featured-cover-box">
-                    <span class="badge-ongoing">Ongoing</span>
+                    <span class="badge-ongoing">Выходит</span>
                     <img src="https://placehold.co/180x250" alt="The Moon That Rises in the Night">
                 </div>
 
                 <div class="featured-info-box">
-                    <span class="section-subtitle">Featured Project</span>
+                    <span class="section-subtitle">Активный проект</span>
                     <h2>The Moon That Rises in the Night</h2>
                     <p class="orig-title">月升夜</p>
-                    <p class="authors">by <strong>Bai Lu Cheng Shuang</strong> <span>|</span> Translated by <strong>Busy Bee</strong></p>
+                    <p class="authors">автор — <strong>Bai Lu Cheng Shuang</strong> <span>|</span> перевод — <strong>Busy Bee</strong></p>
                     
                     <p class="featured-desc">
                         In a world ruled by power and hidden motives, she rises quietly, carrying her own light.<br>
@@ -254,8 +272,8 @@
                     </div>
                     <span class="percent-label">76%</span>
 
-                    <button class="btn-read-now">Read Now</button>
-                    <button class="btn-view-details">View Details</button>
+                    <a href="#" class="btn-read-now">Читать</a>
+                    <a href="#" class="btn-view-details">Подробнее</a>
                 </div>
             </section>
 
@@ -268,8 +286,8 @@
                     <!-- Latest Posts -->
                     <section class="widget-box">
                         <div class="widget-header">
-                            <h3>Latest Posts</h3>
-                            <a href="#" class="view-all">View all</a>
+                            <h3>Последние публикации</h3>
+                            <a href="#" class="view-all">Посмотреть всё</a>
                         </div>
 
                         <div class="posts-list">
@@ -279,11 +297,11 @@
                                     <div class="author-sm-avatar"></div>
                                     <div>
                                         <strong>Busy Bee <span class="v-icon">✓</span></strong>
-                                        <span class="post-date">May 12, 2025</span>
+                                        <span class="post-date">12 августа, 2026</span>
                                     </div>
                                     <button class="btn-more">···</button>
                                 </div>
-                                <p class="post-text">Chapter 124 of The Moon That Rises in the Night is now live! Thank you for waiting with me all this time. Your support means everything. 💛</p>
+                                <p class="post-text">Вышла 7 глава "Книги грёз"! Спасибо всем за поддержку💛</p>
                                 <div class="post-footer">
                                     <button type="button" class="action-btn like-btn" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> 512</button>
                                     <button type="button" class="action-btn comment-btn"><img src="images/icons/comment.svg" alt=""> 68</button>
@@ -297,11 +315,11 @@
                                     <div class="author-sm-avatar"></div>
                                     <div>
                                         <strong>Busy Bee <span class="v-icon">✓</span></strong>
-                                        <span class="post-date">May 8, 2025</span>
+                                        <span class="post-date">8 августа, 2026</span>
                                     </div>
                                     <button class="btn-more">···</button>
                                 </div>
-                                <p class="post-text">I'm working on improving the quality of the next chapters. They will take a little longer, but I promise it will be worth it. ✨</p>
+                                <p class="post-text">Скоро выйдет новая новелла! Ждёте? ✨</p>
                                 <div class="post-footer">
                                     <button type="button" class="action-btn like-btn" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> 430</button>
                                     <button type="button" class="action-btn comment-btn"><img src="images/icons/comment.svg" alt=""> 54</button>
@@ -315,30 +333,30 @@
                                     <div class="author-sm-avatar"></div>
                                     <div>
                                         <strong>Busy Bee <span class="v-icon">✓</span></strong>
-                                        <span class="post-date">May 5, 2025 • Poll</span>
+                                        <span class="post-date">25 июля, 2026 • Poll</span>
                                     </div>
                                     <button class="btn-more">···</button>
                                 </div>
-                                <p class="post-text">Which novel would you like me to translate next?</p>
+                                <p class="post-text">Какую новеллу вы бы хотели, чтобы я перевела?</p>
                                 
                                 <div class="poll-options">
                                     <div class="poll-item">
                                         <div class="poll-bar" style="width: 48%;"></div>
-                                        <span class="option-name">Palace Intrigue</span>
+                                        <span class="option-name">Дворцовые интриги</span>
                                         <span class="option-percent">48%</span>
                                     </div>
                                     <div class="poll-item">
                                         <div class="poll-bar" style="width: 32%;"></div>
-                                        <span class="option-name">Revenge</span>
+                                        <span class="option-name">Месть</span>
                                         <span class="option-percent">32%</span>
                                     </div>
                                     <div class="poll-item">
                                         <div class="poll-bar" style="width: 20%;"></div>
-                                        <span class="option-name">Wuxia / Martial Arts</span>
+                                        <span class="option-name">Уся / Боевые искусства</span>
                                         <span class="option-percent">20%</span>
                                     </div>
                                 </div>
-                                <span class="poll-meta">1,248 votes • Vote ended</span>
+                                <span class="poll-meta">1,248 голосов • Голосование закончено</span>
 
                                 <div class="post-footer">
                                     <button type="button" class="action-btn like-btn" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> 212</button>
@@ -353,13 +371,13 @@
                                     <div class="author-sm-avatar"></div>
                                     <div>
                                         <strong>Busy Bee <span class="v-icon">✓</span></strong>
-                                        <span class="post-date">April 29, 2025</span>
+                                        <span class="post-date">18 июля, 2026</span>
                                     </div>
                                     <button class="btn-more">···</button>
                                 </div>
                                 <div class="post-image-layout">
                                     <img src="https://placehold.co/120x90" alt="Workspace">
-                                    <p class="post-text">A little corner of my workspace where all the magic happens. What are you reading today? 📖</p>
+                                    <p class="post-text">Маленький уголок моего рабочего пространства, где происходит вся магия. Что вы сегодня читаете? 📖</p>
                                 </div>
                             </article>
                         </div>
@@ -373,71 +391,18 @@
                     <!-- Latest Translations -->
                     <section class="widget-box">
                         <div class="widget-header">
-                            <h3>Latest Translations</h3>
-                            <a href="#" class="view-all">View all</a>
+                            <h3>Последние переводы</h3>
+                            <a href="#" class="view-all">Посмотреть всё</a>
                         </div>
 
                         <div class="book-carousel">
 
                             <button type="button" class="carousel-arrow" aria-label="Previous translations">‹</button>
 
-                            <div class="translations-grid carousel-track">
-                                <div class="translation-card">
-                                    <div class="cover-box">
-                                        <span class="badge-ongoing">Ongoing</span>
-                                        <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
-                                    </div>
-                                    <h4>Pursuit of Jade</h4>
-                                    <p class="author">Tuan Zi Lai Xi</p>
-                                    <p class="ch-info">Chapter 124 / 164</p>
-                                    <div class="card-footer">
-                                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                    </div>
-                                </div>
-
-                                <div class="translation-card">
-                                    <div class="cover-box">
-                                        <span class="badge-completed">Completed</span>
-                                        <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
-                                    </div>
-                                    <h4>The Top Couple Is a Bit Sweet</h4>
-                                    <p class="author">Tu Yang Xian Sen</p>
-                                    <p class="ch-info">164 Chapters</p>
-                                    <div class="card-footer">
-                                        <button type="button" class="favorite-btn active" aria-label="Like" aria-pressed="true"><img src="images/icons/heart-filled.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                    </div>
-                                </div>
-
-                                <div class="translation-card">
-                                    <div class="cover-box">
-                                        <span class="badge-ongoing">Ongoing</span>
-                                        <a href="novel.html"><img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream"></a>
-                                    </div>
-                                    <h4><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h4>
-                                    <p class="author">Qian Shan Cha Ke</p>
-                                    <p class="ch-info">Chapter 63 / 101</p>
-                                    <div class="card-footer">
-                                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                    </div>
-                                </div>
-
-                                <div class="translation-card">
-                                    <div class="cover-box">
-                                        <span class="badge-completed">Completed</span>
-                                        <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
-                                    </div>
-                                    <h4>Everyone Loves Me</h4>
-                                    <p class="author">Qiao Yao</p>
-                                    <p class="ch-info">88 Chapters</p>
-                                    <div class="card-footer">
-                                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Cards populated dynamically from novels/novels.json by
+                                 translator-script.js, same pattern as the "Busy Bee
+                                 рекомендует" carousel on the home page — capped at 8 novels -->
+                            <div class="translations-grid carousel-track" id="translatorTranslationsTrack"></div>
 
                             <button type="button" class="carousel-arrow" aria-label="Next translations">›</button>
 
@@ -447,47 +412,17 @@
                     <!-- Busy Bee Recommends -->
                     <section class="widget-box">
                         <div class="widget-header">
-                            <h3>🐝 Busy Bee Recommends</h3>
-                            <a href="#" class="view-all">View all</a>
+                            <h3>🐝 Busy Bee рекомендует</h3>
+                            <a href="#" class="view-all">Посмотреть всё</a>
                         </div>
 
                         <div class="recommends-carousel">
 
                             <button type="button" class="carousel-arrow" aria-label="Previous recommends">‹</button>
 
-                            <div class="recommends-grid carousel-track">
-                                <div class="recommend-card">
-                                    <img src="images/novels/pursuit-of-jade.png" alt="Pursuit of Jade">
-                                    <h4>Pursuit of Jade</h4>
-                                    <p class="author">by Tuan Zi Lai Xi</p>
-                                    <blockquote class="quote">“Brilliant plot, unforgettable characters.”</blockquote>
-                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                </div>
-
-                                <div class="recommend-card">
-                                    <img src="images/novels/the-top-couple-is-a-bit-sweet.png" alt="The Top Couple Is a Bit Sweet">
-                                    <h4>The Top Couple Is a Bit Sweet</h4>
-                                    <p class="author">by Tu Yang Xian Sen</p>
-                                    <blockquote class="quote">“A poetic story that stays with you.”</blockquote>
-                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                </div>
-
-                                <div class="recommend-card">
-                                    <a href="novel.html"><img src="images/novels/a-dream-within-a-dream.png" alt="A Dream Within a Dream"></a>
-                                    <h4><a href="novel.html" class="hero-title-link">A Dream Within a Dream</a></h4>
-                                    <p class="author">by Qian Shan Cha Ke</p>
-                                    <blockquote class="quote">“Strong heroine, realistic and inspiring.”</blockquote>
-                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                </div>
-
-                                <div class="recommend-card">
-                                    <img src="images/novels/everyone-loves-me.png" alt="Everyone Loves Me">
-                                    <h4>Everyone Loves Me</h4>
-                                    <p class="author">by Qiao Yao</p>
-                                    <blockquote class="quote">“Political mastery at its finest.”</blockquote>
-                                    <button type="button" class="fav-btn favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                </div>
-                            </div>
+                            <!-- Cards populated dynamically from novels/novels.json by
+                                 translator-script.js — capped at 8 novels -->
+                            <div class="recommends-grid carousel-track" id="translatorRecommendsTrack"></div>
 
                             <button type="button" class="carousel-arrow" aria-label="Next recommends">›</button>
 
@@ -497,8 +432,8 @@
                     <!-- Busy Bee Collections -->
                     <section class="widget-box">
                         <div class="widget-header">
-                            <h3>Busy Bee Collections</h3>
-                            <a href="#" class="view-all">View all</a>
+                            <h3>Коллекции Busy Bee</h3>
+                            <a href="#" class="view-all">Посмотреть всё</a>
                         </div>
 
                         <div class="collection-carousel">
@@ -510,98 +445,98 @@
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/atmospheric-stories.png" alt="Atmospheric Stories">
                                     <div class="collection-card-info">
-                                        <h3>Atmospheric Stories</h3>
+                                        <h3>Атмосферные истории</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/second-chances.png" alt="Second Chances">
                                     <div class="collection-card-info">
-                                        <h3>Second Chances</h3>
+                                        <h3>Второй шанс</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/unforgettable-heroes.png" alt="Unforgettable Heroes">
                                     <div class="collection-card-info">
-                                        <h3>Unforgettable Heroes</h3>
+                                        <h3>Герои, которых невозможно забыть</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/court-intrigues.png" alt="Court Intrigues">
                                     <div class="collection-card-info">
-                                        <h3>Court Intrigues</h3>
+                                        <h3>Дворцовые интриги</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/for-a-quiet-evening.png" alt="For a Quiet Evening">
                                     <div class="collection-card-info">
-                                        <h3>For a Quiet Evening</h3>
+                                        <h3>Для спокойного вечера</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/late-night-reads.png" alt="Late Night Reads">
                                     <div class="collection-card-info">
-                                        <h3>Late Night Reads</h3>
+                                        <h3>Для чтения поздним вечером</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/completed-stories.png" alt="Completed Stories">
                                     <div class="collection-card-info">
-                                        <h3>Completed Stories</h3>
+                                        <h3>Завершённые истории</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/revenge-stories.png" alt="Revenge Stories">
                                     <div class="collection-card-info">
-                                        <h3>Revenge Stories</h3>
+                                        <h3>Истории о мести</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/when-plans-fall-apart.png" alt="When Plans Fall Apart">
                                     <div class="collection-card-info">
-                                        <h3>When Plans Fall Apart</h3>
+                                        <h3>Когда всё пошло не по плану</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/slow-burn-romance.png" alt="Slow Burn Romance">
                                     <div class="collection-card-info">
-                                        <h3>Slow Burn Romance</h3>
+                                        <h3>Медленная любовь</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/rebirth.png" alt="Rebirth">
                                     <div class="collection-card-info">
-                                        <h3>Rebirth</h3>
+                                        <h3>Перерождение</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/grab-the-tissues.png" alt="Grab the Tissues">
                                     <div class="collection-card-info">
-                                        <h3>Grab the Tissues</h3>
+                                        <h3>Приготовьте салфетки</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/strong-heroines.png" alt="Strong Heroines">
                                     <div class="collection-card-info">
-                                        <h3>Strong Heroines</h3>
+                                        <h3>Сильные героини</h3>
                                     </div>
                                 </a>
 
                                 <a href="#" class="collection-card">
                                     <img src="images/collections/cozy-reads.png" alt="Cozy Reads">
                                     <div class="collection-card-info">
-                                        <h3>Cozy Reads</h3>
+                                        <h3>Уютное чтение</h3>
                                     </div>
                                 </a>
 
@@ -618,13 +553,13 @@
             <!-- FOOTER SUPPORT BANNER -->
             <section class="support-banner">
                 <div class="support-left">
-                    <h3>Support Busy Bee</h3>
-                    <p>Busy Bee is a one-person project. Your support helps keep translating, improving, and sharing more stories.</p>
-                    <button class="btn-support-project">Support the Project ♡</button>
+                    <h3>Поддержать Busy Bee</h3>
+                    <p>Busy Bee — это проект одного человека. Ваша поддержка помогает продолжать переводить, совершенствоваться и делиться новыми историями.</p>
+                    <button class="btn-support-project">Поддержать Busy Bee ♡</button>
                 </div>
 
                 <div class="support-right">
-                    <span>Recent Supporters</span>
+                    <span>Недавние спонсоры</span>
                     <div class="supporters-avatars">
                         <img src="https://placehold.co/32x32" alt="">
                         <img src="https://placehold.co/32x32" alt="">
@@ -633,7 +568,7 @@
                         <img src="https://placehold.co/32x32" alt="">
                         <span class="more-count">+126</span>
                     </div>
-                    <p class="thank-you-script">Thank you! ♡</p>
+                    <p class="thank-you-script">Спасибо! ♡</p>
                 </div>
             </section>
 
