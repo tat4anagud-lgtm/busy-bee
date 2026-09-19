@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements — Busy Bee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="announcements.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header-container">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2C16 2 20 6 20 11C20 16 16 19 16 19C16 19 12 16 12 11C12 6 16 2 16 2Z" fill="#D4A359"/>
+            <path d="M10 10C6 8 2 10 2 14C2 18 8 17 10 15" stroke="#2C221E" stroke-width="2" stroke-linecap="round"/>
+            <path d="M22 10C26 8 30 10 30 14C30 18 24 17 22 15" stroke="#2C221E" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="11" r="9" stroke="#2C221E" stroke-width="2"/>
+          </svg>
+          Busy Bee
+        </a>
+        <nav class="nav-links">
+          <a href="catalog.html" class="nav-link">Catalog</a>
+          <a href="announcements.html" class="nav-link active">Announcements</a>
+          <a href="#" class="nav-link">About</a>
+        </nav>
+      </div>
+
+      <div class="header-center">
+        <div class="global-search">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" placeholder="Поиск по книгам, авторам...">
+          <span class="shortcut-badge">⌘ K</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="lang-switch">
+          <span class="active">Ru</span> / <span>Eng</span>
+        </div>
+        <button class="icon-btn" title="Bookmarks">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <button class="icon-btn" title="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="badge">3</span>
+        </button>
+        <button class="avatar-btn">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="Avatar" class="avatar">
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+    
+    <!-- HERO SECTION -->
+    <section class="announcements-hero">
+      <h1 class="hero-title">Announcements</h1>
+      
+      <div class="ornament-divider">
+        <svg width="120" height="12" viewBox="0 0 120 12" fill="none">
+          <path d="M0 6H45 M75 6H120" stroke="#D4A359" stroke-width="1"/>
+          <circle cx="60" cy="6" r="3" fill="#D4A359"/>
+          <path d="M50 6 C53 3, 57 3, 60 6 C63 9, 67 9, 70 6" stroke="#D4A359" stroke-width="1" fill="none"/>
+        </svg>
+      </div>
+
+      <p class="hero-subtitle">
+        Все важные новости, обновления и планы Busy Bee.
+      </p>
+    </section>
+
+    <!-- LAYOUT: SIDEBAR + FEED -->
+    <div class="announcements-layout">
+      
+      <!-- LEFT SIDEBAR -->
+      <aside class="announcements-sidebar">
+        <nav class="sidebar-menu" id="sidebarCategoryMenu">
+          <button class="menu-item active" data-category="All">All</button>
+          <button class="menu-item" data-category="New Chapters">New Chapters</button>
+          <button class="menu-item" data-category="Schedule">Schedule</button>
+          <button class="menu-item" data-category="New Novels">New Novels</button>
+          <button class="menu-item" data-category="Notes">Notes</button>
+          <button class="menu-item" data-category="Polls & Questions">Polls & Questions</button>
+          <button class="menu-item" data-category="Project Updates">Project Updates</button>
+        </nav>
+
+        <div class="share-widget">
+          <h4>Поделиться анонсом</h4>
+          <p>Поддержите Busy Bee — поделитесь новостями с друзьями!</p>
+          <button class="share-btn">
+            Как поделиться
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </button>
+        </div>
+
+        <div class="sidebar-decor-illustration">
+          <svg width="160" height="160" viewBox="0 0 200 200" fill="none">
+            <!-- Books Stack & Flower Pot Illustration -->
+            <rect x="30" y="150" width="120" height="18" rx="3" fill="#CBB69D"/>
+            <rect x="25" y="132" width="130" height="18" rx="3" fill="#8C3A2B"/>
+            <rect x="40" y="114" width="100" height="18" rx="3" fill="#2D4A3E"/>
+            <!-- Teacup -->
+            <path d="M145 152 C145 162, 165 162, 165 152 Z" fill="#EFE8DC" stroke="#C2B29F" stroke-width="1.5"/>
+            <!-- Vase and Flowers -->
+            <path d="M80 114 Q70 85 90 70 Q110 85 100 114 Z" fill="#F4EFE6" stroke="#D4A359" stroke-width="1.5"/>
+            <path d="M90 70 L90 30" stroke="#7A8B6E" stroke-width="1.5"/>
+            <circle cx="90" cy="25" r="8" fill="#D4A359" opacity="0.8"/>
+            <circle cx="80" cy="35" r="6" fill="#E8B87D" opacity="0.8"/>
+            <circle cx="100" cy="35" r="6" fill="#E8B87D" opacity="0.8"/>
+            <!-- Bee Sitting -->
+            <g transform="translate(35, 120)">
+              <ellipse cx="12" cy="12" rx="10" ry="8" fill="#D4A359"/>
+              <line x1="8" y1="5" x2="8" y2="19" stroke="#2C221E" stroke-width="2"/>
+              <line x1="14" y1="5" x2="14" y2="19" stroke="#2C221E" stroke-width="2"/>
+              <circle cx="4" cy="10" r="1.5" fill="#2C221E"/>
+            </g>
+          </svg>
+        </div>
+      </aside>
+
+      <!-- MAIN FEED -->
+      <section class="announcements-feed" id="announcementsFeed">
+
+        <!-- CARD 1: FEATURED POST -->
+        <article class="feed-card featured-card" data-category="New Chapters">
+          <div class="featured-badge">FEATURED</div>
+          
+          <div class="featured-layout">
+            <div class="featured-cover-wrapper">
+              <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&q=80&w=300" alt="Cover" class="novel-cover">
+              <div class="cn-title-vertical">追逐碧玉</div>
+            </div>
+
+            <div class="featured-content">
+              <div class="post-meta">
+                <span class="category-tag">New Chapters</span>
+                <span class="post-date">12 мая, 2025</span>
+              </div>
+
+              <h2 class="post-title">
+                Новая глава: Глава 47 «В погоне за нефритом»
+              </h2>
+
+              <p class="post-text">
+                Дворец скрывает больше тайн, чем кажется на первый взгляд.
+              </p>
+
+              <div class="featured-actions">
+                <a href="#" class="btn-primary">Читать главу</a>
+                <a href="#" class="btn-link">Глава 47</a>
+                
+                <div class="post-stats">
+                  <button class="stat-btn like-btn" data-likes="1200">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span class="stat-count">1.2K</span>
+                  </button>
+                  <button class="stat-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>128</span>
+                  </button>
+                  <button class="stat-btn icon-only" title="Share">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Decorative Bee element -->
+          <div class="card-bee-decor">
+            <svg width="60" height="50" viewBox="0 0 60 50" fill="none">
+              <path d="M5 40 Q 25 10, 45 20" stroke="#D4A359" stroke-width="1.2" stroke-dasharray="2 2"/>
+              <g transform="translate(42, 12) rotate(15)">
+                <ellipse cx="8" cy="8" rx="6" ry="5" fill="#D4A359"/>
+                <line x1="6" y1="3" x2="6" y2="13" stroke="#2C221E" stroke-width="1"/>
+                <line x1="10" y1="3" x2="10" y2="13" stroke="#2C221E" stroke-width="1"/>
+              </g>
+            </svg>
+          </div>
+        </article>
+
+        <!-- CARD 2: SCHEDULE -->
+        <article class="feed-card" data-category="Schedule">
+          <div class="card-header-line">
+            <div class="post-meta">
+              <span class="icon-inline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </span>
+              <span class="category-tag">Schedule</span>
+              <span class="post-date">11 мая, 2025</span>
+            </div>
+          </div>
+
+          <h3 class="post-title">Расписание выхода глав на эту неделю</h3>
+          <p class="post-text">
+            Вторник — глава 48, пятница — глава 49.<br>
+            <span class="text-subtle">Спасибо за ваше терпение и поддержку!</span>
+          </p>
+
+          <div class="card-footer-actions">
+            <div class="post-stats">
+              <button class="stat-btn like-btn" data-likes="846">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="stat-count">846</span>
+              </button>
+              <button class="stat-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>56</span>
+              </button>
+            </div>
+
+            <div class="right-actions">
+              <button class="btn-secondary">Подробнее</button>
+              <button class="bookmark-btn" title="Save">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 3: NEW NOVEL -->
+        <article class="feed-card media-card" data-category="New Novels">
+          <div class="media-layout">
+            <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=200" alt="Novel Thumbnail" class="card-thumb">
+            
+            <div class="media-body">
+              <div class="post-meta">
+                <span class="category-tag">New Novel</span>
+                <span class="post-date">9 мая, 2025</span>
+              </div>
+
+              <h3 class="post-title">Скоро на сайте: «Корона из холодного пепла»</h3>
+              <p class="post-text">
+                Новая история о власти, предательстве и любви.<br>
+                <span class="text-subtle">Следите за обновлениями!</span>
+              </p>
+
+              <div class="card-footer-actions">
+                <div class="post-stats">
+                  <button class="stat-btn like-btn" data-likes="1500">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span class="stat-count">1.5K</span>
+                  </button>
+                  <button class="stat-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>210</span>
+                  </button>
+                </div>
+
+                <div class="right-actions">
+                  <button class="btn-secondary">Подробнее</button>
+                  <button class="bookmark-btn" title="Save">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 4: TRANSLATOR NOTES -->
+        <article class="feed-card media-card" data-category="Notes">
+          <div class="media-layout">
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&q=80&w=200" alt="Notes Thumbnail" class="card-thumb">
+            
+            <div class="media-body">
+              <div class="post-meta">
+                <span class="category-tag">Translator Notes</span>
+                <span class="post-date">7 мая, 2025</span>
+              </div>
+
+              <h3 class="post-title">О переводе имён и титулов</h3>
+              <p class="post-text">
+                Небольшая заметка о том, почему мы оставляем некоторые имена без перевода.
+              </p>
+
+              <div class="card-footer-actions">
+                <div class="post-stats">
+                  <button class="stat-btn like-btn" data-likes="642">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <span class="stat-count">642</span>
+                  </button>
+                  <button class="stat-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <span>37</span>
+                  </button>
+                </div>
+
+                <div class="right-actions">
+                  <button class="btn-secondary">Читать заметку</button>
+                  <button class="bookmark-btn" title="Save">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 5: POLL -->
+        <article class="feed-card poll-card" data-category="Polls & Questions">
+          <div class="post-meta">
+            <span class="icon-inline">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </span>
+            <span class="category-tag">Poll</span>
+            <span class="post-date">6 мая, 2025</span>
+          </div>
+
+          <h3 class="post-title">Какой жанр вы хотели бы видеть следующим?</h3>
+          <p class="post-text text-subtle">Ваше мнение помогает выбирать новые переводы.</p>
+
+          <div class="poll-options">
+            <label class="poll-option">
+              <input type="radio" name="poll1" value="1">
+              <span class="option-label">Дворцовые интриги</span>
+              <div class="progress-bar-bg"><div class="progress-fill" style="width: 45%;"></div></div>
+              <span class="option-percent">45%</span>
+            </label>
+
+            <label class="poll-option">
+              <input type="radio" name="poll1" value="2">
+              <span class="option-label">Историческое фэнтези</span>
+              <div class="progress-bar-bg"><div class="progress-fill" style="width: 30%;"></div></div>
+              <span class="option-percent">30%</span>
+            </label>
+
+            <label class="poll-option">
+              <input type="radio" name="poll1" value="3">
+              <span class="option-label">Современная романтика</span>
+              <div class="progress-bar-bg"><div class="progress-fill" style="width: 15%;"></div></div>
+              <span class="option-percent">15%</span>
+            </label>
+
+            <label class="poll-option">
+              <input type="radio" name="poll1" value="4">
+              <span class="option-label">Другое (предложите в комментариях)</span>
+              <div class="progress-bar-bg"><div class="progress-fill" style="width: 10%;"></div></div>
+              <span class="option-percent">10%</span>
+            </label>
+          </div>
+
+          <div class="card-footer-actions">
+            <div class="post-stats">
+              <button class="stat-btn like-btn" data-likes="523">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="stat-count">523</span>
+              </button>
+              <button class="stat-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>89</span>
+              </button>
+            </div>
+
+            <div class="right-actions">
+              <button class="btn-secondary">Голосовать</button>
+              <button class="bookmark-btn" title="Save">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- CARD 6: SHARED POST -->
+        <article class="feed-card shared-card" data-category="New Chapters">
+          <div class="shared-header">
+            <svg class="bee-share-icon" width="24" height="24" viewBox="0 0 32 32" fill="none">
+              <path d="M16 2C16 2 20 6 20 11C20 16 16 19 16 19C16 19 12 16 12 11C12 6 16 2 16 2Z" fill="#D4A359"/>
+              <circle cx="16" cy="11" r="9" stroke="#2C221E" stroke-width="2"/>
+            </svg>
+            <span class="shared-label">Shared from <strong>Busy Bee</strong></span>
+          </div>
+
+          <h3 class="post-title">Глава 46 уже доступна ✨</h3>
+          <p class="post-text">Спасибо, что читаете вместе с нами!</p>
+
+          <div class="card-footer-actions">
+            <div class="post-stats">
+              <button class="stat-btn like-btn" data-likes="2100">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="stat-count">2.1K</span>
+              </button>
+              <button class="stat-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>310</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Decorative Plane Art -->
+          <div class="shared-plane-art">
+            <svg width="70" height="50" viewBox="0 0 24 24" fill="none" stroke="#D4A359" stroke-width="1" opacity="0.3">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </div>
+        </article>
+
+        <!-- CARD 7: PROJECT UPDATE -->
+        <article class="feed-card" data-category="Project Updates">
+          <div class="card-header-line">
+            <div class="post-meta">
+              <span class="icon-inline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </span>
+              <span class="category-tag">Project Update</span>
+              <span class="post-date">1 мая, 2025</span>
+            </div>
+          </div>
+
+          <h3 class="post-title">Небольшое обновление сайта</h3>
+          <p class="post-text">
+            Исправили несколько ошибок и улучшили чтение на мобильных устройствах.<br>
+            <span class="text-subtle">Если заметите что-то странное — напишите нам!</span>
+          </p>
+
+          <div class="card-footer-actions">
+            <div class="post-stats">
+              <button class="stat-btn like-btn" data-likes="392">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="stat-count">392</span>
+              </button>
+              <button class="stat-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span>18</span>
+              </button>
+            </div>
+
+            <div class="right-actions">
+              <button class="btn-secondary">Подробнее</button>
+              <button class="bookmark-btn" title="Save">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+            <path d="M16 2C16 2 20 6 20 11C20 16 16 19 16 19C16 19 12 16 12 11C12 6 16 2 16 2Z" fill="#D4A359"/>
+            <circle cx="16" cy="11" r="9" stroke="#FFF" stroke-width="2"/>
+          </svg>
+          Busy Bee
+        </div>
+        <p class="footer-desc">
+          Платформа для комфортного чтения и перевода азиатских новелл.
+        </p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="catalog.html">Catalog</a></li>
+            <li><a href="glossary.html">Glossary</a></li>
+            <li><a href="announcements.html">Announcements</a></li>
+            <li><a href="#">About Us</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Community</h4>
+          <ul>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">Telegram</a></li>
+            <li><a href="#">VKontakte</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        © 2026 Busy Bee. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="announcements.js"></script>
+</body>
+</html>

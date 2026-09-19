@@ -76,8 +76,9 @@
 }
 
 /* Interactive SVG bee — replaces the old ✓ checkmark badge next to the
-   name. Floats gently, wings flap continuously, and a click sends it
-   into a one-second "loop-the-loop" (see translator-script.js). */
+   name. Floats gently, the wing (the one path that's a separate shape
+   in this artwork) flaps continuously, and a click sends the whole
+   thing into a one-second "loop-the-loop" (see translator-script.js). */
 .bee-box {
     display: inline-block;
     width: 45px;
@@ -87,6 +88,12 @@
     /* .profile-name-row already has gap: 8px between its flex children,
        so no extra margin here */
     animation: floatBee 3s ease-in-out infinite;
+    /* Виток сейчас гораздо шире самой строки с именем — без этого
+       пчёлка на середине полёта могла бы уйти "под" аватарку или
+       декоративную картинку справа (оба соседних блока в разметке
+       идут раньше/позже неё и иначе рисовались бы поверх) */
+    position: relative;
+    z-index: 20;
 }
 
 .custom-bee {
@@ -94,25 +101,19 @@
     height: 100%;
 }
 
-.bee-body { fill: var(--honey); }
-.bee-stripe { fill: #2c2c2c; }
-
-.wing {
-    fill: var(--surface-warm);
-    fill-opacity: 0.9;
-    stroke: var(--border);
-    stroke-width: 1.5;
-    /* Точка, вокруг которой машут крылья — px здесь равны единицам
-       viewBox (0 0 100 100), а не экранным пикселям 45×45 */
-    transform-origin: 45px 35px;
+/* Крыло — единственный отдельный path в этой иллюстрации (кремовый),
+   поэтому именно его и качаем. Точка поворота (295px 247px) — это то
+   место в системе координат viewBox (0 0 512 512), где крыло крепится
+   к телу, а не его геометрический центр — иначе взмах будет выглядеть
+   так, будто крыло улетает в сторону, а не складывается у основания. */
+.bee-wing {
+    transform-origin: 295px 247px;
+    animation: wingFlap 0.18s ease-in-out infinite alternate;
 }
 
-.front-wing { animation: flap 0.15s ease-in-out infinite alternate; }
-.back-wing { animation: flap 0.15s ease-in-out infinite alternate-reverse; }
-
-@keyframes flap {
-    0% { transform: scaleY(1) rotate(0deg); }
-    100% { transform: scaleY(0.3) rotate(-10deg); }
+@keyframes wingFlap {
+    0% { transform: scaleY(1); }
+    100% { transform: scaleY(0.55); }
 }
 
 @keyframes floatBee {
@@ -121,16 +122,12 @@
     100% { transform: translateY(0px); }
 }
 
-.do-loop {
-    animation: loop-de-loop 1s cubic-bezier(0.42, 0, 0.58, 1) forwards !important;
-}
-
-@keyframes loop-de-loop {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    30% { transform: translate(-10px, 10px) rotate(-45deg); }
-    60% { transform: translate(25px, -35px) rotate(-180deg); }
-    80% { transform: translate(45px, 0px) rotate(-315deg); }
-    100% { transform: translate(0, 0) rotate(-360deg); }
+/* Пока пчела в полёте (см. translator-script.js), её позицию и поворот
+   каждый кадр напрямую задаёт JS через style.transform — эта анимация
+   покачивания на месте должна на время замолчать, иначе она перебивала
+   бы значения, выставленные скриптом, на каждом кадре */
+.bee-flying {
+    animation: none !important;
 }
 
 .official-tag {
@@ -230,6 +227,72 @@
     right: 0;
     height: 2px;
     background: var(--honey);
+}
+
+/* Tab Panels — only .active is shown; switching happens in
+   translator-script.js. Featured Project and the Support banner sit
+   outside these panels, so they stay visible on every tab. */
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+/* "Публикации" — full feed, single readable column instead of the
+   narrow sidebar width it has in the Overview panel */
+.posts-list-full {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* "Переводы" full grid — reuses .translation-card, but as a wrapping
+   grid instead of the Overview carousel's horizontally-scrolling row */
+.translations-full-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    overflow: visible;
+}
+
+/* "Рекомендации" full grid — same idea, reuses .recommend-card */
+.recommends-full-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+    overflow: visible;
+}
+
+/* "Коллекции" full grid — reuses .collection-card */
+.collections-full-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+/* Status filter bar on the "Переводы" tab */
+.status-filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.status-filter-btn {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.status-filter-btn.active {
+    background: var(--honey);
+    border-color: var(--honey);
+    color: white;
+    font-weight: 500;
 }
 
 /* Featured Project Card */
@@ -759,4 +822,26 @@
     font-size: 20px;
     color: var(--honey);
     margin: 0;
+}
+
+/* Пыльцевой след за пчёлкой во время "мёртвой петли" — маленькие
+   золотые точки, которые translator-script.js создаёт на реальной
+   текущей позиции пчелы (через getBoundingClientRect), поэтому след
+   точно повторяет её путь при любой траектории полёта. Каждая точка
+   сама убирает себя из DOM по окончании своей анимации. */
+.pollen-dot {
+    position: fixed;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--honey);
+    box-shadow: 0 0 4px 1px rgba(216, 160, 58, 0.55);
+    pointer-events: none;
+    z-index: 999;
+    animation: pollenFade 0.7s ease-out forwards;
+}
+
+@keyframes pollenFade {
+    0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, calc(-50% - 14px)) scale(0.3); }
 }

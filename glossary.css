@@ -1,0 +1,528 @@
+/* ========================================
+   BUSY BEE — GLOSSARY PAGE STYLES
+   ========================================
+   Page-specific only — everything shared (page-shell, header, footer,
+   colors, fonts, resets) already comes from style.css, which this page
+   also loads. Kept as its own file for now rather than merged into
+   style.css, per the current "edit here in parallel" workflow — safe
+   to fold in later once the page settles.
+   ======================================== */
+
+.glossary-container {
+    padding: 0 32px 50px;
+}
+
+/* ---------- Hero ---------- */
+
+.glossary-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+
+    padding: 32px 0 24px;
+}
+
+.glossary-hero-left {
+    max-width: 560px;
+}
+
+.glossary-title {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.15;
+    margin-bottom: 6px;
+}
+
+.ornament-divider {
+    margin-bottom: 14px;
+}
+
+.ornament-divider img {
+    height: 14px;
+    opacity: 0.8;
+}
+
+.glossary-subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    max-width: 480px;
+}
+
+.glossary-search-box {
+    position: relative;
+    max-width: 480px;
+}
+
+.glossary-search-box input {
+    width: 100%;
+    height: 46px;
+    padding: 0 18px 0 44px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glossary-search-box input:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.glossary-search-box .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+}
+
+.glossary-hero-right {
+    flex-shrink: 0;
+}
+
+.glossary-hero-right img {
+    width: 220px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ---------- Category pills + alphabet nav ---------- */
+
+.glossary-filters {
+    margin-bottom: 28px;
+}
+
+.category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.pill-btn {
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: var(--surface-warm);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pill-btn:hover {
+    background: var(--border);
+}
+
+.pill-btn.active {
+    background: var(--honey);
+    color: var(--white);
+}
+
+.alphabet-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+}
+
+.alphabet-link {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: color 0.2s ease;
+}
+
+.alphabet-link:hover,
+.alphabet-link.active-pill {
+    color: var(--honey);
+    font-weight: 700;
+}
+
+.alphabet-link.active-pill {
+    border-bottom: 2px solid var(--honey);
+    border-radius: 0;
+}
+
+/* ---------- Main layout ---------- */
+
+.glossary-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.results-count {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.results-count h2 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.results-count span {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-select {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+.sort-select img {
+    width: 12px;
+    height: 12px;
+}
+
+.view-toggle-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.view-toggle-btn img {
+    width: 14px;
+    height: 14px;
+}
+
+/* ---------- Term cards ---------- */
+
+.cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.term-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.term-card:hover {
+    border-color: var(--honey);
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.term-card.selected {
+    border-color: var(--honey);
+    box-shadow: 0 0 0 1px var(--honey);
+}
+
+.term-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+
+.term-title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+}
+
+.term-cn {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.term-pinyin {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.term-card-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.badge-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--surface-warm);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.bookmark-icon-btn {
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.bookmark-icon-btn:hover,
+.bookmark-icon-btn.active {
+    color: var(--honey);
+}
+
+.bookmark-icon-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.term-desc {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    max-width: 85%;
+}
+
+.term-card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.see-in-chapter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--honey);
+    font-size: 12px;
+    font-weight: 600;
+    transition: gap 0.2s ease;
+}
+
+.term-card:hover .see-in-chapter-btn {
+    gap: 8px;
+}
+
+.see-in-chapter-btn svg {
+    width: 13px;
+    height: 13px;
+}
+
+/* ---------- Sidebar / detail panel ---------- */
+
+.sidebar-detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 20px;
+    position: sticky;
+    top: 24px;
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.detail-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.detail-cn {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.star-btn {
+    color: var(--honey);
+    padding: 4px;
+}
+
+.star-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.detail-pinyin {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 14px;
+    display: block;
+}
+
+.detail-desc {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 14px 0 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.used-in-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+}
+
+.used-in-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.used-in-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.novel-cover-thumb {
+    width: 34px;
+    height: 46px;
+    border-radius: 4px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px var(--shadow);
+    flex-shrink: 0;
+}
+
+.used-in-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.used-in-title {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+}
+
+.used-in-chapter {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.used-in-link {
+    color: var(--honey);
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.used-in-link svg {
+    width: 11px;
+    height: 11px;
+}
+
+.view-all-btn {
+    width: 100%;
+    height: 40px;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.view-all-btn:hover {
+    background: var(--border);
+}
+
+.view-all-btn img {
+    width: 14px;
+    height: 14px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 992px) {
+    .glossary-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-detail-card {
+        position: static;
+    }
+
+    .glossary-hero-right {
+        display: none;
+    }
+}

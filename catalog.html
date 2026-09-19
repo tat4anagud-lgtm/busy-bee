@@ -170,19 +170,20 @@
                 <!-- SIDEBAR FILTERS -->
                 <aside class="catalog-sidebar" id="catalogSidebar">
 
-                    <!-- Release Status Filter (matches the Ongoing/
-                         Completed badge shown on the novel's cover) -->
+                    <!-- Release Status Filter — the ORIGINAL novel's own
+                         status (finished being written or not), separate
+                         from Translation Status below -->
                     <div class="filter-group" data-filter-group="status">
                         <h3>Статус выхода</h3>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="completed">
                             <span>Завершено</span>
-                            <span class="count">742</span>
+                            <span class="count" id="statusCountCompleted">0</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="ongoing">
                             <span>Выходит</span>
-                            <span class="count">503</span>
+                            <span class="count" id="statusCountOngoing">0</span>
                         </label>
                     </div>
 
@@ -194,14 +195,17 @@
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="fully-translated">
                             <span>Переведено полностью</span>
+                            <span class="count" id="translationCountFully">0</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="in-progress">
                             <span>Переводится</span>
+                            <span class="count" id="translationCountProgress">0</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="on-hiatus">
                             <span>На паузе</span>
+                            <span class="count" id="translationCountHiatus">0</span>
                         </label>
                     </div>
 
@@ -211,76 +215,30 @@
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="short">
                             <span>Короткие (1–100 гл.)</span>
-                            <span class="count">210</span>
+                            <span class="count" id="lengthCountShort">0</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="medium">
                             <span>Средние (101–300 гл.)</span>
-                            <span class="count">782</span>
+                            <span class="count" id="lengthCountMedium">0</span>
                         </label>
                         <label class="filter-checkbox">
                             <input type="checkbox" data-value="long">
                             <span>Длинные (300+ гл.)</span>
-                            <span class="count">253</span>
+                            <span class="count" id="lengthCountLong">0</span>
                         </label>
                     </div>
 
-                    <!-- Genres -->
+                    <!-- Genres — built from whatever genres actually show
+                         up across novels.json, most common first; the
+                         first GENRES_VISIBLE_COUNT (see script.js) show
+                         here, the rest sit in #extraGenres behind "Show
+                         more" -->
                     <div class="filter-group" data-filter-group="genre">
                         <h3>Жанры</h3>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="армия">
-                            <span>Армия</span>
-                            <span class="count">164</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="дворцовые интриги">
-                            <span>Дворцовые интриги</span>
-                            <span class="count">221</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="драма">
-                            <span>Драма</span>
-                            <span class="count">287</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="исторические">
-                            <span>Исторические</span>
-                            <span class="count">352</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="комедия">
-                            <span>Комедия</span>
-                            <span class="count">178</span>
-                        </label>
-                        <label class="filter-checkbox">
-                            <input type="checkbox" data-value="месть">
-                            <span>Месть</span>
-                            <span class="count">245</span>
-                        </label>
-                        <div class="extra-genres" id="extraGenres" hidden>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="мистика">
-                                <span>Мистика</span>
-                                <span class="count">198</span>
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="романтика">
-                                <span>Романтика</span>
-                                <span class="count">436</span>
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="современные">
-                                <span>Современные</span>
-                                <span class="count">156</span>
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="фэнтези">
-                                <span>Фэнтези</span>
-                                <span class="count">631</span>
-                            </label>
-                        </div>
-                        <button type="button" class="btn-show-more" id="btnShowMoreGenres">Показать ещё ▾</button>
+                        <div id="genreChecklistMain"></div>
+                        <div class="extra-genres" id="extraGenres" hidden></div>
+                        <button type="button" class="btn-show-more" id="btnShowMoreGenres" hidden>Показать ещё ▾</button>
                     </div>
 
                     <!-- Author — searchable checklist, same idea as a
@@ -293,22 +251,6 @@
                             <input type="text" class="filter-search-input" id="authorSearchInput" placeholder="Поиск по авторам...">
                         </div>
                         <div class="filter-checklist" id="authorChecklist">
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="tuan zi lai xi">
-                                <span>Tuan Zi Lai Xi</span>
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="tu yang xian sen">
-                                <span>Tu Yang Xian Sen</span>
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="qian shan cha ke">
-                                <span>Qian Shan Cha Ke</span>
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" data-value="qiao yao">
-                                <span>Qiao Yao</span>
-                            </label>
                             <p class="no-results-notice filter-no-results" hidden>Авторы не найдены.</p>
                         </div>
                     </div>

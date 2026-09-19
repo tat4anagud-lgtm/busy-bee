@@ -1,0 +1,38 @@
+[
+  {
+    "id": "houye",
+    "term": "侯爷",
+    "pinyin": "houye",
+    "category": "Титулы и ранги",
+    "definition": "«Маркиз» — обращение к человеку соответствующего дворянского ранга.",
+
+    "usedIn": [
+      { "novelId": "v-pogone-za-nefritom", "chapter": 47 },
+      { "novelId": "v-pogone-za-nefritom", "chapter": 23 },
+      { "novelId": "kniga-grez", "chapter": 38 }
+    ]
+  },
+  {
+    "id": "xiaojie",
+    "term": "小姐",
+    "pinyin": "xiaojie",
+    "category": "Формы обращения",
+    "definition": "Уважительная форма обращения к молодой незамужней девушке из семьи.",
+
+    "usedIn": [
+      { "novelId": "kniga-grez", "chapter": 3 }
+    ]
+  },
+  {
+    "id": "taihou",
+    "term": "太后",
+    "pinyin": "taihou",
+    "category": "Правительство и двор",
+    "definition": "Императрица-вдова, мать нынешнего императора, имеющая высокий статус при дворе.",
+
+    "usedIn": [
+      { "novelId": "kniga-grez", "chapter": 12 },
+      { "novelId": "v-pogone-za-nefritom", "chapter": 5 }
+    ]
+  }
+]

@@ -659,31 +659,36 @@ if (toggleFiltersBtn && catalogLayout) {
 // .filter-checkbox labels inside its .filter-checklist as you type.
 // Built for Author, but reusable as-is for Translator or anything
 // else later — just reuse the same markup pattern.
+// Wrapped in a function (called again once the Author checklist is
+// actually populated from novels.json) for the same reason as
+// initCatalogFiltering/bindCatalogCardMenus above.
 
-document.querySelectorAll(".filter-search-input").forEach((input) => {
-    const checklist = input.closest(".filter-group")?.querySelector(".filter-checklist");
-    if (!checklist) return;
+function bindFilterSearchInputs() {
+    document.querySelectorAll(".filter-search-input").forEach((input) => {
+        if (input.dataset.bound) return;
+        input.dataset.bound = "true";
 
-    const labels = Array.from(checklist.querySelectorAll(".filter-checkbox"));
-    const noResults = checklist.querySelector(".filter-no-results");
+        const checklist = input.closest(".filter-group")?.querySelector(".filter-checklist");
+        if (!checklist) return;
 
-    // Explicitly hidden on setup — don't rely solely on the "hidden"
-    // HTML attribute, since nothing has been searched yet
-    if (noResults) noResults.hidden = true;
+        input.addEventListener("input", () => {
+            const term = input.value.trim().toLowerCase();
+            const labels = Array.from(checklist.querySelectorAll(".filter-checkbox"));
+            const noResults = checklist.querySelector(".filter-no-results");
+            let anyVisible = false;
 
-    input.addEventListener("input", () => {
-        const term = input.value.trim().toLowerCase();
-        let anyVisible = false;
+            labels.forEach((label) => {
+                const matches = label.textContent.trim().toLowerCase().includes(term);
+                label.style.display = matches ? "" : "none";
+                if (matches) anyVisible = true;
+            });
 
-        labels.forEach((label) => {
-            const matches = label.textContent.trim().toLowerCase().includes(term);
-            label.style.display = matches ? "" : "none";
-            if (matches) anyVisible = true;
+            if (noResults) noResults.hidden = anyVisible;
         });
-
-        if (noResults) noResults.hidden = anyVisible;
     });
-});
+}
+
+bindFilterSearchInputs();
 
 /* ---------- "Show more" genres ---------- */
 
@@ -753,24 +758,25 @@ function initCatalogFiltering() {
 
     function applyCatalogFilters() {
         const statusFilters = getCheckedValues("status");
+        const translationFilters = getCheckedValues("translation");
         const lengthFilters = getCheckedValues("length");
         const genreFilters = getCheckedValues("genre");
         const authorFilters = getCheckedValues("author");
         const searchTerm = catalogSearchInput ? catalogSearchInput.value.trim().toLowerCase() : "";
 
         const matchedCards = catalogCards.filter((card) => {
-            const cardStatus = card.querySelector(".badge-completed") ? "completed" : "ongoing";
-            const cardGenres = Array.from(card.querySelectorAll(".novel-tags span")).map((el) => el.textContent.trim().toLowerCase());
+            const cardGenres = (card.dataset.genres || "").split("|").filter(Boolean);
             const cardTitle = (card.querySelector("h3")?.textContent || "").toLowerCase();
             const cardAuthor = (card.querySelector(".author-name")?.textContent || "").toLowerCase();
 
-            const matchesStatus = statusFilters.length === 0 || statusFilters.includes(cardStatus);
+            const matchesStatus = statusFilters.length === 0 || statusFilters.includes(card.dataset.status);
+            const matchesTranslation = translationFilters.length === 0 || translationFilters.includes(card.dataset.translation);
             const matchesLength = lengthFilters.length === 0 || lengthFilters.includes(getCardLengthBucket(card));
             const matchesGenre = genreFilters.length === 0 || genreFilters.some((g) => cardGenres.includes(g));
             const matchesAuthor = authorFilters.length === 0 || authorFilters.includes(cardAuthor);
             const matchesSearch = searchTerm === "" || cardTitle.includes(searchTerm) || cardAuthor.includes(searchTerm) || cardGenres.some((g) => g.includes(searchTerm));
 
-            return matchesStatus && matchesLength && matchesGenre && matchesAuthor && matchesSearch;
+            return matchesStatus && matchesTranslation && matchesLength && matchesGenre && matchesAuthor && matchesSearch;
         });
 
         const totalPages = Math.max(1, Math.ceil(matchedCards.length / CATALOG_CARDS_PER_PAGE));
@@ -2558,6 +2564,105 @@ if (catalogGrid) {
         return `${n} ${word}`;
     }
 
+    // Maps the novel's own free-text status fields to the fixed set of
+    // filter values the sidebar checkboxes use — shared between the
+    // card template below and the sidebar's count aggregation further
+    // down, so both always agree on the same buckets
+    function originalStatusToFilterValue(status) {
+        return status === "Завершено" ? "completed" : "ongoing";
+    }
+
+    function translationStatusToFilterValue(status) {
+        if (status === "Полностью переведено") return "fully-translated";
+        if (status === "Приостановлено") return "on-hiatus";
+        return "in-progress";
+    }
+
+    // Builds every sidebar filter group (counts, genres, authors) from
+    // the same `novels` array the grid itself was just built from —
+    // one fetch feeds both, so they can never disagree with each other
+    function populateCatalogSidebar(novels) {
+        const statusCounts = { completed: 0, ongoing: 0 };
+        const translationCounts = { "fully-translated": 0, "in-progress": 0, "on-hiatus": 0 };
+        const lengthCounts = { short: 0, medium: 0, long: 0 };
+        const genreCounts = new Map();
+        const authorsByKey = new Map();
+
+        novels.forEach((novel) => {
+            statusCounts[originalStatusToFilterValue(novel.status)] += 1;
+            translationCounts[translationStatusToFilterValue(novel.translationStatus)] += 1;
+
+            const total = novel.totalChapters || 0;
+            const bucket = total <= 100 ? "short" : total <= 300 ? "medium" : "long";
+            lengthCounts[bucket] += 1;
+
+            (novel.genres || []).forEach((genre) => {
+                genreCounts.set(genre, (genreCounts.get(genre) || 0) + 1);
+            });
+
+            if (novel.author && novel.author.name) {
+                const key = novel.author.name.toLowerCase();
+                if (!authorsByKey.has(key)) authorsByKey.set(key, { name: novel.author.name, count: 0 });
+                authorsByKey.get(key).count += 1;
+            }
+        });
+
+        const setCount = (id, value) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = value;
+        };
+        setCount("statusCountCompleted", statusCounts.completed);
+        setCount("statusCountOngoing", statusCounts.ongoing);
+        setCount("translationCountFully", translationCounts["fully-translated"]);
+        setCount("translationCountProgress", translationCounts["in-progress"]);
+        setCount("translationCountHiatus", translationCounts["on-hiatus"]);
+        setCount("lengthCountShort", lengthCounts.short);
+        setCount("lengthCountMedium", lengthCounts.medium);
+        setCount("lengthCountLong", lengthCounts.long);
+
+        // Genres — most common first; only the first few show right
+        // away, the rest sit behind "Show more" (see GENRES_VISIBLE_COUNT)
+        const GENRES_VISIBLE_COUNT = 6;
+        const sortedGenres = Array.from(genreCounts.entries()).sort((a, b) => b[1] - a[1]);
+
+        function genreCheckboxHtml([genre, count]) {
+            return `
+                <label class="filter-checkbox">
+                    <input type="checkbox" data-value="${genre.toLowerCase()}">
+                    <span>${genre}</span>
+                    <span class="count">${count}</span>
+                </label>`;
+        }
+
+        const genreChecklistMain = document.getElementById("genreChecklistMain");
+        const extraGenres = document.getElementById("extraGenres");
+        const btnShowMoreGenres = document.getElementById("btnShowMoreGenres");
+
+        if (genreChecklistMain) {
+            genreChecklistMain.innerHTML = sortedGenres.slice(0, GENRES_VISIBLE_COUNT).map(genreCheckboxHtml).join("");
+        }
+        if (extraGenres) {
+            const extra = sortedGenres.slice(GENRES_VISIBLE_COUNT);
+            extraGenres.innerHTML = extra.map(genreCheckboxHtml).join("");
+            if (btnShowMoreGenres) btnShowMoreGenres.hidden = extra.length === 0;
+        }
+
+        // Authors — alphabetical, easier to scan/search than sorted by count
+        const authorChecklist = document.getElementById("authorChecklist");
+        if (authorChecklist) {
+            const sortedAuthors = Array.from(authorsByKey.values()).sort((a, b) => a.name.localeCompare(b.name, "ru"));
+            const authorRows = sortedAuthors
+                .map((author) => `
+                    <label class="filter-checkbox">
+                        <input type="checkbox" data-value="${author.name.toLowerCase()}">
+                        <span>${author.name}</span>
+                        <span class="count">${author.count}</span>
+                    </label>`)
+                .join("");
+            authorChecklist.innerHTML = authorRows + '<p class="no-results-notice filter-no-results" hidden>Авторы не найдены.</p>';
+        }
+    }
+
     function catalogCardHtml(novel) {
         const novelHref = `novel.html?id=${novel.id}`;
         const savedChapter = getReadingProgress(novel.id);
@@ -2575,11 +2680,14 @@ if (catalogGrid) {
             badgeIcon = "images/icons/pause-circle.svg";
             badgeText = "На паузе";
         }
-
         const genresHtml = (novel.genres || [])
             .slice(0, 4)
             .map((genre) => `<span>${genre}</span>`)
             .join("");
+        // Full genre list for filtering, separate from the 4 shown on
+        // the card itself — otherwise filtering by a 5th+ genre a novel
+        // actually has would wrongly exclude its card
+        const allGenresAttr = (novel.genres || []).map((g) => g.toLowerCase()).join("|");
 
         let progressZoneHtml;
         let actionButtonHtml;
@@ -2601,7 +2709,7 @@ if (catalogGrid) {
         }
 
         return `
-            <article class="novel-card" data-rating="${novel.rating ? novel.rating.score : 0}">
+            <article class="novel-card" data-rating="${novel.rating ? novel.rating.score : 0}" data-status="${originalStatusToFilterValue(novel.status)}" data-translation="${translationStatusToFilterValue(novel.translationStatus)}" data-genres="${allGenresAttr}">
                 <div class="novel-cover-wrap">
                     <span class="badge ${badgeClass}"><img src="${badgeIcon}" alt="">${badgeText}</span>
                     <a href="${novelHref}"><img src="${novel.cover}" alt="${novel.title}"></a>
@@ -2641,6 +2749,7 @@ if (catalogGrid) {
         .then((novelsIndex) => Promise.all(novelsIndex.map((entry) => getNovelData(entry.id))))
         .then((novels) => {
             catalogGrid.innerHTML = novels.map(catalogCardHtml).join("");
+            populateCatalogSidebar(novels);
 
             // Same manual-bind reasoning as everywhere else dynamic in
             // this file — these buttons didn't exist yet when the
@@ -2664,6 +2773,7 @@ if (catalogGrid) {
             });
 
             bindCatalogCardMenus();
+            bindFilterSearchInputs();
             initCatalogFiltering();
         })
         .catch((error) => console.error("Failed to load catalog:", error));
