@@ -280,16 +280,15 @@
     gap: 14px;
 }
 
-.term-cn {
+.term-name-ru {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--text-primary);
     line-height: 1.2;
 }
 
-.term-pinyin {
-    font-style: italic;
+.term-original {
     color: var(--text-secondary);
     font-size: 13px;
 }
@@ -335,30 +334,6 @@
     max-width: 85%;
 }
 
-.term-card-footer {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.see-in-chapter-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--honey);
-    font-size: 12px;
-    font-weight: 600;
-    transition: gap 0.2s ease;
-}
-
-.term-card:hover .see-in-chapter-btn {
-    gap: 8px;
-}
-
-.see-in-chapter-btn svg {
-    width: 13px;
-    height: 13px;
-}
-
 /* ---------- Sidebar / detail panel ---------- */
 
 .sidebar-detail-card {
@@ -378,28 +353,17 @@
     margin-bottom: 4px;
 }
 
-.detail-cn {
+.detail-name-ru {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text-primary);
-    line-height: 1.1;
+    line-height: 1.15;
 }
 
-.star-btn {
-    color: var(--honey);
-    padding: 4px;
-}
-
-.star-btn svg {
-    width: 20px;
-    height: 20px;
-}
-
-.detail-pinyin {
-    font-style: italic;
+.detail-original {
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 14px;
     display: block;
 }

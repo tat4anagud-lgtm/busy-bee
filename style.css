@@ -5322,6 +5322,74 @@ body.reader-page.theme-dark .btn-web-version {
 
 
 /* ====================================================================
+   FOOTNOTES (shared by reader.html + chapter.html)
+   Small superscript numbers inside the chapter text — for one-off
+   context that doesn't belong in the glossary (a joke that only works
+   in the original language, what a character's name means, etc.),
+   as opposed to reusable terms, which link into the Glossary instead.
+   Defined per-chapter, in that chapter's own JSON (see script.js).
+   ==================================================================== */
+
+.footnote-marker {
+    color: var(--honey);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 1px;
+}
+
+.footnote-marker:hover {
+    text-decoration: underline;
+}
+
+.footnote-popover {
+    position: fixed;
+    z-index: 60;
+    width: 280px;
+    max-width: calc(100vw - 32px);
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+
+    box-shadow: 0 12px 32px var(--shadow);
+}
+
+.footnote-popover-term {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.footnote-popover-pinyin {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.footnote-popover-definition {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.footnote-popover-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--honey);
+}
+
+.footnote-popover-link:hover {
+    text-decoration: underline;
+}
+
+/* ====================================================================
    SELECTION TOOLBAR (shared by reader.html + chapter.html)
    A small floating pill that appears above whatever text the reader
    just selected. Positioned via JS (script.js tracks the actual

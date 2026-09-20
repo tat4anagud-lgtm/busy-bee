@@ -1064,6 +1064,62 @@ function chapterHref(novelId, chapterNumber) {
     return `chapter.html?novel=${encodeURIComponent(novelId)}&chapter=${chapterNumber}`;
 }
 
+/* ---------- Footnote popover (shared by reader.html + chapter.html) ----------
+   `containerEl` is the element the chapter's paragraphs are rendered
+   into; `getFootnotes` returns the CURRENTLY loaded chapter's own
+   `footnotes` array (kept up to date by whichever loadChapter function
+   calls this). Only chapter-local notes for now — not glossary terms,
+   see the schema discussion — so the popover just shows the note text,
+   no pinyin or "see in Glossary" link. */
+function setupFootnotePopover(containerEl, getFootnotes) {
+    const popover = document.getElementById("footnotePopover");
+    if (!popover || !containerEl) return;
+
+    const termEl = document.getElementById("footnotePopoverTerm");
+    const pinyinEl = document.getElementById("footnotePopoverPinyin");
+    const definitionEl = document.getElementById("footnotePopoverDefinition");
+    const linkEl = document.getElementById("footnotePopoverLink");
+
+    function closePopover() {
+        popover.style.display = "none";
+    }
+
+    containerEl.addEventListener("click", (event) => {
+        const marker = event.target.closest(".footnote-marker");
+        if (!marker) return;
+
+        const footnotes = getFootnotes() || [];
+        const entry = footnotes.find((f) => String(f.marker) === String(marker.dataset.footnote));
+        if (!entry) return;
+
+        if (termEl) termEl.textContent = "Заметка переводчика";
+        if (pinyinEl) pinyinEl.hidden = true;
+        if (definitionEl) definitionEl.textContent = entry.note;
+        if (linkEl) linkEl.hidden = true;
+
+        popover.style.display = "block";
+
+        const markerRect = marker.getBoundingClientRect();
+        const popoverWidth = popover.offsetWidth;
+        let left = markerRect.left;
+        if (left + popoverWidth > window.innerWidth - 16) left = window.innerWidth - popoverWidth - 16;
+        if (left < 16) left = 16;
+
+        popover.style.left = `${left}px`;
+        popover.style.top = `${markerRect.bottom + 8}px`;
+    });
+
+    document.addEventListener("click", (event) => {
+        if (popover.style.display !== "none" && !popover.contains(event.target) && !event.target.closest(".footnote-marker")) {
+            closePopover();
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") closePopover();
+    });
+}
+
 // Reads ?novel=<id>&chapter=<n> from the current page's URL — shared
 // so every block below agrees on the same defaults
 function getNovelAndChapterFromUrl() {
@@ -1364,6 +1420,9 @@ if (readerHeader) {
     const { novelId: readerNovelId, chapterNumber: readerChapterFromUrl } = getNovelAndChapterFromUrl();
     let currentChapterNumber = readerChapterFromUrl;
     let availableChapters = [currentChapterNumber];
+    let currentChapterFootnotes = [];
+
+    setupFootnotePopover(prose, () => currentChapterFootnotes);
 
     async function loadChapter(chapterNumber) {
         try {
@@ -1375,6 +1434,7 @@ if (readerHeader) {
             const chapter = await response.json();
 
             currentChapterNumber = chapter.number;
+            currentChapterFootnotes = chapter.footnotes || [];
             saveReadingProgress(readerNovelId, chapter.number);
 
             const webVersionLink = document.getElementById("webVersionLink");
@@ -1608,6 +1668,9 @@ const chapterWebText = document.getElementById("chapterWebText");
 if (chapterWebText) {
     const { novelId: webNovelId, chapterNumber: webChapterNumber } = getNovelAndChapterFromUrl();
     let webAvailableChapters = [webChapterNumber];
+    let currentWebChapterFootnotes = [];
+
+    setupFootnotePopover(chapterWebText, () => currentWebChapterFootnotes);
 
     const breadcrumbChapter = document.getElementById("breadcrumbChapter");
     const breadcrumbNovelLink = document.getElementById("breadcrumbNovelLink");
@@ -1640,6 +1703,7 @@ if (chapterWebText) {
             if (!response.ok) throw new Error(`Глава ${chapterNumber} не найдена`);
             const chapter = await response.json();
             saveReadingProgress(webNovelId, chapter.number);
+            currentWebChapterFootnotes = chapter.footnotes || [];
 
             document.title = `Глава ${chapter.number}: ${chapter.title} — ${novel.title} | Busy Bee`;
             if (breadcrumbChapter) breadcrumbChapter.textContent = `Глава ${chapter.number}`;

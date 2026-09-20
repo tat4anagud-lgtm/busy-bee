@@ -62,13 +62,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 query === "" ||
                 item.term.includes(searchQuery.trim()) ||
                 item.pinyin.toLowerCase().includes(query) ||
+                item.nameRu.toLowerCase().includes(query) ||
                 item.definition.toLowerCase().includes(query);
 
             let matchesLetter = true;
             if (activeLetter !== "Все") {
                 const pinyinFirstLetter = item.pinyin.charAt(0).toUpperCase();
-                const definitionFirstLetter = item.definition.charAt(0).toUpperCase();
-                matchesLetter = pinyinFirstLetter === activeLetter || definitionFirstLetter === activeLetter;
+                const nameRuFirstLetter = item.nameRu.charAt(0).toUpperCase();
+                matchesLetter = pinyinFirstLetter === activeLetter || nameRuFirstLetter === activeLetter;
             }
 
             return matchesCategory && matchesSearch && matchesLetter;
@@ -82,40 +83,37 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         cardsListEl.innerHTML = filtered
-            .map((item) => {
-                const firstOccurrence = item.usedIn && item.usedIn[0];
-                return `
+            .map((item) => `
                     <article class="term-card ${item.id === selectedTermId ? "selected" : ""}" data-id="${item.id}">
                         <div class="term-card-header">
                             <div class="term-title-group">
-                                <h3 class="term-cn">${item.term}</h3>
-                                <span class="term-pinyin">${item.pinyin}</span>
+                                <h3 class="term-name-ru">${item.nameRu}</h3>
+                                <span class="term-original">${item.term} · ${item.pinyin}</span>
                             </div>
                             <div class="term-card-header-actions">
                                 <span class="badge-tag">${item.category}</span>
-                                <button class="bookmark-icon-btn" title="Добавить в избранное" type="button">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                                <button type="button" class="mini-bookmark" aria-label="Сохранить в закладки" aria-pressed="false">
+                                    <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
                                 </button>
                             </div>
                         </div>
                         <p class="term-desc">${item.definition}</p>
-                        <div class="term-card-footer">
-                            <a href="${firstOccurrence ? usedInHref(firstOccurrence) : "#"}" class="see-in-chapter-btn">
-                                Смотреть в главе
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>
-                    </article>`;
-            })
+                    </article>`)
             .join("");
+
+        cardsListEl.querySelectorAll(".mini-bookmark").forEach((button) => {
+            const icon = button.querySelector("img");
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                const isSaved = button.classList.toggle("active");
+                button.setAttribute("aria-pressed", isSaved);
+                icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+            });
+        });
 
         cardsListEl.querySelectorAll(".term-card").forEach((card) => {
             card.addEventListener("click", (event) => {
-                if (event.target.closest(".bookmark-icon-btn")) {
-                    event.target.closest(".bookmark-icon-btn").classList.toggle("active");
-                    return;
-                }
-                if (event.target.closest(".see-in-chapter-btn")) return; // let the link work normally
+                if (event.target.closest(".mini-bookmark")) return;
 
                 selectedTermId = card.dataset.id;
                 renderCards();
@@ -134,12 +132,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         detailCardEl.innerHTML = `
             <div class="detail-top">
-                <h2 class="detail-cn">${term.term}</h2>
-                <button class="star-btn" title="Добавить в избранное" type="button">
-                    <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <h2 class="detail-name-ru">${term.nameRu}</h2>
+                <button type="button" class="mini-bookmark" aria-label="Сохранить в закладки" aria-pressed="false">
+                    <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
                 </button>
             </div>
-            <span class="detail-pinyin">${term.pinyin}</span>
+            <span class="detail-original">${term.term} · ${term.pinyin}</span>
 
             <div style="margin-bottom: 14px;">
                 <span class="badge-tag">${term.category}</span>
@@ -175,6 +173,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 Все вхождения (${usedIn.length})
             </button>
         `;
+
+        const detailBookmarkBtn = detailCardEl.querySelector(".mini-bookmark");
+        if (detailBookmarkBtn) {
+            const icon = detailBookmarkBtn.querySelector("img");
+            detailBookmarkBtn.addEventListener("click", () => {
+                const isSaved = detailBookmarkBtn.classList.toggle("active");
+                detailBookmarkBtn.setAttribute("aria-pressed", isSaved);
+                icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+            });
+        }
     }
 
     /* ---------- Data loading ---------- */
