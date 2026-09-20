@@ -1,0 +1,474 @@
+/* ========================================
+   BUSY BEE — ANNOUNCEMENTS PAGE STYLES
+   Header, footer, nav, search, icon buttons etc. all come from the
+   shared style.css — this file only covers content unique to this
+   page (hero, sidebar, feed cards), using the same CSS variables and
+   fonts as the rest of the site instead of a separate design system.
+   ======================================== */
+
+.announcements-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+}
+
+/* ==================== HERO ==================== */
+.announcements-hero {
+    text-align: center;
+    padding: 48px 0 32px;
+}
+
+.hero-title {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 46px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.ornament-divider {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.hero-subtitle {
+    color: var(--text-secondary);
+    font-size: 15px;
+}
+
+/* ==================== LAYOUT ==================== */
+.announcements-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 36px;
+    align-items: start;
+}
+
+/* ==================== SIDEBAR ==================== */
+.announcements-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-item {
+    text-align: left;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.menu-item:hover {
+    color: var(--text-primary);
+    background: var(--surface-warm);
+}
+
+.menu-item.active {
+    color: var(--text-primary);
+    background: #F2E8DA;
+    font-weight: 600;
+}
+
+/* Widget */
+.share-widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.share-widget h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.share-widget p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: background 0.2s;
+}
+
+.share-btn:hover {
+    background: var(--border);
+}
+
+.sidebar-decor-illustration {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+/* ==================== FEED CARDS ==================== */
+.announcements-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.feed-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.feed-card:hover {
+    border-color: var(--honey);
+    box-shadow: 0 4px 16px var(--shadow);
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.icon-inline {
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.category-tag {
+    background: var(--surface-warm);
+    color: #7A6348;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+
+.post-date {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.post-title {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.25;
+    margin-bottom: 10px;
+}
+
+.post-text {
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.text-subtle {
+    color: var(--text-secondary);
+}
+
+/* Card Actions / Footer */
+.card-footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.post-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.stat-btn:hover,
+.stat-btn.active {
+    color: var(--honey);
+}
+
+.stat-btn.active svg {
+    fill: var(--honey);
+    stroke: var(--honey);
+}
+
+.right-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-secondary {
+    padding: 8px 18px;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--border);
+}
+
+.bookmark-btn {
+    color: var(--text-muted);
+    padding: 6px;
+    transition: color 0.2s;
+}
+
+.bookmark-btn:hover,
+.bookmark-btn.active {
+    color: var(--honey);
+}
+
+/* ==================== FEATURED CARD SPECIFIC ==================== */
+.featured-card {
+    border: 1.5px solid var(--border);
+    padding: 28px;
+    background: linear-gradient(135deg, #FFFDF9 0%, #FAF5ED 100%);
+    overflow: hidden;
+}
+
+.featured-badge {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    background: var(--honey);
+    color: #FFF;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+.featured-layout {
+    display: flex;
+    gap: 24px;
+    margin-top: 14px;
+}
+
+.featured-cover-wrapper {
+    position: relative;
+    width: 130px;
+    flex-shrink: 0;
+}
+
+.novel-cover {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.cn-title-vertical {
+    position: absolute;
+    left: 10px;
+    top: 20px;
+    writing-mode: vertical-rl;
+    color: #FFF;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.featured-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.featured-actions {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-primary {
+    padding: 10px 22px;
+    background: var(--honey);
+    color: #FFF;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+}
+
+.btn-link {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.card-bee-decor {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    pointer-events: none;
+}
+
+/* ==================== MEDIA CARDS (Thumb + Content) ==================== */
+.media-layout {
+    display: flex;
+    gap: 20px;
+}
+
+.card-thumb {
+    width: 110px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.media-body {
+    flex: 1;
+}
+
+/* ==================== POLL CARD ==================== */
+.poll-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.poll-option {
+    display: grid;
+    grid-template-columns: 20px 1fr 120px 40px;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.poll-option input[type="radio"] {
+    accent-color: var(--honey);
+}
+
+.option-label {
+    color: var(--text-primary);
+}
+
+.progress-bar-bg {
+    height: 6px;
+    background: var(--surface-warm);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--honey);
+    border-radius: 3px;
+}
+
+.option-percent {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: right;
+    font-weight: 500;
+}
+
+/* ==================== SHARED CARD ==================== */
+.shared-card {
+    background: var(--surface-warm);
+    border: 1px dashed var(--border);
+}
+
+.shared-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.shared-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.shared-plane-art {
+    position: absolute;
+    bottom: 16px;
+    right: 20px;
+    pointer-events: none;
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 868px) {
+    .announcements-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .sidebar-decor-illustration {
+        display: none;
+    }
+
+    .featured-layout,
+    .media-layout {
+        flex-direction: column;
+    }
+
+    .poll-option {
+        grid-template-columns: 20px 1fr 40px;
+    }
+
+    .progress-bar-bg {
+        display: none;
+    }
+}
