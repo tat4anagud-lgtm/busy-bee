@@ -35,7 +35,15 @@
 }
 
 .ornament-divider {
+    display: flex;
+    justify-content: center;
     margin-bottom: 18px;
+}
+
+.section-ornament {
+    width: 160px;
+    height: auto;
+    display: block;
 }
 
 .hero-subtitle {
@@ -48,6 +56,13 @@
     flex-shrink: 0;
 }
 
+.hero-illustration img {
+    display: block;
+    width: 340px;
+    max-width: 100%;
+    height: auto;
+}
+
 /* ==================== INTRO TWO-COLUMN CARD ==================== */
 .about-intro-card {
     background: var(--surface);
@@ -58,7 +73,6 @@
     grid-template-columns: 1fr auto 1fr;
     gap: 32px;
     align-items: center;
-    box-shadow: 0 4px 16px var(--shadow);
     margin-bottom: 60px;
 }
 
@@ -97,6 +111,22 @@
     justify-content: center;
     align-items: center;
     padding: 0 10px;
+}
+
+.avatar-circle-frame {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--surface-warm);
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+}
+
+.avatar-circle-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .translator-title {
@@ -180,12 +210,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 2px 8px var(--shadow);
-    transition: transform 0.2s, border-color 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .feature-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px var(--shadow);
     border-color: var(--honey);
 }
 
@@ -227,7 +257,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 4px 16px var(--shadow);
 }
 
 .step-item {
@@ -286,7 +315,6 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    box-shadow: 0 4px 16px var(--shadow);
     margin-bottom: 20px;
 }
 
@@ -295,6 +323,12 @@
     left: 30px;
     bottom: 10px;
     pointer-events: none;
+}
+
+.banner-decor-left img {
+    display: block;
+    width: 180px;
+    height: auto;
 }
 
 .banner-content {

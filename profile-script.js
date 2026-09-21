@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (createCollectionBtn) {
         createCollectionBtn.addEventListener("click", () => {
-            const title = prompt("Enter new collection title:");
+            const title = prompt("Введите название новой коллекции:");
             if (title) {
-                alert(`Collection "${title}" has been created!`);
+                alert(`Коллекция «${title}» создана!`);
             }
         });
     }
@@ -23,6 +23,18 @@ document.addEventListener("DOMContentLoaded", () => {
         item.addEventListener("click", (e) => {
             sidebarItems.forEach((i) => i.classList.remove("active"));
             item.classList.add("active");
+        });
+    });
+
+    /* 3. Лайк под цитатами — тот же outline/filled свап иконки сердца,
+       что и у .favorite-btn на других страницах */
+    document.querySelectorAll(".btn-like").forEach((button) => {
+        const icon = button.querySelector("img");
+        if (!icon) return;
+
+        button.addEventListener("click", () => {
+            const isLiked = button.classList.toggle("active");
+            icon.src = isLiked ? icon.dataset.filled : icon.dataset.outline;
         });
     });
 

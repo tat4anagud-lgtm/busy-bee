@@ -32,6 +32,12 @@
     margin-bottom: 12px;
 }
 
+.section-ornament {
+    width: 160px;
+    height: auto;
+    display: block;
+}
+
 .hero-subtitle {
     color: var(--text-secondary);
     font-size: 15px;
@@ -85,7 +91,6 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 20px 18px;
-    box-shadow: 0 2px 8px var(--shadow);
 }
 
 .share-widget h4 {
@@ -127,6 +132,12 @@
     opacity: 0.9;
 }
 
+.sidebar-decor-illustration img {
+    display: block;
+    width: 160px;
+    height: auto;
+}
+
 /* ==================== FEED CARDS ==================== */
 .announcements-feed {
     display: flex;
@@ -140,13 +151,13 @@
     border-radius: 12px;
     padding: 24px;
     position: relative;
-    box-shadow: 0 2px 8px var(--shadow);
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .feed-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px var(--shadow);
     border-color: var(--honey);
-    box-shadow: 0 4px 16px var(--shadow);
 }
 
 .post-meta {
@@ -352,7 +363,26 @@
     position: absolute;
     top: 16px;
     right: 16px;
+    width: 60px;
+    height: 50px;
     pointer-events: none;
+}
+
+.card-bee-decor > svg:first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 50px;
+}
+
+.card-bee-icon {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    width: 26px;
+    height: 26px;
+    transform: rotate(12deg);
 }
 
 /* ==================== MEDIA CARDS (Thumb + Content) ==================== */

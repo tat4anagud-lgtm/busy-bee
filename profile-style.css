@@ -44,8 +44,31 @@
     font-weight: 600;
 }
 
+.sidebar-item-danger {
+    margin-top: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+}
+
+.sidebar-item-danger:hover {
+    background: #FBEAEA;
+    color: #C0392B;
+}
+
 .sidebar-icon {
-    font-size: 14px;
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+    /* Иконки в этом наборе белые внутри (рассчитаны на цветные/тёмные
+       кнопки) — на светлом фоне сайдбара их не видно без этого трюка,
+       тот же приём, что и у .stat-icon на странице переводчика */
+    filter: brightness(0);
+    opacity: 0.6;
+}
+
+.sidebar-item.active .sidebar-icon {
+    opacity: 0.85;
 }
 
 .sidebar-decoration {
@@ -86,7 +109,7 @@
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid var(--white);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 16px var(--shadow);
 }
 
 .btn-edit-avatar {
@@ -98,9 +121,18 @@
     border-radius: 50%;
     width: 26px;
     height: 26px;
-    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+.btn-edit-avatar img {
+    width: 12px;
+    height: 12px;
+    filter: brightness(0);
+    opacity: 0.6;
 }
 
 .profile-hero-info {
@@ -184,7 +216,13 @@
     flex-direction: column;
 }
 
-.stat-icon { font-size: 13px; margin-bottom: 4px; }
+.stat-icon {
+    width: 16px;
+    height: 16px;
+    margin-bottom: 4px;
+    filter: brightness(0);
+    opacity: 0.55;
+}
 .stat-title { font-size: 10px; color: var(--text-muted); }
 .stat-value { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 4px 0 2px; }
 .stat-text-value { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-top: 6px; line-height: 1.3; }
@@ -311,7 +349,13 @@
     align-items: center;
 }
 
-.shelf-icon { font-size: 16px; margin-bottom: 6px; }
+.shelf-icon {
+    width: 18px;
+    height: 18px;
+    margin-bottom: 6px;
+    filter: brightness(0);
+    opacity: 0.6;
+}
 .bookshelf-card strong { font-size: 11px; margin-bottom: 4px; }
 .shelf-count { font-size: 10px; color: var(--text-muted); }
 
@@ -427,6 +471,34 @@
     margin-top: 6px;
 }
 
+.btn-like {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-like img {
+    width: 11px;
+    height: 11px;
+}
+
+.btn-like.active {
+    color: var(--honey);
+}
+
+.btn-dots {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+}
+
 /* Note Item */
 .note-item {
     display: flex;
@@ -434,7 +506,14 @@
     margin-bottom: 10px;
 }
 
-.note-icon { font-size: 12px; }
+.note-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    filter: brightness(0);
+    opacity: 0.55;
+}
 
 .note-info strong {
     display: block;
@@ -512,5 +591,11 @@
     border-bottom: none;
 }
 
-.activity-icon { font-size: 12px; }
+.activity-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    filter: brightness(0);
+    opacity: 0.55;
+}
 .activity-time { margin-left: auto; font-size: 9px; color: var(--text-muted); }
