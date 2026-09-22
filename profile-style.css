@@ -2,18 +2,55 @@
    BUSY BEE — USER PROFILE STYLES
    ======================================== */
 
+/* ---------- Шкала размеров текста ----------
+   Ниже 10px в интерфейсе не опускаемся: 7–9px плохо читаются,
+   а на .page-shell ещё и действует zoom: 0.9.
+   Когда будешь выравнивать остальные страницы — перенеси этот блок
+   в :root файла style.css и пользуйся теми же четырьмя значениями. */
+:root {
+    --fs-micro: 10px;   /* даты, подписи, счётчики */
+    --fs-small: 11px;   /* вторичный текст, ссылки «Смотреть все» */
+    --fs-body: 12px;    /* основной текст в карточках */
+    --fs-base: 13px;    /* пункты меню, названия в списках */
+}
+
 .profile-layout {
     display: grid;
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 220px minmax(0, 1fr);
     gap: 32px;
     padding: 24px 32px 60px;
 }
 
-/* Sidebar Menu */
+.profile-main {
+    min-width: 0;
+}
+
+/* Видимый фокус для клавиатуры */
+.profile-layout a:focus-visible,
+.profile-layout button:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+/* Только book-open.svg внутри белый (рассчитан на медовую кнопку) —
+   остальные иконки тёмные, как в выпадающем меню шапки. Поэтому
+   фильтр нужен ему одному. */
+.profile-layout img[src$="book-open.svg"] {
+    filter: brightness(0);
+    opacity: 0.6;
+}
+
+/* ---------- Sidebar Menu ---------- */
 .profile-sidebar {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 16px 12px 0;
+    overflow: hidden;
 }
 
 .sidebar-menu {
@@ -30,7 +67,7 @@
     border-radius: 10px;
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 13px;
+    font-size: var(--fs-base);
     transition: background 0.2s;
 }
 
@@ -44,11 +81,20 @@
     font-weight: 600;
 }
 
+/* «Выйти» отделён линией, но остаётся с такими же скруглениями */
 .sidebar-item-danger {
-    margin-top: 12px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-    border-radius: 0;
+    position: relative;
+    margin-top: 16px;
+}
+
+.sidebar-item-danger::before {
+    content: "";
+    position: absolute;
+    top: -9px;
+    left: 14px;
+    right: 14px;
+    height: 1px;
+    background: var(--border);
 }
 
 .sidebar-item-danger:hover {
@@ -59,68 +105,60 @@
 .sidebar-icon {
     width: 16px;
     height: 16px;
+    flex-shrink: 0;
     object-fit: contain;
-    /* Иконки в этом наборе белые внутри (рассчитаны на цветные/тёмные
-       кнопки) — на светлом фоне сайдбара их не видно без этого трюка,
-       тот же приём, что и у .stat-icon на странице переводчика */
-    filter: brightness(0);
-    opacity: 0.6;
-}
-
-.sidebar-item.active .sidebar-icon {
-    opacity: 0.85;
 }
 
 .sidebar-decoration {
-    margin-top: 60px;
-    padding-top: 20px;
+    margin: 48px -12px 0;
+    padding: 20px 24px 0;
+    min-height: 220px;
     background: url("images/backgrounds/sidebar-flowers.png") bottom left / contain no-repeat;
-    min-height: 180px;
-    display: flex;
-    align-items: flex-end;
 }
 
 .sidebar-quote {
     font-family: "Playfair Display", serif;
-    font-size: 12px;
+    font-size: var(--fs-body);
     color: var(--text-secondary);
     line-height: 1.4;
     margin: 0;
 }
 
-/* User Hero Banner */
+/* ---------- User Hero Banner ---------- */
 .profile-hero-card {
     background: var(--surface) url("images/backgrounds/user-hero-bg.png") right center / contain no-repeat;
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 28px 32px;
     display: flex;
-    gap: 24px;
+    gap: 28px;
     align-items: center;
 }
 
 .user-avatar-wrapper {
     position: relative;
+    flex-shrink: 0;
 }
 
 .profile-user-avatar {
-    width: 110px;
-    height: 110px;
+    display: block;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--white);
+    border: 4px solid var(--white);
     box-shadow: 0 6px 16px var(--shadow);
 }
 
 .btn-edit-avatar {
     position: absolute;
-    bottom: 4px;
-    right: 4px;
+    bottom: 6px;
+    right: 6px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 50%;
-    width: 26px;
-    height: 26px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,34 +167,34 @@
 }
 
 .btn-edit-avatar img {
-    width: 12px;
-    height: 12px;
-    filter: brightness(0);
-    opacity: 0.6;
+    width: 14px;
+    height: 14px;
 }
 
 .profile-hero-info {
     flex: 1;
+    min-width: 0;
 }
 
 .user-title-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 12px;
 }
 
 .user-title-row h1 {
     font-family: "Playfair Display", serif;
-    font-size: 28px;
+    font-size: 32px;
     margin: 0;
 }
 
 .user-badge {
     background: var(--surface-warm);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 3px 10px;
-    font-size: 11px;
+    border-radius: 14px;
+    padding: 4px 12px;
+    font-size: var(--fs-small);
     color: var(--text-primary);
     font-weight: 500;
 }
@@ -164,16 +202,17 @@
 .level-progress-row {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 12px;
-    margin: 10px 0 6px;
-    font-size: 11px;
+    margin: 12px 0 8px;
+    font-size: var(--fs-body);
 }
 
 .xp-bar {
-    width: 160px;
-    height: 6px;
+    width: 200px;
+    height: 8px;
     background: #EAE3D9;
-    border-radius: 3px;
+    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -187,22 +226,22 @@
 }
 
 .user-joined-date {
-    font-size: 11px;
+    font-size: var(--fs-small);
     color: var(--text-muted);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .user-bio {
-    font-size: 11px;
+    font-size: var(--fs-body);
     color: var(--text-secondary);
     font-style: italic;
     margin: 0;
 }
 
-/* User Stats Grid */
+/* ---------- User Stats Grid ---------- */
 .user-stats-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     gap: 12px;
     margin-top: 18px;
 }
@@ -211,130 +250,301 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 14px;
+    padding: 14px 16px;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+}
+
+/* Иконка и подпись — в одну строку */
+.stat-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .stat-icon {
     width: 16px;
     height: 16px;
-    margin-bottom: 4px;
-    filter: brightness(0);
-    opacity: 0.55;
+    flex-shrink: 0;
 }
-.stat-title { font-size: 10px; color: var(--text-muted); }
-.stat-value { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 4px 0 2px; }
-.stat-text-value { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-top: 6px; line-height: 1.3; }
-.stat-sub { font-size: 9px; color: var(--text-muted); }
-.stat-link { font-size: 9px; color: var(--text-muted); text-decoration: none; margin-top: auto; }
 
-/* General Section Block */
+.stat-title {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+}
+
+/* «Любимый жанр» / «Любимый автор» — текстом, а не числом,
+   поэтому набраны шрифтом заголовков */
+.stat-text-value {
+    font-family: "Playfair Display", serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+}
+
+.stat-sub {
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+}
+
+.stat-link {
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: auto;
+}
+
+.stat-link:hover {
+    color: var(--honey);
+}
+
+/* ---------- General Section Block ----------
+   Заголовок секции (.section-header / .section-title) и ссылка
+   «Посмотреть всё» (.view-all) — общие классы из style.css, как на главной.
+   Здесь только отступ между секциями и размер ссылки по шкале выше
+   (на главной она пока 9px — когда шкалу перенесёшь в style.css,
+   это правило можно будет убрать). */
 .section-block {
     margin-top: 28px;
 }
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
+.profile-layout .view-all {
+    font-size: var(--fs-small);
 }
 
-.section-header h2 {
-    font-family: "Playfair Display", serif;
-    font-size: 18px;
-    margin: 0;
-}
-
-.section-controls {
+/* ---------- Карусели ----------
+   Разметка и логика — как на главной: .profile-carousel (аналог
+   .book-carousel) = стрелка + дорожка + стрелка; прокрутку ведёт общая
+   setupCarousel из script.js. Здесь только вёрстка: сколько карточек
+   видно сразу задаёт --per-view. */
+.profile-carousel {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.link-view-all {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-decoration: none;
+.profile-track {
+    --per-view: 4;
+    --gap: 14px;
+
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    gap: var(--gap);
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+
+    /* запас под тень и «подъём» карточки при наведении:
+       overflow-x: hidden обрезает и по вертикали */
+    padding: 4px 4px 10px;
+    margin: -4px -4px -10px;
 }
 
-.nav-arrow {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-    cursor: pointer;
-    color: var(--text-secondary);
+.profile-track > .reading-card,
+.profile-track > .collection-card,
+.profile-track > .fav-novel-card {
+    flex: 0 0 calc((100% - (var(--per-view) - 1) * var(--gap)) / var(--per-view));
+    min-width: 0;
 }
 
-/* Continue Reading Grid */
-.reading-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
+.fav-novels-track {
+    --per-view: 5;
+    --gap: 12px;
 }
 
+/* ---------- Continue Reading ---------- */
 .reading-card {
+    position: relative;
+    display: flex;
+    min-height: 124px;
+    overflow: hidden;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 10px;
-
 }
 
 .reading-cover-wrap {
-    position: relative;
-    margin-bottom: 8px;
+    flex: 0 0 84px;
+    align-self: stretch;
 }
 
 .reading-cover-wrap img {
+    display: block;
     width: 100%;
-    height: 140px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 8px;
+}
+
+.reading-info {
+    flex: 1;
+    min-width: 0;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
 }
 
 .reading-card h3 {
-    font-size: 11px;
-    margin: 0 0 4px;
-    white-space: nowrap;
+    margin: 0;
+    padding-right: 14px; /* место под ⋮ */
+    font-size: var(--fs-body);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .chapter-info {
-    font-size: 9px;
+    font-size: var(--fs-small);
     color: var(--text-muted);
-    display: block;
-    margin-bottom: 6px;
+}
+
+.reading-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .progress-bar-wrap {
+    flex: 1;
     height: 4px;
     background: #EAE3D9;
     border-radius: 2px;
     overflow: hidden;
-    margin-bottom: 4px;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background: var(--honey);
 }
 
 .progress-percent {
-    font-size: 9px;
+    font-size: var(--fs-micro);
     color: var(--text-muted);
-    float: right;
 }
 
-/* Bookshelves Grid */
+/* .btn-dots в этом файле и в author-style.css — разные кнопки,
+   поэтому оформление привязано к контейнеру */
+.reading-card > .btn-dots {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+}
+
+.btn-dots {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.btn-dots:hover {
+    color: var(--text-primary);
+}
+
+/* ---------- Чипы ----------
+   Чипы переключают содержимое ВНУТРИ блока (Избранное: новеллы /
+   цитаты / коллекции). Переходы между разделами аккаунта — через меню. */
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.chip {
+    appearance: none;
+    font: inherit;
+    font-size: var(--fs-body);
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.chip:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.chip.active {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--text-primary);
+}
+
+/* ---------- Избранное: новеллы ---------- */
+.fav-novel-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.fav-novel-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 4px;
+    transition: box-shadow 0.2s ease;
+}
+
+.fav-novel-card:hover img {
+    box-shadow: 0 5px 16px var(--shadow);
+}
+
+.fav-novel-card h4 {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.fav-novel-author {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+/* ---------- Избранное: цитаты ---------- */
+.fav-quotes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.fav-quotes-grid .user-quote-item {
+    margin-bottom: 0;
+}
+
+/* ---------- Bookshelves Grid ---------- */
 .bookshelves-grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 12px;
 }
 
@@ -342,37 +552,47 @@
     background: var(--surface-warm) url("images/backgrounds/bookshelf-bg.png") center / cover no-repeat;
     border: 1px solid var(--border);
     border-radius: 12px;
+    min-height: 112px;
     padding: 20px 10px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.bookshelf-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px var(--shadow);
 }
 
 .shelf-icon {
-    width: 18px;
-    height: 18px;
-    margin-bottom: 6px;
-    filter: brightness(0);
-    opacity: 0.6;
-}
-.bookshelf-card strong { font-size: 11px; margin-bottom: 4px; }
-.shelf-count { font-size: 10px; color: var(--text-muted); }
-
-/* Collections Grid */
-.collections-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 8px;
 }
 
+.bookshelf-card strong {
+    font-size: var(--fs-base);
+    margin-bottom: 4px;
+}
+
+.shelf-count {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+/* ---------- Collections ----------
+   .collection-card также описан в style.css (главная) — здесь
+   переопределены только отличия профиля */
 .collection-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
     padding: 10px;
-    display: flex;
-    flex-direction: column;
+    color: var(--text-primary);
 }
 
 .collection-img {
@@ -384,36 +604,20 @@
 }
 
 .collection-card h4 {
-    font-size: 11px;
+    font-size: var(--fs-body);
     margin: 0 0 4px;
     line-height: 1.3;
 }
 
 .collection-count {
-    font-size: 9px;
+    font-size: var(--fs-small);
     color: var(--text-muted);
 }
 
-.create-new-collection {
-    border: 1px dashed var(--border);
-    background: transparent;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    cursor: pointer;
-    color: var(--text-muted);
-    font-size: 11px;
-}
-
-.plus-icon {
-    font-size: 20px;
-    margin-bottom: 4px;
-}
-
-/* Three Column Layout */
-.widgets-three-column {
+/* ---------- Two Column Layout (заметки / достижения) ---------- */
+.widgets-two-column {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin-top: 28px;
 }
@@ -439,28 +643,32 @@
 }
 
 .widget-header a {
-    font-size: 10px;
+    font-size: var(--fs-small);
     color: var(--text-muted);
     text-decoration: none;
+}
+
+.widget-header a:hover {
+    color: var(--honey);
 }
 
 /* Quote Item */
 .user-quote-item {
     background: var(--surface-warm);
     border-radius: 8px;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 8px;
 }
 
 .quote-text {
-    font-size: 10px;
+    font-size: var(--fs-body);
     font-style: italic;
-    margin: 0 0 4px;
-    line-height: 1.3;
+    margin: 0 0 6px;
+    line-height: 1.4;
 }
 
 .quote-book {
-    font-size: 8px;
+    font-size: var(--fs-micro);
     color: var(--text-muted);
     display: block;
 }
@@ -468,42 +676,36 @@
 .quote-meta {
     display: flex;
     justify-content: space-between;
-    margin-top: 6px;
+    align-items: center;
+    margin-top: 8px;
 }
 
 .btn-like {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 10px;
+    font-size: var(--fs-small);
     color: var(--text-muted);
     background: none;
     border: none;
+    padding: 0;
     cursor: pointer;
 }
 
 .btn-like img {
-    width: 11px;
-    height: 11px;
+    width: 12px;
+    height: 12px;
 }
 
 .btn-like.active {
     color: var(--honey);
 }
 
-.btn-dots {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-size: 12px;
-}
-
 /* Note Item */
 .note-item {
     display: flex;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .note-icon {
@@ -511,26 +713,25 @@
     height: 14px;
     flex-shrink: 0;
     margin-top: 2px;
-    filter: brightness(0);
-    opacity: 0.55;
 }
 
 .note-info strong {
     display: block;
-    font-size: 10px;
+    font-size: var(--fs-body);
     line-height: 1.3;
+    font-weight: 500;
 }
 
 .note-date {
-    font-size: 8px;
+    font-size: var(--fs-micro);
     color: var(--text-muted);
 }
 
-/* Achievements Grid */
+/* ---------- Achievements Grid ---------- */
 .achievements-hex-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 10px;
     text-align: center;
 }
 
@@ -540,36 +741,59 @@
     align-items: center;
 }
 
+/* Шестиугольник: внешний слой (медовый) даёт «рамку»,
+   ::before с чуть меньшим вырезом — заливку. Значок внутри
+   (пока эмодзи) лежит поверх обоих. */
 .hex-badge {
-    width: 36px;
-    height: 36px;
-    background: var(--surface-warm);
-    border: 1px solid var(--border);
-    border-radius: 50%;
+    --hex: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+    position: relative;
+    z-index: 0;
+    width: 42px;
+    height: 48px;
+    margin-bottom: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    margin-bottom: 4px;
+    font-size: 18px;
+    background: var(--honey);
+    clip-path: var(--hex);
+}
+
+.hex-badge::before {
+    content: "";
+    position: absolute;
+    inset: 1.5px;
+    z-index: -1;
+    background: linear-gradient(160deg, #FBF1D9, #F2DDAA);
+    clip-path: var(--hex);
 }
 
 .achievement-item strong {
-    font-size: 9px;
+    font-size: var(--fs-small);
+    line-height: 1.25;
     display: block;
 }
 
 .achievement-item span {
-    font-size: 7px;
+    font-size: var(--fs-micro);
+    line-height: 1.3;
     color: var(--text-muted);
 }
 
-/* Recent Activity Card */
+/* ---------- Recent Activity Card ---------- */
 .recent-activity-card {
     margin-top: 28px;
+    min-height: 260px;
     background: var(--surface) url("images/backgrounds/activity-bg.png") right center / contain no-repeat;
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 20px;
+    padding: 20px 24px;
+}
+
+/* список занимает левую часть карточки — правая отдана иллюстрации */
+.activity-content {
+    max-width: 62%;
 }
 
 .activity-feed {
@@ -582,8 +806,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 11px;
-    padding: 8px 0;
+    font-size: var(--fs-body);
+    padding: 9px 0;
     border-bottom: 1px solid var(--border);
 }
 
@@ -595,7 +819,12 @@
     width: 14px;
     height: 14px;
     flex-shrink: 0;
-    filter: brightness(0);
-    opacity: 0.55;
 }
-.activity-time { margin-left: auto; font-size: 9px; color: var(--text-muted); }
+
+.activity-time {
+    margin-left: auto;
+    padding-left: 12px;
+    white-space: nowrap;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}

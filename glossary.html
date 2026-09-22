@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="glossary.css">
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="glossary-hero-right">
-                    <img src="images/backgrounds/branch-decor.png" alt="">
+                    <img src="images/backgrounds/glossary-hero-decor.png" alt="">
                 </div>
             </section>
 
@@ -202,19 +202,30 @@
 
                 <!-- LEFT LIST -->
                 <div class="glossary-main-col">
+                    <!-- Shown only when arriving from a novel page's "Глоссарий"
+                         shortcut (?novel=...) — lets the reader know why the
+                         list is filtered and gives them a way back out -->
+                    <div class="novel-filter-banner" id="novelFilterBanner" style="display: none;">
+                        <span id="novelFilterText"></span>
+                        <a href="glossary.html" class="novel-filter-clear">Показать все термины ✕</a>
+                    </div>
+
                     <div class="toolbar">
                         <div class="results-count">
                             <h2>Все термины</h2>
                             <span id="termsCount">Загрузка…</span>
                         </div>
                         <div class="toolbar-actions">
-                            <button class="sort-select" id="sortBtn">
-                                Сортировка: <span id="sortLabel">А → Я</span>
-                                <img src="images/icons/chevron-down.svg" alt="">
-                            </button>
-                            <button class="view-toggle-btn" title="Вид">
-                                <img src="images/icons/filter.svg" alt="">
-                            </button>
+                            <div class="sort-select-wrap">
+                                <button class="sort-select" id="sortBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                                    Сортировка: <span id="sortLabel">А → Я</span>
+                                    <img src="images/icons/chevron-down.svg" alt="">
+                                </button>
+                                <div class="sort-menu" id="sortMenu">
+                                    <button type="button" class="sort-option active" data-sort="az">А → Я</button>
+                                    <button type="button" class="sort-option" data-sort="za">Я → А</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -304,6 +315,25 @@
             </div>
 
         </footer>
+    </div>
+
+    <!-- "ALL OCCURRENCES" MODAL — opens from the sidebar's "Все
+         вхождения" button, only shown when a term has more than 3
+         (otherwise the sidebar already shows all of them inline).
+         Same backdrop/modal shell as the reader's chapter-list
+         modal, just under different ids so it doesn't collide with
+         that page's own chapterListBackdrop wiring in script.js —
+         populated and opened by glossary.js instead. -->
+    <div class="chapter-list-backdrop" id="usedInBackdrop" style="display: none;">
+        <div class="chapter-list-modal">
+            <div class="chapter-list-head">
+                <h3 id="usedInModalTitle">Все вхождения</h3>
+                <button type="button" class="chapter-list-close" id="usedInModalClose">✕</button>
+            </div>
+            <div class="chapter-list-items" id="usedInModalItems">
+                <!-- populated by glossary.js -->
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

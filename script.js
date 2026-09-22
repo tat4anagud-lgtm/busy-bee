@@ -1054,6 +1054,20 @@ async function getNovelData(novelId) {
     return data;
 }
 
+// Same memoization idea as getNovelData() above — the whole glossary
+// is one small JSON file, so the footnote popover just fetches it
+// once (on whichever page's first glossary-linked footnote gets
+// clicked) and reuses it for every footnote after that
+let glossaryDataCache = null;
+
+async function getGlossaryData() {
+    if (glossaryDataCache) return glossaryDataCache;
+    const response = await fetch("glossary/glossary.json");
+    if (!response.ok) throw new Error("Glossary not found");
+    glossaryDataCache = await response.json();
+    return glossaryDataCache;
+}
+
 function chapterContentUrl(novelId, chapterNumber) {
     return `novels/${novelId}/chapters/glava-${chapterNumber}.json`;
 }
@@ -1068,9 +1082,11 @@ function chapterHref(novelId, chapterNumber) {
    `containerEl` is the element the chapter's paragraphs are rendered
    into; `getFootnotes` returns the CURRENTLY loaded chapter's own
    `footnotes` array (kept up to date by whichever loadChapter function
-   calls this). Only chapter-local notes for now — not glossary terms,
-   see the schema discussion — so the popover just shows the note text,
-   no pinyin or "see in Glossary" link. */
+   calls this). Each entry is either:
+     { marker, note }          — a one-off translator's aside, shown as-is
+     { marker, glossaryId }    — a real term; looked up in glossary.json
+                                  (via getGlossaryData() above) and shown
+                                  with pinyin + a link into the Glossary */
 function setupFootnotePopover(containerEl, getFootnotes) {
     const popover = document.getElementById("footnotePopover");
     if (!popover || !containerEl) return;
@@ -1084,19 +1100,7 @@ function setupFootnotePopover(containerEl, getFootnotes) {
         popover.style.display = "none";
     }
 
-    containerEl.addEventListener("click", (event) => {
-        const marker = event.target.closest(".footnote-marker");
-        if (!marker) return;
-
-        const footnotes = getFootnotes() || [];
-        const entry = footnotes.find((f) => String(f.marker) === String(marker.dataset.footnote));
-        if (!entry) return;
-
-        if (termEl) termEl.textContent = "Заметка переводчика";
-        if (pinyinEl) pinyinEl.hidden = true;
-        if (definitionEl) definitionEl.textContent = entry.note;
-        if (linkEl) linkEl.hidden = true;
-
+    function positionPopover(marker) {
         popover.style.display = "block";
 
         const markerRect = marker.getBoundingClientRect();
@@ -1107,6 +1111,52 @@ function setupFootnotePopover(containerEl, getFootnotes) {
 
         popover.style.left = `${left}px`;
         popover.style.top = `${markerRect.bottom + 8}px`;
+    }
+
+    containerEl.addEventListener("click", async (event) => {
+        const marker = event.target.closest(".footnote-marker");
+        if (!marker) return;
+
+        const footnotes = getFootnotes() || [];
+        const entry = footnotes.find((f) => String(f.marker) === String(marker.dataset.footnote));
+        if (!entry) return;
+
+        if (entry.glossaryId) {
+            let term = null;
+            try {
+                const glossary = await getGlossaryData();
+                term = glossary.find((item) => item.id === entry.glossaryId);
+            } catch (err) {
+                console.error("Failed to load glossary for footnote:", err);
+            }
+
+            if (term) {
+                if (termEl) termEl.textContent = term.nameRu;
+                if (pinyinEl) {
+                    pinyinEl.textContent = `${term.term} · ${term.pinyin}`;
+                    pinyinEl.hidden = false;
+                }
+                if (definitionEl) definitionEl.textContent = term.definition;
+                if (linkEl) {
+                    linkEl.href = `glossary.html?term=${encodeURIComponent(term.id)}`;
+                    linkEl.hidden = false;
+                }
+            } else {
+                // Term id doesn't match anything in the glossary (renamed,
+                // removed) — fail gracefully instead of a blank popover
+                if (termEl) termEl.textContent = "Термин не найден в глоссарии";
+                if (pinyinEl) pinyinEl.hidden = true;
+                if (definitionEl) definitionEl.textContent = "";
+                if (linkEl) linkEl.hidden = true;
+            }
+        } else {
+            if (termEl) termEl.textContent = "Заметка переводчика";
+            if (pinyinEl) pinyinEl.hidden = true;
+            if (definitionEl) definitionEl.textContent = entry.note;
+            if (linkEl) linkEl.hidden = true;
+        }
+
+        positionPopover(marker);
     });
 
     document.addEventListener("click", (event) => {
@@ -2226,6 +2276,13 @@ if (novelPageTitleEl) {
     async function loadNovelPage() {
         const params = new URLSearchParams(window.location.search);
         const novelId = params.get("id") || "kniga-grez";
+
+        // The "Глоссарий" shortcut needs the novel id before the JSON
+        // even loads, so a broken novel page still links somewhere sane
+        const novelGlossaryShortcut = document.getElementById("novelGlossaryShortcut");
+        if (novelGlossaryShortcut) {
+            novelGlossaryShortcut.href = `glossary.html?novel=${encodeURIComponent(novelId)}`;
+        }
 
         let novel;
         try {

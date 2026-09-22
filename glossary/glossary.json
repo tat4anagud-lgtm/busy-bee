@@ -1,16 +1,16 @@
 [
   {
-    "id": "houye",
-    "nameRu": "Маркиз",
-    "term": "侯爷",
-    "pinyin": "houye",
+    "id": "hou",
+    "nameRu": "Хоу",
+    "term": "侯",
+    "pinyin": "hóu",
     "category": "Титулы и ранги",
-    "definition": "Обращение к человеку соответствующего дворянского ранга.",
+    "definition": "Титул знатности второго ранга (аналог маркиза), который я перевожу с уточнением «ниже князя», чтобы читателю была понятна примерная иерархия: гун -> хоу -> бо -> цзы -> нань.",
 
     "usedIn": [
       { "novelId": "v-pogone-za-nefritom", "chapter": 47 },
       { "novelId": "v-pogone-za-nefritom", "chapter": 23 },
-      { "novelId": "kniga-grez", "chapter": 38 }
+      { "novelId": "kniga-grez", "chapter": 1 }
     ]
   },
   {
@@ -35,6 +35,19 @@
 
     "usedIn": [
       { "novelId": "kniga-grez", "chapter": 12 },
+      { "novelId": "v-pogone-za-nefritom", "chapter": 5 }
+    ]
+  },
+  {
+    "id": "Kogda zayats poyman, gonchuyu varyat",
+    "nameRu": "Когда заяц пойман, гончую варят",
+    "term": "兔死狗烹",
+    "pinyin": "tù sǐ gǒu pēng",
+    "category": "Пословицы",
+    "definition": "китайская поговорка, означающая, что когда цель достигнута, верного помощника выбрасывают за ненадобностью или убивают.",
+
+    "usedIn": [
+      { "novelId": "kniga-grez", "chapter": 1 },
       { "novelId": "v-pogone-za-nefritom", "chapter": 5 }
     ]
   }

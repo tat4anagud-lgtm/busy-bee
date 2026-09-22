@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Library — Tatyana | Busy Bee</title>
+    <title>Мой профиль — Татьяна | Busy Bee</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -94,9 +94,6 @@
                             <img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека
                         </a>
                         <a href="#" class="user-dropdown-item">
-                            <img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Закладки
-                        </a>
-                        <a href="#" class="user-dropdown-item">
                             <img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное
                         </a>
                         <a href="#" class="user-dropdown-item">
@@ -171,10 +168,6 @@
                         <span>Моя библиотека</span>
                     </a>
                     <a href="#" class="sidebar-item">
-                        <img src="images/icons/bookmark.svg" alt="" class="sidebar-icon">
-                        <span>Закладки</span>
-                    </a>
-                    <a href="#" class="sidebar-item">
                         <img src="images/icons/heart.svg" alt="" class="sidebar-icon">
                         <span>Избранное</span>
                     </a>
@@ -215,7 +208,7 @@
                 <!-- USER HERO BANNER -->
                 <section class="profile-hero-card">
                     <div class="user-avatar-wrapper">
-                        <img src="https://placehold.co/120x120" alt="Татьяна" class="profile-user-avatar">
+                        <img src="https://placehold.co/160x160" alt="Татьяна" class="profile-user-avatar">
                         <button class="btn-edit-avatar"><img src="images/icons/edit.svg" alt="Изменить"></button>
                     </div>
 
@@ -241,222 +234,284 @@
                 <!-- STATS GRID -->
                 <section class="user-stats-grid">
                     <div class="stat-card">
-                        <img src="images/icons/book.svg" alt="" class="stat-icon">
-                        <span class="stat-title">Прочитано новелл</span>
+                        <div class="stat-head">
+                            <img src="images/icons/book.svg" alt="" class="stat-icon">
+                            <span class="stat-title">Прочитано новелл</span>
+                        </div>
                         <strong class="stat-value">37</strong>
-                        <a href="#" class="stat-link">Смотреть все</a>
+                        <a href="#" class="stat-link">Посмотреть всё</a>
                     </div>
                     <div class="stat-card">
-                        <img src="images/icons/book-open.svg" alt="" class="stat-icon">
-                        <span class="stat-title">Прочитано глав</span>
+                        <div class="stat-head">
+                            <img src="images/icons/book-open.svg" alt="" class="stat-icon">
+                            <span class="stat-title">Прочитано глав</span>
+                        </div>
                         <strong class="stat-value">2 541</strong>
-                        <a href="#" class="stat-link">Смотреть все</a>
+                        <a href="#" class="stat-link">Посмотреть всё</a>
                     </div>
                     <div class="stat-card">
-                        <img src="images/icons/clock.svg" alt="" class="stat-icon">
-                        <span class="stat-title">Время чтения</span>
+                        <div class="stat-head">
+                            <img src="images/icons/clock.svg" alt="" class="stat-icon">
+                            <span class="stat-title">Время чтения</span>
+                        </div>
                         <strong class="stat-value">128ч 34м</strong>
                         <a href="#" class="stat-link">Подробнее</a>
                     </div>
                     <div class="stat-card">
-                        <!-- TODO: нет подтверждённого flame.svg — проверь, что такой
-                             файл есть, либо подскажи, каким заменить -->
-                        <img src="images/icons/flame.svg" alt="" class="stat-icon">
-                        <span class="stat-title">Дней подряд</span>
+                        <div class="stat-head">
+                            <img src="images/icons/flame.svg" alt="" class="stat-icon">
+                            <span class="stat-title">Дней подряд</span>
+                        </div>
                         <strong class="stat-value">28</strong>
                         <span class="stat-sub">дней</span>
                     </div>
                     <div class="stat-card">
-                        <img src="images/icons/tag.svg" alt="" class="stat-icon">
-                        <span class="stat-title">Любимый жанр</span>
+                        <div class="stat-head">
+                            <img src="images/icons/tag.svg" alt="" class="stat-icon">
+                            <span class="stat-title">Любимый жанр</span>
+                        </div>
                         <strong class="stat-text-value">Историческое фэнтези</strong>
                     </div>
                     <div class="stat-card">
-                        <img src="images/icons/user.svg" alt="" class="stat-icon">
-                        <span class="stat-title">Любимый автор</span>
+                        <div class="stat-head">
+                            <img src="images/icons/user.svg" alt="" class="stat-icon">
+                            <span class="stat-title">Любимый автор</span>
+                        </div>
                         <strong class="stat-text-value">Mo Xiang Tong Xiu</strong>
                     </div>
                 </section>
 
-                <!-- CONTINUE READING -->
+                <!-- CONTINUE READING
+                     Карусель: стрелки по бокам, как на главной; прокрутку
+                     ведёт общая setupCarousel из script.js (см. profile-script.js) -->
                 <section class="section-block">
-                    <div class="section-header">
-                        <h2>Продолжить чтение</h2>
-                        <div class="section-controls">
-                            <a href="#" class="link-view-all">Смотреть все</a>
-                            <button class="nav-arrow">‹</button>
-                            <button class="nav-arrow">›</button>
+                <div class="section-header">
+                    <h2 class="section-title">Продолжить чтение</h2>
+                    <a href="#" class="view-all">Посмотреть всё</a>
+                </div>
+
+                    <div class="profile-carousel">
+                        <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
+                        <div class="profile-track  carousel-track">
+                            <article class="reading-card">
+                                <div class="reading-cover-wrap">
+                                    <img src="https://placehold.co/168x248" alt="">
+                                </div>
+                                <div class="reading-info">
+                                    <h3>The Moon That Rises in the Night</h3>
+                                    <span class="chapter-info">Глава 124 из 164</span>
+                                    <div class="reading-progress">
+                                        <div class="progress-bar-wrap">
+                                            <div class="progress-bar-fill" style="width: 76%;"></div>
+                                        </div>
+                                        <span class="progress-percent">76%</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
+                            </article>
+
+                            <article class="reading-card">
+                                <div class="reading-cover-wrap">
+                                    <img src="https://placehold.co/168x248" alt="">
+                                </div>
+                                <div class="reading-info">
+                                    <h3>Rebirth of the Malicious Empress</h3>
+                                    <span class="chapter-info">Глава 89 из 132</span>
+                                    <div class="reading-progress">
+                                        <div class="progress-bar-wrap">
+                                            <div class="progress-bar-fill" style="width: 68%;"></div>
+                                        </div>
+                                        <span class="progress-percent">68%</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
+                            </article>
+
+                            <article class="reading-card">
+                                <div class="reading-cover-wrap">
+                                    <img src="https://placehold.co/168x248" alt="">
+                                </div>
+                                <div class="reading-info">
+                                    <h3>The Crown Prince's Secret Lover</h3>
+                                    <span class="chapter-info">Глава 63 из 101</span>
+                                    <div class="reading-progress">
+                                        <div class="progress-bar-wrap">
+                                            <div class="progress-bar-fill" style="width: 62%;"></div>
+                                        </div>
+                                        <span class="progress-percent">62%</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
+                            </article>
+
+                            <article class="reading-card">
+                                <div class="reading-cover-wrap">
+                                    <img src="https://placehold.co/168x248" alt="">
+                                </div>
+                                <div class="reading-info">
+                                    <h3>Silent Suffering, Boundless Love</h3>
+                                    <span class="chapter-info">Глава 40 из 88</span>
+                                    <div class="reading-progress">
+                                        <div class="progress-bar-wrap">
+                                            <div class="progress-bar-fill" style="width: 45%;"></div>
+                                        </div>
+                                        <span class="progress-percent">45%</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
+                            </article>
                         </div>
-                    </div>
-
-                    <div class="reading-cards-grid">
-                        <article class="reading-card">
-                            <div class="reading-cover-wrap">
-                                <img src="https://placehold.co/140x190" alt="The Moon That Rises in the Night">
-                                <button class="btn-dots">⋮</button>
-                            </div>
-                            <h3>The Moon That Rises in the Night</h3>
-                            <span class="chapter-info">Глава 124 из 164</span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar-fill" style="width: 76%;"></div>
-                            </div>
-                            <span class="progress-percent">76%</span>
-                        </article>
-
-                        <article class="reading-card">
-                            <div class="reading-cover-wrap">
-                                <img src="https://placehold.co/140x190" alt="Rebirth of the Malicious Empress">
-                                <button class="btn-dots">⋮</button>
-                            </div>
-                            <h3>Rebirth of the Malicious Empress</h3>
-                            <span class="chapter-info">Глава 89 из 132</span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar-fill" style="width: 68%;"></div>
-                            </div>
-                            <span class="progress-percent">68%</span>
-                        </article>
-
-                        <article class="reading-card">
-                            <div class="reading-cover-wrap">
-                                <img src="https://placehold.co/140x190" alt="The Crown Prince's Secret Lover">
-                                <button class="btn-dots">⋮</button>
-                            </div>
-                            <h3>The Crown Prince's Secret Lover</h3>
-                            <span class="chapter-info">Глава 63 из 101</span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar-fill" style="width: 62%;"></div>
-                            </div>
-                            <span class="progress-percent">62%</span>
-                        </article>
-
-                        <article class="reading-card">
-                            <div class="reading-cover-wrap">
-                                <img src="https://placehold.co/140x190" alt="Silent Suffering, Boundless Love">
-                                <button class="btn-dots">⋮</button>
-                            </div>
-                            <h3>Silent Suffering, Boundless Love</h3>
-                            <span class="chapter-info">Глава 40 из 88</span>
-                            <div class="progress-bar-wrap">
-                                <div class="progress-bar-fill" style="width: 45%;"></div>
-                            </div>
-                            <span class="progress-percent">45%</span>
-                        </article>
+                        <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
                     </div>
                 </section>
 
-                <!-- PERSONAL BOOKSHELVES -->
+                <!-- PERSONAL BOOKSHELVES — вход в «Мою библиотеку» -->
                 <section class="section-block">
-                    <div class="section-header">
-                        <h2>Личные полки</h2>
-                    </div>
+                <div class="section-header">
+                    <h2 class="section-title">Личные полки</h2>
+                </div>
 
                     <div class="bookshelves-grid">
-                        <div class="bookshelf-card">
-                            <img src="images/icons/heart.svg" alt="" class="shelf-icon">
-                            <strong>Избранное</strong>
-                            <span class="shelf-count">23</span>
-                        </div>
-                        <div class="bookshelf-card">
+                        <a href="#" class="bookshelf-card">
                             <img src="images/icons/book-open.svg" alt="" class="shelf-icon">
                             <strong>Читаю</strong>
                             <span class="shelf-count">6</span>
-                        </div>
-                        <div class="bookshelf-card">
+                        </a>
+                        <a href="#" class="bookshelf-card">
                             <img src="images/icons/bookmark.svg" alt="" class="shelf-icon">
                             <strong>Буду читать</strong>
                             <span class="shelf-count">38</span>
-                        </div>
-                        <div class="bookshelf-card">
+                        </a>
+                        <a href="#" class="bookshelf-card">
                             <img src="images/icons/pause-circle.svg" alt="" class="shelf-icon">
                             <strong>Отложено</strong>
                             <span class="shelf-count">4</span>
-                        </div>
-                        <div class="bookshelf-card">
+                        </a>
+                        <a href="#" class="bookshelf-card">
                             <img src="images/icons/check-circle.svg" alt="" class="shelf-icon">
                             <strong>Прочитано</strong>
                             <span class="shelf-count">31</span>
-                        </div>
-                        <div class="bookshelf-card">
+                        </a>
+                        <a href="#" class="bookshelf-card">
                             <img src="images/icons/x-circle.svg" alt="" class="shelf-icon">
                             <strong>Брошено</strong>
                             <span class="shelf-count">3</span>
-                        </div>
+                        </a>
                     </div>
                 </section>
 
-                <!-- BUSY BEE COLLECTIONS -->
+                <!-- FAVORITES — новеллы, цитаты и коллекции, которые пользователь
+                     отметил сердечком. Чипы переключают содержимое внутри блока. -->
                 <section class="section-block">
-                    <div class="section-header">
-                        <h2>Коллекции Busy Bee</h2>
-                        <div class="section-controls">
-                            <a href="#" class="link-view-all">Смотреть все</a>
-                            <button class="nav-arrow">‹</button>
-                            <button class="nav-arrow">›</button>
-                        </div>
+                <div class="section-header">
+                    <h2 class="section-title">Избранное</h2>
+                    <a href="#" class="view-all">Посмотреть всё</a>
+                </div>
+
+                    <div class="chip-row" role="tablist" aria-label="Разделы избранного">
+                        <button type="button" class="chip active" role="tab" id="favTabNovels" aria-selected="true" aria-controls="favPanelNovels">Новеллы</button>
+                        <button type="button" class="chip" role="tab" id="favTabQuotes" aria-selected="false" aria-controls="favPanelQuotes" tabindex="-1">Цитаты</button>
+                        <button type="button" class="chip" role="tab" id="favTabCollections" aria-selected="false" aria-controls="favPanelCollections" tabindex="-1">Коллекции</button>
                     </div>
 
-                    <div class="collections-grid">
-                        <div class="collection-card">
-                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                            <h4>Дворцовые интриги и борьба за власть</h4>
-                            <span class="collection-count">12 новелл</span>
+                    <div role="tabpanel" id="favPanelNovels" aria-labelledby="favTabNovels">
+                    <div class="profile-carousel">
+                        <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
+                        <div class="profile-track fav-novels-track carousel-track">
+                                <a href="#" class="fav-novel-card">
+                                    <img src="https://placehold.co/168x224" alt="">
+                                    <h4>The Moon That Rises in the Night</h4>
+                                    <span class="fav-novel-author">Bai Lu Cheng Shuang</span>
+                                </a>
+                                <a href="#" class="fav-novel-card">
+                                    <img src="https://placehold.co/168x224" alt="">
+                                    <h4>Rebirth of the Malicious Empress</h4>
+                                    <span class="fav-novel-author">Mo Xiang Tong Xiu</span>
+                                </a>
+                                <a href="#" class="fav-novel-card">
+                                    <img src="https://placehold.co/168x224" alt="">
+                                    <h4>The Crown Prince's Secret Lover</h4>
+                                    <span class="fav-novel-author">Jiu Yue Xi</span>
+                                </a>
+                                <a href="#" class="fav-novel-card">
+                                    <img src="https://placehold.co/168x224" alt="">
+                                    <h4>Silent Suffering, Boundless Love</h4>
+                                    <span class="fav-novel-author">Bai Lu Cheng Shuang</span>
+                                </a>
+                                <a href="#" class="fav-novel-card">
+                                    <img src="https://placehold.co/168x224" alt="">
+                                    <h4>A Dream in Winter</h4>
+                                    <span class="fav-novel-author">Lin Yi</span>
+                                </a>
+                                <a href="#" class="fav-novel-card">
+                                    <img src="https://placehold.co/168x224" alt="">
+                                    <h4>The Villainess's Slow Life</h4>
+                                    <span class="fav-novel-author">Yan Qing</span>
+                                </a>
                         </div>
-                        <div class="collection-card">
-                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                            <h4>Медленная любовь</h4>
-                            <span class="collection-count">18 новелл</span>
-                        </div>
-                        <div class="collection-card">
-                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                            <h4>Приключения во времени</h4>
-                            <span class="collection-count">9 новелл</span>
-                        </div>
-                        <div class="collection-card">
-                            <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                            <h4>Культивация и легенды</h4>
-                            <span class="collection-count">14 новелл</span>
-                        </div>
-                        <div class="collection-card create-new-collection">
-                            <span class="plus-icon">+</span>
-                            <span>Создать коллекцию</span>
-                        </div>
+                        <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
                     </div>
-                </section>
+                    </div>
 
-                <!-- THREE-COLUMN GRID: QUOTES / NOTES / ACHIEVEMENTS -->
-                <div class="widgets-three-column">
-                    
-                    <!-- Favorite Quotes -->
-                    <div class="column-widget">
-                        <div class="widget-header">
-                            <h3>Любимые цитаты</h3>
-                            <a href="#">Смотреть все</a>
-                        </div>
-                        <div class="widget-content">
+                    <div role="tabpanel" id="favPanelQuotes" aria-labelledby="favTabQuotes" hidden>
+                        <div class="fav-quotes-grid">
                             <div class="user-quote-item">
                                 <p class="quote-text">«В конце концов, больше всего мы жалеем об упущенных возможностях.»</p>
                                 <span class="quote-book">— The Moon That Rises in the Night</span>
                                 <div class="quote-meta">
-                                    <button class="btn-like"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> 892</button>
-                                    <button class="btn-dots">⋮</button>
+                                    <button type="button" class="btn-like" aria-label="Нравится" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> <span class="like-count">892</span></button>
+                                    <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
                                 </div>
                             </div>
                             <div class="user-quote-item">
                                 <p class="quote-text">«Даже самая тёмная ночь закончится, и солнце взойдёт снова.»</p>
                                 <span class="quote-book">— Silent Suffering, Boundless Love</span>
                                 <div class="quote-meta">
-                                    <button class="btn-like"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> 721</button>
-                                    <button class="btn-dots">⋮</button>
+                                    <button type="button" class="btn-like" aria-label="Нравится" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> <span class="like-count">721</span></button>
+                                    <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <div role="tabpanel" id="favPanelCollections" aria-labelledby="favTabCollections" hidden>
+                    <div class="profile-carousel">
+                        <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
+                        <div class="profile-track  carousel-track">
+                                <a href="#" class="collection-card">
+                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                                    <h4>Дворцовые интриги и борьба за власть</h4>
+                                    <span class="collection-count">12 новелл</span>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                                    <h4>Медленная любовь</h4>
+                                    <span class="collection-count">18 новелл</span>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                                    <h4>Приключения во времени</h4>
+                                    <span class="collection-count">9 новелл</span>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                                    <h4>Культивация и легенды</h4>
+                                    <span class="collection-count">14 новелл</span>
+                                </a>
+                        </div>
+                        <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
+                    </div>
+                    </div>
+                </section>
+
+                <!-- TWO-COLUMN GRID: NOTES / ACHIEVEMENTS -->
+                <div class="widgets-two-column">
+
                     <!-- Personal Notes -->
                     <div class="column-widget">
                         <div class="widget-header">
                             <h3>Личные заметки</h3>
-                            <a href="#">Смотреть все</a>
+                            <a href="#">Посмотреть всё</a>
                         </div>
                         <div class="widget-content">
                             <div class="note-item">
@@ -487,7 +542,7 @@
                     <div class="column-widget">
                         <div class="widget-header">
                             <h3>Достижения</h3>
-                            <a href="#">Смотреть все</a>
+                            <a href="#">Посмотреть всё</a>
                         </div>
                         <div class="achievements-hex-grid">
                             <!-- Значки достижений пока эмодзи-заглушки — сюда
@@ -534,7 +589,7 @@
                     <div class="activity-content">
                         <div class="widget-header">
                             <h3>Недавняя активность</h3>
-                            <a href="#">Смотреть все</a>
+                            <a href="#">Посмотреть всё</a>
                         </div>
                         <ul class="activity-feed">
                             <li>

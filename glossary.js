@@ -18,6 +18,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const categoryPillsEl = document.getElementById("categoryPills");
     const alphabetNavEl = document.getElementById("alphabetNav");
     const termsCountEl = document.getElementById("termsCount");
+    const sortWrapEl = document.getElementById("sortBtn")?.closest(".sort-select-wrap");
+    const sortBtnEl = document.getElementById("sortBtn");
+    const sortMenuEl = document.getElementById("sortMenu");
+    const sortLabelEl = document.getElementById("sortLabel");
+    const novelFilterBannerEl = document.getElementById("novelFilterBanner");
+    const novelFilterTextEl = document.getElementById("novelFilterText");
+    const usedInBackdropEl = document.getElementById("usedInBackdrop");
+    const usedInModalItemsEl = document.getElementById("usedInModalItems");
+    const usedInModalTitleEl = document.getElementById("usedInModalTitle");
+    const usedInModalCloseEl = document.getElementById("usedInModalClose");
 
     if (!cardsListEl) return; // not the glossary page
 
@@ -28,6 +38,69 @@ document.addEventListener("DOMContentLoaded", () => {
     let activeCategory = "Все";
     let activeLetter = "Все";
     let searchQuery = "";
+    let sortMode = "az"; // "az" | "za"
+
+    // Arriving from a novel page's "Глоссарий" shortcut (glossary.html?novel=<id>)
+    // pre-filters the list to just that novel's terms
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeNovel = urlParams.get("novel");
+
+    // Arriving from a footnote's "Подробнее в Глоссарии →" link
+    // (glossary.html?term=<id>) opens straight on that term instead
+    // of the empty placeholder
+    const deepLinkTermId = urlParams.get("term");
+
+    /* ---------- Bookmarks (localStorage, shared between the list
+       cards and the sidebar detail panel — both are just different
+       views of the same saved-term set) ---------- */
+
+    const BOOKMARKS_KEY = "busybee_glossary_bookmarks";
+
+    function loadBookmarks() {
+        try {
+            return new Set(JSON.parse(localStorage.getItem(BOOKMARKS_KEY)) || []);
+        } catch {
+            return new Set();
+        }
+    }
+
+    let bookmarkedIds = loadBookmarks();
+
+    function isBookmarked(id) {
+        return bookmarkedIds.has(id);
+    }
+
+    function toggleBookmark(id) {
+        if (bookmarkedIds.has(id)) bookmarkedIds.delete(id);
+        else bookmarkedIds.add(id);
+        localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(Array.from(bookmarkedIds)));
+    }
+
+    // Shared markup + click wiring for a bookmark button — used by both
+    // the list card and the sidebar so they can never fall out of sync
+    function bookmarkButtonHtml(id) {
+        const saved = isBookmarked(id);
+        return `
+            <button type="button" class="mini-bookmark ${saved ? "active" : ""}" data-term-id="${id}"
+                    aria-label="Сохранить в закладки" aria-pressed="${saved}">
+                <img src="${saved ? "images/icons/bookmark-filled-gold.svg" : "images/icons/bookmark.svg"}" alt=""
+                     data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
+            </button>`;
+    }
+
+    function bindBookmarkButtons(container) {
+        container.querySelectorAll(".mini-bookmark[data-term-id]").forEach((button) => {
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                toggleBookmark(button.dataset.termId);
+                // Both surfaces read from the same bookmarkedIds set, so
+                // re-rendering both keeps card + sidebar in sync no
+                // matter which one triggered the change
+                renderCards();
+                renderDetailPanel();
+            });
+        });
+    }
 
     // "3 термина" / "1 термин" / "12 терминов"
     function pluralizeTerms(n) {
@@ -72,8 +145,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 matchesLetter = pinyinFirstLetter === activeLetter || nameRuFirstLetter === activeLetter;
             }
 
-            return matchesCategory && matchesSearch && matchesLetter;
+            const matchesNovel =
+                !activeNovel || (item.usedIn || []).some((entry) => entry.novelId === activeNovel);
+
+            return matchesCategory && matchesSearch && matchesLetter && matchesNovel;
         });
+
+        filtered.sort((a, b) =>
+            sortMode === "za"
+                ? b.nameRu.localeCompare(a.nameRu, "ru")
+                : a.nameRu.localeCompare(b.nameRu, "ru")
+        );
 
         if (termsCountEl) termsCountEl.textContent = pluralizeTerms(filtered.length);
 
@@ -85,31 +167,24 @@ document.addEventListener("DOMContentLoaded", () => {
         cardsListEl.innerHTML = filtered
             .map((item) => `
                     <article class="term-card ${item.id === selectedTermId ? "selected" : ""}" data-id="${item.id}">
-                        <div class="term-card-header">
-                            <div class="term-title-group">
-                                <h3 class="term-name-ru">${item.nameRu}</h3>
-                                <span class="term-original">${item.term} · ${item.pinyin}</span>
-                            </div>
-                            <div class="term-card-header-actions">
-                                <span class="badge-tag">${item.category}</span>
-                                <button type="button" class="mini-bookmark" aria-label="Сохранить в закладки" aria-pressed="false">
-                                    <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
-                                </button>
-                            </div>
+                        <div class="term-card-hanzi">
+                            <span class="term-hanzi">${item.term}</span>
+                            <span class="term-pinyin">${item.pinyin}</span>
                         </div>
-                        <p class="term-desc">${item.definition}</p>
+                        <div class="term-card-body">
+                            <div class="term-card-top">
+                                <div class="term-title-group">
+                                    <h3 class="term-name-ru">${item.nameRu}</h3>
+                                    <span class="badge-tag">${item.category}</span>
+                                </div>
+                                ${bookmarkButtonHtml(item.id)}
+                            </div>
+                            <p class="term-desc">${item.definition}</p>
+                        </div>
                     </article>`)
             .join("");
 
-        cardsListEl.querySelectorAll(".mini-bookmark").forEach((button) => {
-            const icon = button.querySelector("img");
-            button.addEventListener("click", (event) => {
-                event.stopPropagation();
-                const isSaved = button.classList.toggle("active");
-                button.setAttribute("aria-pressed", isSaved);
-                icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
-            });
-        });
+        bindBookmarkButtons(cardsListEl);
 
         cardsListEl.querySelectorAll(".term-card").forEach((card) => {
             card.addEventListener("click", (event) => {
@@ -125,17 +200,31 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ---------- Render: right-hand detail panel ---------- */
 
     function renderDetailPanel() {
-        const term = glossaryData.find((item) => item.id === selectedTermId) || glossaryData[0];
-        if (!term || !detailCardEl) return;
+        if (!detailCardEl) return;
+
+        // Nothing picked yet (default state, or the filtered list is
+        // empty) — an inviting placeholder beats silently showing
+        // whichever term happened to be first
+        if (!selectedTermId) {
+            detailCardEl.innerHTML = `
+                <div class="detail-empty-state">
+                    <img src="images/icons/bee-icon.svg" alt="" class="detail-empty-icon">
+                    <h3>Выберите термин</h3>
+                    <p>Нажмите на карточку слева — здесь появится перевод, произношение и главы, где слово встречается.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const term = glossaryData.find((item) => item.id === selectedTermId);
+        if (!term) return;
 
         const usedIn = term.usedIn || [];
 
         detailCardEl.innerHTML = `
             <div class="detail-top">
                 <h2 class="detail-name-ru">${term.nameRu}</h2>
-                <button type="button" class="mini-bookmark" aria-label="Сохранить в закладки" aria-pressed="false">
-                    <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
-                </button>
+                ${bookmarkButtonHtml(term.id)}
             </div>
             <span class="detail-original">${term.term} · ${term.pinyin}</span>
 
@@ -150,39 +239,73 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="used-in-list">
                     ${usedIn
                         .slice(0, 3)
-                        .map(
-                            (entry) => `
-                        <div class="used-in-item">
-                            <img src="${novelCover(entry.novelId)}" alt="" class="novel-cover-thumb">
-                            <div class="used-in-info">
-                                <div class="used-in-title">${novelTitle(entry.novelId)}</div>
-                                <div class="used-in-chapter">Глава ${entry.chapter}</div>
-                            </div>
-                            <a href="${usedInHref(entry)}" class="used-in-link">
-                                Открыть
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>`
-                        )
+                        .map((entry) => usedInItemHtml(entry))
                         .join("")}
                 </div>
             </div>
 
-            <button class="view-all-btn" type="button">
-                <img src="images/icons/filter.svg" alt="">
-                Все вхождения (${usedIn.length})
-            </button>
+            ${usedIn.length > 3
+                ? `<button class="view-all-btn" type="button" id="viewAllOccurrencesBtn">
+                        <img src="images/icons/filter.svg" alt="">
+                        Все вхождения (${usedIn.length})
+                   </button>`
+                : ""}
         `;
 
-        const detailBookmarkBtn = detailCardEl.querySelector(".mini-bookmark");
-        if (detailBookmarkBtn) {
-            const icon = detailBookmarkBtn.querySelector("img");
-            detailBookmarkBtn.addEventListener("click", () => {
-                const isSaved = detailBookmarkBtn.classList.toggle("active");
-                detailBookmarkBtn.setAttribute("aria-pressed", isSaved);
-                icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
-            });
+        bindBookmarkButtons(detailCardEl);
+
+        const viewAllBtn = document.getElementById("viewAllOccurrencesBtn");
+        if (viewAllBtn) {
+            viewAllBtn.addEventListener("click", () => openUsedInModal(term));
         }
+    }
+
+    // Shared row markup for one novel/chapter occurrence — used by
+    // both the sidebar's first-3 preview and the full "all
+    // occurrences" modal, so they never drift apart visually
+    function usedInItemHtml(entry) {
+        return `
+            <div class="used-in-item">
+                <img src="${novelCover(entry.novelId)}" alt="" class="novel-cover-thumb">
+                <div class="used-in-info">
+                    <div class="used-in-title">${novelTitle(entry.novelId)}</div>
+                    <div class="used-in-chapter">Глава ${entry.chapter}</div>
+                </div>
+                <a href="${usedInHref(entry)}" class="used-in-link">
+                    Открыть
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>`;
+    }
+
+    /* ---------- "All occurrences" modal ---------- */
+
+    function openUsedInModal(term) {
+        if (!usedInBackdropEl || !usedInModalItemsEl) return;
+
+        const usedIn = (term.usedIn || [])
+            .slice()
+            .sort((a, b) => novelTitle(a.novelId).localeCompare(novelTitle(b.novelId), "ru"));
+
+        if (usedInModalTitleEl) {
+            usedInModalTitleEl.textContent = `Все вхождения — ${term.nameRu} (${usedIn.length})`;
+        }
+        usedInModalItemsEl.innerHTML = usedIn.map((entry) => usedInItemHtml(entry)).join("");
+        usedInBackdropEl.style.display = "flex";
+    }
+
+    function closeUsedInModal() {
+        if (usedInBackdropEl) usedInBackdropEl.style.display = "none";
+    }
+
+    if (usedInBackdropEl) {
+        usedInBackdropEl.addEventListener("click", closeUsedInModal);
+        const usedInModalEl = usedInBackdropEl.querySelector(".chapter-list-modal");
+        if (usedInModalEl) usedInModalEl.addEventListener("click", (event) => event.stopPropagation());
+        if (usedInModalCloseEl) usedInModalCloseEl.addEventListener("click", closeUsedInModal);
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") closeUsedInModal();
+        });
     }
 
     /* ---------- Data loading ---------- */
@@ -191,22 +314,44 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.json())
         .then((data) => {
             glossaryData = data;
-            selectedTermId = data.length > 0 ? data[0].id : null;
+            // No term selected by default — the sidebar starts on its
+            // "Выберите термин" placeholder until the reader picks one
 
             // Every unique novel referenced anywhere in the glossary,
             // fetched once via the same getNovelData() the rest of the
             // site uses (memoized there too, so no duplicate requests
-            // even across many terms pointing at the same novel)
+            // even across many terms pointing at the same novel).
+            // The novel we arrived filtered-by is added too, even if
+            // it has zero terms so far — the banner still needs its title.
             const novelIds = Array.from(
-                new Set(data.flatMap((term) => (term.usedIn || []).map((entry) => entry.novelId)))
+                new Set([
+                    ...data.flatMap((term) => (term.usedIn || []).map((entry) => entry.novelId)),
+                    ...(activeNovel ? [activeNovel] : []),
+                ])
             );
 
             return Promise.all(novelIds.map((id) => getNovelData(id).then((novel) => [id, novel])));
         })
         .then((entries) => {
             novelLookup = Object.fromEntries(entries);
+
+            if (activeNovel && novelFilterBannerEl && novelFilterTextEl) {
+                const title = novelLookup[activeNovel] ? novelLookup[activeNovel].title : activeNovel;
+                novelFilterTextEl.textContent = `Термины, использованные в «${title}»`;
+                novelFilterBannerEl.style.display = "flex";
+            }
+
+            if (deepLinkTermId && glossaryData.some((item) => item.id === deepLinkTermId)) {
+                selectedTermId = deepLinkTermId;
+            }
+
             renderCards();
             renderDetailPanel();
+
+            if (selectedTermId) {
+                const activeCard = cardsListEl.querySelector(`.term-card[data-id="${selectedTermId}"]`);
+                if (activeCard) activeCard.scrollIntoView({ block: "center" });
+            }
         })
         .catch((error) => {
             console.error("Failed to load glossary:", error);
@@ -244,6 +389,37 @@ document.addEventListener("DOMContentLoaded", () => {
             link.classList.add("active-pill");
             activeLetter = link.dataset.letter;
             renderCards();
+        });
+    }
+
+    if (sortWrapEl && sortBtnEl && sortMenuEl) {
+        sortBtnEl.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const willOpen = !sortWrapEl.classList.contains("open");
+            sortWrapEl.classList.toggle("open", willOpen);
+            sortBtnEl.setAttribute("aria-expanded", willOpen);
+        });
+
+        sortMenuEl.addEventListener("click", (event) => {
+            const option = event.target.closest(".sort-option");
+            if (!option) return;
+
+            sortMenuEl.querySelectorAll(".sort-option").forEach((o) => o.classList.remove("active"));
+            option.classList.add("active");
+
+            sortMode = option.dataset.sort;
+            if (sortLabelEl) sortLabelEl.textContent = option.textContent.trim();
+
+            sortWrapEl.classList.remove("open");
+            sortBtnEl.setAttribute("aria-expanded", "false");
+            renderCards();
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!sortWrapEl.contains(event.target)) {
+                sortWrapEl.classList.remove("open");
+                sortBtnEl.setAttribute("aria-expanded", "false");
+            }
         });
     }
 

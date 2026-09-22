@@ -29,7 +29,7 @@
 
 .glossary-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 40px;
+    font-size: 34px;
     font-weight: 600;
     color: var(--text-primary);
     line-height: 1.15;
@@ -46,8 +46,8 @@
 }
 
 .glossary-subtitle {
-    color: var(--text-secondary);
-    font-size: 13px;
+    color: var(--text-muted);
+    font-size: 12px;
     line-height: 1.6;
     margin-bottom: 22px;
     max-width: 480px;
@@ -95,7 +95,7 @@
 }
 
 .glossary-hero-right img {
-    width: 220px;
+    width: 340px;
     height: auto;
     object-fit: contain;
 }
@@ -114,23 +114,26 @@
 }
 
 .pill-btn {
-    padding: 7px 16px;
-    border-radius: 999px;
+    padding: 3px 10px;
+    border-radius: 12px;
     background: var(--surface-warm);
+    border: 1px solid var(--border);
     color: var(--text-secondary);
     font-family: inherit;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
-    transition: background 0.2s ease, color 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .pill-btn:hover {
-    background: var(--border);
+    background: var(--white);
 }
 
 .pill-btn.active {
-    background: var(--honey);
-    color: var(--white);
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 .alphabet-nav {
@@ -149,18 +152,14 @@
     color: var(--text-muted);
     padding: 2px 6px;
     border-radius: 4px;
-    transition: color 0.2s ease;
+    text-decoration: none;
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
 .alphabet-link:hover,
 .alphabet-link.active-pill {
     color: var(--honey);
     font-weight: 700;
-}
-
-.alphabet-link.active-pill {
-    border-bottom: 2px solid var(--honey);
-    border-radius: 0;
 }
 
 /* ---------- Main layout ---------- */
@@ -178,6 +177,31 @@
     margin-bottom: 16px;
 }
 
+.novel-filter-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 16px;
+    padding: 12px 16px;
+
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.novel-filter-clear {
+    color: var(--honey);
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
 .results-count {
     display: flex;
     align-items: baseline;
@@ -186,7 +210,7 @@
 
 .results-count h2 {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
 }
@@ -202,6 +226,10 @@
     gap: 10px;
 }
 
+.sort-select-wrap {
+    position: relative;
+}
+
 .sort-select {
     display: flex;
     align-items: center;
@@ -215,28 +243,64 @@
     font-family: inherit;
     font-size: 12px;
     color: var(--text-primary);
+    cursor: pointer;
 }
 
 .sort-select img {
     width: 12px;
     height: 12px;
+    transition: transform 0.2s ease;
 }
 
-.view-toggle-btn {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.sort-select-wrap.open .sort-select img {
+    transform: rotate(180deg);
+}
+
+.sort-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+
+    min-width: 150px;
+    padding: 6px;
 
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px var(--shadow);
+
+    display: none;
+    z-index: 50;
 }
 
-.view-toggle-btn img {
-    width: 14px;
-    height: 14px;
+.sort-select-wrap.open .sort-menu {
+    display: block;
+}
+
+.sort-option {
+    display: block;
+    width: 100%;
+    text-align: left;
+
+    padding: 8px 10px;
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--text-secondary);
+
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sort-option:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.sort-option.active {
+    background: var(--surface-warm);
+    color: var(--honey);
+    font-weight: 600;
 }
 
 /* ---------- Term cards ---------- */
@@ -248,66 +312,93 @@
 }
 
 .term-card {
+    display: flex;
+    gap: 20px;
+
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 20px;
     cursor: pointer;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .term-card:hover {
-    border-color: var(--honey);
-    box-shadow: 0 4px 14px var(--shadow);
+    background: var(--surface-warm);
 }
 
 .term-card.selected {
+    background: var(--surface-warm);
     border-color: var(--honey);
-    box-shadow: 0 0 0 1px var(--honey);
+    box-shadow: 0 2px 10px var(--shadow);
 }
 
-.term-card-header {
+/* Left "identity" column — the character is the anchor of the card,
+   so it gets its own fixed-width slot instead of being a small
+   caption next to the Russian name. */
+.term-card-hanzi {
+    flex-shrink: 0;
+    width: 92px;
+
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    gap: 12px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-.term-title-group {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-}
-
-.term-name-ru {
-    font-family: "Playfair Display", Georgia, serif;
-    font-size: 22px;
-    font-weight: 700;
+.term-hanzi {
+    font-family: "Noto Serif SC", "Playfair Display", Georgia, serif;
+    font-size: 30px;
+    font-weight: 500;
     color: var(--text-primary);
     line-height: 1.2;
 }
 
-.term-original {
-    color: var(--text-secondary);
-    font-size: 13px;
+.term-pinyin {
+    font-family: "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
 }
 
-.term-card-header-actions {
+.term-card-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.term-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.term-title-group {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
-    flex-shrink: 0;
+}
+
+.term-name-ru {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
 }
 
 .badge-tag {
     display: inline-block;
-    padding: 4px 10px;
+    padding: 3px 8px;
     background: var(--surface-warm);
-    color: var(--text-secondary);
-    font-size: 11px;
+    color: var(--text-muted);
+    font-size: 10px;
     font-weight: 500;
-    border-radius: 6px;
+    border-radius: 5px;
     white-space: nowrap;
 }
 
@@ -330,9 +421,9 @@
     color: var(--text-secondary);
     font-size: 13px;
     line-height: 1.6;
-    margin-bottom: 14px;
-    max-width: 85%;
 }
+
+
 
 /* ---------- Sidebar / detail panel ---------- */
 
@@ -346,6 +437,36 @@
     box-shadow: 0 4px 14px var(--shadow);
 }
 
+.detail-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 40px 12px;
+}
+
+.detail-empty-icon {
+    width: 32px;
+    height: 32px;
+    opacity: 0.35;
+    margin-bottom: 4px;
+}
+
+.detail-empty-state h3 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.detail-empty-state p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    max-width: 240px;
+}
+
 .detail-top {
     display: flex;
     align-items: flex-start;
@@ -355,15 +476,15 @@
 
 .detail-name-ru {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 26px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 600;
     color: var(--text-primary);
     line-height: 1.15;
 }
 
 .detail-original {
-    color: var(--text-secondary);
-    font-size: 13px;
+    color: var(--text-muted);
+    font-size: 12px;
     margin-bottom: 14px;
     display: block;
 }
@@ -378,7 +499,8 @@
 }
 
 .used-in-section h3 {
-    font-size: 14px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 14px;
@@ -430,6 +552,7 @@
     color: var(--honey);
     font-size: 11px;
     font-weight: 600;
+    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 3px;
@@ -473,6 +596,20 @@
     padding: 40px 20px;
     color: var(--text-muted);
     font-size: 13px;
+}
+
+/* ---------- "All occurrences" modal ---------- */
+/* Reuses .used-in-item's row layout (cover + title + chapter + link)
+   from the sidebar, just with its own dividers/padding since here
+   there's no surrounding .used-in-list gap to space rows out */
+
+#usedInModalItems .used-in-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+#usedInModalItems .used-in-item:last-child {
+    border-bottom: none;
 }
 
 /* ---------- Responsive ---------- */

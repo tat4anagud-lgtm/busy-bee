@@ -2512,6 +2512,7 @@ a.pill:hover {
     cursor: pointer;
     font-size: 11px;
     color: var(--text-secondary);
+    text-decoration: none;
 }
 
 .note-shortcut img {
@@ -5383,6 +5384,10 @@ body.reader-page.theme-dark .btn-web-version {
     font-size: 12px;
     font-weight: 600;
     color: var(--honey);
+}
+
+.footnote-popover-link[hidden] {
+    display: none;
 }
 
 .footnote-popover-link:hover {
