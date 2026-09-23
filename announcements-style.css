@@ -6,10 +6,18 @@
    fonts as the rest of the site instead of a separate design system.
    ======================================== */
 
+/* Same four-step type scale already used on the profile page
+   (see profile-style.css) — kept local here for now, same as there,
+   until it gets moved into style.css :root for the whole site. */
+:root {
+    --fs-micro: 10px;   /* даты, подписи, счётчики */
+    --fs-small: 11px;   /* вторичный текст, ссылки «Смотреть все» */
+    --fs-body: 12px;    /* основной текст в карточках */
+    --fs-base: 13px;    /* пункты меню, названия в списках */
+}
+
 .announcements-container {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 24px 60px;
+    padding: 0 32px 50px;
 }
 
 /* ==================== HERO ==================== */
@@ -20,7 +28,7 @@
 
 .hero-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 46px;
+    font-size: 34px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 8px;
@@ -47,7 +55,7 @@
 .announcements-layout {
     display: grid;
     grid-template-columns: 220px 1fr;
-    gap: 36px;
+    gap: 32px;
     align-items: start;
 }
 
@@ -65,12 +73,18 @@
 }
 
 .menu-item {
+    display: block;
+    width: 100%;
     text-align: left;
     padding: 10px 16px;
+    border: none;
     border-radius: 8px;
-    font-size: 14px;
+    background: none;
+    font-family: inherit;
+    font-size: var(--fs-base);
     font-weight: 500;
     color: var(--text-secondary);
+    cursor: pointer;
     transition: all 0.2s;
 }
 
@@ -81,7 +95,7 @@
 
 .menu-item.active {
     color: var(--text-primary);
-    background: #F2E8DA;
+    background: var(--surface-warm);
     font-weight: 600;
 }
 
@@ -94,14 +108,15 @@
 }
 
 .share-widget h4 {
-    font-size: 14px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 15px;
     font-weight: 600;
     margin-bottom: 6px;
     color: var(--text-primary);
 }
 
 .share-widget p {
-    font-size: 12px;
+    font-size: var(--fs-body);
     color: var(--text-secondary);
     line-height: 1.5;
     margin-bottom: 14px;
@@ -115,7 +130,7 @@
     background: var(--surface-warm);
     border: 1px solid var(--border);
     border-radius: 8px;
-    font-size: 12px;
+    font-size: var(--fs-small);
     font-weight: 600;
     color: var(--text-primary);
     transition: background 0.2s;
@@ -168,15 +183,26 @@
 }
 
 .icon-inline {
-    color: var(--text-secondary);
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--surface-warm);
+    color: var(--honey);
+}
+
+.icon-inline svg {
+    width: 15px;
+    height: 15px;
 }
 
 .category-tag {
     background: var(--surface-warm);
-    color: #7A6348;
-    font-size: 12px;
+    color: var(--text-secondary);
+    font-size: var(--fs-small);
     font-weight: 600;
     padding: 3px 10px;
     border-radius: 6px;
@@ -184,23 +210,34 @@
 
 .post-date {
     color: var(--text-muted);
-    font-size: 12px;
+    font-size: var(--fs-micro);
 }
 
 .post-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 24px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--text-primary);
-    line-height: 1.25;
+    line-height: 1.3;
     margin-bottom: 10px;
+}
+
+/* The featured post is the visual anchor of the feed — keeps the
+   larger, original heading size the rest of the cards moved off of */
+.featured-card .post-title {
+    font-size: 22px;
+    line-height: 1.25;
 }
 
 .post-text {
     color: var(--text-primary);
-    font-size: 14px;
+    font-size: var(--fs-body);
     line-height: 1.6;
     margin-bottom: 20px;
+}
+
+.featured-card .post-text {
+    font-size: var(--fs-base);
 }
 
 .text-subtle {
@@ -276,7 +313,7 @@
 .featured-card {
     border: 1.5px solid var(--border);
     padding: 28px;
-    background: linear-gradient(135deg, #FFFDF9 0%, #FAF5ED 100%);
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-warm) 100%);
     overflow: hidden;
 }
 
@@ -311,6 +348,24 @@
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Stands in for a real cover/thumb until one exists — soft gradient
+   + a single line icon, in the site's own palette, instead of a
+   generic stock photo that doesn't match the illustrated covers
+   used everywhere else on the site */
+.cover-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, var(--surface-warm) 0%, var(--border) 100%);
+    color: var(--honey);
+}
+
+.cover-placeholder svg {
+    width: 36%;
+    height: 36%;
+    opacity: 0.6;
 }
 
 .cn-title-vertical {
@@ -442,7 +497,7 @@
 }
 
 .option-percent {
-    font-size: 12px;
+    font-size: var(--fs-small);
     color: var(--text-secondary);
     text-align: right;
     font-weight: 500;
@@ -462,7 +517,7 @@
 }
 
 .shared-label {
-    font-size: 12px;
+    font-size: var(--fs-small);
     color: var(--text-secondary);
 }
 
