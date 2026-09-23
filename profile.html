@@ -420,8 +420,44 @@
                     </div>
                 </section>
 
-                <!-- TWO-COLUMN GRID: NOTES / ACHIEVEMENTS -->
-                <div class="widgets-two-column">
+                <!-- THREE-COLUMN GRID: MY QUOTES / NOTES / ACHIEVEMENTS -->
+                <div class="widgets-three-column">
+
+                    <!-- Мои цитаты — личные, без лайков (сохранены кнопкой
+                         «Цитата» в читалке). Пока статичная заглушка, как и
+                         «Личные заметки» рядом; реальные данные лежат в
+                         localStorage под ключом busybee_quotes (см. script.js,
+                         selQuoteBtn), подключим сюда так же, как «Продолжить
+                         чтение» и «Избранное» — по запросу. -->
+                    <div class="column-widget">
+                        <div class="widget-header">
+                            <h3>Мои цитаты</h3>
+                            <a href="#">Посмотреть всё</a>
+                        </div>
+                        <div class="widget-content">
+                            <div class="personal-quote-item">
+                                <img src="images/icons/quote.svg" alt="" class="personal-quote-icon">
+                                <div class="personal-quote-info">
+                                    <strong>«Иногда судьба даёт нам второй шанс не для того, чтобы мы повторили прошлое, а чтобы наконец-то сделали правильный выбор».</strong>
+                                    <span class="personal-quote-source">Книга грёз, глава 1 · 18 мая, 2025</span>
+                                </div>
+                            </div>
+                            <div class="personal-quote-item">
+                                <img src="images/icons/quote.svg" alt="" class="personal-quote-icon">
+                                <div class="personal-quote-info">
+                                    <strong>«Некоторые вещи стоит того, чтобы опоздать».</strong>
+                                    <span class="personal-quote-source">The Moon That Rises in the Night, глава 124 · 12 мая, 2025</span>
+                                </div>
+                            </div>
+                            <div class="personal-quote-item">
+                                <img src="images/icons/quote.svg" alt="" class="personal-quote-icon">
+                                <div class="personal-quote-info">
+                                    <strong>«Даже самая тёмная ночь закончится, и солнце взойдёт снова».</strong>
+                                    <span class="personal-quote-source">Silent Suffering, Boundless Love, глава 40 · 3 мая, 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Personal Notes -->
                     <div class="column-widget">
@@ -509,27 +545,37 @@
                         </div>
                         <ul class="activity-feed">
                             <li>
-                                <img src="images/icons/book-open.svg" alt="" class="activity-icon">
+                                <span class="activity-icon-badge">
+                                    <img src="images/icons/book-open.svg" alt="" class="activity-icon">
+                                </span>
                                 <span class="activity-text">Прочитана глава 124 <strong>The Moon That Rises in the Night</strong></span>
                                 <span class="activity-time">2 минуты назад</span>
                             </li>
                             <li>
-                                <img src="images/icons/bookmark.svg" alt="" class="activity-icon">
+                                <span class="activity-icon-badge">
+                                    <img src="images/icons/bookmark.svg" alt="" class="activity-icon">
+                                </span>
                                 <span class="activity-text"><strong>The Villainess's Slow Life</strong> добавлена в «Буду читать»</span>
                                 <span class="activity-time">1 час назад</span>
                             </li>
                             <li>
-                                <img src="images/icons/quote.svg" alt="" class="activity-icon">
+                                <span class="activity-icon-badge">
+                                    <img src="images/icons/quote.svg" alt="" class="activity-icon">
+                                </span>
                                 <span class="activity-text">Сохранена цитата из <strong>Rebirth of the Malicious Empress</strong></span>
                                 <span class="activity-time">3 часа назад</span>
                             </li>
                             <li>
-                                <img src="images/icons/check-circle.svg" alt="" class="activity-icon">
+                                <span class="activity-icon-badge">
+                                    <img src="images/icons/check-circle.svg" alt="" class="activity-icon">
+                                </span>
                                 <span class="activity-text">Завершена <strong>The Imperial Tutor</strong></span>
                                 <span class="activity-time">Вчера</span>
                             </li>
                             <li>
-                                <img src="images/icons/folder.svg" alt="" class="activity-icon">
+                                <span class="activity-icon-badge">
+                                    <img src="images/icons/folder.svg" alt="" class="activity-icon">
+                                </span>
                                 <span class="activity-text">Создана коллекция «<strong>Hidden Gems</strong>»</span>
                                 <span class="activity-time">2 дня назад</span>
                             </li>

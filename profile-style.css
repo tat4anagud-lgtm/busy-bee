@@ -625,9 +625,9 @@
 }
 
 /* ---------- Two Column Layout (заметки / достижения) ---------- */
-.widgets-two-column {
+.widgets-three-column {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
     margin-top: 28px;
 }
@@ -737,6 +737,39 @@
     color: var(--text-muted);
 }
 
+/* ---------- Мои цитаты ----------
+   То же построение, что у .note-item (иконка + текст + дата), но без
+   сердечка — это личные цитаты, которые пользователь сам сохранил во
+   время чтения (кнопка «Цитата» в читалке), а не чужие лайкнутые.
+   Сердечки с лайками — отдельная история во вкладке «Избранное». */
+.personal-quote-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.personal-quote-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.personal-quote-info strong {
+    display: block;
+    font-size: var(--fs-body);
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+.personal-quote-source {
+    display: block;
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
 /* ---------- Achievements Grid ---------- */
 .achievements-hex-grid {
     display: grid;
@@ -810,25 +843,62 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .activity-feed li {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     font-size: var(--fs-body);
-    padding: 9px 0;
-    border-bottom: 1px solid var(--border);
 }
 
-.activity-feed li:last-child {
-    border-bottom: none;
+/* Тонкая линия-«стебель» между значками превращает список в таймлайн:
+   тянется от низа одного бейджа до верха следующего (равно gap выше),
+   поэтому у последней строки её нет. Бейдж (z-index: 1) рисуется
+   поверх и перекрывает то, что попадает под него сверху и снизу. */
+/* Тонкая линия-«стебель» между значками превращает список в таймлайн.
+   Растёт от нижнего края бейджа (top: 100% от самого бейджа, а не
+   гадание по высоте li) вниз ровно на величину gap у .activity-feed,
+   поэтому упирается точно в верх следующего бейджа. У последней
+   строки её нет. */
+.activity-feed li:not(:last-child) .activity-icon-badge::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 10px; /* = gap у .activity-feed */
+    background: rgba(73, 53, 38, 0.15); /* чуть заметнее var(--border), не сливается с фоном */
+}
+
+.activity-icon-badge {
+    position: relative;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Самое недавнее событие — лёгкое медовое кольцо, чтобы взгляд сразу
+   цеплялся за верх списка */
+.activity-feed li:first-child .activity-icon-badge {
+    border-color: var(--honey);
 }
 
 .activity-icon {
     width: 14px;
     height: 14px;
-    flex-shrink: 0;
 }
 
 .activity-time {
