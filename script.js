@@ -1100,17 +1100,23 @@ function setupFootnotePopover(containerEl, getFootnotes) {
         popover.style.display = "none";
     }
 
-    function positionPopover(marker) {
-        popover.style.display = "block";
+    // Anchored purely in CSS (see .footnote-popover in style.css) as a
+    // child of whichever marker is open, so this only has to decide
+    // whether the default placement (opens below, left-aligned) would
+    // run past an edge — measured AFTER it's actually rendered in its
+    // real spot, so there's no coordinate math to get wrong.
+    function positionPopover() {
+        popover.classList.remove("align-right", "flip-above");
 
-        const markerRect = marker.getBoundingClientRect();
-        const popoverWidth = popover.offsetWidth;
-        let left = markerRect.left;
-        if (left + popoverWidth > window.innerWidth - 16) left = window.innerWidth - popoverWidth - 16;
-        if (left < 16) left = 16;
+        const rect = popover.getBoundingClientRect();
+        const containerRect = containerEl.getBoundingClientRect();
+        // The tighter of the two: the window edge, or containerEl's own
+        // edge when it clips its content (Book mode's paginated view)
+        const maxRight = Math.min(window.innerWidth, containerRect.right) - 8;
+        const maxBottom = Math.min(window.innerHeight, containerRect.bottom) - 8;
 
-        popover.style.left = `${left}px`;
-        popover.style.top = `${markerRect.bottom + 8}px`;
+        if (rect.right > maxRight) popover.classList.add("align-right");
+        if (rect.bottom > maxBottom) popover.classList.add("flip-above");
     }
 
     containerEl.addEventListener("click", async (event) => {
@@ -1156,7 +1162,9 @@ function setupFootnotePopover(containerEl, getFootnotes) {
             if (linkEl) linkEl.hidden = true;
         }
 
-        positionPopover(marker);
+        marker.appendChild(popover);
+        popover.style.display = "block";
+        positionPopover();
     });
 
     document.addEventListener("click", (event) => {

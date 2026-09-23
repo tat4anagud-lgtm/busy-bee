@@ -5332,6 +5332,8 @@ body.reader-page.theme-dark .btn-web-version {
    ==================================================================== */
 
 .footnote-marker {
+    position: relative;
+
     color: var(--honey);
     font-weight: 600;
     cursor: pointer;
@@ -5342,11 +5344,26 @@ body.reader-page.theme-dark .btn-web-version {
     text-decoration: underline;
 }
 
+/* Anchored as a CSS-positioned child of the marker itself (script.js
+   moves the single #footnotePopover node in there on open) instead of
+   a JS-computed `position: fixed` + getBoundingClientRect() pixel
+   offset. That JS approach broke in Safari specifically: the marker
+   sits inside .page-shell's `zoom: 0.9`, and Safari's non-standard
+   support for `zoom` doesn't keep getBoundingClientRect() consistent
+   across that boundary, throwing the calculated position off (fine in
+   Chrome, wrong in Safari). Anchoring via plain CSS instead means the
+   browser resolves the position natively within the marker's own
+   layout context — nothing crosses the zoom boundary, so there's
+   nothing for that inconsistency to break. */
 .footnote-popover {
-    position: fixed;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+
     z-index: 60;
     width: 280px;
-    max-width: calc(100vw - 32px);
+    max-width: min(280px, calc(100vw - 48px));
 
     background: var(--surface);
     border: 1px solid var(--border);
@@ -5354,6 +5371,20 @@ body.reader-page.theme-dark .btn-web-version {
     padding: 16px;
 
     box-shadow: 0 12px 32px var(--shadow);
+}
+
+/* Added by script.js when the default (left-aligned, opening below)
+   placement would run past the edge of the reading column */
+.footnote-popover.align-right {
+    left: auto;
+    right: 0;
+}
+
+.footnote-popover.flip-above {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 8px;
 }
 
 .footnote-popover-term {

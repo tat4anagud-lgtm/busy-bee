@@ -367,7 +367,10 @@
     <!-- FOOTNOTE POPOVER — opens when a reader clicks one of the
          small numbered markers inside the chapter text. Content and
          position depend on which marker was clicked, so it's just an
-         empty shell here, filled in by script.js. -->
+         empty shell here, filled in by script.js. Positioned as a CSS
+         sibling of the marker itself (script.js moves it there on
+         open) rather than via JS-computed position:fixed coordinates —
+         see the comment in setupFootnotePopover() for why. -->
     <div class="footnote-popover" id="footnotePopover" style="display: none;">
         <div class="footnote-popover-term" id="footnotePopoverTerm"></div>
         <div class="footnote-popover-pinyin" id="footnotePopoverPinyin"></div>
