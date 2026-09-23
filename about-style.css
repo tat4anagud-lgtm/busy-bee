@@ -28,7 +28,7 @@
 
 .hero-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 48px;
+    font-size: 34px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 8px;
@@ -47,8 +47,8 @@
 }
 
 .hero-subtitle {
-    font-size: 16px;
-    color: var(--text-secondary);
+    font-size: 13px;
+    color: var(--text-muted);
     line-height: 1.6;
 }
 
@@ -89,7 +89,7 @@
 .left-col h2,
 .right-col h2 {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 26px;
+    font-size: 20px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 12px;
@@ -97,7 +97,7 @@
 
 .left-col p {
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.6;
     margin-bottom: 10px;
 }
@@ -146,7 +146,7 @@
     margin-bottom: 10px;
 }
 
-.author-name {
+.about-author-name {
     font-weight: 700;
     font-size: 15px;
     color: var(--text-primary);
@@ -159,7 +159,7 @@
 
 .right-col p {
     color: var(--text-secondary);
-    font-size: 13.5px;
+    font-size: 13px;
     line-height: 1.6;
     margin-bottom: 8px;
 }
@@ -187,9 +187,9 @@
     margin-bottom: 70px;
 }
 
-.section-title {
+.about-section-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 32px;
+    font-size: 24px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 28px;
@@ -214,7 +214,7 @@
 }
 
 .feature-card:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     box-shadow: 0 5px 16px var(--shadow);
     border-color: var(--honey);
 }
@@ -281,10 +281,16 @@
 }
 
 .step-icon-box .cn-char {
-    font-family: "Playfair Display", Georgia, serif;
+    font-family: "Noto Serif SC", "Playfair Display", Georgia, serif;
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text-primary);
+}
+
+.step-bee-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
 }
 
 .step-name {
@@ -337,7 +343,7 @@
 
 .banner-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 30px;
+    font-size: 24px;
     font-weight: 600;
     color: var(--text-primary);
     margin-bottom: 10px;
@@ -352,7 +358,7 @@
 }
 
 .banner-text {
-    font-size: 13.5px;
+    font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.6;
     margin-bottom: 12px;
