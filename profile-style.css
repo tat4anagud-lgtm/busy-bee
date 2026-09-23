@@ -530,6 +530,15 @@
     color: var(--text-muted);
 }
 
+/* Пустое состояние карусели (нет прочитанного/избранного и т.п.) —
+   тот же тон, что у .saved-items-empty в читалке, под шкалу профиля */
+.empty-state-text {
+    padding: 20px 4px;
+    text-align: center;
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+}
+
 /* ---------- Избранное: цитаты ---------- */
 .fav-quotes-grid {
     display: grid;
@@ -593,6 +602,7 @@
 .collection-card {
     padding: 10px;
     color: var(--text-primary);
+    text-decoration: none;
 }
 
 .collection-img {

@@ -336,21 +336,82 @@ document.addEventListener("click", (event) => {
 });
 
 
+/* ---------- Favorite novels (localStorage) ----------
+   Which novels the reader has hearted on novel.html — independent of
+   reading status (Reading / Completed / ...). No backend yet, so this
+   is a per-browser convenience, same idea and shape as reading
+   progress further down this file.
+   Storage shape: { "<novelId>": { addedAt: <ISO> } }
+
+   NOTE: this has to sit ABOVE "NOVEL PAGE" below — favoriteStatusBtn's
+   init code calls isNovelFavorited() as soon as the script runs, and
+   since FAVORITE_NOVELS_KEY is `const`, referencing it before this
+   line actually executes throws (temporal dead zone) — which the
+   function's own try/catch was silently swallowing into "not
+   favorited" on every load. Function *declarations* are hoisted,
+   `const` bindings are not — order here matters. */
+const FAVORITE_NOVELS_KEY = "busybee_favorite_novels";
+
+function getFavoriteNovelIds() {
+    try {
+        const all = JSON.parse(localStorage.getItem(FAVORITE_NOVELS_KEY)) || {};
+        // Most recently favorited first
+        return Object.entries(all)
+            .sort(([, a], [, b]) => new Date(b.addedAt) - new Date(a.addedAt))
+            .map(([novelId]) => novelId);
+    } catch (error) {
+        return [];
+    }
+}
+
+function isNovelFavorited(novelId) {
+    try {
+        const all = JSON.parse(localStorage.getItem(FAVORITE_NOVELS_KEY)) || {};
+        return Boolean(all[novelId]);
+    } catch (error) {
+        return false;
+    }
+}
+
+function setNovelFavorited(novelId, isFavorited) {
+    try {
+        const all = JSON.parse(localStorage.getItem(FAVORITE_NOVELS_KEY)) || {};
+        if (isFavorited) {
+            all[novelId] = { addedAt: new Date().toISOString() };
+        } else {
+            delete all[novelId];
+        }
+        localStorage.setItem(FAVORITE_NOVELS_KEY, JSON.stringify(all));
+    } catch (error) {
+        console.error("Couldn't save favorite novels:", error);
+    }
+}
+
 /* ========================================
    NOVEL PAGE
    ======================================== */
 
-/* ---------- Favorite toggle (independent of reading status) ---------- */
+/* ---------- Favorite toggle (independent of reading status) ----------
+   Persisted via the helpers just above so it survives a reload and so
+   the profile page's "Избранное → Новеллы" can read it back. */
 
 const favoriteStatusBtn = document.getElementById("favoriteStatusBtn");
 
 if (favoriteStatusBtn) {
     const icon = favoriteStatusBtn.querySelector("img");
+    const novelId = new URLSearchParams(window.location.search).get("id") || "kniga-grez";
+
+    if (isNovelFavorited(novelId)) {
+        favoriteStatusBtn.classList.add("active");
+        favoriteStatusBtn.setAttribute("aria-pressed", "true");
+        icon.src = icon.dataset.filled;
+    }
 
     favoriteStatusBtn.addEventListener("click", () => {
         const isFavorited = favoriteStatusBtn.classList.toggle("active");
         favoriteStatusBtn.setAttribute("aria-pressed", isFavorited);
         icon.src = isFavorited ? icon.dataset.filled : icon.dataset.outline;
+        setNovelFavorited(novelId, isFavorited);
     });
 }
 

@@ -282,85 +282,22 @@
                 </section>
 
                 <!-- CONTINUE READING
+                     Карточки подставляет profile-script.js: берёт
+                     busybee_reading_progress из localStorage (тот же
+                     ключ, что и на главной) и подтягивает обложку,
+                     автора и общее число глав из novels/novels.json.
                      Карусель: стрелки по бокам, как на главной; прокрутку
-                     ведёт общая setupCarousel из script.js (см. profile-script.js) -->
-                <section class="section-block">
-                <div class="section-header">
-                    <h2 class="section-title">Продолжить чтение</h2>
-                    <a href="#" class="view-all">Посмотреть всё</a>
-                </div>
+                     ведёт общая setupCarousel из script.js. Пока ничего
+                     не читаешь в этом браузере — секция скрыта целиком. -->
+                <section class="section-block" id="continueReadingSection" hidden>
+                    <div class="section-header">
+                        <h2 class="section-title">Продолжить чтение</h2>
+                        <a href="#" class="view-all">Посмотреть всё</a>
+                    </div>
 
                     <div class="profile-carousel">
                         <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
-                        <div class="profile-track  carousel-track">
-                            <article class="reading-card">
-                                <div class="reading-cover-wrap">
-                                    <img src="https://placehold.co/168x248" alt="">
-                                </div>
-                                <div class="reading-info">
-                                    <h3>The Moon That Rises in the Night</h3>
-                                    <span class="chapter-info">Глава 124 из 164</span>
-                                    <div class="reading-progress">
-                                        <div class="progress-bar-wrap">
-                                            <div class="progress-bar-fill" style="width: 76%;"></div>
-                                        </div>
-                                        <span class="progress-percent">76%</span>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
-                            </article>
-
-                            <article class="reading-card">
-                                <div class="reading-cover-wrap">
-                                    <img src="https://placehold.co/168x248" alt="">
-                                </div>
-                                <div class="reading-info">
-                                    <h3>Rebirth of the Malicious Empress</h3>
-                                    <span class="chapter-info">Глава 89 из 132</span>
-                                    <div class="reading-progress">
-                                        <div class="progress-bar-wrap">
-                                            <div class="progress-bar-fill" style="width: 68%;"></div>
-                                        </div>
-                                        <span class="progress-percent">68%</span>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
-                            </article>
-
-                            <article class="reading-card">
-                                <div class="reading-cover-wrap">
-                                    <img src="https://placehold.co/168x248" alt="">
-                                </div>
-                                <div class="reading-info">
-                                    <h3>The Crown Prince's Secret Lover</h3>
-                                    <span class="chapter-info">Глава 63 из 101</span>
-                                    <div class="reading-progress">
-                                        <div class="progress-bar-wrap">
-                                            <div class="progress-bar-fill" style="width: 62%;"></div>
-                                        </div>
-                                        <span class="progress-percent">62%</span>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
-                            </article>
-
-                            <article class="reading-card">
-                                <div class="reading-cover-wrap">
-                                    <img src="https://placehold.co/168x248" alt="">
-                                </div>
-                                <div class="reading-info">
-                                    <h3>Silent Suffering, Boundless Love</h3>
-                                    <span class="chapter-info">Глава 40 из 88</span>
-                                    <div class="reading-progress">
-                                        <div class="progress-bar-wrap">
-                                            <div class="progress-bar-fill" style="width: 45%;"></div>
-                                        </div>
-                                        <span class="progress-percent">45%</span>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
-                            </article>
-                        </div>
+                        <div class="profile-track carousel-track" id="continueReadingTrack"></div>
                         <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
                     </div>
                 </section>
@@ -414,43 +351,18 @@
                         <button type="button" class="chip" role="tab" id="favTabCollections" aria-selected="false" aria-controls="favPanelCollections" tabindex="-1">Коллекции</button>
                     </div>
 
+                    <!-- Наполняется profile-script.js из busybee_favorite_novels
+                         (сердечко на странице новеллы) + novels/novels.json,
+                         тем же способом, что и «Продолжить чтение» выше. -->
                     <div role="tabpanel" id="favPanelNovels" aria-labelledby="favTabNovels">
-                    <div class="profile-carousel">
-                        <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
-                        <div class="profile-track fav-novels-track carousel-track">
-                                <a href="#" class="fav-novel-card">
-                                    <img src="https://placehold.co/168x224" alt="">
-                                    <h4>The Moon That Rises in the Night</h4>
-                                    <span class="fav-novel-author">Bai Lu Cheng Shuang</span>
-                                </a>
-                                <a href="#" class="fav-novel-card">
-                                    <img src="https://placehold.co/168x224" alt="">
-                                    <h4>Rebirth of the Malicious Empress</h4>
-                                    <span class="fav-novel-author">Mo Xiang Tong Xiu</span>
-                                </a>
-                                <a href="#" class="fav-novel-card">
-                                    <img src="https://placehold.co/168x224" alt="">
-                                    <h4>The Crown Prince's Secret Lover</h4>
-                                    <span class="fav-novel-author">Jiu Yue Xi</span>
-                                </a>
-                                <a href="#" class="fav-novel-card">
-                                    <img src="https://placehold.co/168x224" alt="">
-                                    <h4>Silent Suffering, Boundless Love</h4>
-                                    <span class="fav-novel-author">Bai Lu Cheng Shuang</span>
-                                </a>
-                                <a href="#" class="fav-novel-card">
-                                    <img src="https://placehold.co/168x224" alt="">
-                                    <h4>A Dream in Winter</h4>
-                                    <span class="fav-novel-author">Lin Yi</span>
-                                </a>
-                                <a href="#" class="fav-novel-card">
-                                    <img src="https://placehold.co/168x224" alt="">
-                                    <h4>The Villainess's Slow Life</h4>
-                                    <span class="fav-novel-author">Yan Qing</span>
-                                </a>
+                        <div class="profile-carousel">
+                            <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
+                            <div class="profile-track fav-novels-track carousel-track" id="favoriteNovelsTrack"></div>
+                            <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
                         </div>
-                        <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
-                    </div>
+                        <p class="empty-state-text" id="favoriteNovelsEmpty" hidden>
+                            Пока нет избранных новелл — нажмите ♡ на странице новеллы, чтобы добавить сюда.
+                        </p>
                     </div>
 
                     <div role="tabpanel" id="favPanelQuotes" aria-labelledby="favTabQuotes" hidden>
@@ -475,28 +387,32 @@
                     </div>
 
                     <div role="tabpanel" id="favPanelCollections" aria-labelledby="favTabCollections" hidden>
+                    <!-- Пока статичная подборка — теми же карточками, что и на
+                         главной (images/collections/…). Когда появятся отдельные
+                         страницы коллекций с ♡, сюда так же, как в «Новеллы»
+                         выше, подключим реальные избранные из localStorage. -->
                     <div class="profile-carousel">
                         <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
                         <div class="profile-track  carousel-track">
                                 <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                                    <h4>Дворцовые интриги и борьба за власть</h4>
-                                    <span class="collection-count">12 новелл</span>
+                                    <div class="collection-img" style="background-image: url('images/collections/second-chances.png');"></div>
+                                    <h4>Второй шанс</h4>
                                 </a>
                                 <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
+                                    <div class="collection-img" style="background-image: url('images/collections/court-intrigues.png');"></div>
+                                    <h4>Дворцовые интриги</h4>
+                                </a>
+                                <a href="#" class="collection-card">
+                                    <div class="collection-img" style="background-image: url('images/collections/slow-burn-romance.png');"></div>
                                     <h4>Медленная любовь</h4>
-                                    <span class="collection-count">18 новелл</span>
                                 </a>
                                 <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                                    <h4>Приключения во времени</h4>
-                                    <span class="collection-count">9 новелл</span>
+                                    <div class="collection-img" style="background-image: url('images/collections/strong-heroines.png');"></div>
+                                    <h4>Сильные героини</h4>
                                 </a>
                                 <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('https://placehold.co/200x100');"></div>
-                                    <h4>Культивация и легенды</h4>
-                                    <span class="collection-count">14 новелл</span>
+                                    <div class="collection-img" style="background-image: url('images/collections/cozy-reads.png');"></div>
+                                    <h4>Уютное чтение</h4>
                                 </a>
                         </div>
                         <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
