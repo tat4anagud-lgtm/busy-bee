@@ -194,6 +194,12 @@
     color: var(--honey);
 }
 
+.icon-inline img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+}
+
 .icon-inline svg {
     width: 15px;
     height: 15px;
@@ -261,20 +267,30 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    border: none;
+    background: none;
+    padding: 0;
     color: var(--text-secondary);
-    font-size: 13px;
+    font-family: inherit;
+    font-size: var(--fs-base);
     font-weight: 500;
+    cursor: pointer;
     transition: color 0.2s;
 }
 
-.stat-btn:hover,
-.stat-btn.active {
+.stat-btn img {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+}
+
+.stat-btn:hover {
     color: var(--honey);
 }
 
-.stat-btn.active svg {
-    fill: var(--honey);
-    stroke: var(--honey);
+.stat-btn.like-btn.liked {
+    color: var(--honey);
+    font-weight: 600;
 }
 
 .right-actions {
@@ -460,23 +476,73 @@
 
 /* ==================== POLL CARD ==================== */
 .poll-options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 20px auto 1fr 40px;
+    row-gap: 4px;
     margin-bottom: 20px;
 }
 
 .poll-option {
+    grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 20px 1fr 120px 40px;
+    grid-template-columns: subgrid;
     align-items: center;
     gap: 12px;
-    font-size: 13px;
+    padding: 8px 10px;
+    margin: 0 -10px;
+    border-radius: 8px;
+    font-size: var(--fs-base);
     cursor: pointer;
+    transition: background 0.2s ease;
 }
 
+.poll-option:hover {
+    background: var(--surface-warm);
+}
+
+.poll-option:has(input:checked) {
+    background: var(--surface-warm);
+}
+
+.poll-option:has(input:checked) .option-label {
+    font-weight: 600;
+}
+
+/* Custom radio dot — the native control had no styling beyond
+   accent-color, which renders as a plain grey system circle in most
+   browsers and didn't match anything else on the site */
 .poll-option input[type="radio"] {
-    accent-color: var(--honey);
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    position: relative;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.poll-option input[type="radio"]:hover {
+    border-color: var(--honey);
+}
+
+.poll-option input[type="radio"]:checked {
+    border-color: var(--honey);
+}
+
+.poll-option input[type="radio"]:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--honey);
+    transform: translate(-50%, -50%);
 }
 
 .option-label {
@@ -549,8 +615,12 @@
         flex-direction: column;
     }
 
-    .poll-option {
+    .poll-options {
         grid-template-columns: 20px 1fr 40px;
+    }
+
+    .poll-option {
+        grid-template-columns: subgrid;
     }
 
     .progress-bar-bg {

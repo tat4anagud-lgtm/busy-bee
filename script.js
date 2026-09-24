@@ -18,6 +18,13 @@
    if there's any reading history in this browser, otherwise falls
    back to .hero-welcome. */
 
+// Кэш getNovelData() (сама функция — ниже, в блоке «Reader / Chapter»).
+// Должен быть объявлен ДО блока героя: тот вызывает getNovelData
+// сразу при загрузке скрипта, и обращение к const, объявленному
+// дальше по файлу, падало бы с ReferenceError — из-за этого на главной
+// всегда показывался «Добро пожаловать», даже если читаешь новеллу.
+const novelDataCache = {};
+
 const heroContinue = document.querySelector(".hero-continue");
 const heroWelcome = document.querySelector(".hero-welcome");
 
@@ -84,6 +91,13 @@ if (heroContinue && heroWelcome) {
                 const continueBtn = document.getElementById("heroContinueBtn");
                 if (continueBtn) continueBtn.href = `chapter.html?novel=${mostRecentNovelId}&chapter=${mostRecentChapterNumber}`;
 
+                // Закладка на карточке «Продолжить чтение» — та же новелла
+                const heroBookmark = heroContinue.querySelector(".hero-bookmark-button");
+                if (heroBookmark) {
+                    heroBookmark.dataset.novelId = mostRecentNovelId;
+                    bindNovelBookmarks(heroContinue);
+                }
+
                 heroContinue.style.display = "flex";
                 heroWelcome.style.display = "none";
             })
@@ -122,6 +136,15 @@ if (userMenu && headerLoginButton) {
     userMenu.style.display = IS_LOGGED_IN ? "block" : "none";
     headerLoginButton.style.display = IS_LOGGED_IN ? "none" : "flex";
 }
+
+// Иконка закладок в шапке (на всех страницах) открывает страницу «Закладки»
+document.querySelectorAll(".header-bookmark-button").forEach((button) => {
+    button.addEventListener("click", () => {
+        if (!window.location.pathname.endsWith("bookmarks.html")) {
+            window.location.href = "bookmarks.html";
+        }
+    });
+});
 
 
 /* ---------- Catalog dropdown ---------- */
@@ -270,6 +293,9 @@ miniBookmarks.forEach((button) => {
         // Don't let the click bubble up to the <article> in case it
         // becomes a clickable link to the book page later
         event.stopPropagation();
+
+        // Закладки на карточках новелл ведёт bindNovelBookmarks (ниже)
+        if (button.dataset.novelId) return;
 
         const isSaved = button.classList.toggle("active");
         button.setAttribute("aria-pressed", isSaved);
@@ -601,12 +627,12 @@ async function loadSavedEntries(storageKey) {
         novelId: savedEntryNovelId(entry),
     }));
 
-    const titles = {};
+    const novels = {};
     const novelIds = [...new Set(entries.map((entry) => entry.novelId))];
     await Promise.all(
         novelIds.map((id) =>
             getNovelData(id)
-                .then((novel) => { titles[id] = novel.title; })
+                .then((novel) => { novels[id] = novel; })
                 .catch(() => {})
         )
     );
@@ -618,7 +644,8 @@ async function loadSavedEntries(storageKey) {
             const title = entry.chapterTitle && !entry.chapterTitle.includes("|") ? entry.chapterTitle : "";
             return {
                 ...entry,
-                novelTitle: titles[entry.novelId] || "",
+                novelTitle: (novels[entry.novelId] || {}).title || "",
+                novelCover: (novels[entry.novelId] || {}).cover || "",
                 novelHref: `novel.html?id=${id}`,
                 chapterHref: `chapter.html?novel=${id}&chapter=${entry.chapterNumber || 1}`,
                 chapterLabel: `Глава ${entry.chapterNumber || 1}${title ? `: ${title}` : ""}`,
@@ -663,6 +690,173 @@ function setupSavedDelete(listEl, storageKey, onChange) {
         onChange();
     });
 }
+
+/* ---------- Закладки-страницы (localStorage) ----------
+   «Закладка» = место в тексте, куда хочется вернуться. Живёт в одном
+   списке busybee_passage_bookmarks, читает его страница bookmarks.html
+   (вкладка «Страницы»). Записи двух видов:
+     • отрывок — выделила текст и нажала «Закладка» над ним (kind не задан);
+     • место в главе — кнопка «Закладка» в шапке читалки (kind: "chapter").
+       На главу — не больше одной: повторное нажатие снимает её.
+   Shape: { novelId, kind?, text, chapterTitle, chapterNumber, url, savedAt }
+   А вот «Читаю / Буду читать / Отложено» — это НЕ закладки-страницы, а
+   полки новелл (busybee_shelves): на странице «Закладки» они собираются
+   во вкладку «Новеллы» сами, отдельно ничего не хранится. */
+const PAGE_BOOKMARKS_KEY = "busybee_passage_bookmarks";
+
+function getChapterBookmark(novelId, chapterNumber) {
+    return getSavedList(PAGE_BOOKMARKS_KEY).find((entry) =>
+        entry.kind === "chapter" &&
+        savedEntryNovelId(entry) === novelId &&
+        Number(entry.chapterNumber) === Number(chapterNumber)
+    ) || null;
+}
+
+function saveChapterBookmark({ novelId, chapterNumber, chapterTitle, text }) {
+    try {
+        const list = getSavedList(PAGE_BOOKMARKS_KEY);
+        list.push({
+            novelId,
+            kind: "chapter",
+            text: String(text || "").slice(0, 300),
+            chapterTitle: chapterTitle || "",
+            chapterNumber,
+            url: window.location.href,
+            savedAt: new Date().toISOString(),
+        });
+        localStorage.setItem(PAGE_BOOKMARKS_KEY, JSON.stringify(list));
+    } catch (error) {
+        console.error("Couldn't save chapter bookmark:", error);
+    }
+}
+
+function removeChapterBookmark(novelId, chapterNumber) {
+    try {
+        const list = getSavedList(PAGE_BOOKMARKS_KEY).filter((entry) => !(
+            entry.kind === "chapter" &&
+            savedEntryNovelId(entry) === novelId &&
+            Number(entry.chapterNumber) === Number(chapterNumber)
+        ));
+        localStorage.setItem(PAGE_BOOKMARKS_KEY, JSON.stringify(list));
+    } catch (error) {
+        console.error("Couldn't remove chapter bookmark:", error);
+    }
+}
+
+/* ---------- Закладка на карточке новеллы = «Буду читать» ----------
+   Значок закладки на карточках (главная, каталог, страница переводчика)
+   — быстрый способ отметить новеллу. Своего хранилища у него нет, он
+   работает с теми же полками, что и выпадающий список на странице
+   новеллы (busybee_shelves):
+     • закрашен, если новелла на «Читаю», «Буду читать» или «Отложено»
+       — ровно то, что показывает страница «Закладки», вкладка «Новеллы»;
+     • нажатие на пустой значок ставит «Буду читать»;
+     • нажатие на закрашенный снимает статус (прогресс чтения остаётся).
+   Оба действия сопровождаются «Отменить», поэтому случайный клик не
+   стирает «Читаю» или «Прочитано».
+   Значки других видов (закладки на посты, на термины глоссария) сюда
+   не попадают: привязываются только кнопки с data-novel-id. */
+const BOOKMARK_SHELVES = ["reading", "planned", "paused"];
+
+function isNovelBookmarked(novelId) {
+    return BOOKMARK_SHELVES.includes(getNovelShelf(novelId));
+}
+
+// Закрашивает/очищает значок по текущему состоянию хранилища
+function paintNovelBookmark(button) {
+    const saved = isNovelBookmarked(button.dataset.novelId);
+    button.classList.toggle("active", saved);
+    button.setAttribute("aria-pressed", saved);
+
+    const icon = button.querySelector("img");
+    if (icon && icon.dataset.filled) {
+        icon.src = saved ? icon.dataset.filled : icon.dataset.outline;
+    }
+}
+
+function repaintNovelBookmarks() {
+    document.querySelectorAll("[data-novel-id][data-novel-bound]").forEach(paintNovelBookmark);
+}
+
+// Небольшое сообщение внизу экрана с кнопкой «Отменить».
+// Стили заданы здесь же, чтобы не зависеть от CSS конкретной страницы.
+let undoToastEl = null;
+let undoToastTimer = null;
+
+function showUndoToast(text, onUndo) {
+    if (!undoToastEl) {
+        undoToastEl = document.createElement("div");
+        undoToastEl.setAttribute("role", "status");
+        undoToastEl.setAttribute("aria-live", "polite");
+        undoToastEl.style.cssText =
+            "position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:300;" +
+            "display:flex;align-items:center;gap:16px;padding:12px 20px;border-radius:12px;" +
+            "background:var(--text-primary,#3B2F26);color:#fff;font-size:13px;" +
+            "box-shadow:0 8px 24px rgba(0,0,0,0.18);";
+        document.body.appendChild(undoToastEl);
+    }
+
+    undoToastEl.innerHTML = "";
+    const message = document.createElement("span");
+    message.textContent = text;
+    const undoButton = document.createElement("button");
+    undoButton.type = "button";
+    undoButton.textContent = "Отменить";
+    undoButton.style.cssText =
+        "padding:0;background:none;border:none;font:inherit;font-weight:600;color:#F0C56A;cursor:pointer;";
+    undoButton.addEventListener("click", () => {
+        onUndo();
+        undoToastEl.style.display = "none";
+        clearTimeout(undoToastTimer);
+    });
+    undoToastEl.append(message, undoButton);
+    undoToastEl.style.display = "flex";
+
+    clearTimeout(undoToastTimer);
+    undoToastTimer = setTimeout(() => { undoToastEl.style.display = "none"; }, 6000);
+}
+
+// Привязывает все .mini-bookmark[data-novel-id] и .hero-bookmark-button
+// [data-novel-id] внутри scope; безопасно вызывать повторно после
+// каждой перерисовки карточек (уже привязанные пропускаются).
+function bindNovelBookmarks(scope = document) {
+    scope.querySelectorAll("[data-novel-id]").forEach((button) => {
+        if (!button.matches(".mini-bookmark, .hero-bookmark-button")) return;
+        if (button.dataset.novelBound) return;
+        button.dataset.novelBound = "1";
+        paintNovelBookmark(button);
+
+        button.addEventListener("click", (event) => {
+            event.stopPropagation();
+            const novelId = button.dataset.novelId;
+            const previous = getNovelShelf(novelId);
+
+            if (isNovelBookmarked(novelId)) {
+                setNovelShelf(novelId, null);
+                showUndoToast("Новелла убрана из закладок", () => {
+                    setNovelShelf(novelId, previous);
+                    repaintNovelBookmarks();
+                });
+            } else {
+                setNovelShelf(novelId, "planned");
+                showUndoToast("Добавлено в закладки — «Буду читать»", () => {
+                    setNovelShelf(novelId, previous);
+                    repaintNovelBookmarks();
+                });
+            }
+
+            // одна и та же новелла может быть на странице дважды
+            // (рекомендации + каталог) — перекрашиваем все значки сразу
+            repaintNovelBookmarks();
+        });
+    });
+}
+
+// Вернулись «Назад» из кэша браузера — состояние могло измениться
+// на другой странице (статус на странице новеллы, чтение главы)
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) repaintNovelBookmarks();
+});
 
 /* ========================================
    NOVEL PAGE
@@ -1402,7 +1596,9 @@ document.addEventListener("click", (event) => {
    novel file.
    ======================================== */
 
-const novelDataCache = {};
+// novelDataCache объявлен в самом начале файла (см. «Homepage hero»):
+// главная зовёт getNovelData уже в первых строках скрипта, а const,
+// объявленный ниже по файлу, в тот момент ещё недоступен.
 
 async function getNovelData(novelId) {
     if (novelDataCache[novelId]) return novelDataCache[novelId];
@@ -1597,21 +1793,64 @@ if (readerHeader) {
         });
     }
 
-    /* 1b. Bookmark Chapter Toggle — same outline/filled icon-swap
-       pattern as .favorite-btn (heart.svg / heart-filled.svg), just
-       with its own filled icon colored ink-brown instead of gold */
+    /* 1b. «Закладка» в шапке читалки — закладка на этом месте главы.
+       Сохраняется (см. «Закладки-страницы» выше): в закладку попадает
+       абзац, который сейчас на экране, он же — подпись на странице
+       «Закладки». Иконка: контур/заливка, как у .favorite-btn. На главу
+       одна закладка — повторное нажатие снимает её. При переходе на
+       другую главу состояние кнопки подтягивается заново
+       (syncChapterBookmarkButton вызывается из loadChapter ниже). */
+
+    // Первый абзац, видимый на экране: в режиме прокрутки — под шапкой,
+    // в режиме «Книга» — в текущей колонке (предыдущие уехали влево)
+    function firstVisiblePassage() {
+        const paragraphs = document.querySelectorAll("#proseParagraphs p");
+        const topEdge = readerHeader.offsetHeight + 4;
+
+        for (const paragraph of paragraphs) {
+            const rect = paragraph.getBoundingClientRect();
+            if (rect.bottom > topEdge && rect.right > 0 && rect.left < window.innerWidth) {
+                return paragraph.textContent.trim();
+            }
+        }
+        return paragraphs.length ? paragraphs[0].textContent.trim() : "";
+    }
+
+    let syncChapterBookmarkButton = () => {};
     const btnBookmark = document.getElementById("btnBookmark");
     if (btnBookmark) {
         const btnBookmarkIcon = btnBookmark.querySelector(".tool-icon img");
 
-        btnBookmark.addEventListener("click", () => {
-            const isSaved = btnBookmark.classList.toggle("active");
+        const showBookmarkState = (isSaved) => {
+            btnBookmark.classList.toggle("active", isSaved);
             btnBookmark.setAttribute("aria-pressed", isSaved);
+            btnBookmark.title = isSaved ? "Убрать закладку с этой главы" : "Поставить закладку на этом месте";
             if (btnBookmarkIcon) {
                 btnBookmarkIcon.src = isSaved
                     ? btnBookmarkIcon.dataset.filled
                     : btnBookmarkIcon.dataset.outline;
             }
+        };
+
+        syncChapterBookmarkButton = () => {
+            showBookmarkState(Boolean(getChapterBookmark(readerNovelId, currentChapterNumber)));
+        };
+
+        btnBookmark.addEventListener("click", () => {
+            const wasSaved = Boolean(getChapterBookmark(readerNovelId, currentChapterNumber));
+
+            if (wasSaved) {
+                removeChapterBookmark(readerNovelId, currentChapterNumber);
+            } else {
+                const titleEl = document.getElementById("chapterTitle");
+                saveChapterBookmark({
+                    novelId: readerNovelId,
+                    chapterNumber: currentChapterNumber,
+                    chapterTitle: titleEl ? titleEl.textContent : "",
+                    text: firstVisiblePassage(),
+                });
+            }
+            showBookmarkState(!wasSaved);
         });
     }
 
@@ -1854,6 +2093,7 @@ if (readerHeader) {
             currentChapterNumber = chapter.number;
             currentChapterFootnotes = chapter.footnotes || [];
             saveReadingProgress(readerNovelId, chapter.number);
+            syncChapterBookmarkButton();
 
             const webVersionLink = document.getElementById("webVersionLink");
             if (webVersionLink) webVersionLink.href = `chapter.html?novel=${readerNovelId}&chapter=${chapter.number}`;
@@ -2939,7 +3179,7 @@ if (recommendationsTrack) {
                             <p><a href="${novel.author?.href || "#"}" class="hero-text-link">${novel.author?.name || ""}</a></p>
                             <div class="book-meta">
                                 <span class="rating">★ ${novel.rating ? novel.rating.score.toFixed(1) : "—"}</span>
-                                <button type="button" class="mini-bookmark" aria-label="Сохранить в закладки" aria-pressed="false">
+                                <button type="button" class="mini-bookmark" data-novel-id="${novel.id}" aria-label="Сохранить в закладки" aria-pressed="false">
                                     <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
                                 </button>
                             </div>
@@ -2947,18 +3187,10 @@ if (recommendationsTrack) {
                     </article>`)
                 .join("");
 
-            // Same bookmark-toggle behaviour as everywhere else — bound
-            // here since these buttons didn't exist yet when script.js's
-            // own global .mini-bookmark binding ran further up this file
-            recommendationsTrack.querySelectorAll(".mini-bookmark").forEach((button) => {
-                const icon = button.querySelector("img");
-                button.addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    const isSaved = button.classList.toggle("active");
-                    button.setAttribute("aria-pressed", isSaved);
-                    icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
-                });
-            });
+            // Закладка на карточке = «Буду читать» (см. bindNovelBookmarks);
+            // привязываем здесь, потому что этих кнопок ещё не было, когда
+            // общая привязка .mini-bookmark выше отработала при загрузке
+            bindNovelBookmarks(recommendationsTrack);
         })
         .catch((error) => console.error("Failed to load recommendations:", error));
 }
@@ -3228,7 +3460,7 @@ if (catalogGrid) {
 
                     <div class="card-actions">
                         <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                        <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                        <button type="button" class="mini-bookmark" data-novel-id="${novel.id}" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
                         ${actionButtonHtml}
                     </div>
                 </div>
@@ -3253,15 +3485,7 @@ if (catalogGrid) {
                     icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
                 });
             });
-            catalogGrid.querySelectorAll(".mini-bookmark").forEach((button) => {
-                const icon = button.querySelector("img");
-                button.addEventListener("click", (event) => {
-                    event.stopPropagation();
-                    const isSaved = button.classList.toggle("active");
-                    button.setAttribute("aria-pressed", isSaved);
-                    icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
-                });
-            });
+            bindNovelBookmarks(catalogGrid);
 
             bindCatalogCardMenus();
             bindFilterSearchInputs();

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уведомления</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="notifications-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER — same markup as every other page -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+
+                <div class="catalog-menu">
+
+                    <button class="catalog-button">
+                        Каталог
+                        <img src="images/icons/chevron-down.svg" alt="Chevron-down">
+                    </button>
+
+                    <div class="catalog-dropdown">
+                        <a href="catalog.html">Новеллы</a>
+                        <a href="#">Авторы</a>
+                        <a href="#">Жанры</a>
+                        <a href="#">Коллекции</a>
+                        <a href="#">Глоссарий</a>
+                    </div>
+
+                </div>
+
+                <a href="announcements.html">Анонсы</a>
+                <a href="about.html">О Busy Bee</a>
+
+            </nav>
+
+            <div class="header-actions">
+
+                <div class="search">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
+                    <img src="images/icons/search.svg" alt="Search">
+                </div>
+
+                <button class="header-bookmark-button">
+                    <img src="images/icons/bookmark.svg" alt="Bookmark">
+                </button>
+
+                <button class="bell-button">
+                    <img src="images/icons/bell.svg" alt="Bell">
+                </button>
+
+                <button class="theme-toggle-button theme-toggle" title="Тема">
+                    <img src="images/icons/moon.svg" alt="Theme">
+                </button>
+
+                <div class="user-menu">
+
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <img src="images/icons/chevron-down.svg" alt="Chevron-down">
+                    </button>
+
+                    <div class="user-dropdown">
+
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль
+                        </a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/bookmark.svg" alt="" class="user-dropdown-icon"> Закладки
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки
+                        </a>
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции
+                        </a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения
+                        </a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item">
+                            <img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки
+                        </a>
+
+                        <div class="language-menu">
+
+                            <button type="button" class="user-dropdown-item language-button">
+                                <img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык
+                            </button>
+
+                            <div class="language-dropdown">
+                                <button class="language-option">Русский</button>
+                                <button class="language-option active">English</button>
+                            </div>
+
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger">
+                            <img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <button class="header-login-button" title="Войти">
+                    <img src="images/icons/log-in.svg" alt="Log In">
+                </button>
+
+            </div>
+        </header>
+
+        <main class="notifications-container">
+
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>›</span>
+                <span class="current">Уведомления</span>
+            </nav>
+
+            <!-- HERO -->
+            <section class="notifications-hero">
+                <div class="notifications-hero-left">
+                    <h1>Уведомления</h1>
+                    <p>Здесь будут новости о ваших книгах, новых главах и активности Busy Bee.</p>
+                </div>
+
+                <div class="notifications-hero-right">
+                    <!-- TODO: атмосферная картинка в стиле остальных hero-иллюстраций
+                         сайта (см. glossary-hero-decor.png, hero-decor.png) — книги,
+                         ваза, пчёлка на пунктирной линии. Ориентир по ширине: ~220px -->
+                    <img src="images/backgrounds/notifications-hero-decor.png" alt="">
+                </div>
+            </section>
+
+            <!-- FILTER TABS + "MARK ALL READ" -->
+            <div class="notifications-toolbar">
+                <div class="chip-row" id="notifFilterTabs">
+                    <button type="button" class="chip active" data-filter="all">Все</button>
+                    <button type="button" class="chip" data-filter="unread">Непрочитанные</button>
+                    <button type="button" class="chip" data-filter="busybee-news">Новости Busy Bee</button>
+                    <button type="button" class="chip" data-filter="my-books">Мои книги</button>
+                </div>
+
+                <button type="button" class="mark-all-read" id="markAllReadBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    Отметить всё как прочитанное
+                </button>
+            </div>
+
+            <!-- TODAY -->
+            <section class="notification-group">
+                <h2>Сегодня</h2>
+                <div class="notification-list">
+
+                    <a href="#" class="notification-item unread" data-category="my-books">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/book-open.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">В «Книге грёз» вышла новая глава</h3>
+                            <p class="notif-text">Глава 18 уже доступна для чтения.</p>
+                            <span class="notif-time">2 часа назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                    <a href="#" class="notification-item" data-category="my-books">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/book-open.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">«В погоне за нефритом» обновлена</h3>
+                            <p class="notif-text">Добавлена новая глава.</p>
+                            <span class="notif-time">5 часов назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                    <a href="#" class="notification-item" data-category="busybee-news">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/bee-icon.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">Новая новелла уже в каталоге</h3>
+                            <p class="notif-text">«Лунное отражение» — история о любви, предательстве и втором шансе.</p>
+                            <span class="notif-time">3 дня назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- YESTERDAY -->
+            <section class="notification-group">
+                <h2>Вчера</h2>
+                <div class="notification-list">
+
+                    <a href="#" class="notification-item" data-category="my-books">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/comment.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">Кто-то ответил на ваш комментарий</h3>
+                            <p class="notif-text">«Очень люблю эту сцену, она такая трогательная…»</p>
+                            <span class="notif-time">1 день назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                    <a href="#" class="notification-item" data-category="my-books">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/bookmark.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">Ваша закладка сохранена</h3>
+                            <p class="notif-text">Глава 27 добавлена в раздел «Страницы».</p>
+                            <span class="notif-time">1 день назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- EARLIER -->
+            <section class="notification-group">
+                <h2>Ранее</h2>
+                <div class="notification-list">
+
+                    <a href="#" class="notification-item" data-category="busybee-news">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/megaphone.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">Обновление сайта</h3>
+                            <p class="notif-text">Теперь вы можете добавлять заметки к цитатам прямо в читалке!</p>
+                            <span class="notif-time">4 дня назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                    <a href="#" class="notification-item" data-category="busybee-news">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/heart.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">Рекомендуем обратить внимание</h3>
+                            <p class="notif-text">Вышла новая рецензия на «Песни о весне» от наших читателей.</p>
+                            <span class="notif-time">5 дней назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                    <a href="#" class="notification-item" data-category="busybee-news">
+                        <span class="notif-icon-wrap">
+                            <img src="images/icons/lightbulb.svg" alt="" class="notif-icon">
+                        </span>
+                        <div class="notif-body">
+                            <h3 class="notif-title">Голосование</h3>
+                            <p class="notif-text">Какой жанр вы хотели бы видеть следующим в переводах?</p>
+                            <span class="notif-time">6 дней назад</span>
+                        </div>
+                        <img src="images/icons/chevron-down.svg" alt="" class="notif-chevron">
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- "ALL CAUGHT UP" FOOTER CARD -->
+            <div class="notif-empty-footer">
+                <img src="images/icons/bee-icon.svg" alt="">
+                <div>
+                    <strong>Отлично! У вас все прочитано.</strong>
+                    <p>Здесь будут появляться новые уведомления.</p>
+                </div>
+            </div>
+
+            <!-- Shown instead of the groups above when a filter matches nothing -->
+            <p class="notif-nothing-found" id="notifNothingFound" hidden>Здесь пока ничего нет.</p>
+
+        </main>
+
+        <!-- FOOTER — same markup as every other page -->
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
+                </div>
+
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
+
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
+                </div>
+
+                <div class="footer-bottom-right">
+
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="notifications-script.js"></script>
+</body>
+</html>

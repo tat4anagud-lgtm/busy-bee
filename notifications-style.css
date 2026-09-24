@@ -1,0 +1,296 @@
+/* ========================================
+   BUSY BEE — NOTIFICATIONS PAGE STYLES
+   Header, footer, nav, search, breadcrumbs etc. all come from the
+   shared style.css — this file covers content unique to this page,
+   plus a couple of small blocks (chips, type scale) duplicated in
+   from other page-specific files for now, same as elsewhere on
+   the site — see the comments on each.
+   ======================================== */
+
+/* Same four-step type scale used on profile-style.css and
+   announcements-style.css — kept local here too for now, same as
+   there, until it gets moved into style.css :root for the whole site. */
+:root {
+    --fs-micro: 10px;   /* даты, подписи, счётчики */
+    --fs-small: 11px;   /* вторичный текст, ссылки «Смотреть все» */
+    --fs-body: 12px;    /* основной текст в карточках */
+    --fs-base: 13px;    /* пункты меню, названия в списках */
+}
+
+.notifications-container {
+    padding: 0 32px 50px;
+}
+
+/* ==================== HERO ==================== */
+.notifications-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 16px 0 28px;
+}
+
+.notifications-hero-left {
+    max-width: 560px;
+}
+
+.notifications-hero-left h1 {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.notifications-hero-left p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.notifications-hero-right {
+    flex-shrink: 0;
+}
+
+.notifications-hero-right img {
+    width: 220px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Same pill-tab look as the Избранное chips on the profile page —
+   that block lives in profile-style.css, not the shared style.css,
+   so it's duplicated here for now too (same situation as the fs-*
+   scale above). */
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.chip {
+    appearance: none;
+    font: inherit;
+    font-size: var(--fs-body);
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.chip:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.chip.active {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--text-primary);
+}
+
+/* ==================== TOOLBAR: FILTER CHIPS + MARK ALL READ ==================== */
+.notifications-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 28px;
+}
+
+/* .chip-row / .chip are defined above */
+
+.mark-all-read {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: none;
+    font-family: inherit;
+    font-size: var(--fs-base);
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.mark-all-read:hover {
+    color: var(--honey);
+}
+
+.mark-all-read svg {
+    flex-shrink: 0;
+}
+
+/* ==================== GROUPED LIST ==================== */
+.notification-group {
+    margin-bottom: 28px;
+}
+
+.notification-group h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.notification-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+
+    text-decoration: none;
+    color: inherit;
+
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notification-item:hover {
+    border-color: var(--honey);
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.notification-item.unread {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+}
+
+/* Small dot marking an unread item — CSS-only, so "mark all as read"
+   is just removing the .unread class, nothing else to clean up */
+.notification-item.unread::before {
+    content: "";
+    position: absolute;
+    left: -4px;
+    top: 22px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--honey);
+}
+
+.notif-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-warm);
+    color: var(--honey);
+    overflow: hidden;
+}
+
+.notif-icon-wrap .notif-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.notif-icon-wrap svg {
+    width: 20px;
+    height: 20px;
+}
+
+.notif-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.notif-title {
+    font-family: "Inter", sans-serif;
+    font-size: var(--fs-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.35;
+    margin-bottom: 4px;
+}
+
+.notif-text {
+    font-size: var(--fs-body);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.notif-time {
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+}
+
+.notif-chevron {
+    align-self: center;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    opacity: 0.4;
+    transform: rotate(-90deg);
+}
+
+/* ==================== "ALL CAUGHT UP" FOOTER CARD ==================== */
+.notif-empty-footer {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+.notif-empty-footer img {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.notif-empty-footer strong {
+    display: block;
+    font-size: var(--fs-base);
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.notif-empty-footer p {
+    font-size: var(--fs-body);
+    color: var(--text-secondary);
+}
+
+.notif-nothing-found {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+    font-size: var(--fs-body);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 868px) {
+    .notifications-hero-right {
+        display: none;
+    }
+
+    .notification-item {
+        flex-wrap: wrap;
+    }
+
+    .notif-chevron {
+        display: none;
+    }
+}

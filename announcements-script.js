@@ -32,19 +32,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    /* Лайки */
+    /* Лайки — тот же outline/filled свап иконки (heart.svg → heart-filled.svg)
+       и класс .liked, что и у постов на странице переводчика, плюс +1 к
+       счётчику под кнопкой, раз он у неё уже был */
     document.querySelectorAll(".like-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            const isLiked = btn.classList.contains("active");
-            const countSpan = btn.querySelector(".stat-count");
-            let baseLikes = parseInt(btn.getAttribute("data-likes"), 10) || 0;
+        const icon = btn.querySelector("img");
+        const countSpan = btn.querySelector(".stat-count");
 
-            if (!isLiked) {
-                btn.classList.add("active");
-                baseLikes += 1;
-            } else {
-                btn.classList.remove("active");
-            }
+        btn.addEventListener("click", () => {
+            const isLiked = btn.classList.toggle("liked");
+            btn.setAttribute("aria-pressed", isLiked);
+            if (icon) icon.src = isLiked ? icon.dataset.filled : icon.dataset.outline;
+
+            let baseLikes = parseInt(btn.getAttribute("data-likes"), 10) || 0;
+            baseLikes += isLiked ? 1 : 0;
 
             if (countSpan) {
                 countSpan.textContent = baseLikes >= 1000 ? (baseLikes / 1000).toFixed(1) + "K" : baseLikes;
@@ -52,12 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    /* Закладки */
-    document.querySelectorAll(".bookmark-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-            btn.classList.toggle("active");
-        });
-    });
+    /* Закладки не биндим здесь — кнопки несут класс .mini-bookmark и уже
+       подхватываются общим обработчиком в script.js (тот же outline/filled
+       свап bookmark.svg → bookmark-filled-gold.svg, что и везде на сайте) */
 
     /* Опрос */
     const pollCard = document.querySelector(".poll-card");

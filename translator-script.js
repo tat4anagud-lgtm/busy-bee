@@ -63,7 +63,15 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        scope.querySelectorAll(".mini-bookmark").forEach((button) => {
+        // Закладки на карточках новелл (есть data-novel-id) ведёт общая
+        // bindNovelBookmarks из script.js — «Буду читать». Закладки на
+        // посты (.bookmark-btn) переключает bindPostLikeButtons ниже — если
+        // навесить обработчик и здесь, кнопка переключится дважды и
+        // визуально не изменится. Так что здесь остаются только прочие
+        // .mini-bookmark.
+        bindNovelBookmarks(scope);
+
+        scope.querySelectorAll(".mini-bookmark:not([data-novel-id]):not(.bookmark-btn)").forEach((button) => {
             const icon = button.querySelector("img");
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -123,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p class="ch-info">${chInfo}</p>
                 <div class="card-footer">
                     <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                    <button type="button" class="mini-bookmark" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                    <button type="button" class="mini-bookmark" data-novel-id="${novel.id}" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
                 </div>
             </div>`;
     }
