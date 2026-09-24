@@ -84,37 +84,37 @@
 
                         <div class="user-dropdown-divider"></div>
 
-                        <a href="profile.html" class="user-dropdown-item">
+                        <a href="#profile" class="user-dropdown-item">
                             <img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль
                         </a>
 
                         <div class="user-dropdown-spacer"></div>
 
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#library" class="user-dropdown-item">
                             <img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека
                         </a>
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#favorites" class="user-dropdown-item">
                             <img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное
                         </a>
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#quotes" class="user-dropdown-item">
                             <img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты
                         </a>
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#notes" class="user-dropdown-item">
                             <img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки
                         </a>
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#collections" class="user-dropdown-item">
                             <img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции
                         </a>
 
                         <div class="user-dropdown-spacer"></div>
 
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#achievements" class="user-dropdown-item">
                             <img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения
                         </a>
 
                         <div class="user-dropdown-divider"></div>
 
-                        <a href="#" class="user-dropdown-item">
+                        <a href="#settings" class="user-dropdown-item">
                             <img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки
                         </a>
 
@@ -159,35 +159,35 @@
                  выпадающем меню профиля в шапке (.user-dropdown) -->
             <aside class="profile-sidebar">
                 <nav class="sidebar-menu">
-                    <a href="profile.html" class="sidebar-item active">
+                    <a href="#profile" data-view="profile" class="sidebar-item active">
                         <img src="images/icons/user.svg" alt="" class="sidebar-icon">
                         <span>Мой профиль</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#library" data-view="library" class="sidebar-item">
                         <img src="images/icons/book.svg" alt="" class="sidebar-icon">
                         <span>Моя библиотека</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#favorites" data-view="favorites" class="sidebar-item">
                         <img src="images/icons/heart.svg" alt="" class="sidebar-icon">
                         <span>Избранное</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#quotes" data-view="quotes" class="sidebar-item">
                         <img src="images/icons/quote.svg" alt="" class="sidebar-icon">
                         <span>Мои цитаты</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#notes" data-view="notes" class="sidebar-item">
                         <img src="images/icons/edit.svg" alt="" class="sidebar-icon">
                         <span>Мои заметки</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#collections" data-view="collections" class="sidebar-item">
                         <img src="images/icons/folder.svg" alt="" class="sidebar-icon">
                         <span>Мои коллекции</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#achievements" data-view="achievements" class="sidebar-item">
                         <img src="images/icons/award.svg" alt="" class="sidebar-icon">
                         <span>Достижения</span>
                     </a>
-                    <a href="#" class="sidebar-item">
+                    <a href="#settings" data-view="settings" class="sidebar-item">
                         <img src="images/icons/settings.svg" alt="" class="sidebar-icon">
                         <span>Настройки</span>
                     </a>
@@ -205,383 +205,865 @@
             <!-- MAIN CONTENT AREA -->
             <main class="profile-main">
 
-                <!-- USER HERO BANNER -->
-                <section class="profile-hero-card">
-                    <div class="user-avatar-wrapper">
-                        <img src="https://placehold.co/160x160" alt="Татьяна" class="profile-user-avatar">
-                        <button class="btn-edit-avatar"><img src="images/icons/edit.svg" alt="Изменить"></button>
-                    </div>
-
-                    <div class="profile-hero-info">
-                        <div class="user-title-row">
-                            <h1>Татьяна</h1>
-                            <span class="user-badge">🐝 Активный читатель</span>
+                <!-- ============ РАЗДЕЛ: Мой профиль ============ -->
+                <div class="profile-view" id="view-profile">
+                    <!-- USER HERO BANNER -->
+                    <section class="profile-hero-card">
+                        <div class="user-avatar-wrapper">
+                            <img src="https://placehold.co/160x160" alt="Татьяна" class="profile-user-avatar">
+                            <button class="btn-edit-avatar"><img src="images/icons/edit.svg" alt="Изменить"></button>
                         </div>
 
-                        <div class="level-progress-row">
-                            <span class="level-title">Уровень 18 • <strong>Медовый мудрец</strong></span>
-                            <div class="xp-bar">
-                                <div class="xp-progress" style="width: 62.5%;"></div>
+                        <div class="profile-hero-info">
+                            <div class="user-title-row">
+                                <h1>Татьяна</h1>
+                                <span class="user-badge">🐝 Активный читатель</span>
                             </div>
-                            <span class="xp-text">1 250 / 2 000 опыта</span>
+
+                            <div class="level-progress-row">
+                                <span class="level-title">Уровень 18 • <strong>Медовый мудрец</strong></span>
+                                <div class="xp-bar">
+                                    <div class="xp-progress" style="width: 62.5%;"></div>
+                                </div>
+                                <span class="xp-text">1 250 / 2 000 опыта</span>
+                            </div>
+
+                            <div class="user-joined-date">На сайте с 12 апреля, 2024</div>
+                            <p class="user-bio">«Ещё одна глава» — знакомо каждому. 🌿</p>
+                        </div>
+                    </section>
+
+                    <!-- STATS GRID -->
+                    <section class="user-stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-head">
+                                <img src="images/icons/book.svg" alt="" class="stat-icon">
+                                <span class="stat-title">Прочитано новелл</span>
+                            </div>
+                            <strong class="stat-value">37</strong>
+                            <a href="#" class="stat-link">Посмотреть всё</a>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-head">
+                                <img src="images/icons/book-open.svg" alt="" class="stat-icon">
+                                <span class="stat-title">Прочитано глав</span>
+                            </div>
+                            <strong class="stat-value">2 541</strong>
+                            <a href="#" class="stat-link">Посмотреть всё</a>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-head">
+                                <img src="images/icons/clock.svg" alt="" class="stat-icon">
+                                <span class="stat-title">Время чтения</span>
+                            </div>
+                            <strong class="stat-value">128ч 34м</strong>
+                            <a href="#" class="stat-link">Подробнее</a>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-head">
+                                <img src="images/icons/flame.svg" alt="" class="stat-icon">
+                                <span class="stat-title">Дней подряд</span>
+                            </div>
+                            <strong class="stat-value">28</strong>
+                            <span class="stat-sub">дней</span>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-head">
+                                <img src="images/icons/tag.svg" alt="" class="stat-icon">
+                                <span class="stat-title">Любимый жанр</span>
+                            </div>
+                            <strong class="stat-text-value">Историческое фэнтези</strong>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-head">
+                                <img src="images/icons/user.svg" alt="" class="stat-icon">
+                                <span class="stat-title">Любимый автор</span>
+                            </div>
+                            <strong class="stat-text-value">Mo Xiang Tong Xiu</strong>
+                        </div>
+                    </section>
+
+                    <!-- CONTINUE READING
+                         Карточки подставляет profile-script.js: берёт
+                         busybee_reading_progress из localStorage (тот же
+                         ключ, что и на главной) и подтягивает обложку,
+                         автора и общее число глав из novels/novels.json.
+                         Карусель: стрелки по бокам, как на главной; прокрутку
+                         ведёт общая setupCarousel из script.js. Пока ничего
+                         не читаешь в этом браузере — секция скрыта целиком. -->
+                    <section class="section-block" id="continueReadingSection" hidden>
+                        <div class="section-header">
+                            <h2 class="section-title">Продолжить чтение</h2>
+                            <a href="#" class="view-all">Посмотреть всё</a>
                         </div>
 
-                        <div class="user-joined-date">На сайте с 12 апреля, 2024</div>
-                        <p class="user-bio">«Ещё одна глава» — знакомо каждому. 🌿</p>
-                    </div>
-                </section>
-
-                <!-- STATS GRID -->
-                <section class="user-stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-head">
-                            <img src="images/icons/book.svg" alt="" class="stat-icon">
-                            <span class="stat-title">Прочитано новелл</span>
-                        </div>
-                        <strong class="stat-value">37</strong>
-                        <a href="#" class="stat-link">Посмотреть всё</a>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-head">
-                            <img src="images/icons/book-open.svg" alt="" class="stat-icon">
-                            <span class="stat-title">Прочитано глав</span>
-                        </div>
-                        <strong class="stat-value">2 541</strong>
-                        <a href="#" class="stat-link">Посмотреть всё</a>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-head">
-                            <img src="images/icons/clock.svg" alt="" class="stat-icon">
-                            <span class="stat-title">Время чтения</span>
-                        </div>
-                        <strong class="stat-value">128ч 34м</strong>
-                        <a href="#" class="stat-link">Подробнее</a>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-head">
-                            <img src="images/icons/flame.svg" alt="" class="stat-icon">
-                            <span class="stat-title">Дней подряд</span>
-                        </div>
-                        <strong class="stat-value">28</strong>
-                        <span class="stat-sub">дней</span>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-head">
-                            <img src="images/icons/tag.svg" alt="" class="stat-icon">
-                            <span class="stat-title">Любимый жанр</span>
-                        </div>
-                        <strong class="stat-text-value">Историческое фэнтези</strong>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-head">
-                            <img src="images/icons/user.svg" alt="" class="stat-icon">
-                            <span class="stat-title">Любимый автор</span>
-                        </div>
-                        <strong class="stat-text-value">Mo Xiang Tong Xiu</strong>
-                    </div>
-                </section>
-
-                <!-- CONTINUE READING
-                     Карточки подставляет profile-script.js: берёт
-                     busybee_reading_progress из localStorage (тот же
-                     ключ, что и на главной) и подтягивает обложку,
-                     автора и общее число глав из novels/novels.json.
-                     Карусель: стрелки по бокам, как на главной; прокрутку
-                     ведёт общая setupCarousel из script.js. Пока ничего
-                     не читаешь в этом браузере — секция скрыта целиком. -->
-                <section class="section-block" id="continueReadingSection" hidden>
-                    <div class="section-header">
-                        <h2 class="section-title">Продолжить чтение</h2>
-                        <a href="#" class="view-all">Посмотреть всё</a>
-                    </div>
-
-                    <div class="profile-carousel">
-                        <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
-                        <div class="profile-track carousel-track" id="continueReadingTrack"></div>
-                        <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
-                    </div>
-                </section>
-
-                <!-- PERSONAL BOOKSHELVES — вход в «Мою библиотеку» -->
-                <section class="section-block">
-                <div class="section-header">
-                    <h2 class="section-title">Личные полки</h2>
-                </div>
-
-                    <div class="bookshelves-grid">
-                        <a href="#" class="bookshelf-card">
-                            <img src="images/icons/book-open.svg" alt="" class="shelf-icon">
-                            <strong>Читаю</strong>
-                            <span class="shelf-count">6</span>
-                        </a>
-                        <a href="#" class="bookshelf-card">
-                            <img src="images/icons/bookmark.svg" alt="" class="shelf-icon">
-                            <strong>Буду читать</strong>
-                            <span class="shelf-count">38</span>
-                        </a>
-                        <a href="#" class="bookshelf-card">
-                            <img src="images/icons/pause-circle.svg" alt="" class="shelf-icon">
-                            <strong>Отложено</strong>
-                            <span class="shelf-count">4</span>
-                        </a>
-                        <a href="#" class="bookshelf-card">
-                            <img src="images/icons/check-circle.svg" alt="" class="shelf-icon">
-                            <strong>Прочитано</strong>
-                            <span class="shelf-count">31</span>
-                        </a>
-                        <a href="#" class="bookshelf-card">
-                            <img src="images/icons/x-circle.svg" alt="" class="shelf-icon">
-                            <strong>Брошено</strong>
-                            <span class="shelf-count">3</span>
-                        </a>
-                    </div>
-                </section>
-
-                <!-- FAVORITES — новеллы, цитаты и коллекции, которые пользователь
-                     отметил сердечком. Чипы переключают содержимое внутри блока. -->
-                <section class="section-block">
-                <div class="section-header">
-                    <h2 class="section-title">Избранное</h2>
-                    <a href="#" class="view-all">Посмотреть всё</a>
-                </div>
-
-                    <div class="chip-row" role="tablist" aria-label="Разделы избранного">
-                        <button type="button" class="chip active" role="tab" id="favTabNovels" aria-selected="true" aria-controls="favPanelNovels">Новеллы</button>
-                        <button type="button" class="chip" role="tab" id="favTabQuotes" aria-selected="false" aria-controls="favPanelQuotes" tabindex="-1">Цитаты</button>
-                        <button type="button" class="chip" role="tab" id="favTabCollections" aria-selected="false" aria-controls="favPanelCollections" tabindex="-1">Коллекции</button>
-                    </div>
-
-                    <!-- Наполняется profile-script.js из busybee_favorite_novels
-                         (сердечко на странице новеллы) + novels/novels.json,
-                         тем же способом, что и «Продолжить чтение» выше. -->
-                    <div role="tabpanel" id="favPanelNovels" aria-labelledby="favTabNovels">
                         <div class="profile-carousel">
                             <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
-                            <div class="profile-track fav-novels-track carousel-track" id="favoriteNovelsTrack"></div>
+                            <div class="profile-track carousel-track" id="continueReadingTrack"></div>
                             <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
                         </div>
-                        <p class="empty-state-text" id="favoriteNovelsEmpty" hidden>
-                            Пока нет избранных новелл — нажмите ♡ на странице новеллы, чтобы добавить сюда.
-                        </p>
+                    </section>
+
+                    <!-- PERSONAL BOOKSHELVES — вход в «Мою библиотеку» -->
+                    <section class="section-block">
+                    <div class="section-header">
+                        <h2 class="section-title">Личные полки</h2>
                     </div>
 
-                    <div role="tabpanel" id="favPanelQuotes" aria-labelledby="favTabQuotes" hidden>
-                        <div class="fav-quotes-grid">
-                            <div class="user-quote-item">
-                                <p class="quote-text">«В конце концов, больше всего мы жалеем об упущенных возможностях.»</p>
-                                <span class="quote-book">— The Moon That Rises in the Night</span>
-                                <div class="quote-meta">
-                                    <button type="button" class="btn-like" aria-label="Нравится" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> <span class="like-count">892</span></button>
-                                    <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
-                                </div>
-                            </div>
-                            <div class="user-quote-item">
-                                <p class="quote-text">«Даже самая тёмная ночь закончится, и солнце взойдёт снова.»</p>
-                                <span class="quote-book">— Silent Suffering, Boundless Love</span>
-                                <div class="quote-meta">
-                                    <button type="button" class="btn-like" aria-label="Нравится" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> <span class="like-count">721</span></button>
-                                    <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
-                                </div>
-                            </div>
+                        <div class="bookshelves-grid">
+                            <a href="#library/reading" class="bookshelf-card">
+                                <img src="images/icons/book-open.svg" alt="" class="shelf-icon">
+                                <strong>Читаю</strong>
+                                <span class="shelf-count" data-shelf-count="reading">0</span>
+                            </a>
+                            <a href="#library/planned" class="bookshelf-card">
+                                <img src="images/icons/bookmark.svg" alt="" class="shelf-icon">
+                                <strong>Буду читать</strong>
+                                <span class="shelf-count" data-shelf-count="planned">0</span>
+                            </a>
+                            <a href="#library/paused" class="bookshelf-card">
+                                <img src="images/icons/pause-circle.svg" alt="" class="shelf-icon">
+                                <strong>Отложено</strong>
+                                <span class="shelf-count" data-shelf-count="paused">0</span>
+                            </a>
+                            <a href="#library/completed" class="bookshelf-card">
+                                <img src="images/icons/check-circle.svg" alt="" class="shelf-icon">
+                                <strong>Прочитано</strong>
+                                <span class="shelf-count" data-shelf-count="completed">0</span>
+                            </a>
+                            <a href="#library/dropped" class="bookshelf-card">
+                                <img src="images/icons/x-circle.svg" alt="" class="shelf-icon">
+                                <strong>Брошено</strong>
+                                <span class="shelf-count" data-shelf-count="dropped">0</span>
+                            </a>
                         </div>
+                    </section>
+
+                    <!-- FAVORITES — новеллы, цитаты и коллекции, которые пользователь
+                         отметил сердечком. Чипы переключают содержимое внутри блока. -->
+                    <section class="section-block">
+                    <div class="section-header">
+                        <h2 class="section-title">Избранное</h2>
+                        <a href="#favorites" class="view-all">Посмотреть всё</a>
                     </div>
 
-                    <div role="tabpanel" id="favPanelCollections" aria-labelledby="favTabCollections" hidden>
-                    <!-- Пока статичная подборка — теми же карточками, что и на
-                         главной (images/collections/…). Когда появятся отдельные
-                         страницы коллекций с ♡, сюда так же, как в «Новеллы»
-                         выше, подключим реальные избранные из localStorage. -->
-                    <div class="profile-carousel">
-                        <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
-                        <div class="profile-track  carousel-track">
-                                <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('images/collections/second-chances.png');"></div>
-                                    <h4>Второй шанс</h4>
-                                </a>
-                                <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('images/collections/court-intrigues.png');"></div>
-                                    <h4>Дворцовые интриги</h4>
-                                </a>
-                                <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('images/collections/slow-burn-romance.png');"></div>
-                                    <h4>Медленная любовь</h4>
-                                </a>
-                                <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('images/collections/strong-heroines.png');"></div>
-                                    <h4>Сильные героини</h4>
-                                </a>
-                                <a href="#" class="collection-card">
-                                    <div class="collection-img" style="background-image: url('images/collections/cozy-reads.png');"></div>
-                                    <h4>Уютное чтение</h4>
-                                </a>
+                        <div class="chip-row" role="tablist" aria-label="Разделы избранного">
+                            <button type="button" class="chip active" role="tab" id="favTabNovels" aria-selected="true" aria-controls="favPanelNovels">Новеллы</button>
+                            <button type="button" class="chip" role="tab" id="favTabQuotes" aria-selected="false" aria-controls="favPanelQuotes" tabindex="-1">Цитаты</button>
+                            <button type="button" class="chip" role="tab" id="favTabCollections" aria-selected="false" aria-controls="favPanelCollections" tabindex="-1">Коллекции</button>
                         </div>
-                        <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
-                    </div>
-                    </div>
-                </section>
 
-                <!-- THREE-COLUMN GRID: MY QUOTES / NOTES / ACHIEVEMENTS -->
-                <div class="widgets-three-column">
+                        <!-- Наполняется profile-script.js из busybee_favorite_novels
+                             (сердечко на странице новеллы) + novels/novels.json,
+                             тем же способом, что и «Продолжить чтение» выше. -->
+                        <div role="tabpanel" id="favPanelNovels" aria-labelledby="favTabNovels">
+                            <div class="profile-carousel">
+                                <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
+                                <div class="profile-track fav-novels-track carousel-track" id="favoriteNovelsTrack"></div>
+                                <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
+                            </div>
+                            <p class="empty-state-text" id="favoriteNovelsEmpty" hidden>
+                                Пока нет избранных новелл — нажмите ♡ на странице новеллы, чтобы добавить сюда.
+                            </p>
+                        </div>
 
-                    <!-- Мои цитаты — личные, без лайков (сохранены кнопкой
-                         «Цитата» в читалке). Пока статичная заглушка, как и
-                         «Личные заметки» рядом; реальные данные лежат в
-                         localStorage под ключом busybee_quotes (см. script.js,
-                         selQuoteBtn), подключим сюда так же, как «Продолжить
-                         чтение» и «Избранное» — по запросу. -->
-                    <div class="column-widget">
-                        <div class="widget-header">
-                            <h3>Мои цитаты</h3>
-                            <a href="#">Посмотреть всё</a>
-                        </div>
-                        <div class="widget-content">
-                            <div class="personal-quote-item">
-                                <img src="images/icons/quote.svg" alt="" class="personal-quote-icon">
-                                <div class="personal-quote-info">
-                                    <strong>«Иногда судьба даёт нам второй шанс не для того, чтобы мы повторили прошлое, а чтобы наконец-то сделали правильный выбор».</strong>
-                                    <span class="personal-quote-source">Книга грёз, глава 1 · 18 мая, 2025</span>
+                        <div role="tabpanel" id="favPanelQuotes" aria-labelledby="favTabQuotes" hidden>
+                            <div class="fav-quotes-grid">
+                                <div class="user-quote-item">
+                                    <p class="quote-text">«В конце концов, больше всего мы жалеем об упущенных возможностях.»</p>
+                                    <span class="quote-book">— The Moon That Rises in the Night</span>
+                                    <div class="quote-meta">
+                                        <button type="button" class="btn-like" aria-label="Нравится" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> <span class="like-count">892</span></button>
+                                        <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="personal-quote-item">
-                                <img src="images/icons/quote.svg" alt="" class="personal-quote-icon">
-                                <div class="personal-quote-info">
-                                    <strong>«Некоторые вещи стоит того, чтобы опоздать».</strong>
-                                    <span class="personal-quote-source">The Moon That Rises in the Night, глава 124 · 12 мая, 2025</span>
-                                </div>
-                            </div>
-                            <div class="personal-quote-item">
-                                <img src="images/icons/quote.svg" alt="" class="personal-quote-icon">
-                                <div class="personal-quote-info">
-                                    <strong>«Даже самая тёмная ночь закончится, и солнце взойдёт снова».</strong>
-                                    <span class="personal-quote-source">Silent Suffering, Boundless Love, глава 40 · 3 мая, 2025</span>
+                                <div class="user-quote-item">
+                                    <p class="quote-text">«Даже самая тёмная ночь закончится, и солнце взойдёт снова.»</p>
+                                    <span class="quote-book">— Silent Suffering, Boundless Love</span>
+                                    <div class="quote-meta">
+                                        <button type="button" class="btn-like" aria-label="Нравится" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> <span class="like-count">721</span></button>
+                                        <button type="button" class="btn-dots" aria-label="Действия">⋮</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Personal Notes -->
-                    <div class="column-widget">
-                        <div class="widget-header">
-                            <h3>Личные заметки</h3>
-                            <a href="#">Посмотреть всё</a>
+                        <div role="tabpanel" id="favPanelCollections" aria-labelledby="favTabCollections" hidden>
+                        <!-- Пока статичная подборка — теми же карточками, что и на
+                             главной (images/collections/…). Когда появятся отдельные
+                             страницы коллекций с ♡, сюда так же, как в «Новеллы»
+                             выше, подключим реальные избранные из localStorage. -->
+                        <div class="profile-carousel">
+                            <button type="button" class="carousel-arrow" aria-label="Назад">‹</button>
+                            <div class="profile-track  carousel-track">
+                                    <a href="#" class="collection-card">
+                                        <div class="collection-img" style="background-image: url('images/collections/second-chances.png');"></div>
+                                        <h4>Второй шанс</h4>
+                                    </a>
+                                    <a href="#" class="collection-card">
+                                        <div class="collection-img" style="background-image: url('images/collections/court-intrigues.png');"></div>
+                                        <h4>Дворцовые интриги</h4>
+                                    </a>
+                                    <a href="#" class="collection-card">
+                                        <div class="collection-img" style="background-image: url('images/collections/slow-burn-romance.png');"></div>
+                                        <h4>Медленная любовь</h4>
+                                    </a>
+                                    <a href="#" class="collection-card">
+                                        <div class="collection-img" style="background-image: url('images/collections/strong-heroines.png');"></div>
+                                        <h4>Сильные героини</h4>
+                                    </a>
+                                    <a href="#" class="collection-card">
+                                        <div class="collection-img" style="background-image: url('images/collections/cozy-reads.png');"></div>
+                                        <h4>Уютное чтение</h4>
+                                    </a>
+                            </div>
+                            <button type="button" class="carousel-arrow" aria-label="Вперёд">›</button>
                         </div>
-                        <div class="widget-content">
-                            <div class="note-item">
-                                <img src="images/icons/notes.svg" alt="" class="note-icon">
-                                <div class="note-info">
-                                    <strong>Заметка о политическом устройстве и титулах Северных территорий.</strong>
-                                    <span class="note-date">18 мая, 2025</span>
-                                </div>
-                            </div>
-                            <div class="note-item">
-                                <img src="images/icons/notes.svg" alt="" class="note-icon">
-                                <div class="note-info">
-                                    <strong>Отношения персонажей в The Crown Prince's Secret Lover</strong>
-                                    <span class="note-date">12 мая, 2025</span>
-                                </div>
-                            </div>
-                            <div class="note-item">
-                                <img src="images/icons/notes.svg" alt="" class="note-icon">
-                                <div class="note-info">
-                                    <strong>Обычаи и этикет эпохи Цин</strong>
-                                    <span class="note-date">3 мая, 2025</span>
-                                </div>
-                            </div>
                         </div>
-                    </div>
+                    </section>
 
-                    <!-- Achievements -->
-                    <div class="column-widget">
-                        <div class="widget-header">
-                            <h3>Достижения</h3>
-                            <a href="#">Посмотреть всё</a>
+                    <!-- THREE-COLUMN GRID: MY QUOTES / NOTES / ACHIEVEMENTS -->
+                    <div class="widgets-three-column">
+
+                        <!-- Мои цитаты — личные, без лайков (сохранены кнопкой «Цитата»
+                             в читалке). Три свежие записи подставляет profile-script.js
+                             из busybee_quotes; полный список — раздел «Мои цитаты». -->
+                        <div class="column-widget">
+                            <div class="widget-header">
+                                <h3>Мои цитаты</h3>
+                                <a href="#quotes">Посмотреть всё</a>
+                            </div>
+                            <div class="widget-content" id="profileQuotesList"></div>
+                            <p class="empty-state-text" id="profileQuotesEmpty">Пока нет цитат — выделите текст в читалке и нажмите «Цитата».</p>
                         </div>
-                        <div class="achievements-hex-grid">
-                            <!-- Значки достижений пока эмодзи-заглушки — сюда
-                                 хорошо бы со временем нарисовать кастомные
-                                 иконки в стиле сайта, как и остальные
-                                 иллюстрации -->
-                            <div class="achievement-item">
-                                <div class="hex-badge">🏹</div>
-                                <strong>Ранняя пташка</strong>
-                                <span>7 дней</span>
+
+                        <!-- Мои заметки — заполняет profile-script.js из busybee_notes -->
+                        <div class="column-widget">
+                            <div class="widget-header">
+                                <h3>Мои заметки</h3>
+                                <a href="#notes">Посмотреть всё</a>
                             </div>
-                            <div class="achievement-item">
-                                <div class="hex-badge">🏛️</div>
-                                <strong>Марафонец</strong>
-                                <span>50 глав за день</span>
+                            <div class="widget-content" id="profileNotesList"></div>
+                            <p class="empty-state-text" id="profileNotesEmpty">Пока нет заметок — выделите текст в читалке и нажмите «Заметка».</p>
+                        </div>
+
+                        <!-- Achievements -->
+                        <div class="column-widget">
+                            <div class="widget-header">
+                                <h3>Достижения</h3>
+                                <a href="#achievements">Посмотреть всё</a>
                             </div>
-                            <div class="achievement-item">
-                                <div class="hex-badge">🐝</div>
-                                <strong>Трудолюбивая пчёлка</strong>
-                                <span>7 дней подряд</span>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="hex-badge">📚</div>
-                                <strong>Коллекционер</strong>
-                                <span>50 новелл в библиотеке</span>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="hex-badge">👑</div>
-                                <strong>Медовый мудрец</strong>
-                                <span>10 уровень</span>
-                            </div>
-                            <div class="achievement-item">
-                                <div class="hex-badge">🛡️</div>
-                                <strong>Хранитель цитат</strong>
-                                <span>100 сохранённых цитат</span>
+                            <div class="achievements-hex-grid">
+                                <!-- Значки достижений пока эмодзи-заглушки — сюда
+                                     хорошо бы со временем нарисовать кастомные
+                                     иконки в стиле сайта, как и остальные
+                                     иллюстрации -->
+                                <div class="achievement-item">
+                                    <div class="hex-badge">🏹</div>
+                                    <strong>Ранняя пташка</strong>
+                                    <span>7 дней</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="hex-badge">🏛️</div>
+                                    <strong>Марафонец</strong>
+                                    <span>50 глав за день</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="hex-badge">🐝</div>
+                                    <strong>Трудолюбивая пчёлка</strong>
+                                    <span>7 дней подряд</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="hex-badge">📚</div>
+                                    <strong>Коллекционер</strong>
+                                    <span>50 новелл в библиотеке</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="hex-badge">👑</div>
+                                    <strong>Медовый мудрец</strong>
+                                    <span>10 уровень</span>
+                                </div>
+                                <div class="achievement-item">
+                                    <div class="hex-badge">🛡️</div>
+                                    <strong>Хранитель цитат</strong>
+                                    <span>100 сохранённых цитат</span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
 
+                    <!-- RECENT ACTIVITY -->
+                    <section class="recent-activity-card">
+                        <div class="activity-content">
+                            <div class="widget-header">
+                                <h3>Недавняя активность</h3>
+                                <a href="#">Посмотреть всё</a>
+                            </div>
+                            <ul class="activity-feed">
+                                <li>
+                                    <span class="activity-icon-badge">
+                                        <img src="images/icons/book-open.svg" alt="" class="activity-icon">
+                                    </span>
+                                    <span class="activity-text">Прочитана глава 124 <strong>The Moon That Rises in the Night</strong></span>
+                                    <span class="activity-time">2 минуты назад</span>
+                                </li>
+                                <li>
+                                    <span class="activity-icon-badge">
+                                        <img src="images/icons/bookmark.svg" alt="" class="activity-icon">
+                                    </span>
+                                    <span class="activity-text"><strong>The Villainess's Slow Life</strong> добавлена в «Буду читать»</span>
+                                    <span class="activity-time">1 час назад</span>
+                                </li>
+                                <li>
+                                    <span class="activity-icon-badge">
+                                        <img src="images/icons/quote.svg" alt="" class="activity-icon">
+                                    </span>
+                                    <span class="activity-text">Сохранена цитата из <strong>Rebirth of the Malicious Empress</strong></span>
+                                    <span class="activity-time">3 часа назад</span>
+                                </li>
+                                <li>
+                                    <span class="activity-icon-badge">
+                                        <img src="images/icons/check-circle.svg" alt="" class="activity-icon">
+                                    </span>
+                                    <span class="activity-text">Завершена <strong>The Imperial Tutor</strong></span>
+                                    <span class="activity-time">Вчера</span>
+                                </li>
+                                <li>
+                                    <span class="activity-icon-badge">
+                                        <img src="images/icons/folder.svg" alt="" class="activity-icon">
+                                    </span>
+                                    <span class="activity-text">Создана коллекция «<strong>Hidden Gems</strong>»</span>
+                                    <span class="activity-time">2 дня назад</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+
+            
                 </div>
 
-                <!-- RECENT ACTIVITY -->
-                <section class="recent-activity-card">
-                    <div class="activity-content">
-                        <div class="widget-header">
-                            <h3>Недавняя активность</h3>
-                            <a href="#">Посмотреть всё</a>
+                <!-- ============ РАЗДЕЛ: Моя библиотека ============ -->
+                <div class="profile-view" id="view-library" hidden>
+                    <!-- PAGE TITLE -->
+                    <section class="page-head">
+                        <h1 class="page-title">Моя библиотека</h1>
+                        <p class="page-subtitle">Все ваши новеллы, разложенные по полкам.</p>
+                    </section>
+
+                    <!-- ПОЛКИ — горизонтальное меню, устроено как пункты левого сайдбара,
+                         только в ряд. Переключает содержимое ниже. Открыть сразу нужную
+                         полку можно ссылкой profile.html#library/reading (…/planned, …/paused,
+                         …/completed, …/dropped) -->
+                    <nav class="page-tabs" role="tablist" aria-label="Полки библиотеки">
+                            <button type="button" class="page-tab active" role="tab" id="libTab-reading" data-tab="reading" aria-selected="true" aria-controls="libPanel-reading">
+                                <img src="images/icons/book-open.svg" alt="" class="sidebar-icon">
+                                <span>Читаю</span>
+                                <span class="page-tab-count" data-lib-count="reading">0</span>
+                            </button>
+                            <button type="button" class="page-tab" role="tab" id="libTab-planned" data-tab="planned" aria-selected="false" aria-controls="libPanel-planned" tabindex="-1">
+                                <img src="images/icons/bookmark.svg" alt="" class="sidebar-icon">
+                                <span>Буду читать</span>
+                                <span class="page-tab-count" data-lib-count="planned">0</span>
+                            </button>
+                            <button type="button" class="page-tab" role="tab" id="libTab-paused" data-tab="paused" aria-selected="false" aria-controls="libPanel-paused" tabindex="-1">
+                                <img src="images/icons/pause-circle.svg" alt="" class="sidebar-icon">
+                                <span>Отложено</span>
+                                <span class="page-tab-count" data-lib-count="paused">0</span>
+                            </button>
+                            <button type="button" class="page-tab" role="tab" id="libTab-completed" data-tab="completed" aria-selected="false" aria-controls="libPanel-completed" tabindex="-1">
+                                <img src="images/icons/check-circle.svg" alt="" class="sidebar-icon">
+                                <span>Прочитано</span>
+                                <span class="page-tab-count" data-lib-count="completed">0</span>
+                            </button>
+                            <button type="button" class="page-tab" role="tab" id="libTab-dropped" data-tab="dropped" aria-selected="false" aria-controls="libPanel-dropped" tabindex="-1">
+                                <img src="images/icons/x-circle.svg" alt="" class="sidebar-icon">
+                                <span>Брошено</span>
+                                <span class="page-tab-count" data-lib-count="dropped">0</span>
+                            </button>
+                    </nav>
+
+                    <!-- СОДЕРЖИМОЕ ВЫБРАННОЙ ПОЛКИ -->
+                    <section class="section-block tab-panels">
+                        <div class="tab-panel" role="tabpanel" id="libPanel-reading" aria-labelledby="libTab-reading">
+                            <div class="section-header">
+                                <div>
+                                    <h2 class="section-title">Читаю</h2>
+                                    <p class="tab-desc">Новеллы, которые вы читаете прямо сейчас.</p>
+                                </div>
+                            </div>
+
+                            <!-- Сюда JS положит карточки новелл (.fav-novel-card) -->
+                            <div class="tab-grid" data-lib-grid="reading"></div>
+
+                            <p class="empty-state-text" data-lib-empty="reading">Здесь появятся новеллы, которые вы сейчас читаете.</p>
                         </div>
-                        <ul class="activity-feed">
-                            <li>
-                                <span class="activity-icon-badge">
-                                    <img src="images/icons/book-open.svg" alt="" class="activity-icon">
-                                </span>
-                                <span class="activity-text">Прочитана глава 124 <strong>The Moon That Rises in the Night</strong></span>
-                                <span class="activity-time">2 минуты назад</span>
-                            </li>
-                            <li>
-                                <span class="activity-icon-badge">
-                                    <img src="images/icons/bookmark.svg" alt="" class="activity-icon">
-                                </span>
-                                <span class="activity-text"><strong>The Villainess's Slow Life</strong> добавлена в «Буду читать»</span>
-                                <span class="activity-time">1 час назад</span>
-                            </li>
-                            <li>
-                                <span class="activity-icon-badge">
-                                    <img src="images/icons/quote.svg" alt="" class="activity-icon">
-                                </span>
-                                <span class="activity-text">Сохранена цитата из <strong>Rebirth of the Malicious Empress</strong></span>
-                                <span class="activity-time">3 часа назад</span>
-                            </li>
-                            <li>
-                                <span class="activity-icon-badge">
-                                    <img src="images/icons/check-circle.svg" alt="" class="activity-icon">
-                                </span>
-                                <span class="activity-text">Завершена <strong>The Imperial Tutor</strong></span>
-                                <span class="activity-time">Вчера</span>
-                            </li>
-                            <li>
-                                <span class="activity-icon-badge">
-                                    <img src="images/icons/folder.svg" alt="" class="activity-icon">
-                                </span>
-                                <span class="activity-text">Создана коллекция «<strong>Hidden Gems</strong>»</span>
-                                <span class="activity-time">2 дня назад</span>
-                            </li>
-                        </ul>
+
+                        <div class="tab-panel" role="tabpanel" id="libPanel-planned" aria-labelledby="libTab-planned" hidden>
+                            <div class="section-header">
+                                <div>
+                                    <h2 class="section-title">Буду читать</h2>
+                                    <p class="tab-desc">Истории, до которых вы хотите добраться.</p>
+                                </div>
+                            </div>
+
+                            <!-- Сюда JS положит карточки новелл (.fav-novel-card) -->
+                            <div class="tab-grid" data-lib-grid="planned"></div>
+
+                            <p class="empty-state-text" data-lib-empty="planned">Добавляйте новеллы в «Буду читать» на странице новеллы — они соберутся здесь.</p>
+                        </div>
+
+                        <div class="tab-panel" role="tabpanel" id="libPanel-paused" aria-labelledby="libTab-paused" hidden>
+                            <div class="section-header">
+                                <div>
+                                    <h2 class="section-title">Отложено</h2>
+                                    <p class="tab-desc">Новеллы, к которым вы планируете вернуться позже.</p>
+                                </div>
+                            </div>
+
+                            <!-- Сюда JS положит карточки новелл (.fav-novel-card) -->
+                            <div class="tab-grid" data-lib-grid="paused"></div>
+
+                            <p class="empty-state-text" data-lib-empty="paused">Пока пусто. Сюда попадают новеллы, которые вы поставили на паузу.</p>
+                        </div>
+
+                        <div class="tab-panel" role="tabpanel" id="libPanel-completed" aria-labelledby="libTab-completed" hidden>
+                            <div class="section-header">
+                                <div>
+                                    <h2 class="section-title">Прочитано</h2>
+                                    <p class="tab-desc">Истории, которые вы дочитали до конца.</p>
+                                </div>
+                            </div>
+
+                            <!-- Сюда JS положит карточки новелл (.fav-novel-card) -->
+                            <div class="tab-grid" data-lib-grid="completed"></div>
+
+                            <p class="empty-state-text" data-lib-empty="completed">Дочитанные новеллы будут храниться здесь.</p>
+                        </div>
+
+                        <div class="tab-panel" role="tabpanel" id="libPanel-dropped" aria-labelledby="libTab-dropped" hidden>
+                            <div class="section-header">
+                                <div>
+                                    <h2 class="section-title">Брошено</h2>
+                                    <p class="tab-desc">Новеллы, которые вы решили не продолжать.</p>
+                                </div>
+                            </div>
+
+                            <!-- Сюда JS положит карточки новелл (.fav-novel-card) -->
+                            <div class="tab-grid" data-lib-grid="dropped"></div>
+
+                            <p class="empty-state-text" data-lib-empty="dropped">Здесь пусто — и это хорошо.</p>
+                        </div>
+
+                    </section>
+
+            
+                </div>
+
+                <!-- ============ РАЗДЕЛ: Избранное ============ -->
+                <div class="profile-view" id="view-favorites" hidden>
+                    <!-- PAGE TITLE -->
+                    <section class="page-head">
+                        <h1 class="page-title">Избранное</h1>
+                        <p class="page-subtitle">Новеллы, цитаты и коллекции, которые вы отметили сердечком.</p>
+                    </section>
+
+                    <!-- ВКЛАДКИ — те же, что «Новеллы / Цитаты / Коллекции» в «Избранном»
+                         профиля, только как горизонтальное меню страницы. Открыть сразу
+                         нужную вкладку можно ссылкой profile.html#favorites/quotes (…/novels, …/collections) -->
+                    <nav class="page-tabs" role="tablist" aria-label="Разделы избранного">
+                        <button type="button" class="page-tab active" role="tab" id="favViewTab-novels" data-tab="novels" aria-selected="true" aria-controls="favViewPanel-novels">
+                            <img src="images/icons/book.svg" alt="" class="sidebar-icon">
+                            <span>Новеллы</span>
+                            <span class="page-tab-count" data-fav-count="novels">0</span>
+                        </button>
+                        <button type="button" class="page-tab" role="tab" id="favViewTab-quotes" data-tab="quotes" aria-selected="false" aria-controls="favViewPanel-quotes" tabindex="-1">
+                            <img src="images/icons/quote.svg" alt="" class="sidebar-icon">
+                            <span>Цитаты</span>
+                            <span class="page-tab-count" data-fav-count="quotes">0</span>
+                        </button>
+                        <button type="button" class="page-tab" role="tab" id="favViewTab-collections" data-tab="collections" aria-selected="false" aria-controls="favViewPanel-collections" tabindex="-1">
+                            <img src="images/icons/folder.svg" alt="" class="sidebar-icon">
+                            <span>Коллекции</span>
+                            <span class="page-tab-count" data-fav-count="collections">0</span>
+                        </button>
+                    </nav>
+
+                    <!-- СОДЕРЖИМОЕ ВЫБРАННОЙ ВКЛАДКИ -->
+                    <section class="section-block tab-panels">
+                    <div class="tab-panel" role="tabpanel" id="favViewPanel-novels" aria-labelledby="favViewTab-novels">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Новеллы</h2>
+                                <p class="tab-desc">Новеллы, которые вы отметили сердечком.</p>
+                            </div>
+                        </div>
+
+                        <!-- Заполняется profile-script.js из busybee_favorite_novels (сердечко на
+                                 странице новеллы) — тем же способом, что в профиле. -->
+                        <div class="tab-grid" data-fav-grid="novels"></div>
+
+                        <p class="empty-state-text" data-fav-empty="novels">Пока нет избранных новелл — нажмите ♡ на странице новеллы, чтобы добавить сюда.</p>
                     </div>
-                </section>
+
+                    <div class="tab-panel" role="tabpanel" id="favViewPanel-quotes" aria-labelledby="favViewTab-quotes" hidden>
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Цитаты</h2>
+                                <p class="tab-desc">Цитаты, которые вам понравились.</p>
+                            </div>
+                        </div>
+
+                        <!-- Пока не заполняется: логика цитат ещё не выстроена. Когда будет —
+                                 карточки .user-quote-item, как в «Избранное → Цитаты» профиля. -->
+                        <div class="fav-quotes-grid" data-fav-grid="quotes"></div>
+
+                        <p class="empty-state-text" data-fav-empty="quotes">Пока нет избранных цитат.</p>
+                    </div>
+
+                    <div class="tab-panel" role="tabpanel" id="favViewPanel-collections" aria-labelledby="favViewTab-collections" hidden>
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Коллекции</h2>
+                                <p class="tab-desc">Подборки, которые вы отметили.</p>
+                            </div>
+                        </div>
+
+                        <!-- Пока не заполняется: страниц коллекций ещё нет. Когда появятся с ♡ —
+                                 карточки .collection-card, как в профиле. -->
+                        <div class="tab-grid" data-fav-grid="collections"></div>
+
+                        <p class="empty-state-text" data-fav-empty="collections">Пока нет избранных коллекций.</p>
+                    </div>
+
+                    </section>
+
+            
+                </div>
+
+                <!-- ============ РАЗДЕЛ: Мои цитаты ============ -->
+                <div class="profile-view" id="view-quotes" hidden>
+                    <!-- PAGE TITLE -->
+                    <section class="page-head">
+                        <h1 class="page-title">Мои цитаты</h1>
+                        <p class="page-subtitle">Отрывки, которые вы сохранили во время чтения.</p>
+                    </section>
+
+                    <!-- Карточки рисует profile-script.js: записи из localStorage,
+                         которые сохраняет читалка (см. script.js → loadSavedEntries) -->
+                    <section class="section-block saved-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Все цитаты</h2>
+                                <p class="tab-desc" id="quotesCount"></p>
+                            </div>
+                        </div>
+
+                        <div class="saved-list saved-list--quotes" id="quotesList"></div>
+
+                        <p class="empty-state-text" id="quotesEmpty" hidden>Пока нет сохранённых цитат — выделите текст в читалке и нажмите «Цитата».</p>
+                    </section>
+
+            
+                </div>
+
+                <!-- ============ РАЗДЕЛ: Мои заметки ============ -->
+                <div class="profile-view" id="view-notes" hidden>
+                    <!-- PAGE TITLE -->
+                    <section class="page-head">
+                        <h1 class="page-title">Мои заметки</h1>
+                        <p class="page-subtitle">Ваши мысли к отрывкам, которые вы отметили в читалке.</p>
+                    </section>
+
+                    <!-- Карточки рисует profile-script.js: записи из localStorage,
+                         которые сохраняет читалка (см. script.js → loadSavedEntries) -->
+                    <section class="section-block saved-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Все заметки</h2>
+                                <p class="tab-desc" id="notesCount"></p>
+                            </div>
+                        </div>
+
+                        <div class="saved-list saved-list--notes" id="notesList"></div>
+
+                        <p class="empty-state-text" id="notesEmpty" hidden>Пока нет заметок — выделите текст в читалке и нажмите «Заметка».</p>
+                    </section>
+
+            
+                </div>
+
+                <!-- ============ РАЗДЕЛ: Мои коллекции ============ -->
+                <div class="profile-view" id="view-collections" hidden>
+                    <!-- PAGE TITLE + кнопка «Создать коллекцию» -->
+                    <section class="page-head page-head--action">
+                        <div>
+                            <h1 class="page-title">Мои коллекции</h1>
+                            <p class="page-subtitle">Собирайте любимые новеллы в свои подборки.</p>
+                        </div>
+
+                        <!-- ЗАГЛУШКА: пока ничего не делает. Когда появится логика
+                             коллекций — повесить обработчик на #createCollectionBtn
+                             (и на карточку «+» в сетке ниже). -->
+                        <button type="button" class="btn-honey" id="createCollectionBtn">
+                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                            Создать коллекцию
+                        </button>
+                    </section>
+
+                    <section class="section-block saved-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Ваши коллекции</h2>
+                                <p class="tab-desc">Пока здесь пусто.</p>
+                            </div>
+                        </div>
+
+                        <!-- Карточки коллекций (.collection-card, как в профиле) будут
+                             вставляться перед карточкой «+» -->
+                        <div class="tab-grid" id="collectionsGrid">
+                            <button type="button" class="collection-create-card">
+                                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                                <span>Создать коллекцию</span>
+                            </button>
+                        </div>
+                    </section>
+
+            
+                </div>
+
+                <!-- ============ РАЗДЕЛ: Достижения ============ -->
+                <div class="profile-view" id="view-achievements" hidden>
+                    <!-- PAGE TITLE -->
+                    <section class="page-head">
+                        <h1 class="page-title">Достижения</h1>
+                        <p class="page-subtitle">Награды за чтение, серии и активность на сайте.</p>
+                    </section>
+
+                    <section class="section-block saved-panel">
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Ваши достижения</h2>
+                            </div>
+                        </div>
+
+                        <!-- ЗАГЛУШКА: список статичный, тот же, что в виджете профиля.
+                             Значки — эмодзи, со временем заменить на нарисованные иконки.
+                             Когда появится логика достижений, заполнять из данных
+                             (получено / ещё нет + прогресс). -->
+                        <div class="achievements-page-grid">
+                            <div class="achievement-card">
+                                <div class="hex-badge">🏹</div>
+                                <div class="achievement-card-info">
+                                    <strong>Ранняя пташка</strong>
+                                    <span>7 дней</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card">
+                                <div class="hex-badge">🏛️</div>
+                                <div class="achievement-card-info">
+                                    <strong>Марафонец</strong>
+                                    <span>50 глав за день</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card">
+                                <div class="hex-badge">🐝</div>
+                                <div class="achievement-card-info">
+                                    <strong>Трудолюбивая пчёлка</strong>
+                                    <span>7 дней подряд</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card">
+                                <div class="hex-badge">📚</div>
+                                <div class="achievement-card-info">
+                                    <strong>Коллекционер</strong>
+                                    <span>50 новелл в библиотеке</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card">
+                                <div class="hex-badge">👑</div>
+                                <div class="achievement-card-info">
+                                    <strong>Медовый мудрец</strong>
+                                    <span>10 уровень</span>
+                                </div>
+                            </div>
+                            <div class="achievement-card">
+                                <div class="hex-badge">🛡️</div>
+                                <div class="achievement-card-info">
+                                    <strong>Хранитель цитат</strong>
+                                    <span>100 сохранённых цитат</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="empty-state-text">Скоро здесь появятся новые достижения.</p>
+                    </section>
+
+            
+                </div>
+
+                <!-- ============ РАЗДЕЛ: Настройки ============ -->
+                <div class="profile-view" id="view-settings" hidden>
+                    <!-- PAGE TITLE -->
+                    <section class="page-head">
+                        <h1 class="page-title">Настройки</h1>
+                        <p class="page-subtitle">Профиль, внешний вид чтения, уведомления и аккаунт.</p>
+                    </section>
+
+                    <!-- ЗАГЛУШКА: поля и переключатели рабочие, но ничего не сохраняют и
+                         ни на что не влияют. Что уже есть на сайте и куда подключать:
+                           • Чтение — те же параметры, что в панели настроек читалки
+                             (font-* / theme-* на <body>, размер, интервал, ширина); там
+                             они пока тоже не запоминаются;
+                           • Язык — переключатель в меню шапки и футере, пока визуальный;
+                           • Уведомления и Аккаунт — ждут бэкенда.
+                         Когда будет что сохранять — повесить обработчик на #saveSettingsBtn. -->
+                    <form class="settings-stack" onsubmit="return false;">
+
+                        <section class="settings-card">
+                            <div class="settings-card-head">
+                                <h2 class="section-title">Профиль</h2>
+                                <p>Так вас видят на сайте.</p>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setName"><strong>Имя</strong><span>Отображается в профиле и комментариях</span></label>
+                                <div class="settings-control"><input type="text" class="field-input" id="setName" value="Татьяна" maxlength="40"></div>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setBio"><strong>О себе</strong><span>Короткая строка под именем</span></label>
+                                <div class="settings-control"><input type="text" class="field-input" id="setBio" value="«Ещё одна глава» — знакомо каждому. 🌿" maxlength="80"></div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label"><strong>Аватар</strong><span>Квадратное изображение, лучше от 160×160</span></div>
+                                <div class="settings-control"><img src="https://placehold.co/160x160" alt="" class="settings-avatar"><button type="button" class="btn-ghost">Изменить</button></div>
+                            </div>
+                        </section>
+
+                        <section class="settings-card">
+                            <div class="settings-card-head">
+                                <h2 class="section-title">Чтение</h2>
+                                <p>Как выглядит текст в читалке. Те же параметры, что в панели «Настройки» при чтении.</p>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setFont"><strong>Шрифт</strong><span>Гарнитура основного текста</span></label>
+                                <div class="settings-control"><select class="field-select" id="setFont"><option selected>Literata</option><option>EB Garamond</option><option>Merriweather</option><option>Georgia</option><option>Playfair Display</option><option>Inter</option></select></div>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setSize"><strong>Размер текста</strong><span>В пикселях</span></label>
+                                <div class="settings-control"><select class="field-select" id="setSize"><option>14</option><option>16</option><option>18</option><option selected>20</option><option>22</option><option>24</option><option>26</option><option>28</option><option>30</option><option>32</option></select></div>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setSpacing"><strong>Межстрочный интервал</strong><span>Расстояние между строками</span></label>
+                                <div class="settings-control"><select class="field-select" id="setSpacing"><option>1.4</option><option>1.6</option><option selected>1.8</option><option>2.0</option></select></div>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setWidth"><strong>Ширина текста</strong><span>Ширина колонки с текстом</span></label>
+                                <div class="settings-control"><select class="field-select" id="setWidth"><option>600px</option><option selected>700px</option><option>800px</option></select></div>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setMode"><strong>Режим чтения</strong><span>Как листать главу</span></label>
+                                <div class="settings-control"><select class="field-select" id="setMode"><option selected>Прокрутка</option><option>Книга</option></select></div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label" id="setThemeLabel"><strong>Тема читалки</strong><span>Цвет страницы и текста</span></div>
+                                <div class="settings-control">
+                                    <div class="theme-choices" role="radiogroup" aria-labelledby="setThemeLabel">
+                                        <label class="theme-choice">
+                                            <input type="radio" name="readerTheme" value="light">
+                                            <span class="theme-swatch" style="background: var(--bg-light);"></span>
+                                            <span>Светлая</span>
+                                        </label>
+                                        <label class="theme-choice">
+                                            <input type="radio" name="readerTheme" value="warm" checked>
+                                            <span class="theme-swatch" style="background: var(--bg-warm);"></span>
+                                            <span>Тёплая</span>
+                                        </label>
+                                        <label class="theme-choice">
+                                            <input type="radio" name="readerTheme" value="sepia">
+                                            <span class="theme-swatch" style="background: var(--bg-sepia);"></span>
+                                            <span>Сепия</span>
+                                        </label>
+                                        <label class="theme-choice">
+                                            <input type="radio" name="readerTheme" value="dark">
+                                            <span class="theme-swatch" style="background: var(--bg-dark);"></span>
+                                            <span>Тёмная</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="settings-card">
+                            <div class="settings-card-head">
+                                <h2 class="section-title">Уведомления</h2>
+                                <p>О чём сообщать на сайте.</p>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label" id="setNotifChaptersLabel"><strong>Новые главы</strong><span>В новеллах из «Читаю» и «Избранного»</span></div>
+                                <div class="settings-control">
+                                    <label class="switch">
+                                        <input type="checkbox" role="switch" id="setNotifChapters" aria-labelledby="setNotifChaptersLabel" checked>
+                                        <span class="switch-track"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label" id="setNotifRepliesLabel"><strong>Ответы на комментарии</strong><span>Когда кто-то отвечает на ваш комментарий</span></div>
+                                <div class="settings-control">
+                                    <label class="switch">
+                                        <input type="checkbox" role="switch" id="setNotifReplies" aria-labelledby="setNotifRepliesLabel" checked>
+                                        <span class="switch-track"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label" id="setNotifNewsLabel"><strong>Новости Busy Bee</strong><span>Анонсы, обновления сайта и новые новеллы</span></div>
+                                <div class="settings-control">
+                                    <label class="switch">
+                                        <input type="checkbox" role="switch" id="setNotifNews" aria-labelledby="setNotifNewsLabel">
+                                        <span class="switch-track"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="settings-card">
+                            <div class="settings-card-head">
+                                <h2 class="section-title">Язык</h2>
+                                <p>Язык интерфейса сайта.</p>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setLang"><strong>Язык интерфейса</strong><span>Тексты сайта; сами новеллы остаются на языке перевода</span></label>
+                                <div class="settings-control"><select class="field-select" id="setLang"><option selected>Русский</option><option>English</option></select></div>
+                            </div>
+                        </section>
+
+                        <section class="settings-card">
+                            <div class="settings-card-head">
+                                <h2 class="section-title">Аккаунт</h2>
+                                <p>Вход и управление данными.</p>
+                            </div>
+                            <div class="settings-row">
+                                <label class="settings-label" for="setEmail"><strong>Электронная почта</strong><span>Для входа и восстановления доступа</span></label>
+                                <div class="settings-control"><input type="email" class="field-input" id="setEmail" placeholder="name@example.com" autocomplete="email"></div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label"><strong>Пароль</strong><span>Рекомендуем менять его раз в несколько месяцев</span></div>
+                                <div class="settings-control"><button type="button" class="btn-ghost">Сменить пароль</button></div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label"><strong>Удалить аккаунт</strong><span>Профиль, полки, цитаты и заметки будут удалены без возможности восстановления</span></div>
+                                <div class="settings-control"><button type="button" class="btn-ghost-danger">Удалить аккаунт</button></div>
+                            </div>
+                        </section>
+
+                        <div class="settings-actions">
+                            <button type="button" class="btn-honey" id="saveSettingsBtn">Сохранить изменения</button>
+                        </div>
+                    </form>
+
+            
+                </div>
 
             </main>
         </div>

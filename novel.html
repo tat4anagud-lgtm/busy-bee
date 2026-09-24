@@ -175,29 +175,32 @@
                         <div class="reading-status-menu">
                             <button type="button" class="btn-action square reading-status-button" id="readingStatusButton">
                                 <img id="readingStatusIcon" src="images/icons/book.svg" alt="">
-                                <span id="readingStatusLabel">Читаю</span>
+                                <span id="readingStatusLabel">Добавить на полку</span>
                                 <img class="mini-chevron" src="images/icons/chevron-down.svg" alt="">
                             </button>
                             <div class="reading-status-dropdown" id="readingStatusDropdown">
-                                <button type="button" class="reading-status-option" data-icon="images/icons/bookmark.svg">
+                                <button type="button" class="reading-status-option" data-shelf="planned" data-icon="images/icons/bookmark.svg">
                                     <img src="images/icons/bookmark.svg" alt="">
-                                    <span>Хочу прочитать</span>
+                                    <span>Буду читать</span>
                                 </button>
-                                <button type="button" class="reading-status-option active" data-icon="images/icons/book.svg">
+                                <button type="button" class="reading-status-option" data-shelf="reading" data-icon="images/icons/book.svg">
                                     <img src="images/icons/book.svg" alt="">
                                     <span>Читаю</span>
                                 </button>
-                                <button type="button" class="reading-status-option" data-icon="images/icons/check-circle.svg">
+                                <button type="button" class="reading-status-option" data-shelf="completed" data-icon="images/icons/check-circle.svg">
                                     <img src="images/icons/check-circle.svg" alt="">
                                     <span>Прочитано</span>
                                 </button>
-                                <button type="button" class="reading-status-option" data-icon="images/icons/pause-circle.svg">
+                                <button type="button" class="reading-status-option" data-shelf="paused" data-icon="images/icons/pause-circle.svg">
                                     <img src="images/icons/pause-circle.svg" alt="">
                                     <span>Отложено</span>
                                 </button>
-                                <button type="button" class="reading-status-option" data-icon="images/icons/x-circle.svg">
+                                <button type="button" class="reading-status-option" data-shelf="dropped" data-icon="images/icons/x-circle.svg">
                                     <img src="images/icons/x-circle.svg" alt="">
                                     <span>Брошено</span>
+                                </button>
+                                <button type="button" class="reading-status-option" data-shelf="none" style="display: none;">
+                                    <span>Убрать с полки</span>
                                 </button>
                             </div>
                         </div>

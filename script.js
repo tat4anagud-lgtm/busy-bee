@@ -387,6 +387,283 @@ function setNovelFavorited(novelId, isFavorited) {
     }
 }
 
+/* ---------- Reading shelves (localStorage) ----------
+   На какой «полке» лежит новелла: Читаю / Буду читать / Отложено /
+   Прочитано / Брошено. Статус один на новеллу (взаимоисключающий),
+   независим от избранного ♡ выше. Ставится выпадающим списком на
+   novel.html, читается страницей «Моя библиотека».
+   Storage shape: { "<novelId>": { shelf: "<key>", addedAt: <ISO> } }
+
+   Ключи полок: reading | planned | paused | completed | dropped
+   (те же, что в адресе library.html#reading и в data-shelf).
+
+   NOTE: как и FAVORITE_NOVELS_KEY, стоит ВЫШЕ блока "NOVEL PAGE" —
+   `const` не поднимается, а код страницы новеллы вызывает эти
+   функции сразу при загрузке. */
+const NOVEL_SHELVES_KEY = "busybee_shelves";
+const SHELF_KEYS = ["reading", "planned", "paused", "completed", "dropped"];
+
+function readNovelShelves() {
+    try {
+        return JSON.parse(localStorage.getItem(NOVEL_SHELVES_KEY)) || {};
+    } catch (error) {
+        return {};
+    }
+}
+
+// Ключ полки новеллы или null, если она ни на какой не лежит
+function getNovelShelf(novelId) {
+    const entry = readNovelShelves()[novelId];
+    return entry && SHELF_KEYS.includes(entry.shelf) ? entry.shelf : null;
+}
+
+// shelf = ключ полки, либо null/"" — убрать новеллу с полки
+function setNovelShelf(novelId, shelf) {
+    try {
+        const all = readNovelShelves();
+        if (shelf && SHELF_KEYS.includes(shelf)) {
+            all[novelId] = { shelf, addedAt: new Date().toISOString() };
+        } else {
+            delete all[novelId];
+        }
+        localStorage.setItem(NOVEL_SHELVES_KEY, JSON.stringify(all));
+    } catch (error) {
+        console.error("Couldn't save reading shelf:", error);
+    }
+}
+
+// id новелл на полке, недавно добавленные — первыми
+function getShelfNovelIds(shelf) {
+    return Object.entries(readNovelShelves())
+        .filter(([, entry]) => entry && entry.shelf === shelf)
+        .sort(([, a], [, b]) => new Date(b.addedAt) - new Date(a.addedAt))
+        .map(([novelId]) => novelId);
+}
+
+// Начал читать главу → новелла сама попадает на полку «Читаю».
+// Трогаем только «ничью» новеллу и «Буду читать» (читать начали —
+// план выполнен). Всё, что читатель выбрал сам — «Отложено»,
+// «Брошено», «Прочитано» — не перезаписываем: перечитывание
+// дочитанной новеллы не должно сбрасывать её статус.
+function markNovelAsReadingIfNew(novelId) {
+    const shelf = getNovelShelf(novelId);
+    if (!shelf || shelf === "planned") {
+        setNovelShelf(novelId, "reading");
+    }
+}
+
+/* ---------- Общее для страниц «аккаунта» (библиотека, избранное…) ---------- */
+
+// Горизонтальные вкладки, у каждой — своя панель (aria-controls).
+// Выбранная вкладка живёт в адресе (page.html#ключ): ссылки извне
+// открывают нужную вкладку, а «назад» в браузере работает.
+// keyOf(tab) — ключ вкладки для адреса. ← → Home End двигают выбор.
+function setupHashTabs(tabs, keyOf) {
+    function select(tab, { updateHash = true } = {}) {
+        tabs.forEach((t) => {
+            const isActive = t === tab;
+            t.classList.toggle("active", isActive);
+            t.setAttribute("aria-selected", isActive);
+            t.tabIndex = isActive ? 0 : -1;
+
+            const panel = document.getElementById(t.getAttribute("aria-controls"));
+            if (panel) panel.hidden = !isActive;
+        });
+
+        if (updateHash) {
+            history.replaceState(null, "", `#${keyOf(tab)}`);
+        }
+    }
+
+    tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => select(tab));
+
+        tab.addEventListener("keydown", (event) => {
+            let next = null;
+            if (event.key === "ArrowRight") next = tabs[(index + 1) % tabs.length];
+            if (event.key === "ArrowLeft") next = tabs[(index - 1 + tabs.length) % tabs.length];
+            if (event.key === "Home") next = tabs[0];
+            if (event.key === "End") next = tabs[tabs.length - 1];
+            if (!next) return;
+
+            event.preventDefault();
+            select(next);
+            next.focus();
+        });
+    });
+
+    function selectFromHash() {
+        const key = location.hash.slice(1);
+        const tab = tabs.find((t) => keyOf(t) === key);
+        if (tab) select(tab, { updateHash: false });
+    }
+
+    selectFromHash();
+    window.addEventListener("hashchange", selectFromHash);
+}
+
+// Карточка новеллы для сеток: обложка, название, автор
+function novelCoverCardHtml(novelId, novel) {
+    return `
+        <a href="novel.html?id=${encodeURIComponent(novelId)}" class="fav-novel-card">
+            <img src="${novel.cover}" alt="">
+            <h4>${novel.title}</h4>
+            <span class="fav-novel-author">${novel.author ? novel.author.name : ""}</span>
+        </a>`;
+}
+
+// Выводит новеллы по списку id в сетку { ids, grid, empty, count }:
+// grid — контейнер, empty — «пока пусто» (показывается, когда карточек нет),
+// count — где написать число. Число ставится сразу по длине списка и
+// уточняется, когда данные пришли: удалённые новеллы пропускаются.
+function renderNovelGrid({ ids, grid, empty, count }) {
+    if (count) count.textContent = ids.length;
+    if (!grid) return Promise.resolve();
+
+    if (ids.length === 0 || typeof getNovelData !== "function") {
+        grid.innerHTML = "";
+        if (empty) empty.hidden = false;
+        return Promise.resolve();
+    }
+
+    return Promise.all(
+        ids.map((id) =>
+            getNovelData(id)
+                .then((novel) => ({ id, novel }))
+                .catch(() => null)
+        )
+    ).then((results) => {
+        const found = results.filter(Boolean);
+        grid.innerHTML = found.map(({ id, novel }) => novelCoverCardHtml(id, novel)).join("");
+        if (empty) empty.hidden = found.length > 0;
+        if (count) count.textContent = found.length;
+    });
+}
+
+/* ---------- Сохранённые цитаты и заметки (localStorage) ----------
+   Их пишет читалка (кнопки «Цитата» / «Заметка» над выделенным текстом):
+     busybee_quotes: [{ novelId, text, chapterTitle, chapterNumber, url, savedAt }]
+     busybee_notes:  [{ novelId, quotedText, content, chapterTitle, chapterNumber, url, savedAt }]
+   Читают страницы «Мои цитаты» / «Мои заметки» и виджеты профиля.
+   У записей, сохранённых до появления novelId, новелла берётся из url
+   (?novel=…), поэтому старые записи никуда не деваются. */
+
+function getSavedList(storageKey) {
+    try {
+        return JSON.parse(localStorage.getItem(storageKey)) || [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function savedEntryNovelId(entry) {
+    if (entry.novelId) return entry.novelId;
+    try {
+        return new URL(entry.url).searchParams.get("novel") || "kniga-grez";
+    } catch (error) {
+        return "kniga-grez";
+    }
+}
+
+// Текст пользователя попадает в innerHTML — экранируем
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
+// «18 мая, 2025»
+function formatSavedDateLong(isoString) {
+    const date = new Date(isoString);
+    if (Number.isNaN(date.getTime())) return "";
+    const dayMonth = date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+    return `${dayMonth}, ${date.getFullYear()}`;
+}
+
+// pluralRu(5, "цитата", "цитаты", "цитат") → "цитат"
+function pluralRu(n, one, few, many) {
+    const mod100 = n % 100;
+    const mod10 = n % 10;
+    if (mod100 >= 11 && mod100 <= 14) return many;
+    if (mod10 === 1) return one;
+    if (mod10 >= 2 && mod10 <= 4) return few;
+    return many;
+}
+
+// Записи списка, новые — первыми, с названием новеллы, ссылками и датой.
+// Названия тянутся из novels/<id>/<id>.json; если файла нет — запись
+// всё равно показывается, просто без названия новеллы.
+async function loadSavedEntries(storageKey) {
+    const entries = getSavedList(storageKey).map((entry) => ({
+        ...entry,
+        novelId: savedEntryNovelId(entry),
+    }));
+
+    const titles = {};
+    const novelIds = [...new Set(entries.map((entry) => entry.novelId))];
+    await Promise.all(
+        novelIds.map((id) =>
+            getNovelData(id)
+                .then((novel) => { titles[id] = novel.title; })
+                .catch(() => {})
+        )
+    );
+
+    return entries
+        .sort((a, b) => new Date(b.savedAt) - new Date(a.savedAt))
+        .map((entry) => {
+            const id = encodeURIComponent(entry.novelId);
+            const title = entry.chapterTitle && !entry.chapterTitle.includes("|") ? entry.chapterTitle : "";
+            return {
+                ...entry,
+                novelTitle: titles[entry.novelId] || "",
+                novelHref: `novel.html?id=${id}`,
+                chapterHref: `chapter.html?novel=${id}&chapter=${entry.chapterNumber || 1}`,
+                chapterLabel: `Глава ${entry.chapterNumber || 1}${title ? `: ${title}` : ""}`,
+                dateLabel: formatSavedDateLong(entry.savedAt),
+            };
+        });
+}
+
+function deleteSavedEntry(storageKey, savedAt) {
+    try {
+        const list = getSavedList(storageKey);
+        const index = list.findIndex((entry) => entry.savedAt === savedAt);
+        if (index === -1) return;
+        list.splice(index, 1);
+        localStorage.setItem(storageKey, JSON.stringify(list));
+    } catch (error) {
+        console.error("Couldn't delete saved entry:", error);
+    }
+}
+
+// «Удалить» с подтверждением в два клика (на 3 секунды кнопка
+// превращается в «Точно удалить?»), карточка ищется по data-saved-at.
+// onChange — перерисовать список после удаления.
+function setupSavedDelete(listEl, storageKey, onChange) {
+    listEl.addEventListener("click", (event) => {
+        const button = event.target.closest(".saved-delete");
+        if (!button) return;
+
+        if (!button.classList.contains("confirm")) {
+            button.classList.add("confirm");
+            button.textContent = "Точно удалить?";
+            clearTimeout(button._resetTimer);
+            button._resetTimer = setTimeout(() => {
+                button.classList.remove("confirm");
+                button.textContent = "Удалить";
+            }, 3000);
+            return;
+        }
+
+        const card = button.closest(".saved-card");
+        deleteSavedEntry(storageKey, card.dataset.savedAt);
+        onChange();
+    });
+}
+
 /* ========================================
    NOVEL PAGE
    ======================================== */
@@ -430,13 +707,34 @@ if (readingStatusButton && readingStatusDropdown) {
         readingStatusDropdown.classList.toggle("open");
     });
 
-    readingStatusDropdown.querySelectorAll(".reading-status-option").forEach((option) => {
-        option.addEventListener("click", () => {
-            readingStatusDropdown.querySelectorAll(".reading-status-option").forEach((o) => o.classList.remove("active"));
-            option.classList.add("active");
+    const statusNovelId = new URLSearchParams(window.location.search).get("id") || "kniga-grez";
+    const statusOptions = Array.from(readingStatusDropdown.querySelectorAll(".reading-status-option"));
 
-            if (readingStatusIcon) readingStatusIcon.src = option.dataset.icon;
-            if (readingStatusLabel) readingStatusLabel.textContent = option.querySelector("span").textContent;
+    // Рисует кнопку и список под текущую полку (null — новелла ни на какой не лежит)
+    const showShelf = (shelf) => {
+        const current = statusOptions.find((o) => o.dataset.shelf === shelf);
+
+        statusOptions.forEach((o) => o.classList.toggle("active", o === current));
+
+        if (readingStatusIcon) readingStatusIcon.src = current ? current.dataset.icon : "images/icons/book.svg";
+        if (readingStatusLabel) {
+            readingStatusLabel.textContent = current ? current.querySelector("span").textContent : "Добавить на полку";
+        }
+
+        // «Убрать с полки» имеет смысл, только когда новелла на какой-то лежит
+        const removeOption = statusOptions.find((o) => o.dataset.shelf === "none");
+        // (не атрибутом hidden: .reading-status-option задаёт display: flex и перебивает его)
+        if (removeOption) removeOption.style.display = current ? "" : "none";
+    };
+
+    showShelf(getNovelShelf(statusNovelId));
+
+    statusOptions.forEach((option) => {
+        option.addEventListener("click", () => {
+            const shelf = option.dataset.shelf === "none" ? null : option.dataset.shelf;
+
+            setNovelShelf(statusNovelId, shelf);
+            showShelf(shelf);
 
             readingStatusDropdown.classList.remove("open");
         });
@@ -1268,6 +1566,7 @@ function saveReadingProgress(novelId, chapterNumber) {
         const all = JSON.parse(localStorage.getItem(READING_PROGRESS_KEY)) || {};
         all[novelId] = { chapter: chapterNumber, updatedAt: new Date().toISOString() };
         localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify(all));
+        markNovelAsReadingIfNew(novelId);
     } catch (error) {
         console.error("Couldn't save reading progress:", error);
     }
@@ -2034,7 +2333,7 @@ if (selectionToolbar) {
         } catch (error) {
             list = [];
         }
-        list.push({ ...entry, savedAt: new Date().toISOString() });
+        list.push({ novelId: currentChapterContext().novelId, ...entry, savedAt: new Date().toISOString() });
         localStorage.setItem(key, JSON.stringify(list));
     }
 
@@ -2116,6 +2415,7 @@ if (selectionToolbar) {
         return {
             title: title ? title.textContent : document.title,
             number: chapterNumber,
+            novelId: params.get("novel") || "kniga-grez",
         };
     }
 
@@ -2250,11 +2550,12 @@ if (btnQuotesPanel || btnNotesPanel) {
 
     function renderSavedItems(storageKey) {
         const chapterNumber = currentReaderChapterNumber();
+        const currentNovelId = new URLSearchParams(window.location.search).get("novel") || "kniga-grez";
         const isNotes = storageKey === "busybee_notes";
         const allItems = getStoredList(storageKey);
         const items = allItems
             .map((item, index) => ({ ...item, originalIndex: index }))
-            .filter((item) => item.chapterNumber === chapterNumber);
+            .filter((item) => item.chapterNumber === chapterNumber && savedEntryNovelId(item) === currentNovelId);
 
         if (savedItemsTitle) savedItemsTitle.textContent = isNotes ? "Заметки" : "Цитаты";
 

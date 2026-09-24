@@ -908,3 +908,708 @@
     font-size: var(--fs-small);
     color: var(--text-muted);
 }
+
+
+/* ========================================
+   ОБЩЕЕ ДЛЯ РАЗДЕЛОВ ПРОФИЛЯ
+   (заголовок страницы, вкладки .page-tabs, панели .tab-panel, сетка
+   .tab-grid — «Моя библиотека», «Избранное» и следующие разделы)
+   ======================================== */
+
+/* ---------- Заголовок страницы ---------- */
+.page-head {
+    margin-bottom: 4px;
+}
+
+.page-title {
+    margin: 0 0 6px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text-primary);
+}
+
+.page-subtitle {
+    margin: 0;
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+}
+
+/* ---------- Горизонтальные вкладки ----------
+   Те же пункты, что в левом сайдбаре (.sidebar-item), но в ряд:
+   иконка + название, у выбранной — тёплая заливка. Число —
+   маленький значок справа. */
+.page-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 20px;
+    padding: 8px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.page-tab {
+    appearance: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+
+    background: none;
+    border: none;
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: var(--fs-base);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.page-tab:hover {
+    background: var(--surface-warm);
+}
+
+.page-tab.active {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.page-tab-count {
+    min-width: 20px;
+    padding: 1px 7px;
+    border-radius: 10px;
+
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+
+    font-size: var(--fs-micro);
+    font-weight: 500;
+    line-height: 16px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.page-tab.active .page-tab-count {
+    background: var(--surface);
+    border-color: var(--honey);
+    color: var(--text-primary);
+}
+
+/* ---------- Содержимое вкладки ---------- */
+.tab-panel .section-header,
+.saved-panel .section-header {
+    align-items: flex-end;
+    margin-bottom: 16px;
+}
+
+.tab-desc {
+    margin: 4px 0 0;
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+}
+
+/* Сетка обложек: на ширине контента помещается ровно 5 в ряд, как
+   в «Избранном» профиля; когда список вырастет, строки просто добавятся */
+.tab-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 20px 12px;
+}
+
+/* Пока ничего нет — сетка не занимает места */
+.tab-grid:empty {
+    display: none;
+}
+
+/* Пустое состояние — мягкая карточка, а не голая строка текста */
+.tab-panel .empty-state-text,
+.saved-panel .empty-state-text {
+    padding: 44px 20px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+/* ---------- Адаптив вкладок и сеток ---------- */
+@media (max-width: 1100px) {
+    .tab-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 720px) {
+    .tab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* на узком экране меню прокручивается вбок, а не ломается в несколько строк */
+    .page-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+    }
+
+    .page-tab {
+        flex-shrink: 0;
+    }
+}
+
+
+/* ========================================
+   МОИ ЦИТАТЫ / МОИ ЗАМЕТКИ
+   ======================================== */
+
+.saved-list {
+    display: grid;
+    gap: 12px;
+}
+
+.saved-list:empty {
+    display: none;
+}
+
+/* Цитаты короткие — по две в ряд; заметки длиннее — по одной */
+.saved-list--quotes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.saved-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    padding: 16px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+/* Цитата — крупным курсивом с медовой полосой слева */
+.saved-quote {
+    margin: 0;
+    padding-left: 12px;
+    border-left: 3px solid var(--honey);
+
+    font-family: "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    overflow-wrap: anywhere;
+}
+
+/* Заметка: сначала отрывок, к которому она написана, потом сам текст */
+.saved-passage {
+    margin: 0;
+    padding: 8px 12px;
+    border-left: 3px solid var(--border);
+    border-radius: 0 8px 8px 0;
+
+    background: var(--surface-warm);
+    font-style: italic;
+    font-size: var(--fs-body);
+    line-height: 1.5;
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+}
+
+.saved-note {
+    margin: 0;
+    font-size: var(--fs-base);
+    line-height: 1.6;
+    color: var(--text-primary);
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.saved-source {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+.saved-source a {
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.saved-source a:hover {
+    color: var(--honey);
+}
+
+.saved-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.saved-date {
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+}
+
+.saved-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.saved-link {
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--honey);
+    text-decoration: none;
+}
+
+.saved-delete {
+    appearance: none;
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.saved-delete:hover,
+.saved-delete.confirm {
+    color: #C0392B;
+}
+
+.saved-delete.confirm {
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .saved-list--quotes {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- Виджеты профиля «Мои цитаты» / «Мои заметки» ----------
+   Показывают только начало записи, чтобы виджеты оставались ровными */
+.personal-quote-info strong,
+.note-info strong {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.column-widget .empty-state-text {
+    padding: 16px 4px;
+}
+
+
+/* ========================================
+   МОИ КОЛЛЕКЦИИ / ДОСТИЖЕНИЯ
+   ======================================== */
+
+/* Заголовок страницы с кнопкой справа */
+.page-head--action {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+/* Основная медовая кнопка (как «Читать» на странице новеллы) */
+.btn-honey {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 10px 18px;
+
+    background: var(--honey);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: var(--fs-base);
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-honey:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.btn-honey svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Карточка «+ Создать коллекцию» — последней в сетке коллекций, как в макете */
+.collection-create-card {
+    appearance: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 150px;
+    padding: 16px;
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+
+    font: inherit;
+    font-size: var(--fs-body);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.collection-create-card:hover {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+}
+
+.collection-create-card svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-muted);
+}
+
+/* Достижения: карточка = шестиугольник + название и условие */
+.achievements-page-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.achievement-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 16px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.achievement-card .hex-badge {
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.achievement-card-info {
+    min-width: 0;
+}
+
+.achievement-card-info strong {
+    display: block;
+    font-size: var(--fs-base);
+    line-height: 1.3;
+}
+
+.achievement-card-info span {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--fs-small);
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+    .achievements-page-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .achievements-page-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-head--action {
+        flex-direction: column;
+    }
+}
+
+
+/* ========================================
+   НАСТРОЙКИ
+   ======================================== */
+
+.settings-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.settings-card {
+    padding: 20px 24px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.settings-card-head {
+    margin-bottom: 4px;
+}
+
+.settings-card-head p {
+    margin: 4px 0 0;
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+}
+
+/* Строка: слева название и пояснение, справа элемент управления */
+.settings-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+    align-items: center;
+    gap: 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+}
+
+.settings-card-head + .settings-row {
+    margin-top: 12px;
+}
+
+.settings-label {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.settings-label strong {
+    font-size: var(--fs-base);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.settings-label span {
+    font-size: var(--fs-small);
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.settings-control {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* Поля ввода и списки */
+.field-input,
+.field-select {
+    width: 100%;
+    height: 40px;
+    padding: 0 14px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: var(--fs-base);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease;
+}
+
+.field-input:focus,
+.field-select:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.field-input::placeholder {
+    color: var(--text-muted);
+}
+
+.field-select {
+    appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%239A9085' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 4.5l3 3 3-3'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+/* Кнопки-«призраки» (вторичные) */
+.btn-ghost,
+.btn-ghost-danger {
+    appearance: none;
+    padding: 9px 16px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    font: inherit;
+    font-size: var(--fs-body);
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-ghost:hover {
+    background: var(--surface-warm);
+}
+
+.btn-ghost-danger {
+    color: #C0392B;
+}
+
+.btn-ghost-danger:hover {
+    background: #FBEAEA;
+    border-color: #C0392B;
+}
+
+.settings-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--white);
+    box-shadow: 0 2px 6px var(--shadow);
+}
+
+/* Переключатель (вкл/выкл) на чистом CSS: настоящий checkbox внутри,
+   поэтому работает с клавиатуры и читается скринридером */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.switch-track {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: #DDD3C4;
+    transition: background 0.2s ease;
+    pointer-events: none;
+}
+
+.switch-track::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--white);
+    box-shadow: 0 1px 3px rgba(73, 53, 38, 0.25);
+    transition: transform 0.2s ease;
+}
+
+.switch input:checked + .switch-track {
+    background: var(--honey);
+}
+
+.switch input:checked + .switch-track::after {
+    transform: translateX(18px);
+}
+
+.switch input:focus-visible + .switch-track {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+/* Выбор темы читалки — четыре кружка с подписями */
+.theme-choices {
+    display: flex;
+    gap: 14px;
+}
+
+.theme-choice {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.theme-choice input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.theme-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 0 3px var(--surface), 0 0 0 4px transparent;
+    transition: box-shadow 0.2s ease;
+}
+
+.theme-choice input:checked + .theme-swatch {
+    box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--honey);
+}
+
+.theme-choice input:checked ~ span:last-child {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.theme-choice input:focus-visible + .theme-swatch {
+    outline: 2px solid var(--honey);
+    outline-offset: 4px;
+}
+
+/* Панель сохранения внизу страницы */
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+@media (max-width: 720px) {
+    .settings-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .settings-control {
+        justify-content: flex-start;
+    }
+}
