@@ -1,3 +1,16 @@
 [
-    { "id": "rebirth", "featured": true, "addedAt": "2026-09-01" }
+    { "id": "rebirth", "featured": true, "addedAt": "2026-09-25" },
+    { "id": "atmospheric-stories", "addedAt": "2026-09-25" },
+    { "id": "unforgettable-heroes", "addedAt": "2026-09-25" },
+    { "id": "second-chances", "addedAt": "2026-09-25" },
+    { "id": "court-intrigues", "addedAt": "2026-09-25" },
+    { "id": "for-a-quiet-evening", "addedAt": "2026-09-25" },
+    { "id": "late-night-reads", "addedAt": "2026-09-25" },
+    { "id": "completed-stories", "addedAt": "2026-09-25" },
+    { "id": "revenge-stories", "addedAt": "2026-09-25" },
+    { "id": "when-plans-fall-apart", "addedAt": "2026-09-25" },
+    { "id": "slow-burn-romance", "addedAt": "2026-09-25" },
+    { "id": "grab-the-tissues", "addedAt": "2026-09-25" },
+    { "id": "strong-heroines", "addedAt": "2026-09-25" },
+    { "id": "cozy-reads", "addedAt": "2026-09-25" }
 ]
