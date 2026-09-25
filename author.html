@@ -116,8 +116,8 @@
                 <div class="author-hero-content">
                     <div class="author-header-title">
                         <h1 id="authorName"></h1>
-                        <span class="chinese-name" id="authorOriginalName"></span>
                     </div>
+                    <p class="original-title" id="authorOriginalName"></p>
 
                     <div class="author-meta-line" id="authorAkaLine"></div>
 
@@ -148,13 +148,14 @@
                 </div>
 
                 <div class="stat-card">
-                    <img class="stat-icon" src="images/icons/book-open.svg" alt="">
+                    <img class="stat-icon" src="images/icons/file-text.svg" alt="">
                     <span class="stat-title">Всего глав</span>
                     <strong class="stat-value" id="statTotalChapters">—</strong>
                     <span class="stat-sub">По всем переводам</span>
                 </div>
 
                 <div class="stat-card">
+                    <img class="stat-icon" src="images/icons/star.svg" alt="">
                     <span class="stat-title">Средняя оценка</span>
                     <div class="rating-row">
                         <span class="rating-score" id="statRatingScore">—</span>
@@ -184,66 +185,93 @@
 
             <!-- TABS NAVIGATION -->
             <nav class="author-tabs">
-                <button class="tab-btn active">Обзор</button>
-                <button class="tab-btn">Новеллы</button>
-                <button class="tab-btn">Серии</button>
-                <button class="tab-btn">Цитаты</button>
-                <button class="tab-btn">Обсуждения</button>
-                <button class="tab-btn">Заметки переводчика</button>
+                <button class="tab-btn active" data-tab="overview">Обзор</button>
+                <button class="tab-btn" data-tab="novels">Новеллы</button>
+                <button class="tab-btn" data-tab="series">Серии</button>
+                <button class="tab-btn" data-tab="quotes">Цитаты</button>
+                <button class="tab-btn" data-tab="discussions">Обсуждения</button>
             </nav>
 
-            <!-- MAIN TWO COLUMN LAYOUT -->
-            <div class="author-grid">
+            <!-- ОБЗОР — как раньше, сетка работ + сайдбар -->
+            <div class="tab-panel" id="tabPanel-overview">
+                <div class="author-grid">
 
-                <!-- LEFT COLUMN: Author's Works — карточки строит
-                     renderWorks() в author-script.js, из author.works
-                     (данные лежат прямо в файле автора, без отдельного
-                     фетча по каждой новелле — как novel.author/translator) -->
-                <section class="works-section" id="works">
-                    <div class="works-header">
-                        <h2>Работы автора</h2>
-                        <div class="sort-dropdown">
-                            <span>Сортировать: <strong>Новые переводы</strong> ▾</span>
+                    <!-- LEFT COLUMN: Author's Works — карточки строит
+                         renderWorks() в author-script.js, из author.works
+                         (данные лежат прямо в файле автора, без отдельного
+                         фетча по каждой новелле — как novel.author/translator) -->
+                    <section class="works-section" id="works">
+                        <div class="works-header">
+                            <h2>Работы автора</h2>
+                            <div class="sort-dropdown">
+                                <span>Сортировать: <strong>Новые переводы</strong> ▾</span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="works-grid" id="worksGrid"></div>
+                        <div class="works-grid" id="worksGrid"></div>
 
-                    <div class="view-all-works-btn-wrap">
-                        <button class="btn-view-all-works">Все работы →</button>
-                    </div>
+                        <div class="view-all-works-btn-wrap">
+                            <button type="button" class="btn-view-all-works" data-goto-tab="novels">Все работы →</button>
+                        </div>
+                    </section>
+
+                    <!-- RIGHT COLUMN: Sidebar Widgets -->
+                    <aside class="author-sidebar">
+
+                        <!-- Why Readers Love This Author -->
+                        <div class="sidebar-widget warm-card">
+                            <h3>Почему читатели любят этого автора 🌿</h3>
+
+                            <ul class="reasons-list" id="reasonsList"></ul>
+
+                            <a href="#" class="widget-link" id="recommendedReadingOrderLink">Рекомендуемый порядок чтения →</a>
+                        </div>
+
+                        <!-- Translator Notes -->
+                        <div class="sidebar-widget note-card-bg">
+                            <h3>Заметки переводчика 🌿</h3>
+                            <blockquote class="translator-quote" id="translatorNoteText"></blockquote>
+                            <span class="signature" id="translatorNoteSignature"></span>
+                        </div>
+
+                        <!-- Most Loved Quotes -->
+                        <div class="sidebar-widget">
+                            <h3>Любимые цитаты</h3>
+
+                            <div class="quotes-list" id="quotesList"></div>
+
+                            <a href="#" class="widget-link center" data-goto-tab="quotes">Все цитаты →</a>
+                        </div>
+
+                    </aside>
+
+                </div>
+            </div>
+
+            <!-- НОВЕЛЛЫ — та же сетка карточек, на всю ширину, без сайдбара -->
+            <div class="tab-panel" id="tabPanel-novels" hidden>
+                <section class="works-section">
+                    <div class="works-grid works-grid--full" id="worksGridFull"></div>
                 </section>
+            </div>
 
-                <!-- RIGHT COLUMN: Sidebar Widgets -->
-                <aside class="author-sidebar">
+            <!-- СЕРИИ — пока не продумано: группировка по novel.series
+                 (это поле уже есть в novels/<id>/<id>.json), UI сделаем
+                 отдельно позже -->
+            <div class="tab-panel" id="tabPanel-series" hidden>
+                <p class="tab-empty-state">Здесь появятся серии книг автора.</p>
+            </div>
 
-                    <!-- Why Readers Love This Author -->
-                    <div class="sidebar-widget warm-card">
-                        <h3>Почему читатели любят этого автора 🌿</h3>
+            <!-- ЦИТАТЫ — не только избранные из сайдбара, а все novel.quotes
+                 по всем работам автора, собираются в loadAuthorPage() -->
+            <div class="tab-panel" id="tabPanel-quotes" hidden>
+                <div class="quotes-grid" id="allQuotesGrid"></div>
+                <p class="tab-empty-state" id="allQuotesEmpty" hidden>У работ этого автора пока нет сохранённых цитат.</p>
+            </div>
 
-                        <ul class="reasons-list" id="reasonsList"></ul>
-
-                        <a href="#" class="widget-link" id="recommendedReadingOrderLink">Рекомендуемый порядок чтения →</a>
-                    </div>
-
-                    <!-- Translator Notes -->
-                    <div class="sidebar-widget note-card-bg">
-                        <h3>Заметки переводчика 🌿</h3>
-                        <blockquote class="translator-quote" id="translatorNoteText"></blockquote>
-                        <span class="signature" id="translatorNoteSignature"></span>
-                    </div>
-
-                    <!-- Most Loved Quotes -->
-                    <div class="sidebar-widget">
-                        <h3>Любимые цитаты</h3>
-
-                        <div class="quotes-list" id="quotesList"></div>
-
-                        <a href="#" class="widget-link center">Все цитаты →</a>
-                    </div>
-
-                </aside>
-
+            <!-- ОБСУЖДЕНИЯ — тоже пока не продумано -->
+            <div class="tab-panel" id="tabPanel-discussions" hidden>
+                <p class="tab-empty-state">Здесь появятся читательские обсуждения.</p>
             </div>
 
             <!-- BOTTOM SECTION: Related Authors -->

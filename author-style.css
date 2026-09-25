@@ -42,10 +42,9 @@
     margin: 0;
 }
 
-.chinese-name {
-    font-size: 20px;
-    color: var(--text-secondary);
-}
+/* .chinese-name удалён — оригинальное имя теперь идёт отдельной
+   строкой под H1, через общий .original-title из style.css (та же
+   вёрстка, что у оригинального названия на странице новеллы) */
 
 .author-meta-line {
     font-size: 12px;
@@ -183,6 +182,51 @@
     background: var(--honey);
 }
 
+/* Панели вкладок — .author-grid внутри "Обзора" не меняется, здесь
+   только контент для отдельных вкладок */
+.tab-empty-state {
+    margin: 0;
+    padding: 44px 24px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+/* Вкладка «Новеллы» — та же сетка карточек, что в .works-grid, но во
+   всю ширину страницы (без сайдбара) — колонок чуть больше */
+.works-grid--full {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* Вкладка «Цитаты» — те же .quote-card, что в сайдбаре, но в сетку
+   по всей ширине вместо узкой вертикальной колонки */
+.quotes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+@media (max-width: 1100px) {
+    .works-grid--full {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 720px) {
+    .works-grid--full {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quotes-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Two Column Grid */
 .author-grid {
     display: grid;
@@ -234,7 +278,11 @@
     margin-bottom: 10px;
 }
 
-.work-cover-box img {
+/* Сужено до .work-cover-box > a > img — иначе тот же селектор
+   ловит и 9×9px иконку внутри .badge (span тоже лежит прямо в
+   .work-cover-box), а по каскаду это правило, идущее после
+   style.css, при равной специфичности перебивало .badge img */
+.work-cover-box > a > img {
     width: 100%;
     height: 190px;
     object-fit: cover;

@@ -10,12 +10,26 @@
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* ---------- Вкладки страницы автора ---------- */
+    /* ---------- Вкладки страницы автора — показываем/прячем панель
+       #tabPanel-<data-tab> ---------- */
     const tabs = document.querySelectorAll(".author-tabs .tab-btn");
+    const panels = document.querySelectorAll(".tab-panel");
+
+    function selectTab(tabName) {
+        tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === tabName));
+        panels.forEach((p) => { p.hidden = p.id !== `tabPanel-${tabName}`; });
+    }
+
     tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-            tabs.forEach((t) => t.classList.remove("active"));
-            tab.classList.add("active");
+        tab.addEventListener("click", () => selectTab(tab.dataset.tab));
+    });
+
+    // Ссылки вида «Все работы →» / «Все цитаты →» переключают вкладку,
+    // а не скроллят к якорю
+    document.querySelectorAll("[data-goto-tab]").forEach((el) => {
+        el.addEventListener("click", (event) => {
+            event.preventDefault();
+            selectTab(el.dataset.gotoTab);
         });
     });
 
@@ -44,11 +58,43 @@ document.addEventListener("DOMContentLoaded", () => {
         }[ch]));
     }
 
+    function formatLikes(likes) {
+        // novel.quotes встречаются и как число, и как готовая строка
+        // вида "1.1k" — во втором случае просто показываем как есть
+        return typeof likes === "number" ? formatCompactRu(likes) : String(likes);
+    }
+
+    function quoteCardHtml({ text, novelId, novelTitle, chapter, likes }) {
+        return `
+            <div class="quote-card">
+                <p class="quote-text">«${escapeHtml(text)}»</p>
+                <div class="quote-footer">
+                    <span>— <a href="novel.html?id=${encodeURIComponent(novelId)}">${escapeHtml(novelTitle)}</a>, гл. ${chapter}</span>
+                    <button type="button" class="like-btn"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> ${formatLikes(likes)}</button>
+                </div>
+            </div>`;
+    }
+
+    // Вешаем обработчик лайка на все .like-btn внутри контейнера —
+    // общая функция для сайдбара и вкладки «Цитаты»
+    function bindLikeButtons(container) {
+        container.querySelectorAll(".like-btn").forEach((likeBtn) => {
+            const icon = likeBtn.querySelector("img");
+            likeBtn.addEventListener("click", () => {
+                const isLiked = likeBtn.classList.toggle("liked");
+                if (icon) icon.src = isLiked ? icon.dataset.filled : icon.dataset.outline;
+            });
+        });
+    }
+
     /* ---------- Плашка статуса перевода — тот же набор вариантов
        (класс/иконка/текст), что script.js использует на карточках
-       каталога (см. badgeClass/badgeIcon/badgeText там) ---------- */
+       каталога (см. badgeClass/badgeIcon/badgeText там). Реальные
+       novel.json пока используют разные формулировки статуса
+       («В процессе», «Полностью переведено», ...) — проверяем и то,
+       и другое, чтобы не привязываться к одной точной строке */
     function statusBadge(translationStatus) {
-        if (translationStatus === "Полностью переведено") {
+        if (translationStatus === "Полностью переведено" || translationStatus === "Завершено") {
             return { cls: "badge-completed", icon: "images/icons/check-circle.svg", text: "Завершено" };
         }
         if (translationStatus === "Приостановлено") {
@@ -57,24 +103,34 @@ document.addEventListener("DOMContentLoaded", () => {
         return { cls: "badge-ongoing", icon: "images/icons/clock.svg", text: "Выходит" };
     }
 
-    function workCardHtml(work) {
-        const badge = statusBadge(work.translationStatus);
-        const isDone = work.translationStatus === "Полностью переведено";
+    /* Карточка работы строится из настоящего novel.json (через
+       getNovelData() — она объявлена в script.js и уже в кэше, если
+       эту новеллу успели где-то показать раньше). Своих полей вроде
+       currentChapter у novel.json нет — «последняя переведённая
+       глава» берём как максимум по novel.chapters */
+    function workCardHtml(novel) {
+        const chapters = novel.chapters || [];
+        const latestChapter = chapters.length
+            ? Math.max(...chapters.map((c) => c.number))
+            : 0;
+
+        const badge = statusBadge(novel.translationStatus);
+        const isDone = badge.cls === "badge-completed";
         const footer = isDone
-            ? `<span>Глава ${work.currentChapter} из ${work.totalChapters}</span><span class="check-icon">✓</span>`
-            : `<span>Глава ${work.currentChapter}</span><a href="novel.html?id=${encodeURIComponent(work.id)}" class="btn-continue">Продолжить</a>`;
+            ? `<span>Глава ${novel.totalChapters} из ${novel.totalChapters}</span><span class="check-icon">✓</span>`
+            : `<span>Глава ${latestChapter}</span><a href="novel.html?id=${encodeURIComponent(novel.id)}" class="btn-continue">Продолжить</a>`;
 
         return `
             <article class="work-card">
                 <div class="work-cover-box">
                     <span class="badge ${badge.cls}"><img src="${badge.icon}" alt="">${badge.text}</span>
                     <button type="button" class="btn-dots" aria-label="Ещё">···</button>
-                    <a href="novel.html?id=${encodeURIComponent(work.id)}"><img src="${escapeHtml(work.cover)}" alt="${escapeHtml(work.title)}"></a>
+                    <a href="novel.html?id=${encodeURIComponent(novel.id)}"><img src="${escapeHtml(novel.cover)}" alt="${escapeHtml(novel.title)}"></a>
                 </div>
-                <h3><a href="novel.html?id=${encodeURIComponent(work.id)}">${escapeHtml(work.title)}</a></h3>
-                <p class="orig-title">${escapeHtml(work.originalTitle || "")}</p>
-                <p class="translator-info">Переводчик: <span>${escapeHtml(work.translator || "Busy Bee")}</span></p>
-                <div class="work-tags">${(work.genres || []).map((g) => `<span>${escapeHtml(g)}</span>`).join("")}</div>
+                <h3><a href="novel.html?id=${encodeURIComponent(novel.id)}">${escapeHtml(novel.title)}</a></h3>
+                <p class="orig-title">${escapeHtml(novel.originalTitle || "")}</p>
+                <p class="translator-info">Переводчик: <span>${escapeHtml((novel.translator && novel.translator.name) || "Busy Bee")}</span></p>
+                <div class="work-tags">${(novel.genres || []).map((g) => `<span>${escapeHtml(g)}</span>`).join("")}</div>
                 <div class="work-footer">${footer}</div>
             </article>`;
     }
@@ -82,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ---------- Загрузка страницы автора ---------- */
     async function loadAuthorPage() {
         const params = new URLSearchParams(window.location.search);
-        const authorId = params.get("id") || "mo-xiang-tong-xiu";
+        const authorId = params.get("id") || "qian-shan-cha-ke";
 
         let author;
         try {
@@ -138,15 +194,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const mainGenresEl = document.getElementById("authorMainGenres");
         if (mainGenresEl) mainGenresEl.textContent = (author.mainGenres || []).join(" • ");
 
-        /* ---- Карточки статистики ---- */
-        const works = author.works || [];
+        /* ---- Работы автора — сами новеллы фетчим через getNovelData()
+           (объявлена в script.js, который загружен раньше этого файла);
+           если файла новеллы ещё нет на диске — просто пропускаем
+           карточку, а не ломаем страницу (как в bookmarks-script.js) */
+        const novelIds = author.works || [];
+        const fetchedWorks = await Promise.all(
+            novelIds.map((id) => getNovelData(id).catch(() => null))
+        );
+        const works = fetchedWorks.filter(Boolean);
 
         const statNovelsEl = document.getElementById("statTranslatedNovels");
         if (statNovelsEl) statNovelsEl.textContent = works.length;
 
+        // «Всего глав» — сумма реально переведённых глав по каждой
+        // работе (novel.chapters.length), а не заявленная цель
+        // novel.totalChapters — так эта цифра не разъедется с тем,
+        // что показывают карточки и страницы самих новелл
         const statChaptersEl = document.getElementById("statTotalChapters");
-        if (statChaptersEl && author.stats) {
-            statChaptersEl.textContent = (author.stats.totalChapters || 0).toLocaleString("ru-RU");
+        if (statChaptersEl) {
+            const totalChapters = works.reduce((sum, novel) => sum + (novel.chapters || []).length, 0);
+            statChaptersEl.textContent = totalChapters.toLocaleString("ru-RU");
         }
 
         if (author.stats && author.stats.rating) {
@@ -175,6 +243,10 @@ document.addEventListener("DOMContentLoaded", () => {
         /* ---- Работы автора ---- */
         const worksGridEl = document.getElementById("worksGrid");
         if (worksGridEl) worksGridEl.innerHTML = works.map(workCardHtml).join("");
+
+        // Вкладка «Новеллы» — те же карточки, на всю ширину
+        const worksGridFullEl = document.getElementById("worksGridFull");
+        if (worksGridFullEl) worksGridFullEl.innerHTML = works.map(workCardHtml).join("");
 
         /* ---- «Почему читатели любят этого автора» ---- */
         const reasonsListEl = document.getElementById("reasonsList");
@@ -207,29 +279,31 @@ document.addEventListener("DOMContentLoaded", () => {
             if (signatureEl) signatureEl.textContent = `— ${author.translatorNote.signature || "Busy Bee"} 🐝`;
         }
 
-        /* ---- Любимые цитаты — те же классы/поведение (лайк меняет
-           heart.svg на heart-filled.svg), что на novel.html ---- */
+        /* ---- Любимые цитаты (сайдбар) — избранные из author.quotes,
+           те же классы/поведение, что на novel.html ---- */
         const quotesListEl = document.getElementById("quotesList");
         if (quotesListEl) {
-            quotesListEl.innerHTML = (author.quotes || [])
-                .map((quote) => `
-                    <div class="quote-card">
-                        <p class="quote-text">«${escapeHtml(quote.text)}»</p>
-                        <div class="quote-footer">
-                            <span>— <a href="novel.html?id=${encodeURIComponent(quote.novelId)}">${escapeHtml(quote.novelTitle)}</a>, гл. ${quote.chapter}</span>
-                            <button type="button" class="like-btn"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"> ${formatCompactRu(quote.likes)}</button>
-                        </div>
-                    </div>`)
-                .join("");
+            quotesListEl.innerHTML = (author.quotes || []).map(quoteCardHtml).join("");
+            bindLikeButtons(quotesListEl);
+        }
 
-            // Кнопки лайка только что созданы — вешаем обработчик здесь
-            quotesListEl.querySelectorAll(".like-btn").forEach((likeBtn) => {
-                const icon = likeBtn.querySelector("img");
-                likeBtn.addEventListener("click", () => {
-                    const isLiked = likeBtn.classList.toggle("liked");
-                    if (icon) icon.src = isLiked ? icon.dataset.filled : icon.dataset.outline;
-                });
-            });
+        /* ---- Вкладка «Цитаты» — не только избранные, а все
+           novel.quotes по каждой работе автора ---- */
+        const allQuotesGridEl = document.getElementById("allQuotesGrid");
+        const allQuotesEmptyEl = document.getElementById("allQuotesEmpty");
+        if (allQuotesGridEl) {
+            const allQuotes = works.flatMap((novel) =>
+                (novel.quotes || []).map((q) => ({
+                    text: q.text,
+                    chapter: q.chapter,
+                    likes: q.likes,
+                    novelId: novel.id,
+                    novelTitle: novel.title,
+                }))
+            );
+            allQuotesGridEl.innerHTML = allQuotes.map(quoteCardHtml).join("");
+            bindLikeButtons(allQuotesGridEl);
+            if (allQuotesEmptyEl) allQuotesEmptyEl.hidden = allQuotes.length > 0;
         }
 
         /* ---- Читателям этого автора также нравятся ---- */
