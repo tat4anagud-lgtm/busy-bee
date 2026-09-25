@@ -6,25 +6,6 @@
     padding: 0 32px 50px;
 }
 
-/* Breadcrumbs */
-.breadcrumbs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    color: var(--text-muted);
-    margin: 16px 0 20px;
-}
-
-.breadcrumbs a {
-    color: var(--text-muted);
-    text-decoration: none;
-}
-
-.breadcrumbs .current {
-    color: var(--text-secondary);
-}
-
 /* Author Hero Card */
 .author-hero-card {
     background: var(--surface) url("images/backgrounds/author-hero-bg.png") right center / contain no-repeat;
@@ -110,8 +91,17 @@
 }
 
 .pill-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     color: var(--text-muted);
     font-weight: 500;
+}
+
+.pill-label img {
+    width: 11px;
+    height: 11px;
+    opacity: 0.7;
 }
 
 .pill-items {
@@ -135,14 +125,28 @@
     flex-direction: column;
 }
 
-.stat-icon { font-size: 14px; margin-bottom: 6px; }
+/* Иконка — img (svg-файл) или инлайновый svg, оба одного размера/цвета,
+   как остальные иконки-«ключи» на сайте (см. .translator-tag img) */
+.stat-icon {
+    width: 16px;
+    height: 16px;
+    margin-bottom: 6px;
+    color: var(--icon);
+    opacity: 0.7;
+}
+
 .stat-title { font-size: 10px; color: var(--text-muted); }
 .stat-value { font-size: 22px; font-weight: 600; color: var(--text-primary); margin: 4px 0; }
 .stat-sub { font-size: 9px; color: var(--text-muted); }
 .stat-link { font-size: 10px; color: var(--honey); text-decoration: none; margin-top: auto; }
 
-.rating-box { display: flex; align-items: center; gap: 6px; }
-.stars { color: #F2C94C; font-size: 11px; letter-spacing: 1px; }
+/* .rating-row / .rating-score / .stars / .votes-count — уже определены
+   в общем style.css (та же карточка рейтинга, что на novel.html), здесь
+   переопределять не нужно; ниже — только подгонка отступов под тесную
+   stat-card, где не нужен нижний margin от .rating-row */
+.stat-card .rating-row { margin-bottom: 0; gap: 6px; }
+.stat-card .rating-score { font-size: 22px; }
+.stat-card .stars { font-size: 11px; }
 
 .stat-text-val { font-size: 11px; color: var(--text-secondary); margin: 6px 0 0; line-height: 1.3; }
 
@@ -237,44 +241,44 @@
     border-radius: 8px;
 }
 
-.badge-status {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(4px);
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    color: var(--text-secondary);
-}
+/* Статус перевода — .badge / .badge-completed / .badge-ongoing уже
+   определены в общем style.css (та же «плашка», что на карточках
+   каталога): позиция top-left, иконка + текст. Ничего своего здесь
+   не нужно. */
 
-.badge-ongoing {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: var(--honey);
-    font-size: 9px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    color: white;
-}
-
+/* «···» — тот же вид и позиция (top-right), что у .btn-card-menu на
+   карточках каталога */
 .btn-dots {
     position: absolute;
-    top: 8px;
-    left: 8px;
+    top: 10px;
+    right: 10px;
     background: none;
     border: none;
     color: white;
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 1;
+    letter-spacing: 1px;
     cursor: pointer;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
+.work-cover-box a {
+    display: block;
 }
 
 .work-card h3 {
     font-size: 12px;
     margin: 0 0 2px;
     line-height: 1.3;
+}
+
+.work-card h3 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.work-card h3 a:hover {
+    color: var(--honey);
 }
 
 .work-card .orig-title {
@@ -382,7 +386,19 @@
     gap: 10px;
 }
 
-.reason-icon { font-size: 12px; }
+/* Маркер вместо разномастных эмодзи-иконок на каждый пункт — единый
+   акцент цветом бренда, а не набор случайных пиктограмм */
+.reasons-list li strong::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-right: 8px;
+    margin-bottom: 1px;
+    border-radius: 50%;
+    background: var(--honey);
+    vertical-align: middle;
+}
 
 .reasons-list strong {
     display: block;
@@ -442,31 +458,25 @@
     padding: 12px;
 }
 
-.quote-body {
-    font-size: 10px;
-    font-style: italic;
-    color: var(--text-secondary);
-    margin: 0 0 8px;
-    line-height: 1.4;
+/* .quote-text / .quote-footer / .like-btn — те же классы и стили, что
+   у карточек цитат на novel.html («сердечко» с заливкой при лайке
+   через data-outline/data-filled). Свои .quote-body/.btn-like были
+   дублем с другими цифрами — убраны, здесь только правка отступа
+   текста под более узкую боковую колонку */
+.quote-card .quote-text {
+    margin-bottom: 8px;
 }
 
-.quote-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+.quote-footer a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 2px;
 }
 
-.quote-source {
-    font-size: 8px;
-    color: var(--text-muted);
-}
-
-.btn-like {
-    border: none;
-    background: none;
-    font-size: 9px;
-    color: var(--text-muted);
-    cursor: pointer;
+.quote-footer a:hover {
+    color: var(--honey);
+    text-decoration-color: var(--honey);
 }
 
 /* Related Authors */
@@ -492,6 +502,16 @@
     border-radius: 14px;
     padding: 14px;
     text-align: center;
+    /* теперь это <a>, не <div> — снимаем дефолтные стили ссылки */
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.author-mini-card:hover {
+    border-color: var(--honey);
+    box-shadow: 0 4px 14px var(--shadow);
 }
 
 .author-mini-card img {

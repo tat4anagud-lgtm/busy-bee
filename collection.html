@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Коллекция «Перерождение» | Busy Bee</title>
+    <title id="pageTitle">Коллекция — Busy Bee</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="novels-grid.css">
     <link rel="stylesheet" href="collection-style.css">
 </head>
 <body>
 
     <div class="page-shell">
-        <!-- HEADER -->
+        <!-- HEADER (тот же, что в bookmarks.html / glossary.html) -->
         <header class="header">
             <a href="index.html" class="logo">
                 <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
@@ -23,292 +24,235 @@
             </a>
 
             <nav class="navigation">
-                <div class="nav-dropdown">
-                    <a href="catalog.html" class="nav-link">Catalog <span class="arrow">▾</span></a>
+                <div class="catalog-menu">
+                    <button class="catalog-button">
+                        Каталог
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="catalog-dropdown">
+                        <a href="catalog.html">Новеллы</a>
+                        <a href="author.html">Авторы</a>
+                        <a href="#">Жанры</a>
+                        <a href="#">Коллекции</a>
+                        <a href="glossary.html">Глоссарий</a>
+                    </div>
                 </div>
-                <a href="#" class="nav-link">Announcements</a>
-                <a href="#" class="nav-link">About</a>
+                <a href="#">Анонсы</a>
+                <a href="#">О Busy Bee</a>
             </nav>
 
             <div class="header-actions">
-                <div class="search-bar">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" placeholder="Поиск по книгам, авторам, жанрам...">
-                    <span class="search-key">⌘ K</span>
+                <div class="search">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
+                    <img src="images/icons/search.svg" alt="">
                 </div>
 
-                <div class="lang-switcher">
-                    <span class="active-lang">Ru</span> / <span>Eng</span>
+                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+
+                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
+
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#library" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
+                        <a href="profile.html#favorites" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
+                        <a href="profile.html#quotes" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
+                        <a href="profile.html#notes" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
+                        <a href="profile.html#collections" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#achievements" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html#settings" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
+                            <div class="language-dropdown">
+                                <button class="language-option active">Русский</button>
+                                <button class="language-option">English</button>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
+                    </div>
                 </div>
 
-                <button class="header-icon-btn" title="Bookmarks">🔖</button>
-                <button class="header-icon-btn badge-btn" title="Notifications">
-                    🔔 <span class="badge">3</span>
-                </button>
-                
-                <div class="user-profile">
-                    <img src="https://placehold.co/36x36" alt="Avatar" class="avatar">
-                    <span class="profile-arrow">▾</span>
-                </div>
+                <button class="header-login-button" title="Войти"><img src="images/icons/log-in.svg" alt=""></button>
             </div>
         </header>
 
-        <main class="collection-container">
+        <main class="col-container">
 
-            <!-- HERO BANNER & COLLECTION INFO -->
-            <section class="collection-hero">
-                <div class="hero-banner-frame">
-                    <img src="https://placehold.co/1200x260/FAF0E6/8C8275?text=Header+Banner+Illustration" alt="Перерождение" class="hero-banner-img">
+            <!-- Показывается вместо страницы, если коллекции нет -->
+            <p class="col-empty" id="colNotFound" hidden>Коллекция не найдена. Вернитесь на <a href="index.html">главную</a> и выберите коллекцию из списка.</p>
+
+            <div id="colContent" hidden>
+
+                <!-- БАННЕР -->
+                <div class="col-banner">
+                    <img id="colBanner" src="" alt="">
                 </div>
 
-                <div class="collection-header-row">
-                    <div class="collection-intro">
-                        <h1 class="collection-title">Перерождение</h1>
-                        <div class="ornament-divider">⁕ ---</div>
-                        <p class="collection-description">
-                            Истории о втором шансе, новой жизни и героях, которым судьба подарила возможность начать всё заново.
-                        </p>
-                        <div class="collection-meta">
-                            <span>12 novels</span>
-                            <span class="dot">•</span>
-                            <span>Historical</span>
-                            <span class="dot">•</span>
-                            <span>Romance</span>
-                            <span class="dot">•</span>
-                            <span>Drama</span>
-                            <span class="dot">•</span>
-                            <span>Fantasy</span>
-                        </div>
+                <!-- НАЗВАНИЕ, ОПИСАНИЕ, ПОДПИСКА -->
+                <section class="col-head">
+                    <div class="col-intro">
+                        <h1 class="col-title" id="colTitle"></h1>
+                        <div class="col-ornament"><img src="images/icons/chapter-divider.png" alt=""></div>
+                        <p class="col-description" id="colDescription"></p>
+                        <p class="col-meta" id="colMeta"></p>
                     </div>
 
-                    <div class="collection-actions">
-                        <button class="btn-follow" id="btnFollow">
-                            <span class="heart-icon">♡</span>
-                            <span>Follow collection</span>
+                    <div class="col-follow-box">
+                        <button type="button" class="col-follow" id="colFollow" aria-pressed="false">
+                            <img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg">
+                            <span>Подписаться на коллекцию</span>
                         </button>
-                        <span class="followers-count">2,184 readers follow this collection</span>
+                        <span class="col-followers" id="colFollowers"></span>
+                        <img class="col-bee" src="images/icons/bee-icon.svg" alt="">
                     </div>
+                </section>
+
+                <!-- ПАНЕЛЬ: количество, сортировка, вид (общий блок — см. novels-grid.css/js) -->
+                <section class="ng-toolbar">
+                    <h2 class="ng-count" id="colCount"></h2>
+
+                    <div class="ng-toolbar-right">
+                        <label class="ng-sort">
+                            <span>Сортировка:</span>
+                            <select id="colSort">
+                                <option value="recent">Недавно добавленные</option>
+                                <option value="rating">По рейтингу</option>
+                                <option value="popular">Популярные</option>
+                            </select>
+                        </label>
+
+                        <div class="ng-view" role="group" aria-label="Вид списка">
+                            <span>Вид:</span>
+                            <button type="button" class="ng-view-btn active" id="colViewGrid" aria-label="Сетка" aria-pressed="true">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            </button>
+                            <button type="button" class="ng-view-btn" id="colViewList" aria-label="Список" aria-pressed="false">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- НОВЕЛЛЫ (карточки рисует общий novels-grid.js) -->
+                <div class="ng-grid" id="colGrid"></div>
+
+                <div class="ng-more-wrap">
+                    <button type="button" class="ng-more" id="colMore" hidden>
+                        <span>Показать ещё</span>
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
                 </div>
-            </section>
 
-            <!-- TOOLBAR: COUNTER, SORTING & VIEW MODE -->
-            <section class="collection-toolbar">
-                <div class="toolbar-left">
-                    <span class="novels-count">12 novels</span>
+                <!-- ОБ ЭТОЙ КОЛЛЕКЦИИ -->
+                <section class="col-about" id="colAbout" hidden>
+                    <div class="col-about-text">
+                        <h2 class="col-about-title" id="colAboutTitle"></h2>
+                        <div class="col-ornament"><img src="images/icons/chapter-divider.png" alt=""></div>
+                        <div id="colAboutText"></div>
+                    </div>
+                    <div class="col-about-image">
+                        <img id="colAboutImage" src="" alt="">
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
                 </div>
 
-                <div class="toolbar-right">
-                    <div class="sort-box">
-                        <label>Sort by:</label>
-                        <select id="sortSelect" class="sort-dropdown">
-                            <option value="recent">Recently added</option>
-                            <option value="popular">Most popular</option>
-                            <option value="rating">Highest rated</option>
-                        </select>
-                    </div>
+                <!-- Placeholder wording — rewrite in your own voice -->
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
 
-                    <div class="view-switch">
-                        <span class="view-label">View:</span>
-                        <button class="view-btn active" id="viewGrid" title="Grid View">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                        </button>
-                        <button class="view-btn" id="viewList" title="List View">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- NOVELS GRID -->
-            <section class="novels-grid" id="novelsGrid">
-
-                <!-- Card 1 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/e2d1c3/3b332b?text=Cover+1" alt="Возвращение блудной принцессы" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Возвращение блудной принцессы</h3>
-                        <span class="author-name">Чэн Юань</span>
-                        <div class="card-tags">
-                            <span class="tag">Historical</span>
-                            <span class="tag">Romance</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Completed • 176 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 2 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/d4c3b5/3b332b?text=Cover+2" alt="Жена генерала переродилась" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Жена генерала переродилась</h3>
-                        <span class="author-name">Бай Ло Чэн Шуан</span>
-                        <div class="card-tags">
-                            <span class="tag">Historical</span>
-                            <span class="tag">Drama</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Completed • 142 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 3 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/c8b7a9/3b332b?text=Cover+3" alt="Этот раз я не ошибусь" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Этот раз я не ошибусь</h3>
-                        <span class="author-name">Цянь Шань Ча Кэ</span>
-                        <div class="card-tags">
-                            <span class="tag">Romance</span>
-                            <span class="tag">Drama</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Ongoing • 98 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 4 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/bcaba1/3b332b?text=Cover+4" alt="Второй шанс для злодейки" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Второй шанс для злодейки</h3>
-                        <span class="author-name">Цзю Ло</span>
-                        <div class="card-tags">
-                            <span class="tag">Romance</span>
-                            <span class="tag">Fantasy</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Completed • 133 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 5 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/b09f95/3b332b?text=Cover+5" alt="Переродившись, я выбираю себя" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Переродившись, я выбираю себя</h3>
-                        <span class="author-name">Му Юэ Лин</span>
-                        <div class="card-tags">
-                            <span class="tag">Romance</span>
-                            <span class="tag">Drama</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Completed • 121 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 6 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/a49389/3b332b?text=Cover+6" alt="Вторая жизнь императрицы" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Вторая жизнь императрицы</h3>
-                        <span class="author-name">Юй Цянь Чэн</span>
-                        <div class="card-tags">
-                            <span class="tag">Historical</span>
-                            <span class="tag">Drama</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Completed • 98 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 7 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/98877d/3b332b?text=Cover+7" alt="Снова в семнадцать" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Снова в семнадцать</h3>
-                        <span class="author-name">Су И Шуан</span>
-                        <div class="card-tags">
-                            <span class="tag">Romance</span>
-                            <span class="tag">Drama</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Ongoing • 84 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-                <!-- Card 8 -->
-                <article class="novel-card">
-                    <div class="cover-wrapper">
-                        <img src="https://placehold.co/240x260/8c7b71/3b332b?text=Cover+8" alt="Пока сердце бьётся вновь" class="cover-img">
-                        <button class="card-bookmark-overlay" title="Bookmark">🔖</button>
-                    </div>
-                    <div class="card-content">
-                        <h3 class="novel-title">Пока сердце бьётся вновь</h3>
-                        <span class="author-name">Линь Вань Жо</span>
-                        <div class="card-tags">
-                            <span class="tag">Romance</span>
-                            <span class="tag">Fantasy</span>
-                        </div>
-                        <div class="card-footer">
-                            <span class="status-info">Ongoing • 75 chapters</span>
-                            <button class="card-bookmark-btn" title="Bookmark">🔖</button>
-                        </div>
-                    </div>
-                </article>
-
-            </section>
-
-            <!-- SHOW MORE ACTION -->
-            <div class="show-more-wrapper">
-                <button class="btn-show-more" id="btnShowMore">
-                    <span>Show more</span>
-                    <span class="arrow">▾</span>
-                </button>
             </div>
 
-            <!-- ABOUT THIS COLLECTION FOOTER BANNER -->
-            <section class="about-collection-section">
-                <div class="about-text-content">
-                    <h2 class="about-title">About this collection</h2>
-                    <div class="ornament-divider">⁕ ---</div>
-                    <p>
-                        Эти истории объединяет одно — герои получают второй шанс. Они возвращаются в прошлое, просыпаются в новом теле или получают возможность начать всё заново. Каждая книга — это путь к исцелению, мудрости и новой судьбе. Если вам близки сильные персонажи, глубокие эмоции и истории о том, как можно изменить свою жизнь — эта коллекция для вас.
-                    </p>
-                </div>
-                <div class="about-illustration">
-                    <img src="https://placehold.co/380x160/FAF0E6/8C8275?text=Illustration+Flowers+%26+Books" alt="Illustration" class="about-img">
-                </div>
-            </section>
+            <div class="footer-bottom">
 
-        </main>
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
+                </div>
+
+                <div class="footer-bottom-right">
+
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
     </div>
 
+    <script src="script.js"></script>
+    <script src="novels-grid.js"></script>
     <script src="collection-script.js"></script>
 </body>
 </html>

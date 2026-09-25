@@ -1,393 +1,262 @@
 /* ========================================
-   BUSY BEE — COLLECTION PAGE STYLES
-   ======================================== */
+   BUSY BEE — СТРАНИЦА «КОЛЛЕКЦИЯ»
+   ========================================
+   Только то, чего нет в style.css. Цвета, рамки и тени — из
+   переменных style.css (--surface, --surface-warm, --border, --honey,
+   --text-*, --shadow). Свои :root-переменные здесь не объявляем:
+   раньше они перебивали общие и красили всю страницу по-другому.
+   Все классы с префиксом col-, чтобы не пересекаться с .novel-card,
+   .tag и .author-name из каталога.
 
-:root {
-    --bg-page: #FAF7F2;
-    --card-bg: #FAF7F2;
-    --card-inner-bg: #FFFDF9;
-    --text-primary: #3B332B;
-    --text-muted: #8C8275;
-    --border-color: #EAE3D9;
-    --accent-gold: #C69214;
-    --pill-bg: #F3ECE1;
+   Тулбар (счётчик/сортировка/вид), сетка карточек и «Показать ещё»
+   вынесены в общий novels-grid.css (классы ng-*) — их использует
+   и страница жанра. Здесь остаётся то, что есть только у коллекции:
+   баннер, заголовок с подпиской, «Об этой коллекции». */
+
+.col-container {
+    padding: 0 32px 50px;
 }
 
-body {
-    background-color: var(--bg-page);
-    color: var(--text-primary);
-    font-family: 'Inter', -apple-system, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-.collection-container {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 24px 20px 80px;
-}
-
-/* HERO BANNER SECTION */
-.collection-hero {
-    margin-bottom: 32px;
-}
-
-.hero-banner-frame {
-    width: 100%;
+/* ---------- Баннер ---------- */
+.col-banner {
     height: 240px;
+    margin-top: 8px;
+    border: 1px solid var(--border);
     border-radius: 20px;
     overflow: hidden;
-    margin-bottom: 32px;
-    border: 1px solid var(--border-color);
+    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 60%);
 }
 
-.hero-banner-img {
+.col-banner img {
+    display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.collection-header-row {
+/* ---------- Название, описание, подписка ---------- */
+.col-head {
     display: flex;
-    justify-content: space-between;
     align-items: flex-start;
+    justify-content: space-between;
     gap: 32px;
+    padding: 28px 8px 26px;
+    border-bottom: 1px solid var(--border);
 }
 
-.collection-intro {
+.col-intro {
     max-width: 620px;
 }
 
-.collection-title {
-    font-family: 'Playfair Display', Georgia, serif;
+.col-title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
     font-size: 38px;
     font-weight: 500;
-    margin: 0 0 8px;
+    line-height: 1.1;
     color: var(--text-primary);
 }
 
-.ornament-divider {
-    color: var(--accent-gold);
-    font-size: 11px;
-    letter-spacing: 2px;
+.col-ornament {
     margin-bottom: 14px;
 }
 
-.collection-description {
-    font-size: 13px;
-    color: var(--text-muted);
+.col-ornament img {
+    display: block;
+    height: 18px;
+    opacity: 0.8;
+}
+
+.col-description {
+    margin: 0 0 14px;
+    font-size: 14px;
     line-height: 1.6;
-    margin: 0 0 16px;
+    color: var(--text-secondary);
 }
 
-.collection-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
+.col-meta {
+    margin: 0;
+    font-size: 12px;
     color: var(--text-muted);
 }
 
-.collection-meta .dot {
-    font-size: 8px;
-    opacity: 0.6;
-}
-
-/* FOLLOW ACTION BOX */
-.collection-actions {
+/* ---------- Подписка ---------- */
+.col-follow-box {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 8px;
+    padding-bottom: 34px;
 }
 
-.btn-follow {
-    background: var(--card-inner-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 10px 22px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
+.col-follow {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 26px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    box-shadow: 0 2px 8px var(--shadow);
+
+    font: inherit;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text-primary);
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
-.btn-follow:hover {
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
+.col-follow img {
+    width: 16px;
+    height: 16px;
 }
 
-.btn-follow.following {
-    background: var(--accent-gold);
-    color: #FFFFFF;
-    border-color: var(--accent-gold);
+.col-follow:hover {
+    border-color: var(--honey);
 }
 
-.followers-count {
+.col-follow.following {
+    background: var(--honey);
+    border-color: var(--honey);
+    color: var(--white);
+}
+
+.col-follow.following img {
+    filter: brightness(0) invert(1);
+}
+
+.col-follow:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+.col-followers {
     font-size: 11px;
     color: var(--text-muted);
 }
 
-/* TOOLBAR */
-.collection-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 16px;
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--border-color);
+.col-bee {
+    position: absolute;
+    right: 34px;
+    bottom: 0;
+    width: 26px;
+    height: 26px;
+    opacity: 0.85;
 }
 
-.novels-count {
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.toolbar-right {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-.sort-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11px;
-    color: var(--text-muted);
-}
-
-.sort-dropdown {
-    background: var(--card-inner-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    color: var(--text-primary);
-    outline: none;
-    cursor: pointer;
-}
-
-.view-switch {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.view-label {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-right: 2px;
-}
-
-.view-btn {
-    background: none;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.view-btn.active, .view-btn:hover {
-    background: var(--card-inner-bg);
-    color: var(--accent-gold);
-    border-color: var(--accent-gold);
-}
-
-/* NOVELS GRID & CARDS */
-.novels-grid {
+/* ---------- Об этой коллекции ---------- */
+.col-about {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 32px;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-items: center;
+    gap: 32px;
+    padding: 30px 40px;
+
+    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 70%);
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-/* List view alternative */
-.novels-grid.list-view {
+.col-about[hidden] {
+    display: none;
+}
+
+.col-about.no-image {
     grid-template-columns: 1fr;
 }
 
-.novel-card {
-    background: var(--card-inner-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.novel-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
-}
-
-.cover-wrapper {
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 12px;
-    aspect-ratio: 1 / 1.1;
-}
-
-.cover-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.card-bookmark-overlay {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(4px);
-    border: none;
-    border-radius: 6px;
-    width: 26px;
-    height: 26px;
-    font-size: 11px;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-}
-
-.card-bookmark-overlay:hover {
-    opacity: 1;
-}
-
-.card-content {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.novel-card .novel-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 15px;
-    font-weight: 600;
-    margin: 0 0 4px;
-    line-height: 1.3;
-}
-
-.author-name {
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.card-tags {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-}
-
-.tag {
-    background: var(--pill-bg);
-    border-radius: 10px;
-    padding: 3px 8px;
-    font-size: 9px;
-    color: var(--text-muted);
-}
-
-.card-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 8px;
-    border-top: 1px dashed var(--border-color);
-}
-
-.status-info {
-    font-size: 10px;
-    color: var(--text-muted);
-}
-
-.card-bookmark-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 12px;
-    opacity: 0.6;
-}
-
-.card-bookmark-btn:hover {
-    opacity: 1;
-}
-
-/* SHOW MORE BUTTON */
-.show-more-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 48px;
-}
-
-.btn-show-more {
-    background: var(--card-inner-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 10px 28px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: var(--text-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s;
-}
-
-.btn-show-more:hover {
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
-}
-
-/* ABOUT THIS COLLECTION SECTION */
-.about-collection-section {
-    background: rgba(255, 253, 249, 0.8);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 32px 36px;
-    display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 32px;
-    align-items: center;
-}
-
-.about-title {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 22px;
-    font-weight: 500;
+.col-about-title {
     margin: 0 0 6px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text-primary);
 }
 
-.about-text-content p {
-    font-size: 12px;
+.col-about-text p {
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.col-about-text p:last-child {
+    margin-bottom: 0;
+}
+
+.col-about-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    object-fit: contain;
+    object-position: right center;
+}
+
+/* ---------- Пусто / не найдено ---------- */
+.col-empty {
+    margin: 32px 0 0;
+    padding: 44px 24px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
     color: var(--text-muted);
-    line-height: 1.65;
-    margin: 0;
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
 }
 
-.about-illustration {
-    display: flex;
-    justify-content: flex-end;
+.col-empty[hidden] {
+    display: none;
 }
 
-.about-img {
-    max-width: 100%;
-    border-radius: 12px;
+.col-empty a {
+    color: var(--honey);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 868px) {
+    .col-head {
+        flex-direction: column;
+    }
+
+    .col-follow-box {
+        align-items: flex-start;
+        padding-bottom: 0;
+    }
+
+    .col-bee {
+        display: none;
+    }
+
+    .col-about {
+        grid-template-columns: 1fr;
+        padding: 24px;
+    }
+
+    .col-about-image {
+        display: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .col-container {
+        padding: 0 16px 40px;
+    }
+
+    .col-banner {
+        height: 160px;
+    }
+
+    .col-title {
+        font-size: 30px;
+    }
+
 }

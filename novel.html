@@ -30,8 +30,8 @@
                     <div class="catalog-dropdown">
                         <a href="catalog.html">Новеллы</a>
                         <a href="#">Авторы</a>
-                        <a href="#">Жанры</a>
-                        <a href="#">Коллекции</a>
+                        <a href="genres.html">Жанры</a>
+                        <a href="collections.html">Коллекции</a>
                         <a href="#">Глоссарий</a>
                     </div>
                 </div>
@@ -429,10 +429,11 @@
 
         </footer>
 
-        <!-- Floating Action Button -->
+        <!-- Floating Action Button — подпись и переход на нужную главу
+             ставит script.js (см. "Continue Reading / floating button") -->
         <button type="button" class="floating-reading-btn" id="floatingReadingBtn">
             <img src="images/icons/book-open.svg" alt="">
-            <span>Продолжить<br>чтение</span>
+            <span id="floatingReadingBtnLabel"></span>
         </button>
 
     </div>

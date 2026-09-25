@@ -1,66 +1,174 @@
 /* ========================================
-   BUSY BEE — COLLECTION INTERACTION LOGIC
-   ======================================== */
+   BUSY BEE — СТРАНИЦА «КОЛЛЕКЦИЯ»
+   ========================================
+   Данные — из collections/<id>/<id>.json, адрес страницы:
+   collection.html?id=rebirth
 
-document.addEventListener("DOMContentLoaded", () => {
-    
-    /* 1. Toggle Follow Collection Button */
-    const btnFollow = document.getElementById("btnFollow");
-    if (btnFollow) {
-        btnFollow.addEventListener("click", () => {
-            btnFollow.classList.toggle("following");
-            const heart = btnFollow.querySelector(".heart-icon");
-            const label = btnFollow.querySelector("span:last-child");
+   В JSON коллекции лежат только id новелл и дата добавления
+   ("novels": [{ "id": "kniga-grez", "addedAt": "2026-09-01" }]).
+   Название, обложка, автор, жанры, статус и рейтинг берутся из
+   novels/<id>/<id>.json через getNovelData() из script.js — ничего
+   не дублируется. Счётчик новелл и жанры в строке под описанием
+   считаются сами.
 
-            if (btnFollow.classList.contains("following")) {
-                heart.textContent = "♥";
-                label.textContent = "Following";
-            } else {
-                heart.textContent = "♡";
-                label.textContent = "Follow collection";
-            }
-        });
+   Закладка на карточке — общая .mini-bookmark (bindNovelBookmarks из
+   script.js): ставит «Буду читать» и показывает «Отменить». Так она
+   работает так же, как в каталоге и на странице «Закладки».
+
+   Подписка на коллекцию пока хранится в localStorage
+   (busybee_followed_collections). */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const PAGE_SIZE = 8;
+    const FOLLOWED_KEY = "busybee_followed_collections";
+
+    const $ = (id) => document.getElementById(id);
+    const content = $("colContent");
+    const notFound = $("colNotFound");
+    const grid = $("colGrid");
+    const moreBtn = $("colMore");
+    const sortSelect = $("colSort");
+
+    // Без ?id= открываем «Перерождение» — удобно для проверки страницы
+    const collectionId = new URLSearchParams(location.search).get("id") || "rebirth";
+
+    /* ---------- Загрузка ---------- */
+    let collection;
+    try {
+        const response = await fetch(`collections/${encodeURIComponent(collectionId)}/${encodeURIComponent(collectionId)}.json`);
+        if (!response.ok) throw new Error("Not found");
+        collection = await response.json();
+    } catch (error) {
+        notFound.hidden = false;
+        $("pageTitle").textContent = "Коллекция не найдена — Busy Bee";
+        return;
     }
 
-    /* 2. Switch Grid / List View Modes */
-    const viewGrid = document.getElementById("viewGrid");
-    const viewList = document.getElementById("viewList");
-    const novelsGrid = document.getElementById("novelsGrid");
+    // Новеллы: нет файла у одной — пропускаем её, а не роняем страницу
+    const entries = collection.novels || [];
+    const loaded = await Promise.all(
+        entries.map((entry) =>
+            getNovelData(entry.id)
+                .then((novel) => ({ novel, addedAt: entry.addedAt || "" }))
+                .catch(() => null)
+        )
+    );
+    const items = loaded.filter(Boolean);
 
-    if (viewGrid && viewList && novelsGrid) {
-        viewGrid.addEventListener("click", () => {
-            viewGrid.classList.add("active");
-            viewList.classList.remove("active");
-            novelsGrid.classList.remove("list-view");
-        });
 
-        viewList.addEventListener("click", () => {
-            viewList.classList.add("active");
-            viewGrid.classList.remove("active");
-            novelsGrid.classList.add("list-view");
-        });
+    /* ---------- Шапка коллекции ---------- */
+    $("pageTitle").textContent = `Коллекция «${collection.title}» — Busy Bee`;
+
+    $("colBanner").src = collection.banner || "";
+    $("colBanner").alt = collection.title;
+    $("colTitle").textContent = collection.title;
+    $("colDescription").textContent = collection.description || "";
+
+    function novelsLabel(n) {
+        return `${n} ${pluralRu(n, "новелла", "новеллы", "новелл")}`;
     }
 
-    /* 3. Bookmark Toggle on Novel Cards */
-    const bookmarkBtns = document.querySelectorAll(".card-bookmark-btn, .card-bookmark-overlay");
-    bookmarkBtns.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            btn.classList.toggle("active");
-            btn.style.opacity = btn.classList.contains("active") ? "1" : "0.6";
-        });
+    // «12 новелл · Historical · Romance…» — жанры по частоте, до четырёх
+    function topGenres() {
+        const counts = new Map();
+        items.forEach(({ novel }) => (novel.genres || []).forEach((genre) => {
+            counts.set(genre, (counts.get(genre) || 0) + 1);
+        }));
+        return Array.from(counts.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 4)
+            .map(([genre]) => genre);
+    }
+
+    $("colMeta").textContent = [novelsLabel(items.length), ...topGenres()].join("  •  ");
+    $("colCount").textContent = novelsLabel(items.length);
+
+
+    /* ---------- Об этой коллекции ---------- */
+    if (collection.about) {
+        $("colAboutTitle").textContent = collection.about.title || "Об этой коллекции";
+        $("colAboutText").innerHTML = (collection.about.paragraphs || [])
+            .map((text) => `<p>${escapeHtml(text)}</p>`).join("");
+        // Нет картинки (не указана или файл ещё не добавлен) — блок
+        // растягивается на всю ширину, без «битой» иконки
+        const aboutImage = $("colAboutImage");
+        const hideAboutImage = () => {
+            aboutImage.parentElement.hidden = true;
+            $("colAbout").classList.add("no-image");
+        };
+        if (collection.about.image) {
+            aboutImage.addEventListener("error", hideAboutImage);
+            aboutImage.src = collection.about.image;
+        } else {
+            hideAboutImage();
+        }
+        $("colAbout").hidden = false;
+    }
+
+
+    /* ---------- Подписка ---------- */
+    const followBtn = $("colFollow");
+    const followIcon = followBtn.querySelector("img");
+    const followLabel = followBtn.querySelector("span");
+    const followersEl = $("colFollowers");
+    const baseFollowers = collection.followers || 0;
+
+    function readFollowed() {
+        try {
+            return JSON.parse(localStorage.getItem(FOLLOWED_KEY)) || {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    function paintFollow(following) {
+        followBtn.classList.toggle("following", following);
+        followBtn.setAttribute("aria-pressed", following);
+        followIcon.src = following ? followIcon.dataset.filled : followIcon.dataset.outline;
+        followLabel.textContent = following ? "Вы подписаны" : "Подписаться на коллекцию";
+
+        const total = baseFollowers + (following ? 1 : 0);
+        followersEl.textContent = `${total.toLocaleString("ru-RU")} ${pluralRu(total, "читатель следит", "читателя следят", "читателей следят")} за коллекцией`;
+    }
+
+    paintFollow(Boolean(readFollowed()[collection.id]));
+
+    followBtn.addEventListener("click", () => {
+        const following = !followBtn.classList.contains("following");
+        try {
+            const all = readFollowed();
+            if (following) all[collection.id] = true;
+            else delete all[collection.id];
+            localStorage.setItem(FOLLOWED_KEY, JSON.stringify(all));
+        } catch (error) {
+            console.error("Couldn't save collection follow:", error);
+        }
+        paintFollow(following);
     });
 
-    /* 4. Show More Button Mock Handler */
-    const btnShowMore = document.getElementById("btnShowMore");
-    if (btnShowMore) {
-        btnShowMore.addEventListener("click", () => {
-            btnShowMore.querySelector("span").textContent = "Loading...";
-            setTimeout(() => {
-                btnShowMore.querySelector("span").textContent = "All items loaded";
-                btnShowMore.disabled = true;
-                btnShowMore.style.opacity = "0.6";
-            }, 600);
-        });
-    }
+
+    /* ---------- Карточки, сортировка, вид ----------
+       Сама сетка, тулбар и карточка — общий блок из novels-grid.js;
+       здесь только то, что специфично для коллекции: три варианта
+       сортировки, где «Недавно добавленные» смотрит на addedAt
+       из JSON коллекции (у жанра для этой же цели своя дата —
+       обновление главы, см. genre-script.js). */
+    initNovelsGrid({
+        gridEl: grid,
+        moreBtnEl: moreBtn,
+        sortSelectEl: sortSelect,
+        viewGridBtnEl: $("colViewGrid"),
+        viewListBtnEl: $("colViewList"),
+        items,
+        pageSize: PAGE_SIZE,
+        emptyMessage: "В этой коллекции пока нет новелл. Загляните позже — мы скоро её пополним.",
+        sorters: {
+            recent: (a, b) => String(b.addedAt).localeCompare(String(a.addedAt)),
+            rating: (a, b) => (b.novel.rating ? b.novel.rating.score : 0) - (a.novel.rating ? a.novel.rating.score : 0),
+            popular: (a, b) => (b.novel.rating ? b.novel.rating.votes || 0 : 0) - (a.novel.rating ? a.novel.rating.votes || 0 : 0)
+        }
+    });
+
+    content.hidden = false;
 });

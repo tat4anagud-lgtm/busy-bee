@@ -1,0 +1,87 @@
+{
+    "id": "qian-shan-cha-ke",
+    "name": "Цяньшань Чакэ",
+    "originalName": "千山茶客",
+    "akaNames": ["Qian Shan Cha Ke", "Цзян Юй"],
+    "country": "Китай",
+    "activeSince": 2013,
+    "avatar": "images/authors/qian-shan-cha-ke.png",
+
+    "bio": [
+        "Qian Shan Cha Ke — популярная современная китайская писательница сетевой литературы, которая пишет в жанрах исторической драмы, романтики и дворцовых интриг."
+    ],
+
+    "writingStyle": ["Продуманный", "Эмоциональный", "Поэтичный", "Умный"],
+    "mainGenres": ["Даньмэй", "Фэнтези", "Исторический", "Сянься"],
+    "favoriteGenres": ["Исторический", "Фэнтези", "Сянься", "Романтика"],
+
+    "stats": {
+        "totalChapters": 1248,
+        "rating": { "score": 4.8, "votes": 12400 },
+        "followers": 128000
+    },
+
+    "works": [
+        {
+            "id": "kniga-grez",
+            "title": "Магистр дьявольского культа",
+            "originalTitle": "魔道祖师",
+            "cover": "images/novels/a-dream-within-a-dream.png",
+            "genres": ["Драма", "Месть", "Исторический", "Перерождение", "Романтика"],
+            "translator": "Busy Bee",
+            "totalChapters": 259,
+            "currentChapter": 259,
+            "translationStatus": "Полностью переведено"
+        }
+    ],
+
+    "reasons": [
+        {
+            "title": "Сложные политические интриги",
+            "text": "Запутанные миры, полные борьбы за власть, преданности и последствий."
+        },
+        {
+            "title": "Глубокие, неоднозначные персонажи",
+            "text": "Морально неоднозначные герои с развитием, сожалением и искуплением."
+        },
+        {
+            "title": "Эмоциональное повествование",
+            "text": "Истории, которые заставляют смеяться, плакать и думать ещё долго после прочтения."
+        },
+        {
+            "title": "Красивая проза",
+            "text": "Поэтичный, элегантный, атмосферный слог."
+        }
+    ],
+
+    "recommendedReadingOrderHref": "#",
+
+    "translatorNote": {
+        "lines": [
+            "Мы выбрали переводить работы Цяньшань Чакэ, потому что её истории остаются с тобой.",
+            "Каждый персонаж живой.",
+            "Каждая строчка что-то значит.",
+            "",
+            "Надеемся, наш перевод поможет вам почувствовать их красоту."
+        ],
+        "signature": "Busy Bee"
+    },
+
+    "quotes": [
+        {
+            "text": "Если есть жизнь после смерти, пусть я всё ещё буду с тобой.",
+            "novelId": "heaven-officials-blessing",
+            "novelTitle": "Благословение небожителей",
+            "chapter": 94,
+            "likes": 2100
+        }
+    ],
+
+    "relatedAuthors": [
+        { "id": "priest", "name": "Priest", "avatar": "images/authors/priest.png", "genres": ["Исторический", "Драма"] },
+        { "id": "gu-man", "name": "Gu Man", "avatar": "images/authors/gu-man.png", "genres": ["Романтика", "Современность"] },
+        { "id": "tang-jiu-qing", "name": "Tang Jiu Qing", "avatar": "images/authors/tang-jiu-qing.png", "genres": ["Фэнтези", "Исторический"] },
+        { "id": "meatbun", "name": "Meatbun", "avatar": "images/authors/meatbun.png", "genres": ["Sci-Fi", "Комедия"] },
+        { "id": "nine-stars", "name": "Nine Stars", "avatar": "images/authors/nine-stars.png", "genres": ["Sci-Fi", "Космос"] }
+    ]
+}

@@ -3793,12 +3793,20 @@ a.pill:hover {
     margin-bottom: 10px;
 }
 
-.novel-tags span {
+.novel-tags span,
+.novel-tags a {
     font-size: 8px;
     background: var(--surface-warm);
     padding: 2px 6px;
     border-radius: 4px;
     color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.novel-tags a:hover {
+    color: var(--honey);
+    background: var(--border);
 }
 
 .card-progress-zone {
@@ -4431,6 +4439,29 @@ body.reader-page.theme-dark .page-nav:hover {
     margin: 0 0 1.4em;
 }
 
+/* Produced by the "> text" / "---" shorthand in formatChapterParagraph()
+   (script.js) — shared between Reading mode (.prose, themed) and the
+   Web version (.chapter-web-text, plain site palette). currentColor +
+   color-mix picks up whichever text color is active in either context
+   (including all four reader themes) automatically, so this doesn't
+   need its own per-theme override rules the way most of this file does. */
+.prose blockquote,
+.chapter-web-text blockquote {
+    margin: 1.6em 0;
+    padding: 0.1em 0 0.1em 1.2em;
+    border-left: 3px solid color-mix(in srgb, currentColor 30%, transparent);
+    font-style: italic;
+    break-inside: avoid;
+}
+
+.prose hr,
+.chapter-web-text hr {
+    width: 120px;
+    margin: 2.4em auto;
+    border: none;
+    border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+}
+
 /* BOOK MODE — paginated layout. .prose gets an explicit height (set
    by script.js, since it depends on the actual rendered header/
    chapter-head/footer heights) and lays its content out as a single
@@ -4479,7 +4510,7 @@ body.reader-page.book-mode .prose {
    This stays as the fallback for Firefox (which doesn't implement
    initial-letter at all) and for any browser where the @supports
    check below doesn't pass. */
-#proseParagraphs p:first-child::first-letter {
+#proseParagraphs p:first-of-type::first-letter {
     font-size: 1.9em;
     font-weight: 600;
     line-height: 1;
@@ -4513,7 +4544,7 @@ body.reader-page.book-mode .prose {
    been battle-tested the way float-in-columns has — please check
    Book mode specifically in Chrome and Safari once this is live. If
    it misbehaves there, the fix is to scope this whole block to
-   `body:not(.book-mode) #proseParagraphs p:first-child::first-letter`
+   `body:not(.book-mode) #proseParagraphs p:first-of-type::first-letter`
    so Book mode always stays on the guaranteed-safe Variant A while
    Scroll mode gets the upgrade. */
 @supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
@@ -4526,7 +4557,7 @@ body.reader-page.book-mode .prose {
        this constraint never causes a problem there — Book mode falls
        back to the plain Variant A letter (see the base rule above)
        instead, which never had this issue in the first place. */
-    body:not(.book-mode) #proseParagraphs p:first-child::first-letter {
+    body:not(.book-mode) #proseParagraphs p:first-of-type::first-letter {
         initial-letter: 2;
         -webkit-initial-letter: 2;
 

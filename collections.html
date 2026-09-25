@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Коллекции — Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="collections-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER (тот же, что в bookmarks.html / glossary.html) -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <div class="catalog-menu">
+                    <button class="catalog-button">
+                        Каталог
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="catalog-dropdown">
+                        <a href="catalog.html">Новеллы</a>
+                        <a href="author.html">Авторы</a>
+                        <a href="#">Жанры</a>
+                        <a href="collections.html">Коллекции</a>
+                        <a href="glossary.html">Глоссарий</a>
+                    </div>
+                </div>
+                <a href="#">Анонсы</a>
+                <a href="#">О Busy Bee</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
+                    <img src="images/icons/search.svg" alt="">
+                </div>
+
+                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+
+                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
+
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#library" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
+                        <a href="profile.html#favorites" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
+                        <a href="profile.html#quotes" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
+                        <a href="profile.html#notes" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
+                        <a href="profile.html#collections" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#achievements" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html#settings" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
+                            <div class="language-dropdown">
+                                <button class="language-option active">Русский</button>
+                                <button class="language-option">English</button>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
+                    </div>
+                </div>
+
+                <button class="header-login-button" title="Войти"><img src="images/icons/log-in.svg" alt=""></button>
+            </div>
+        </header>
+
+        <main class="cl-container">
+
+            <!-- HERO -->
+            <section class="cl-hero">
+                <div class="cl-hero-left">
+                    <nav class="cl-breadcrumbs" aria-label="Навигация">
+                        <a href="index.html">Главная</a>
+                        <span aria-hidden="true">›</span>
+                        <span>Коллекции</span>
+                    </nav>
+
+                    <h1 class="cl-title">Коллекции</h1>
+                    <div class="cl-ornament"><img src="images/icons/chapter-divider.png" alt=""></div>
+                    <p class="cl-subtitle">Подборки историй по настроению и темам: выберите коллекцию и найдите то, что хочется читать сегодня.</p>
+                </div>
+
+                <div class="cl-hero-decor">
+                    <img src="images/backgrounds/glossary-hero-decor.png" alt="">
+                </div>
+            </section>
+
+            <!-- КОЛЛЕКЦИЯ НЕДЕЛИ (рисует collections-script.js) -->
+            <section class="cl-featured" id="clFeatured" hidden></section>
+
+            <!-- ФИЛЬТРЫ -->
+            <section class="cl-toolbar">
+                <div class="cl-chips" id="clChips" role="group" aria-label="Фильтр коллекций">
+                    <button type="button" class="cl-chip active" data-filter="all" aria-pressed="true">Все</button>
+                    <button type="button" class="cl-chip" data-filter="popular" aria-pressed="false">Популярные</button>
+                    <button type="button" class="cl-chip" data-filter="new" aria-pressed="false">Новые</button>
+                    <button type="button" class="cl-chip" data-filter="followed" aria-pressed="false">Мои подписки</button>
+                </div>
+                <span class="cl-count" id="clCount"></span>
+            </section>
+
+            <!-- СЕТКА КОЛЛЕКЦИЙ -->
+            <div class="cl-grid" id="clGrid"></div>
+
+            <p class="cl-empty" id="clEmpty" hidden></p>
+
+            <div class="cl-note">
+                <img src="images/icons/bee-icon.svg" alt="">
+                <p>Не нашли подходящую? Загляните в <a href="catalog.html">каталог</a> — там все новеллы с фильтрами по жанрам.</p>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
+                </div>
+
+                <!-- Placeholder wording — rewrite in your own voice -->
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
+
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
+                    <a href="#">Help Center</a>
+                    <a href="#">Contact Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Use</a>
+                    <a href="#">For Rights Holders</a>
+                </div>
+
+                <div class="footer-bottom-right">
+
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="collections-script.js"></script>
+</body>
+</html>

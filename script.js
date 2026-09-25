@@ -1633,6 +1633,41 @@ function chapterHref(novelId, chapterNumber) {
     return `chapter.html?novel=${encodeURIComponent(novelId)}&chapter=${chapterNumber}`;
 }
 
+/* ---------- Paragraph formatting (shared by reader.html + chapter.html) ----------
+   A small Telegraph-style shorthand, written straight into a chapter's
+   `paragraphs` array in its JSON file — no schema change, each entry
+   is still just a plain string:
+     **text**   -> <strong>
+     *text*     -> <em>
+     > text     -> the marker at the very START of the paragraph turns
+                    the whole paragraph into a <blockquote> instead of
+                    a <p> (strip the "> ", keep the rest)
+     ---        -> a paragraph containing ONLY three dashes becomes a
+                    <hr> instead of a <p> (like Telegraph's own "type
+                    --- on its own line")
+   Existing chapters with none of these characters render exactly as
+   before. Runs on top of whatever's already in the paragraph string,
+   so existing inline HTML (footnote <sup> markers, etc.) is left
+   alone — bold/italic only look for '*', which nothing else in a
+   paragraph currently uses. */
+function formatChapterParagraph(paragraph) {
+    if (paragraph.trim() === "---") {
+        return "<hr>";
+    }
+
+    const quoteMatch = paragraph.match(/^\s*>\s+([\s\S]*)$/);
+    const isQuote = Boolean(quoteMatch);
+    let text = isQuote ? quoteMatch[1] : paragraph;
+
+    // Bold before italic, so **text** isn't left with stray single
+    // asterisks once the outer pair has already been consumed
+    text = text
+        .replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*([\s\S]+?)\*/g, "<em>$1</em>");
+
+    return isQuote ? `<blockquote>${text}</blockquote>` : `<p>${text}</p>`;
+}
+
 /* ---------- Footnote popover (shared by reader.html + chapter.html) ----------
    `containerEl` is the element the chapter's paragraphs are rendered
    into; `getFootnotes` returns the CURRENTLY loaded chapter's own
@@ -2120,7 +2155,7 @@ if (readerHeader) {
                 // universally supported on its own as a fallback too, so
                 // there's no longer any need to special-case paragraph 0.
                 const paragraphsHtml = chapter.paragraphs
-                    .map((paragraph) => `<p>${paragraph}</p>`)
+                    .map(formatChapterParagraph)
                     .join("");
 
                 if (paragraphsContainer) {
@@ -2377,7 +2412,7 @@ if (chapterWebText) {
             }
 
             chapterWebText.innerHTML = chapter.paragraphs
-                .map((paragraph) => `<p>${paragraph}</p>`)
+                .map(formatChapterParagraph)
                 .join("");
 
             // Carry the chapter number over into Reading mode, so
@@ -2991,7 +3026,7 @@ if (novelPageTitleEl) {
         const genresPillsEl = document.getElementById("novelGenresPills");
         if (genresPillsEl) {
             genresPillsEl.innerHTML = (novel.genres || [])
-                .map((genre) => `<a href="#" class="pill">${genre}</a>`)
+                .map((genre) => `<a href="genre.html?name=${encodeURIComponent(genre)}" class="pill">${genre}</a>`)
                 .join("");
         }
 
@@ -3134,7 +3169,11 @@ if (novelPageTitleEl) {
             }
 
             const floatingBtn = document.getElementById("floatingReadingBtn");
-            if (floatingBtn) floatingBtn.addEventListener("click", () => { window.location.href = startHref; });
+            if (floatingBtn) {
+                const floatingLabel = document.getElementById("floatingReadingBtnLabel");
+                if (floatingLabel) floatingLabel.innerHTML = hasSavedChapter ? "Продолжить<br>чтение" : "Начать<br>чтение";
+                floatingBtn.addEventListener("click", () => { window.location.href = startHref; });
+            }
 
             // Progress box: only shown once there's actually something
             // to report — a brand-new reader has no chapter to show yet
@@ -3405,7 +3444,7 @@ if (catalogGrid) {
         }
         const genresHtml = (novel.genres || [])
             .slice(0, 4)
-            .map((genre) => `<span>${genre}</span>`)
+            .map((genre) => `<a href="genre.html?name=${encodeURIComponent(genre)}">${genre}</a>`)
             .join("");
         // Full genre list for filtering, separate from the 4 shown on
         // the card itself — otherwise filtering by a 5th+ genre a novel

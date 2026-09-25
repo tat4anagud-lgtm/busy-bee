@@ -1,0 +1,167 @@
+/* ========================================
+   BUSY BEE — СТРАНИЦА «ЖАНР»
+   ========================================
+   Тут только шапка (текстовая, как на «Закладках» и «Глоссарии») и
+   состояние «жанр не найден» — сетка карточек, тулбар и «Показать
+   ещё» общие для коллекции и жанра, лежат в novels-grid.css
+   (классы ng-*). Свои классы — с префиксом gn-. Цвета и рамки —
+   из переменных style.css. */
+
+.gn-container {
+    padding: 0 32px 50px;
+}
+
+/* ---------- Баннер (только если для жанра есть картинка) ---------- */
+.gn-banner {
+    height: 240px;
+    margin-top: 8px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--surface-warm);
+}
+
+.gn-banner[hidden] {
+    display: none;
+}
+
+.gn-banner img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ---------- Баннер-шапка ---------- */
+.gn-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 8px;
+    padding: 26px 40px 30px;
+
+    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 60%);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Баннер уже дал картинку — шапке текст не нужно ещё раз обрамлять
+   в свою рамку с градиентом, ей хватает простого текстового блока,
+   как у заголовка коллекции под фотобаннером */
+.gn-hero.has-banner {
+    margin-top: 22px;
+    padding: 0 8px 22px;
+    background: none;
+    border-radius: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.gn-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.gn-breadcrumbs a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.gn-breadcrumbs a:hover {
+    color: var(--honey);
+}
+
+.gn-title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.gn-ornament {
+    margin-bottom: 14px;
+}
+
+.gn-ornament img {
+    display: block;
+    height: 18px;
+    opacity: 0.8;
+}
+
+.gn-subtitle {
+    margin: 0;
+    max-width: 480px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.gn-hero-decor {
+    flex-shrink: 0;
+}
+
+.gn-hero-decor img {
+    display: block;
+    width: 340px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ---------- Не найдено ---------- */
+.gn-empty {
+    margin: 32px 0 0;
+    padding: 44px 24px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+.gn-empty[hidden] {
+    display: none;
+}
+
+.gn-empty a {
+    color: var(--honey);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 992px) {
+    .gn-hero-decor {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .gn-container {
+        padding: 0 16px 40px;
+    }
+
+    .gn-banner {
+        height: 160px;
+    }
+
+    .gn-hero {
+        padding: 22px 20px 24px;
+    }
+
+    .gn-hero.has-banner {
+        padding: 0 0 20px;
+    }
+
+    .gn-title {
+        font-size: 34px;
+    }
+}

@@ -1,0 +1,479 @@
+/* ========================================
+   BUSY BEE — СТРАНИЦА «КОЛЛЕКЦИИ» (список всех коллекций)
+   ========================================
+   Только то, чего нет в style.css. Цвета, рамки и тени — из
+   переменных style.css. Префикс cl-, чтобы не пересекаться со
+   страницей одной коллекции (collection-style.css, префикс col-).
+   Баннер, чипы и подпись внизу построены так же, как на
+   «Закладках» и «Уведомлениях». */
+
+.cl-container {
+    padding: 0 32px 50px;
+}
+
+/* ---------- Баннер ---------- */
+.cl-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 8px;
+    padding: 26px 40px 30px;
+
+    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 60%);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.cl-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.cl-breadcrumbs a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.cl-breadcrumbs a:hover {
+    color: var(--honey);
+}
+
+.cl-title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.cl-ornament {
+    margin-bottom: 14px;
+}
+
+.cl-ornament img {
+    display: block;
+    height: 18px;
+    opacity: 0.8;
+}
+
+.cl-subtitle {
+    margin: 0;
+    max-width: 480px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.cl-hero-decor {
+    flex-shrink: 0;
+}
+
+.cl-hero-decor img {
+    display: block;
+    width: 340px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ---------- Коллекция недели ---------- */
+.cl-featured {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: stretch;
+    margin-top: 28px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: 0 4px 14px var(--shadow);
+    overflow: hidden;
+}
+
+.cl-featured[hidden] {
+    display: none;
+}
+
+.cl-featured-media {
+    display: block;
+    min-height: 260px;
+    background: var(--surface-warm);
+}
+
+.cl-featured-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cl-featured-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    padding: 32px 40px;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-warm) 100%);
+}
+
+.cl-featured-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 10px;
+
+    background: var(--surface);
+    border: 1px solid var(--honey);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--honey);
+}
+
+.cl-featured-badge img {
+    width: 16px;
+    height: 16px;
+}
+
+.cl-featured-title {
+    margin: 4px 0 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.15;
+}
+
+.cl-featured-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.cl-featured-title a:hover {
+    color: var(--honey);
+}
+
+.cl-featured-text {
+    margin: 0;
+    max-width: 440px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.cl-featured-meta {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.cl-btn {
+    margin-top: 10px;
+    padding: 10px 26px;
+
+    background: var(--honey);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    text-decoration: none;
+    transition: filter 0.2s ease;
+}
+
+.cl-btn:hover {
+    filter: brightness(0.94);
+}
+
+.cl-btn:focus-visible,
+.cl-chip:focus-visible,
+.cl-card:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+/* ---------- Фильтры ---------- */
+.cl-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 32px 0 20px;
+}
+
+.cl-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cl-chip {
+    appearance: none;
+    padding: 7px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font: inherit;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.cl-chip:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.cl-chip.active {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.cl-count {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ---------- Карточки коллекций ---------- */
+.cl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.cl-grid:empty {
+    display: none;
+}
+
+.cl-card {
+    display: flex;
+    flex-direction: column;
+    color: inherit;
+    text-decoration: none;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cl-card:hover {
+    border-color: var(--honey);
+    box-shadow: 0 6px 16px var(--shadow);
+}
+
+.cl-card-media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--surface-warm);
+    overflow: hidden;
+}
+
+.cl-card-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.cl-card:hover .cl-card-media img {
+    transform: scale(1.04);
+}
+
+.cl-card-followed {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+
+    background: var(--honey);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--white);
+}
+
+.cl-card-followed img {
+    width: 11px;
+    height: 11px;
+    filter: brightness(0) invert(1);
+}
+
+.cl-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 18px 18px;
+}
+
+.cl-card-title {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 19px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--text-primary);
+}
+
+.cl-card-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+}
+
+.cl-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.cl-tag {
+    padding: 3px 11px;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.cl-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ---------- Пусто ---------- */
+.cl-empty {
+    margin: 0;
+    padding: 44px 24px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+.cl-empty[hidden] {
+    display: none;
+}
+
+.cl-empty a {
+    color: var(--honey);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* ---------- Подпись внизу ---------- */
+.cl-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 36px auto 0;
+    padding: 12px 26px;
+
+    background: var(--surface-warm);
+    border-radius: 999px;
+}
+
+.cl-note img {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.cl-note p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.cl-note a {
+    color: var(--honey);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 992px) {
+    .cl-hero-decor {
+        display: none;
+    }
+
+    .cl-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cl-featured {
+        grid-template-columns: 1fr;
+    }
+
+    .cl-featured-media {
+        min-height: 200px;
+        max-height: 240px;
+    }
+}
+
+@media (max-width: 640px) {
+    .cl-container {
+        padding: 0 16px 40px;
+    }
+
+    .cl-hero {
+        padding: 22px 20px 24px;
+    }
+
+    .cl-title {
+        font-size: 34px;
+    }
+
+    .cl-featured-body {
+        padding: 24px 20px;
+    }
+
+    .cl-featured-title {
+        font-size: 24px;
+    }
+
+    .cl-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cl-note {
+        border-radius: 16px;
+    }
+}
