@@ -402,6 +402,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const overviewCollectionsTrack = document.getElementById("overviewCollectionsTrack");
     if (overviewCollectionsTrack) {
         overviewCollectionsTrack.innerHTML = collectionsData.map(renderCollectionCard).join("");
+
+        // Карточки только что появились — глобальный вызов setupCarousel()
+        // в начале script.js застал этот трек ещё пустым (card = null,
+        // setupCarousel вышел без дела), поэтому стрелки нужно привязать
+        // заново, теперь когда карточки на месте — как уже сделано ниже
+        // для "Последних переводов" и "Busy Bee рекомендует"
+        const collectionsWrapper = overviewCollectionsTrack.closest(".collection-carousel");
+        if (collectionsWrapper && typeof setupCarousel === "function") setupCarousel(collectionsWrapper);
     }
 
     // Последние переводы — карусель, максимум 8 новелл
