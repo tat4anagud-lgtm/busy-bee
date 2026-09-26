@@ -54,16 +54,6 @@
         "signature": "Busy Bee"
     },
 
-    "quotes": [
-        {
-            "text": "Такое лицо, сочетающееся с израненным телом, напоминало сосну — пусть ветви её сломаны зимней стужей и снегом, но она всё равно стоит гордо и прямо.",
-            "novelId": "v-pogone-za-nefritom",
-            "novelTitle": "В погоне за нефритом",
-            "chapter": 2,
-            "likes": 892
-        }
-    ],
-
     "relatedAuthors": [
         { "id": "priest", "name": "Priest", "avatar": "images/authors/priest.png", "genres": ["Исторический", "Драма"] },
         { "id": "gu-man", "name": "Gu Man", "avatar": "images/authors/gu-man.png", "genres": ["Романтика", "Современность"] },

@@ -64,6 +64,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return typeof likes === "number" ? formatCompactRu(likes) : String(likes);
     }
 
+    // Для сортировки по лайкам: число остаётся числом, "1.1k" -> 1100
+    function likesAsNumber(likes) {
+        if (typeof likes === "number") return likes;
+        const match = String(likes).toLowerCase().match(/^([\d.]+)\s*k$/);
+        return match ? parseFloat(match[1]) * 1000 : parseFloat(likes) || 0;
+    }
+
     function quoteCardHtml({ text, novelId, novelTitle, chapter, likes }) {
         return `
             <div class="quote-card">
@@ -279,20 +286,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (signatureEl) signatureEl.textContent = `— ${author.translatorNote.signature || "Busy Bee"} 🐝`;
         }
 
-        /* ---- Любимые цитаты (сайдбар) — избранные из author.quotes,
-           те же классы/поведение, что на novel.html ---- */
-        const quotesListEl = document.getElementById("quotesList");
-        if (quotesListEl) {
-            quotesListEl.innerHTML = (author.quotes || []).map(quoteCardHtml).join("");
-            bindLikeButtons(quotesListEl);
-        }
-
-        /* ---- Вкладка «Цитаты» — не только избранные, а все
-           novel.quotes по каждой работе автора ---- */
-        const allQuotesGridEl = document.getElementById("allQuotesGrid");
-        const allQuotesEmptyEl = document.getElementById("allQuotesEmpty");
-        if (allQuotesGridEl) {
-            const allQuotes = works.flatMap((novel) =>
+        /* ---- Цитаты — общий список, собранный из novel.quotes по
+           каждой работе автора. Больше не нужно вручную дублировать
+           их в author.json (author.quotes) ---- */
+        const allQuotes = works
+            .flatMap((novel) =>
                 (novel.quotes || []).map((q) => ({
                     text: q.text,
                     chapter: q.chapter,
@@ -300,7 +298,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     novelId: novel.id,
                     novelTitle: novel.title,
                 }))
-            );
+            )
+            .sort((a, b) => likesAsNumber(b.likes) - likesAsNumber(a.likes));
+
+        // Сайдбар «Любимые цитаты» на вкладке «Обзор» — топ-2 по лайкам
+        const quotesListEl = document.getElementById("quotesList");
+        if (quotesListEl) {
+            quotesListEl.innerHTML = allQuotes.slice(0, 2).map(quoteCardHtml).join("");
+            bindLikeButtons(quotesListEl);
+        }
+
+        // Вкладка «Цитаты» — полный список
+        const allQuotesGridEl = document.getElementById("allQuotesGrid");
+        const allQuotesEmptyEl = document.getElementById("allQuotesEmpty");
+        if (allQuotesGridEl) {
             allQuotesGridEl.innerHTML = allQuotes.map(quoteCardHtml).join("");
             bindLikeButtons(allQuotesGridEl);
             if (allQuotesEmptyEl) allQuotesEmptyEl.hidden = allQuotes.length > 0;

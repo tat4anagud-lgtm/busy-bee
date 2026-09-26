@@ -54,16 +54,6 @@
         "signature": "Busy Bee"
     },
 
-    "quotes": [
-        {
-            "text": "Все события прошлой жизни казались дурным сном после полудня, но только она сама знала: море крови и глубокая ненависть не могут рассеяться как сон.",
-            "novelId": "kniga-grez",
-            "novelTitle": "Книга грёз",
-            "chapter": 2,
-            "likes": 892
-        }
-    ],
-
     "relatedAuthors": [
         { "id": "priest", "name": "Priest", "avatar": "images/authors/priest.png", "genres": ["Исторический", "Драма"] },
         { "id": "gu-man", "name": "Gu Man", "avatar": "images/authors/gu-man.png", "genres": ["Романтика", "Современность"] },

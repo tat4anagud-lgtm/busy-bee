@@ -1,0 +1,358 @@
+/* ========================================
+   BUSY BEE — СТРАНИЦА «АВТОРЫ» (список)
+   ========================================
+   Только то, чего нет в style.css. Префикс au-, чтобы не пересекаться
+   со страницей одного автора (author-style.css, префикс без дефиса —
+   .author-hero-card и т.п.). Баннер, чипы и подпись внизу построены
+   так же, как на «Коллекциях» (cl-) и «Закладках» (bm-); строка
+   поиска — как в «Глоссарии» (.glossary-search-box). */
+
+.au-container {
+    padding: 0 32px 50px;
+}
+
+/* ---------- Баннер ---------- */
+.au-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    margin-top: 8px;
+    padding: 26px 40px 30px;
+
+    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 60%);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.au-hero-left {
+    max-width: 480px;
+}
+
+.au-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.au-breadcrumbs a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.au-breadcrumbs a:hover {
+    color: var(--honey);
+}
+
+.au-title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 44px;
+    font-weight: 500;
+    line-height: 1.1;
+    color: var(--text-primary);
+}
+
+.au-subtitle {
+    margin: 0 0 22px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.au-search-box {
+    position: relative;
+    max-width: 400px;
+}
+
+.au-search-box input {
+    width: 100%;
+    height: 46px;
+    padding: 0 18px 0 44px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: border-color 0.2s ease;
+}
+
+.au-search-box input:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.au-search-box .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+}
+
+.au-hero-decor {
+    flex-shrink: 0;
+}
+
+.au-hero-decor img {
+    display: block;
+    width: 340px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* ---------- Фильтры ---------- */
+.au-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 32px 0 20px;
+}
+
+.au-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.au-chip {
+    appearance: none;
+    padding: 7px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font: inherit;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.au-chip:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.au-chip.active {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.au-chip:focus-visible,
+.au-card:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+.au-count {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ---------- Сетка карточек ---------- */
+.au-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.au-grid:empty {
+    display: none;
+}
+
+.au-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px;
+
+    color: inherit;
+    text-decoration: none;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.au-card:hover {
+    border-color: var(--honey);
+    box-shadow: 0 6px 16px var(--shadow);
+}
+
+.au-card-avatar {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 3px 10px var(--shadow);
+}
+
+.au-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.au-card-name {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text-primary);
+}
+
+.au-card-original {
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.au-card-bio {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 2px 0 0;
+
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--text-secondary);
+}
+
+.au-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.au-tag {
+    padding: 3px 11px;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.au-card-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ---------- Пусто ---------- */
+.au-empty {
+    margin: 0;
+    padding: 44px 24px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+.au-empty[hidden] {
+    display: none;
+}
+
+/* ---------- Подпись внизу ---------- */
+.au-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 36px auto 0;
+    padding: 12px 26px;
+
+    background: var(--surface-warm);
+    border-radius: 999px;
+}
+
+.au-note img {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.au-note p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.au-note a {
+    color: var(--honey);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 992px) {
+    .au-hero-decor {
+        display: none;
+    }
+
+    .au-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .au-container {
+        padding: 0 16px 40px;
+    }
+
+    .au-hero {
+        padding: 22px 20px 24px;
+    }
+
+    .au-title {
+        font-size: 34px;
+    }
+
+    .au-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .au-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .au-note {
+        border-radius: 16px;
+    }
+}

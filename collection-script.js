@@ -86,23 +86,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     /* ---------- Об этой коллекции ---------- */
+    // Картинка в этом блоке одна и та же для всех коллекций (так
+    // попросили — не подбирать иллюстрацию под каждую отдельно),
+    // поэтому путь зашит здесь, а не читается из about.image
+    const ABOUT_IMAGE = "images/backgrounds/collection-about.png";
+
     if (collection.about) {
         $("colAboutTitle").textContent = collection.about.title || "Об этой коллекции";
         $("colAboutText").innerHTML = (collection.about.paragraphs || [])
             .map((text) => `<p>${escapeHtml(text)}</p>`).join("");
-        // Нет картинки (не указана или файл ещё не добавлен) — блок
-        // растягивается на всю ширину, без «битой» иконки
+
+        // Файл ещё не добавлен на сервер — блок растягивается на всю
+        // ширину вместо «битой» иконки
         const aboutImage = $("colAboutImage");
-        const hideAboutImage = () => {
+        aboutImage.addEventListener("error", () => {
             aboutImage.parentElement.hidden = true;
             $("colAbout").classList.add("no-image");
-        };
-        if (collection.about.image) {
-            aboutImage.addEventListener("error", hideAboutImage);
-            aboutImage.src = collection.about.image;
-        } else {
-            hideAboutImage();
-        }
+        });
+        aboutImage.src = ABOUT_IMAGE;
+
         $("colAbout").hidden = false;
     }
 
