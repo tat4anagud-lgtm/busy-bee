@@ -845,3 +845,199 @@
     0% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
     100% { opacity: 0; transform: translate(-50%, calc(-50% - 14px)) scale(0.3); }
 }
+
+/* ========================================
+   АДАПТИВ
+   ========================================
+   Шапка сайта (.header/.navigation) сюда не входит — общая для всех
+   страниц, адаптируется отдельно. Брейкпоинты 992/640 — как в
+   большинстве других *-style.css (authors, bookmarks, collections,
+   genre), чтобы страница переводчика не выбивалась по ощущениям.
+
+   Карусели (.book-carousel/.recommends-carousel) ничего чинить не
+   нужно: setupCarousel() в script.js сам считает шаг скролла по
+   реальной ширине карточки (card.offsetWidth), так что при смене
+   flex-basis ниже она продолжит работать как есть. */
+
+@media (max-width: 992px) {
+
+    /* Hero: аватар + инфо + статистика больше не помещаются в один ряд —
+       переносим, а декоративную картинку справа прячем (ей и так уже
+       некуда деваться, как и .au-hero-decor / .gn-hero-decor на других
+       страницах) */
+    .profile-hero-top {
+        flex-wrap: wrap;
+        row-gap: 20px;
+    }
+
+    .hero-decor {
+        display: none;
+    }
+
+    .profile-info-main {
+        max-width: none;
+        flex: 1 1 220px;
+    }
+
+    /* Была прижата к низу через align-self: flex-end — на переносе
+       строк это больше не нужно, пусть просто идёт своей строкой */
+    .profile-stats-box {
+        align-self: stretch;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    /* Двухколоночная сетка обзора — с этой ширины левая колонка
+       (посты) под правой (переводы/рекомендации/коллекции) */
+    .translator-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Карточка активного проекта: обложка + текст + кнопки были в один
+       ряд, теперь текст с кнопками переносятся под обложку */
+    .featured-project-card {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .featured-cover-box {
+        margin: 0 auto;
+    }
+
+    .featured-info-box {
+        flex: 1 1 260px;
+    }
+
+    .featured-tags {
+        justify-content: center;
+    }
+
+    .featured-desc {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .featured-action-box {
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    /* Карусели: было жёстко по 4 карточки в ряд — на планшете 3,
+       иначе карточки становятся уже, чем их же содержимое (обложка
+       160px), и текст начинает переноситься криво */
+    .translation-card {
+        flex-basis: calc((100% - 28px) / 3);
+    }
+
+    .recommend-card {
+        flex-basis: calc((100% - 24px) / 3);
+    }
+}
+
+@media (max-width: 640px) {
+
+    .translator-container {
+        padding: 0 16px 32px;
+    }
+
+    .profile-hero-card {
+        padding: 20px;
+    }
+
+    .profile-avatar-img {
+        width: 96px;
+        height: 96px;
+    }
+
+    .profile-name-row h1 {
+        font-size: 24px;
+    }
+
+    .bee-box {
+        width: 34px;
+        height: 34px;
+    }
+
+    /* Три показателя рядом с делителями — на узком экране пусть
+       переносятся вместо того, чтобы вылезать за карточку */
+    .profile-stats-box {
+        flex-wrap: wrap;
+        gap: 14px 20px;
+        padding: 14px 18px;
+    }
+
+    /* Шесть вкладок точно не влезают в ширину телефона — превращаем
+       ряд в горизонтальную прокрутку, а не в перенос строк (перенос
+       ломает подчёркивание активной вкладки под ::after) */
+    .profile-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-left: 0;
+        gap: 20px;
+    }
+
+    .profile-tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab-btn {
+        flex-shrink: 0;
+    }
+
+    /* Карточка активного проекта — полностью в колонку, без фоновой
+       декоративной ветки (ей не остаётся места сбоку) */
+    .featured-project-card {
+        flex-direction: column;
+        background-image: none;
+        padding: 20px;
+    }
+
+    .featured-cover-box img {
+        width: 120px;
+        height: 168px;
+    }
+
+    /* Было 4 в ряд, на планшете 3 — на телефоне 2, чтобы обложка
+       карточки (160×высота) не сжималась до нечитаемого размера */
+    .translation-card {
+        flex-basis: calc((100% - 14px) / 2);
+    }
+
+    .recommend-card {
+        flex-basis: calc((100% - 12px) / 2);
+    }
+
+    /* Полные сетки вкладок — уже адаптивны через auto-fill/minmax,
+       просто сужаем нижнюю границу колонки под ширину телефона */
+    .translations-full-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    }
+
+    .recommends-full-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .collections-full-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+
+    /* Баннер поддержки — текст и блок спонсоров были прижаты по
+       краям одной строки, теперь друг под другом и оба по левому краю */
+    .support-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+        padding: 20px;
+    }
+
+    .support-right {
+        text-align: left;
+    }
+
+    .supporters-avatars {
+        justify-content: flex-start;
+    }
+}

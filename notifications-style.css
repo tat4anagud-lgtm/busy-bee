@@ -21,17 +21,25 @@
     padding: 0 32px 50px;
 }
 
-/* ==================== HERO ==================== */
+/* ==================== HERO ====================
+   position/overflow/radius/фон-подложка — из общего .page-hero
+   (page-hero.css). Раньше у этой шапки не было своей рамки-плашки
+   (текст просто лежал на фоне страницы) — теперь она есть, как и
+   у «Закладок»/«Коллекций», иначе полноразмерному фото негде лежать */
 .notifications-hero {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 32px;
-    padding: 16px 0 28px;
+    margin-top: 8px;
+    min-height: 200px;
+    padding: 26px 40px;
 }
 
 .notifications-hero-left {
-    max-width: 560px;
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
 }
 
 .notifications-hero-left h1 {
@@ -46,16 +54,6 @@
     color: var(--text-secondary);
     font-size: 13px;
     line-height: 1.6;
-}
-
-.notifications-hero-right {
-    flex-shrink: 0;
-}
-
-.notifications-hero-right img {
-    width: 220px;
-    height: auto;
-    object-fit: contain;
 }
 
 /* Same pill-tab look as the Избранное chips on the profile page —
@@ -282,10 +280,6 @@
 
 /* ==================== RESPONSIVE ==================== */
 @media (max-width: 868px) {
-    .notifications-hero-right {
-        display: none;
-    }
-
     .notification-item {
         flex-wrap: wrap;
     }

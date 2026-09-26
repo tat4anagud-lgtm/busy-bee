@@ -11,18 +11,22 @@
     padding: 0 32px 50px;
 }
 
-/* ---------- Баннер ---------- */
+/* ---------- Баннер ----------
+   position/overflow/radius/фон-подложка — из общего .page-hero
+   (page-hero.css); здесь только отступы и минимальная высота */
 .cl-hero {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 32px;
     margin-top: 8px;
+    min-height: 220px;
     padding: 26px 40px 30px;
+}
 
-    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 60%);
-    border-radius: 20px;
-    overflow: hidden;
+.cl-hero-left {
+    position: relative;
+    z-index: 1;
 }
 
 .cl-breadcrumbs {
@@ -68,17 +72,6 @@
     font-size: 14px;
     line-height: 1.6;
     color: var(--text-secondary);
-}
-
-.cl-hero-decor {
-    flex-shrink: 0;
-}
-
-.cl-hero-decor img {
-    display: block;
-    width: 340px;
-    height: auto;
-    object-fit: contain;
 }
 
 /* ---------- Коллекция недели ---------- */
@@ -430,10 +423,6 @@
 
 /* ---------- Адаптив ---------- */
 @media (max-width: 992px) {
-    .cl-hero-decor {
-        display: none;
-    }
-
     .cl-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }

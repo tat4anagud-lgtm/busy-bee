@@ -20,11 +20,15 @@
     justify-content: space-between;
     gap: 32px;
 
-    padding: 32px 0 24px;
+    margin-top: 8px;
+    min-height: 260px;
+    padding: 32px 40px;
 }
 
 .glossary-hero-left {
-    max-width: 560px;
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
 }
 
 .glossary-title {
@@ -88,16 +92,6 @@
     width: 16px;
     height: 16px;
     opacity: 0.5;
-}
-
-.glossary-hero-right {
-    flex-shrink: 0;
-}
-
-.glossary-hero-right img {
-    width: 340px;
-    height: auto;
-    object-fit: contain;
 }
 
 /* ---------- Category pills + alphabet nav ---------- */
@@ -621,9 +615,5 @@
 
     .sidebar-detail-card {
         position: static;
-    }
-
-    .glossary-hero-right {
-        display: none;
     }
 }

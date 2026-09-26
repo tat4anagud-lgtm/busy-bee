@@ -10,18 +10,24 @@
     padding: 0 32px 50px;
 }
 
-/* ---------- Баннер ---------- */
+/* ---------- Баннер ----------
+   position/overflow/radius/фон-подложка — из общего .page-hero
+   (page-hero.css); здесь только то, что специфично для этой
+   страницы: отступы и минимальная высота, чтобы фото было видно
+   даже когда текста немного */
 .bm-hero {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 32px;
     margin-top: 8px;
+    min-height: 220px;
     padding: 26px 40px 30px;
+}
 
-    background: linear-gradient(135deg, #FBF3E4 0%, var(--surface-warm) 60%);
-    border-radius: 20px;
-    overflow: hidden;
+.bm-hero-left {
+    position: relative;
+    z-index: 1;
 }
 
 .bm-breadcrumbs {
@@ -57,17 +63,6 @@
     font-size: 14px;
     line-height: 1.6;
     color: var(--text-secondary);
-}
-
-.bm-hero-decor {
-    flex-shrink: 0;
-}
-
-.bm-hero-decor img {
-    display: block;
-    width: 340px;
-    height: auto;
-    object-fit: contain;
 }
 
 /* ---------- Вкладки-«таблетка» ---------- */
@@ -517,10 +512,6 @@
 
 /* ---------- Адаптив ---------- */
 @media (max-width: 992px) {
-    .bm-hero-decor {
-        display: none;
-    }
-
     .bm-novel-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
