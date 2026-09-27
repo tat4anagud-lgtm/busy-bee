@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const emptyEl = $("clEmpty");
     const countEl = $("clCount");
     const chips = $("clChips");
+    const searchInput = $("clSearchInput");
 
     function readFollowed() {
         try {
@@ -149,6 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function render(filter) {
         const followed = readFollowed();
+        const query = searchInput.value.trim().toLowerCase();
         let list = collections.slice();
 
         if (filter === "popular") {
@@ -160,8 +162,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             list = list.filter((c) => followed[c.id]);
         }
 
+        // Поиск работает поверх чипов, а не вместо них — можно
+        // одновременно искать текстом и смотреть только «Мои подписки»
+        if (query) {
+            list = list.filter((c) => `${c.title} ${c.description}`.toLowerCase().includes(query));
+        }
+
         grid.innerHTML = list.map((c) => cardHtml(c, followed)).join("");
-        emptyEl.textContent = EMPTY_TEXT[filter] || EMPTY_TEXT.default;
+        emptyEl.textContent = query && !list.length
+            ? `По запросу «${searchInput.value.trim()}» ничего не нашлось. Попробуйте другое слово.`
+            : (EMPTY_TEXT[filter] || EMPTY_TEXT.default);
         emptyEl.hidden = list.length > 0;
         countEl.textContent = list.length
             ? `${list.length} ${pluralRu(list.length, "коллекция", "коллекции", "коллекций")}`
@@ -178,6 +188,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             c.setAttribute("aria-pressed", active);
         });
         render(chip.dataset.filter);
+    });
+
+    searchInput.addEventListener("input", () => {
+        const active = chips.querySelector(".cl-chip.active");
+        render(active ? active.dataset.filter : "all");
     });
 
     // Вернулись назад после подписки на странице коллекции —

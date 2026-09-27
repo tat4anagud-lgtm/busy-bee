@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&family=Noto+Serif+SC:wght@500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="page-hero.css">
     <link rel="stylesheet" href="about-style.css">
 </head>
 <body>
@@ -154,27 +155,35 @@
 
         <main class="about-container">
 
-            <!-- HERO SECTION -->
-            <section class="about-hero">
+            <!-- Хлебные крошки — общий .breadcrumbs из style.css -->
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>›</span>
+                <span class="current">О Busy Bee</span>
+            </nav>
+
+            <!-- HERO — общий .page-hero (page-hero.css): фото на всю
+                 плашку с растушёвкой слева, фиксированная высота 280px,
+                 тот же размер, что у «Авторов»/«Закладок»/«Коллекций» -->
+            <section class="about-hero page-hero">
+                <div class="page-hero-media">
+                    <!-- images/backgrounds/about-hero.png — сейчас здесь
+                         старая маленькая иллюстрация 340×220, под новый
+                         полноразмерный баннер (как authors-hero.png)
+                         понадобится картинка пошире, тем же акварельным
+                         стилем -->
+                    <img src="images/backgrounds/about-hero.png" alt="">
+                </div>
+
                 <div class="hero-text-content">
                     <h1 class="hero-title">О Busy Bee</h1>
 
-                    <div class="ornament-divider">
-                        <img src="images/icons/chapter-divider.png" alt="" class="section-ornament">
+                    <div class="page-hero-ornament">
+                        <img src="images/icons/chapter-divider.png" alt="">
                     </div>
 
                     <p class="hero-subtitle">
-                        Место, где рождаются переводы,<br>
-                        встречаются истории и собирается<br>
-                        уютная библиотека.
+                        Место, где рождаются переводы, встречаются истории и собирается уютная библиотека.
                     </p>
-                </div>
-
-                <div class="hero-illustration">
-                    <!-- images/backgrounds/about-hero.png — книжная полка/ваза/пчела
-                         за чтением, в живописном стиле остальных иллюстраций сайта.
-                         Пропорции ~340×220 (см. .hero-illustration img в about-style.css) -->
-                    <img src="images/backgrounds/about-hero.png" alt="">
                 </div>
             </section>
 

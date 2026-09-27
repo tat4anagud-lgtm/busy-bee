@@ -1,0 +1,550 @@
+/* ========================================
+   BUSY BEE — ГЛАВНАЯ СТРАНИЦА
+   ========================================
+   Шапка, футер, общие компоненты (карточки коллекций, карусели-стрелки,
+   мини-закладка, .hero-info/.author/.progress/.description и т.п.) —
+   всё это по-прежнему в общем style.css, потому что используется и на
+   других страницах. Здесь — только то, что встречается исключительно
+   на главной: сам hero (обе версии — «Продолжить чтение» и «Добро
+   пожаловать»), карточки «Busy Bee рекомендует», блок жанров,
+   «Избранные авторы». Подключать после style.css. */
+
+/* ---------- Hero: фон обеих версий ---------- */
+/* Background art, one full-size image per hero variant (both files are
+   the same dimensions as .hero). On hero-welcome the art fills both
+   sides; on hero-continue the same canvas is used but only the right
+   side has actual artwork — the left is just flat fill in the PNG
+   itself, so it reads as "no art" without needing a second image. */
+.hero-welcome,
+.hero-continue {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.hero-welcome {
+    background-image: url("images/hero/hero-welcome-bg.png");
+}
+
+.hero-continue {
+    background-image: url("images/hero/hero-continue-bg.png");
+
+    /* Hidden by default, same reasoning as .hero-welcome below —
+       script.js decides which one to reveal once it has actually
+       checked localStorage (and, for hero-continue, fetched the
+       novel's data), so nothing flashes on screen before then */
+    display: none;
+}
+
+/* ---------- Novel cover ---------- */
+
+.hero-cover {
+    position: relative;
+    z-index: 1;
+
+    width: 31%;
+
+    padding: 20px 0 0 55px;
+}
+
+.hero-cover img {
+    width: 320px;
+    height: 340px;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+}
+
+/* Small label */
+
+.hero-label {
+    margin: 0 0 12px;
+
+    color: var(--text-primary);
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Novel title as a link: looks like plain text until hovered, so it
+   doesn't read as a generic blue link but is still clearly clickable */
+.hero-title-link {
+    color: var(--text-primary);
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.hero-title-link:hover {
+    color: var(--honey);
+
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   HERO BUTTONS
+   ======================================== */
+
+.hero-buttons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 22px;
+}
+
+
+/* Continue Reading */
+
+.continue-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 24px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--honey);
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.continue-button img {
+    width: 17px;
+    height: 17px;
+
+    object-fit: contain;
+}
+
+.continue-button:hover {
+    background: #C7962F;
+
+    transform: translateY(-1px);
+}
+
+
+/* Bookmark */
+
+.hero-bookmark-button {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--text-primary);
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.hero-bookmark-button:hover {
+    background: var(--white);
+    border-color: var(--honey);
+}
+
+.hero-bookmark-button.active {
+    border-color: var(--honey);
+}
+
+.hero-bookmark-button img {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+}
+
+
+/* ========================================
+   HERO — WELCOME VARIANT
+   ========================================
+   Shown instead of .hero-continue when there's no reading history in
+   localStorage (see the toggle at the top of index-script.js). Search-
+   first layout for new users or someone who just finished their last
+   novel. */
+
+.hero-welcome {
+    position: relative;
+
+    /* Hidden by default; index-script.js switches this to "flex" when
+       there's nothing to continue reading, so there's no flash of both
+       heroes stacked on top of each other while the page loads */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 48px;
+
+    text-align: center;
+}
+
+.hero-welcome-content {
+    position: relative;
+    z-index: 1;
+
+    /* Wider than the search bar itself so the Popular Searches row
+       (which needs more horizontal room) still fits on one line */
+    max-width: 700px;
+}
+
+.hero-welcome h1 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 34px;
+    font-weight: 500;
+}
+
+.hero-welcome-subtitle {
+    margin: 10px 0 0;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+}
+
+/* A bit more breathing room than the catalog's version gets — here
+   the search box sits right under a subtitle line instead of at the
+   top of the hero, so it needs extra clearance to avoid crowding it.
+   .hero-search-box сам общий (используется и в catalog.html), но этот
+   селектор требует предка .hero-welcome-content, которого больше
+   нигде нет — так что правило безопасно живёт только здесь */
+.hero-welcome-content .hero-search-box {
+    margin-top: 24px;
+}
+
+
+/* ========================================
+   MAIN CONTENT GRID
+   ======================================== */
+
+/* 3 columns: Recommendations (widest) | Latest Releases | Featured Authors.
+   Each of those three must be a DIRECT child of .content-grid,
+   otherwise the grid breaks and items land in the wrong column. */
+.content-grid {
+    width: calc(100% - 48px);
+    margin: 30px auto 0;
+
+    display: grid;
+
+    grid-template-columns: 2.15fr 1fr 1fr;
+
+    column-gap: 24px;
+}
+
+
+/* ========================================
+   BOOK CARDS — «Busy Bee рекомендует»
+   ========================================
+   .mini-bookmark и .carousel-arrow остались в общем style.css — их же
+   использует novels-grid.js на других страницах. */
+
+.book-card {
+    /* Fixed width so exactly 3 cards show per row and the
+       carousel arrows have something meaningful to scroll past */
+    flex: 0 0 calc((100% - 16px) / 3);
+    min-width: 0;
+    height: 128px;
+
+    display: flex;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: var(--surface);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 16px var(--shadow);
+}
+
+.book-card > img {
+    width: 60px;
+    height: 118px;
+
+    margin: 5px 0 5px 5px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 7px;
+}
+
+.book-card-info {
+    min-width: 0;
+
+    padding: 14px 10px 10px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.book-card-info h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+.book-card-info p {
+    margin: 8px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+.book-meta {
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 10px;
+}
+
+.rating {
+    color: var(--honey);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* ========================================
+   GENRE CARDS
+   ======================================== */
+
+.genre-section {
+    margin-top: 24px;
+}
+
+.genre-carousel {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.genre-list {
+    flex: 1;
+
+    display: flex;
+
+    gap: 7px;
+
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+.genre-card {
+    /* Fixed width so exactly 3 cards show per row and the
+       carousel arrows have something meaningful to scroll past —
+       more genres can be appended to .genre-list later */
+    flex: 0 0 calc((100% - 14px) / 3);
+    min-width: 0;
+
+    position: relative;
+
+    height: 80px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    padding: 12px 5px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    /* Fallback color while images/genres/*.jpg is loading (or missing) */
+    background: #6b5f4f;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* The genre photo sits behind the overlay + label, filling the card */
+.genre-card > img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.genre-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background: rgba(35, 28, 22, 0.35);
+}
+
+.genre-card span {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* ========================================
+   LATEST RELEASES
+   ========================================
+   .release-list/.release-item/.release-info/.release-right остались в
+   общем style.css — тот же рендер использует и catalog.html, только
+   обёртка тут своя. */
+
+/* Left border acts as a visual divider from the Recommendations column */
+.latest-releases {
+    padding-left: 22px;
+    border-left: 1px solid var(--border);
+}
+
+
+/* ========================================
+   FEATURED AUTHORS
+   ========================================
+   .author-avatar остался в общем style.css — тот же круглый аватар
+   использует и author.html. */
+
+/* Same divider treatment as .latest-releases */
+.featured-authors {
+    padding-left: 22px;
+
+    border-left: 1px solid var(--border);
+}
+
+.author-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.author-card {
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--surface);
+}
+
+.author-info {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.author-info h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.author-info p {
+    margin: 4px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 8px;
+}
+
+.follow-button {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+
+    color: var(--text-primary);
+
+    font-family: "Inter", sans-serif;
+    font-size: 9px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.follow-button img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+}
+
+.follow-button.following {
+    border-color: var(--honey);
+
+    background: var(--honey);
+
+    color: white;
+}

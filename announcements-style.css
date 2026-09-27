@@ -20,35 +20,36 @@
     padding: 0 32px 50px;
 }
 
-/* ==================== HERO ==================== */
+/* ==================== HERO ====================
+   position/overflow/radius/фон-подложка/padding/высота/отступ снизу —
+   всё из общего .page-hero (page-hero.css). Раньше текст был по
+   центру и без фото — теперь слева, как везде на сайте. */
 .announcements-hero {
-    text-align: center;
-    padding: 48px 0 32px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.announcements-hero-left {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
 }
 
 .hero-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 600;
+    line-height: 1.15;
     color: var(--text-primary);
     margin-bottom: 8px;
 }
 
-.ornament-divider {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 12px;
-}
-
-.section-ornament {
-    width: 160px;
-    height: auto;
-    display: block;
-}
-
 .hero-subtitle {
     color: var(--text-secondary);
-    font-size: 15px;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
 /* ==================== LAYOUT ==================== */

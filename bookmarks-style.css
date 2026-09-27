@@ -11,18 +11,14 @@
 }
 
 /* ---------- Баннер ----------
-   position/overflow/radius/фон-подложка — из общего .page-hero
-   (page-hero.css); здесь только то, что специфично для этой
-   страницы: отступы и минимальная высота, чтобы фото было видно
-   даже когда текста немного */
+   position/overflow/radius/фон-подложка/padding/min-height/отступ
+   снизу — всё из общего .page-hero (page-hero.css). Здесь только
+   раскладка «текст + фото» построчно и выравнивание. */
 .bm-hero {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 32px;
-    margin-top: 8px;
-    min-height: 220px;
-    padding: 26px 40px 30px;
 }
 
 .bm-hero-left {
@@ -30,37 +26,19 @@
     z-index: 1;
 }
 
-.bm-breadcrumbs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 18px;
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.bm-breadcrumbs a {
-    color: var(--text-secondary);
-    text-decoration: none;
-}
-
-.bm-breadcrumbs a:hover {
-    color: var(--honey);
-}
-
 .bm-title {
     margin: 0 0 8px;
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 44px;
-    font-weight: 500;
-    line-height: 1.1;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1.15;
     color: var(--text-primary);
 }
 
 .bm-subtitle {
     margin: 0 0 26px;
     max-width: 460px;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.6;
     color: var(--text-secondary);
 }
@@ -119,10 +97,8 @@
     outline-offset: 2px;
 }
 
-/* ---------- Заголовок раздела ---------- */
-.bm-panel {
-    margin-top: 36px;
-}
+/* Заголовок раздела — margin-top больше не нужен, отступ после
+   hero теперь общий (.page-hero margin-bottom в page-hero.css) */
 
 .bm-section-head {
     display: flex;

@@ -612,7 +612,19 @@
 
 /* Собственных стилей для "Busy Bee Collections" здесь больше нет — блок
    использует общий .collection-carousel / .collection-card из style.css,
-   как и на главной странице */
+   как и на главной странице.
+
+   Одно исключение — .collection-list в style.css является flex-рядом
+   без своего align-items, то есть по умолчанию это align-items: stretch:
+   все карточки в ряду растягиваются по высоте самой высокой (там, где
+   название в 2 строки), а у карточек с однострочным названием ("Второй
+   шанс" рядом с "Атмосферные истории") под текстом остаётся пустой
+   хвост. Правим только на этой странице — style.css общий для всех, а
+   translator-style.css подключается вторым, так что этого достаточно,
+   чтобы не трогать карусель на главной. */
+.collection-list {
+    align-items: flex-start;
+}
 
 /* Translations Grid — now the scrollable track inside .book-carousel,
    same pattern as .collection-list: flex row, own overflow clipping,
@@ -628,6 +640,8 @@
 
 .translation-card {
     flex: 0 0 calc((100% - 42px) / 4);
+    display: flex;
+    flex-direction: column;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -646,21 +660,40 @@
     border-radius: 6px;
 }
 
+/* Максимум 2 строки — раньше короткое название ("Книга грёз") давало
+   карточке пустой хвост внизу, а длинное ("В погоне за нефритом")
+   растягивало её на всю доступную высоту; теперь у всех карточек в
+   ряду одна и та же высота названия */
 .translation-card h4 {
     font-size: 11px;
     margin: 0;
     line-height: 1.3;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .translation-card .orig {
     font-size: 9px;
     color: var(--text-muted);
     margin: 2px 0 6px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* В одну строку — длинное имя переводчика обрезается многоточием, а
+   не переносится и не раздвигает карточку по высоте */
 .translation-card .author {
     font-size: 9px;
     color: var(--text-secondary);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .translation-card .ch-info {
@@ -669,9 +702,16 @@
     margin: 6px 0;
 }
 
+/* margin-top: auto прижимает строку с сердечком и закладкой к самому
+   низу карточки — при выравнивании .translations-grid по высоте
+   (align-items: stretch по умолчанию у flex) карточка с более
+   коротким названием раньше оставляла пустой хвост под этой строкой;
+   теперь сама строка уезжает вниз следом за карточкой, а не остаётся
+   прилипшей к тексту сверху */
 .card-footer {
     display: flex;
     justify-content: space-between;
+    margin-top: auto;
     border-top: 1px solid var(--border);
     padding-top: 6px;
 }
@@ -693,9 +733,11 @@
 
 .recommend-card {
     flex: 0 0 calc((100% - 36px) / 4);
+    display: flex;
+    flex-direction: column;
     background: var(--surface-warm);
     border-radius: 12px;
-    padding: 12px;
+    padding: 12px 12px 40px;
     text-align: center;
     position: relative;
 }
@@ -712,26 +754,51 @@
 .recommend-card h4 {
     font-size: 10px;
     margin: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .recommend-card .orig {
     font-size: 8px;
     color: var(--text-muted);
     margin: 2px 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .recommend-card .author {
     font-size: 8px;
     color: var(--text-secondary);
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* На скриншоте именно цитата (не название) растягивала карточку на
+   6-7 строк — ограничиваю так же, до 3 строк, иначе карточки короче
+   не станут */
 .recommend-card .quote {
     font-size: 9px;
     font-style: italic;
     color: var(--text-secondary);
     margin: 8px 0 0;
     line-height: 1.3;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
+
+/* Позиция закладки-сердечка не поменялась (положение задаёт .fav-btn
+   ниже) — padding-bottom карточки увеличен, чтобы даже при короткой
+   цитате кнопка не наезжала на текст */
 
 /* Positioning only — .favorite-btn (global styles) gives it its look */
 .fav-btn {
@@ -1008,8 +1075,22 @@
        декоративной ветки (ей не остаётся места сбоку) */
     .featured-project-card {
         flex-direction: column;
+        align-items: stretch;
         background-image: none;
         padding: 20px;
+    }
+
+    /* Именно align-items: stretch выше и чинит переполнение: базовое
+       правило .featured-project-card держит align-items: center — для
+       горизонтального ряда (desktop) это просто центрирует блоки по
+       высоте, но при flex-direction: column тот же center начинает
+       работать по горизонтали и сжимает текстовые блоки до их
+       «естественной» ширины без переноса — отсюда текст описания,
+       прогресс-бар и кнопки вылезали за край экрана вместо того,
+       чтобы просто быть уже */
+    .featured-info-box {
+        flex: none;
+        width: 100%;
     }
 
     .featured-cover-box img {

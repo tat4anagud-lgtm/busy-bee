@@ -1,0 +1,335 @@
+/* ========================================
+   BUSY BEE — СТРАНИЦА «ЖАНРЫ» (список всех жанров)
+   ========================================
+   Сделана по образцу «Коллекций» (collections-style.css, префикс
+   cl-), но без блока «Коллекция недели» — у жанров нет одной
+   «главной» карточки. Префикс ge-, чтобы не пересекаться ни со
+   страницей одного жанра (genre-style.css, префикс gn-), ни с
+   карточками жанров на главной (.genre-card в общем style.css —
+   тот же приём «фото + подпись», но эти крупнее и с счётчиком).
+   Баннер, поиск, чипы и подпись внизу построены так же, как на
+   «Авторах» и «Коллекциях». */
+
+.ge-container {
+    padding: 0 32px 50px;
+}
+
+/* ---------- Баннер ----------
+   position/overflow/radius/фон-подложка/padding/height/отступ
+   снизу — всё из общего .page-hero (page-hero.css). Здесь только
+   раскладка «текст + фото». */
+.ge-hero {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 32px;
+}
+
+.ge-hero-left {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+}
+
+.ge-title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text-primary);
+}
+
+.ge-subtitle {
+    margin: 0 0 22px;
+    max-width: 480px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+/* Тот же поисковый инпут, что на «Авторах»/«Коллекциях» — ищет
+   среди уже загруженных жанров (см. genres-script.js) */
+.ge-search-box {
+    position: relative;
+    max-width: 400px;
+}
+
+.ge-search-box input {
+    width: 100%;
+    height: 46px;
+    padding: 0 18px 0 44px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: border-color 0.2s ease;
+}
+
+.ge-search-box input:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.ge-search-box .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+}
+
+/* ---------- Фильтры ---------- */
+.ge-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 32px 0 20px;
+}
+
+.ge-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ge-chip {
+    appearance: none;
+    padding: 7px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font: inherit;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.ge-chip:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.ge-chip.active {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.ge-chip:focus-visible,
+.ge-card:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+.ge-count {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+/* ---------- Сетка карточек ----------
+   Крупная фото-плитка с затемнением снизу и подписью поверх — тот
+   же язык, что у мини-карусели жанров на главной (.genre-card в
+   style.css), но здесь карточка сама несёт всю информацию (без
+   отдельной карусели), плюс счётчик новелл. */
+.ge-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ge-grid:empty {
+    display: none;
+}
+
+.ge-card {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+
+    color: inherit;
+    text-decoration: none;
+
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ge-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px var(--shadow);
+}
+
+.ge-card img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.ge-card:hover img {
+    transform: scale(1.05);
+}
+
+.ge-card-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+        to top,
+        rgba(35, 28, 22, 0.75) 0%,
+        rgba(35, 28, 22, 0.2) 55%,
+        rgba(35, 28, 22, 0) 100%
+    );
+}
+
+.ge-card-body {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 16px 18px;
+    color: var(--white);
+}
+
+.ge-card-title {
+    margin: 0 0 4px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.ge-card-count {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+/* Жанр без своей фотографии (есть в каталоге, но для него ещё не
+   подобрана картинка) — тёплая градиентная плашка вместо фото, тот
+   же приём, что у .cover-placeholder на «Анонсах»: подпись остаётся
+   тёмной, а не белой, раз под ней больше не тёмное фото */
+.ge-card.no-image {
+    background: linear-gradient(160deg, var(--surface-warm) 0%, var(--border) 100%);
+}
+
+.ge-card.no-image .ge-card-overlay {
+    display: none;
+}
+
+.ge-card.no-image .ge-card-body {
+    color: var(--text-primary);
+}
+
+.ge-card.no-image .ge-card-count {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
+/* ---------- Пусто ---------- */
+.ge-empty {
+    margin: 0;
+    padding: 44px 24px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+.ge-empty[hidden] {
+    display: none;
+}
+
+/* ---------- Подпись внизу ---------- */
+.ge-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 36px auto 0;
+    padding: 12px 26px;
+
+    background: var(--surface-warm);
+    border-radius: 999px;
+}
+
+.ge-note img {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.ge-note p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
+
+.ge-note a {
+    color: var(--honey);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 992px) {
+    .ge-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .ge-container {
+        padding: 0 16px 40px;
+    }
+
+    .ge-hero {
+        padding: 22px 20px 24px;
+    }
+
+    .ge-title {
+        font-size: 34px;
+    }
+
+    .ge-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ge-note {
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 420px) {
+    .ge-grid {
+        grid-template-columns: 1fr;
+    }
+}

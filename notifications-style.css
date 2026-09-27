@@ -22,18 +22,15 @@
 }
 
 /* ==================== HERO ====================
-   position/overflow/radius/фон-подложка — из общего .page-hero
-   (page-hero.css). Раньше у этой шапки не было своей рамки-плашки
-   (текст просто лежал на фоне страницы) — теперь она есть, как и
-   у «Закладок»/«Коллекций», иначе полноразмерному фото негде лежать */
+   position/overflow/radius/фон-подложка/padding/min-height/отступ
+   снизу — всё из общего .page-hero (page-hero.css). Раньше у этой
+   шапки не было своей рамки-плашки вообще (текст лежал на фоне
+   страницы) — теперь она есть, как и у остальных похожих страниц. */
 .notifications-hero {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 32px;
-    margin-top: 8px;
-    min-height: 200px;
-    padding: 26px 40px;
 }
 
 .notifications-hero-left {
@@ -44,10 +41,10 @@
 
 .notifications-hero-left h1 {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 8px;
+    margin: 0 0 8px;
 }
 
 .notifications-hero-left p {

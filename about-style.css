@@ -13,54 +13,36 @@
     padding: 0 24px 60px;
 }
 
-/* ==================== HERO ==================== */
+/* ==================== HERO ====================
+   position/overflow/radius/фон-подложка/padding/высота/отступ снизу —
+   всё из общего .page-hero (page-hero.css). Здесь только раскладка
+   «текст + фото» — тот же приём, что на «Авторах»/«Закладках». */
 .about-hero {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    padding: 50px 0 40px;
-    gap: 30px;
+    gap: 32px;
 }
 
 .hero-text-content {
-    max-width: 440px;
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
 }
 
 .hero-title {
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 34px;
+    font-size: 38px;
     font-weight: 600;
+    line-height: 1.15;
     color: var(--text-primary);
     margin-bottom: 8px;
 }
 
-.ornament-divider {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 18px;
-}
-
-.section-ornament {
-    width: 160px;
-    height: auto;
-    display: block;
-}
-
 .hero-subtitle {
     font-size: 13px;
-    color: var(--text-muted);
+    color: var(--text-secondary);
     line-height: 1.6;
-}
-
-.hero-illustration {
-    flex-shrink: 0;
-}
-
-.hero-illustration img {
-    display: block;
-    width: 340px;
-    max-width: 100%;
-    height: auto;
 }
 
 /* ==================== INTRO TWO-COLUMN CARD ==================== */
@@ -403,11 +385,6 @@
 }
 
 @media (max-width: 600px) {
-    .about-hero {
-        flex-direction: column;
-        text-align: center;
-    }
-
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
     }

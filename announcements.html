@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="page-hero.css">
     <link rel="stylesheet" href="announcements-style.css">
 </head>
 <body>
@@ -154,17 +155,36 @@
 
         <main class="announcements-container">
 
-            <!-- HERO SECTION -->
-            <section class="announcements-hero">
-                <h1 class="hero-title">Анонсы</h1>
+            <!-- Хлебные крошки — общий .breadcrumbs из style.css -->
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>›</span>
+                <span class="current">Анонсы</span>
+            </nav>
 
-                <div class="ornament-divider">
-                    <img src="images/icons/chapter-divider.png" alt="" class="section-ornament">
+            <!-- HERO — общий .page-hero (page-hero.css): фото на всю
+                 плашку с растушёвкой слева, фиксированная высота 280px,
+                 текст слева (раньше был по центру и без фото) -->
+            <section class="announcements-hero page-hero">
+                <div class="page-hero-media">
+                    <!-- images/backgrounds/announcements-hero.png — пока
+                         не существует, нужна новая акварельная картинка
+                         (тот же стиль, что authors-hero.png); без файла
+                         здесь просто покажется тёплая заливка-подложка
+                         из .page-hero, ничего не сломается -->
+                    <img src="images/backgrounds/announcements-hero.png" alt="">
                 </div>
 
-                <p class="hero-subtitle">
-                    Все важные новости, обновления и планы Busy Bee.
-                </p>
+                <div class="announcements-hero-left">
+                    <h1 class="hero-title">Анонсы</h1>
+
+                    <div class="page-hero-ornament">
+                        <img src="images/icons/chapter-divider.png" alt="">
+                    </div>
+
+                    <p class="hero-subtitle">
+                        Все важные новости, обновления и планы Busy Bee.
+                    </p>
+                </div>
             </section>
 
             <!-- LAYOUT: SIDEBAR + FEED -->

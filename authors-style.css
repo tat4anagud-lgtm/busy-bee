@@ -11,55 +11,37 @@
     padding: 0 32px 50px;
 }
 
-/* ---------- Баннер ---------- */
+/* ---------- Баннер ----------
+   position/overflow/radius/фон-подложка/padding/min-height/отступ
+   снизу — всё из общего .page-hero (page-hero.css). Здесь только
+   раскладка «текст + фото» построчно и выравнивание — тот же
+   приём, что на «Закладках»/«Коллекциях»/«Уведомлениях». */
 .au-hero {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 32px;
-    margin-top: 8px;
-    padding: 26px 40px 30px;
-    min-height: 280px;
-
-    background: var(--surface-warm) url("images/backgrounds/authors-hero.png") center / cover no-repeat;
-    border-radius: 20px;
-    overflow: hidden;
 }
 
 .au-hero-left {
+    position: relative;
+    z-index: 1;
     max-width: 480px;
-}
-
-.au-breadcrumbs {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 18px;
-    font-size: 12px;
-    color: var(--text-muted);
-}
-
-.au-breadcrumbs a {
-    color: var(--text-secondary);
-    text-decoration: none;
-}
-
-.au-breadcrumbs a:hover {
-    color: var(--honey);
 }
 
 .au-title {
     margin: 0 0 8px;
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 44px;
-    font-weight: 500;
-    line-height: 1.1;
+    font-size: 38px;
+    font-weight: 600;
+    line-height: 1.15;
     color: var(--text-primary);
 }
 
 .au-subtitle {
     margin: 0 0 22px;
-    font-size: 14px;
+    max-width: 480px;
+    font-size: 13px;
     line-height: 1.6;
     color: var(--text-secondary);
 }

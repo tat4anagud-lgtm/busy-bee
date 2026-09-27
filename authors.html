@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="page-hero.css">
     <link rel="stylesheet" href="authors-style.css">
 </head>
 <body>
@@ -98,17 +99,22 @@
 
         <main class="au-container">
 
-            <!-- HERO — теперь фон на весь блок (images/backgrounds/authors-hero.jpg),
-                 без отдельной декоративной картинки справа; градиент не
-                 нужен — левая часть фото и так однотонная -->
-            <section class="au-hero">
-                <div class="au-hero-left">
-                    <nav class="au-breadcrumbs" aria-label="Навигация">
-                        <a href="index.html">Главная</a>
-                        <span aria-hidden="true">›</span>
-                        <span>Авторы</span>
-                    </nav>
+            <!-- Хлебные крошки вынесены за пределы баннера — общий
+                 .breadcrumbs из style.css, как на author.html/novel.html -->
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>›</span>
+                <span class="current">Авторы</span>
+            </nav>
 
+            <!-- HERO — общий .page-hero (page-hero.css): фото на всю
+                 плашку с растушёвкой слева, фиксированная высота 280px,
+                 тот же размер, что у «Закладок»/«Коллекций»/«Уведомлений» -->
+            <section class="au-hero page-hero">
+                <div class="page-hero-media">
+                    <img src="images/backgrounds/authors-hero.png" alt="">
+                </div>
+
+                <div class="au-hero-left">
                     <h1 class="au-title">Авторы</h1>
                     <p class="au-subtitle">Переводчики и писатели, чьи истории живут на Busy Bee.</p>
 
