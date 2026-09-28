@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Политика конфиденциальности — Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="page-hero.css">
+    <link rel="stylesheet" href="footer-pages-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER (тот же, что на остальных страницах) -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <div class="catalog-menu">
+                    <button class="catalog-button">
+                        Каталог
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="catalog-dropdown">
+                        <a href="catalog.html">Новеллы</a>
+                        <a href="authors.html">Авторы</a>
+                        <a href="genres.html">Жанры</a>
+                        <a href="collections.html">Коллекции</a>
+                        <a href="glossary.html">Глоссарий</a>
+                    </div>
+                </div>
+                <a href="announcements.html">Анонсы</a>
+                <a href="about.html">О Busy Bee</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
+                    <img src="images/icons/search.svg" alt="">
+                </div>
+
+                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+
+                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
+
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#library" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
+                        <a href="profile.html#favorites" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
+                        <a href="profile.html#quotes" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
+                        <a href="profile.html#notes" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
+                        <a href="profile.html#collections" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#achievements" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html#settings" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
+                            <div class="language-dropdown">
+                                <button class="language-option active">Русский</button>
+                                <button class="language-option">English</button>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
+                    </div>
+                </div>
+
+                <button class="header-login-button" title="Войти"><img src="images/icons/log-in.svg" alt=""></button>
+            </div>
+        </header>
+
+        <main class="fp-container">
+
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>›</span>
+                <span class="current">Политика конфиденциальности</span>
+            </nav>
+
+            <!-- HERO -->
+            <section class="fp-hero page-hero">
+                <span class="fp-hero-eyebrow">
+                    <img src="images/icons/bee-icon.svg" alt="" style="width:14px;height:14px;">
+                    Документы
+                </span>
+                <h1 class="fp-title">Политика конфиденциальности</h1>
+                <p class="fp-subtitle">Какие данные использует Busy Bee, зачем и что вы можете с ними сделать — по-человечески и без юридического тумана.</p>
+                <p class="fp-updated">Последнее обновление: 28 сентября 2026</p>
+            </section>
+
+            <div class="fp-layout">
+
+                <!-- САЙДБАР -->
+                <aside class="fp-sidebar">
+                    <nav class="fp-sidebar-menu" aria-label="Разделы">
+                        <a href="#summary">Коротко</a>
+                        <a href="#data">Какие данные мы используем</a>
+                        <a href="#ads">Реклама, аналитика и cookie</a>
+                        <a href="#login">Вход через ВК и Яндекс</a>
+                        <a href="#sharing">Кому передаются данные</a>
+                        <a href="#rights">Ваши права</a>
+                        <a href="#changes">Изменения и связь</a>
+                    </nav>
+
+                    <div class="fp-crosslinks">
+                        <h4>Ещё по теме</h4>
+                        <div class="fp-crosslinks-list">
+                            <a href="help-center.html">Help Center</a>
+                            <a href="contact-us.html">Contact Us</a>
+                            <a href="privacy-policy.html" aria-current="page">Privacy Policy</a>
+                            <a href="terms-of-use.html">Terms of Use</a>
+                            <a href="rights-holders.html">For Rights Holders</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- КОНТЕНТ -->
+                <div class="fp-content">
+
+                    <!-- КОРОТКО -->
+                    <section class="fp-section" id="summary">
+                        <h2>Коротко</h2>
+                        <p>Busy Bee — независимый проект, который ведёт один человек. Мы не продаём данные и не просим лишнего: читать можно без регистрации и входа, а всё, что вы настраиваете на сайте (тема, закладки, прогресс), хранится прямо в вашем браузере.</p>
+                        <p>На сайте показывается реклама <strong>Рекламной сети Яндекса (РСЯ)</strong> и работает <strong>Яндекс Метрика</strong> (статистика посещений) — поэтому Яндекс может использовать cookie и похожие технологии. Подробнее — в разделе «Реклама, аналитика и cookie».</p>
+                    </section>
+
+                    <!-- КАКИЕ ДАННЫЕ -->
+                    <section class="fp-section" id="data">
+                        <h2>Какие данные мы используем</h2>
+
+                        <h3 class="fp-subhead">Хранится только в вашем браузере</h3>
+                        <p>Пока у сайта нет собственных аккаунтов, вот это остаётся на вашем устройстве и не отправляется на наши серверы:</p>
+                        <ul>
+                            <li>настройки читалки — шрифт, размер, интервал, ширина текста, цветовая тема;</li>
+                            <li>тема сайта (светлая или тёмная);</li>
+                            <li>прогресс чтения, полки («Читаю», «Буду читать» и другие);</li>
+                            <li>закладки на страницы, цитаты и заметки;</li>
+                            <li>подписки на коллекции.</li>
+                        </ul>
+                        <p>Если очистить данные браузера, всё это пропадёт. На другом устройстве или в другом браузере эти данные не появятся.</p>
+
+                        <h3 class="fp-subhead">Что вы отправляете нам сами</h3>
+                        <ul>
+                            <li><strong>Форма или письмо в Contact Us</strong> — имя, email и текст сообщения. Используем только для того, чтобы ответить вам.</li>
+                            <li><strong>Комментарии под главами</strong> — публичны: имя (ник) и текст видны всем читателям.</li>
+                        </ul>
+
+                        <h3 class="fp-subhead">Технические данные</h3>
+                        <p>Как и любой сайт, при открытии страниц наш хостинг видит IP-адрес, тип браузера и устройства, дату и адреса запрошенных страниц. Это нужно, чтобы сайт работал и был защищён от сбоев и злоупотреблений. Статистику посещений отдельно собирает Яндекс Метрика — о ней ниже.</p>
+                    </section>
+
+                    <!-- РЕКЛАМА И COOKIE -->
+                    <!-- TODO (после тестирования сайта): добавить баннер об использовании
+                         cookie — короткое уведомление внизу страницы со ссылкой на эту
+                         страницу (#ads) и кнопкой «Понятно»/«Принять». Согласие запоминать
+                         в localStorage, чтобы не показывать баннер повторно. Нужен из-за
+                         рекламы РСЯ и Яндекс Метрики; один общий баннер на весь сайт
+                         (логика — в общем script.js, стили — в style.css). -->
+                    <section class="fp-section" id="ads">
+                        <h2>Реклама, аналитика и cookie</h2>
+                        <p>Busy Bee существует в том числе за счёт рекламы: мы размещаем рекламные блоки <strong>Рекламной сети Яндекса</strong>. Мы стараемся, чтобы реклама не мешала чтению — без всплывающих окон, отдельно от текста глав и с пометкой «Реклама».</p>
+
+                        <h3 class="fp-subhead">Что делает Яндекс</h3>
+                        <p>Рекламные блоки загружаются с серверов Яндекса. Чтобы подобрать объявление, Яндекс может использовать cookie, идентификаторы, IP-адрес, сведения о браузере и устройстве — в том числе, чтобы показывать рекламу с учётом интересов, оценивать её эффективность и защищаться от накрутки. Эти данные Яндекс обрабатывает по собственной <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">Политике конфиденциальности</a>.</p>
+
+                        <h3 class="fp-subhead">Яндекс Метрика</h3>
+                        <p>Чтобы понимать, какие страницы читают и что стоит улучшить, мы используем сервис статистики <strong>Яндекс Метрика</strong>. Она устанавливает cookie и собирает обобщённые данные о посещениях: какие страницы открывали, сколько времени провели на сайте, откуда пришли, с какого устройства и в каком браузере, а также примерный регион по IP-адресу. Мы видим только сводную статистику — без имён и почтовых адресов посетителей.</p>
+                        <p>Эти данные обрабатывает Яндекс по своей <a href="https://yandex.ru/legal/confidential/" target="_blank" rel="noopener">Политике конфиденциальности</a>. Отказаться от сбора статистики можно в настройках браузера или с помощью блокировщика; способы отказа от Метрики также описаны в справке Яндекса.</p>
+
+                        <h3 class="fp-subhead">Чего не происходит</h3>
+                        <ul>
+                            <li>Мы не передаём рекламодателям и Яндексу ваши имя, email или содержимое ваших заметок и цитат.</li>
+                            <li>Мы не продаём данные третьим лицам.</li>
+                        </ul>
+
+                        <h3 class="fp-subhead">Как ограничить рекламные cookie</h3>
+                        <p>Вы можете отключить или ограничить cookie в настройках браузера, а также управлять персонализацией рекламы в настройках своего аккаунта Яндекса. Сайт продолжит работать, но реклама при этом может стать менее подходящей вам, а статистика — менее точной.</p>
+                    </section>
+
+                    <!-- ВХОД ЧЕРЕЗ ВК И ЯНДЕКС -->
+                    <!-- Раздел описывает вход, который ещё предстоит подключить —
+                         оставить видимым только после запуска входа -->
+                    <section class="fp-section" id="login">
+                        <h2>Вход через ВКонтакте и Яндекс</h2>
+                        <p>Когда вы входите через ВКонтакте или Яндекс, мы получаем от них только то, что вы разрешили на экране согласия — как правило, имя, аватар и внутренний идентификатор вашего профиля.</p>
+                        <ul>
+                            <li>Данные нужны, чтобы создать ваш профиль и сохранять прогресс, полки и закладки между устройствами.</li>
+                            <li>Пароль от ВКонтакте или Яндекса мы не видим и не храним.</li>
+                            <li>Своей регистрации по email на сайте нет.</li>
+                        </ul>
+                        <p>Отозвать доступ сайта к профилю можно в настройках ВКонтакте или Яндекса. Чтобы удалить и связанные с профилем данные на нашей стороне, напишите нам через <a href="contact-us.html">Contact Us</a>.</p>
+                    </section>
+
+                    <!-- КОМУ ПЕРЕДАЮТСЯ -->
+                    <section class="fp-section" id="sharing">
+                        <h2>Кому передаются данные</h2>
+                        <p>Мы не продаём и не сдаём ваши данные в аренду. Они попадают к другим только в таких случаях:</p>
+                        <ul>
+                            <li><strong>Яндекс</strong> — для показа рекламы РСЯ, сбора статистики Яндекс Метрикой (и для входа через Яндекс, если вы им пользуетесь);</li>
+                            <li><strong>ВКонтакте</strong> — если вы входите через ВК;</li>
+                            <li><strong>хостинг-провайдер</strong> — техническое хранение и работа сайта;</li>
+                            <li><strong>почтовый сервис</strong> — доставка переписки из формы Contact Us;</li>
+                            <li><strong>государственные органы</strong> — только по законному запросу.</li>
+                        </ul>
+                        <p>Часть этих сервисов может обрабатывать данные на серверах за пределами вашей страны — это определяется их собственными правилами.</p>
+                    </section>
+
+                    <!-- ПРАВА -->
+                    <section class="fp-section" id="rights">
+                        <h2>Ваши права</h2>
+                        <p>Вы вправе узнать, какие данные о вас у нас есть, попросить исправить или удалить их, отозвать согласие на обработку. Локальные данные в браузере вы можете удалить сами в любой момент — через настройки браузера.</p>
+                        <p>Чтобы обратиться к нам, напишите через <a href="contact-us.html">Contact Us</a> — лучше с того же email, с которого вы писали раньше, или укажите, о каком профиле речь. Обычно отвечаем в течение 10 рабочих дней.</p>
+                    </section>
+
+                    <!-- ИЗМЕНЕНИЯ И СВЯЗЬ -->
+                    <section class="fp-section" id="changes">
+                        <h2>Изменения и связь</h2>
+                        <p>Мы можем обновлять эту политику — дата последнего обновления указана вверху страницы. О существенных изменениях сообщим в разделе «Анонсы».</p>
+                        <p>Оператор данных — <strong>[укажите ФИО или название проекта]</strong>, владелец сайта Busy Bee. Вопросы о конфиденциальности — через страницу <a href="contact-us.html">Contact Us</a>.</p>
+                    </section>
+
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
+                </div>
+
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
+
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
+                    <a href="help-center.html">Help Center</a>
+                    <a href="contact-us.html">Contact Us</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-of-use.html">Terms of Use</a>
+                    <a href="rights-holders.html">For Rights Holders</a>
+                </div>
+
+                <div class="footer-bottom-right">
+
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="footer-pages-script.js"></script>
+</body>
+</html>

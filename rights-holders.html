@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Правообладателям — Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="page-hero.css">
+    <link rel="stylesheet" href="footer-pages-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <!-- HEADER (тот же, что на остальных страницах) -->
+        <header class="header">
+            <a href="index.html" class="logo">
+                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                <span>Busy Bee</span>
+            </a>
+
+            <nav class="navigation">
+                <div class="catalog-menu">
+                    <button class="catalog-button">
+                        Каталог
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="catalog-dropdown">
+                        <a href="catalog.html">Новеллы</a>
+                        <a href="authors.html">Авторы</a>
+                        <a href="genres.html">Жанры</a>
+                        <a href="collections.html">Коллекции</a>
+                        <a href="glossary.html">Глоссарий</a>
+                    </div>
+                </div>
+                <a href="announcements.html">Анонсы</a>
+                <a href="about.html">О Busy Bee</a>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search">
+                    <input type="text" placeholder="Поиск по книгам, авторам...">
+                    <img src="images/icons/search.svg" alt="">
+                </div>
+
+                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
+                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
+
+                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
+
+                <div class="user-menu">
+                    <button class="user-button">
+                        <div class="user-avatar"></div>
+                        <img src="images/icons/chevron-down.svg" alt="">
+                    </button>
+                    <div class="user-dropdown">
+                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#library" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
+                        <a href="profile.html#favorites" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
+                        <a href="profile.html#quotes" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
+                        <a href="profile.html#notes" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
+                        <a href="profile.html#collections" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
+
+                        <div class="user-dropdown-spacer"></div>
+
+                        <a href="profile.html#achievements" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="profile.html#settings" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
+                        <div class="language-menu">
+                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
+                            <div class="language-dropdown">
+                                <button class="language-option active">Русский</button>
+                                <button class="language-option">English</button>
+                            </div>
+                        </div>
+
+                        <div class="user-dropdown-divider"></div>
+
+                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
+                    </div>
+                </div>
+
+                <button class="header-login-button" title="Войти"><img src="images/icons/log-in.svg" alt=""></button>
+            </div>
+        </header>
+
+        <main class="fp-container">
+
+            <nav class="breadcrumbs">
+                <a href="index.html">Главная</a> <span>›</span>
+                <span class="current">Правообладателям</span>
+            </nav>
+
+            <!-- HERO -->
+            <section class="fp-hero page-hero">
+                <span class="fp-hero-eyebrow">
+                    <img src="images/icons/bee-icon.svg" alt="" style="width:14px;height:14px;">
+                    Документы
+                </span>
+                <h1 class="fp-title">Правообладателям</h1>
+                <p class="fp-subtitle">Если вы автор или правообладатель и хотите, чтобы перевод вашего произведения убрали с сайта, — вот как это сделать быстро и без лишней бюрократии.</p>
+                <p class="fp-updated">Последнее обновление: 28 сентября 2026</p>
+            </section>
+
+            <div class="fp-layout">
+
+                <!-- САЙДБАР -->
+                <aside class="fp-sidebar">
+                    <nav class="fp-sidebar-menu" aria-label="Разделы">
+                        <a href="#position">Наша позиция</a>
+                        <a href="#how">Как подать заявку</a>
+                        <a href="#what">Что указать в заявке</a>
+                        <a href="#timing">Сроки и что дальше</a>
+                        <a href="#form">Форма заявки</a>
+                    </nav>
+
+                    <div class="fp-crosslinks">
+                        <h4>Ещё по теме</h4>
+                        <div class="fp-crosslinks-list">
+                            <a href="help-center.html">Help Center</a>
+                            <a href="contact-us.html">Contact Us</a>
+                            <a href="privacy-policy.html">Privacy Policy</a>
+                            <a href="terms-of-use.html">Terms of Use</a>
+                            <a href="rights-holders.html" aria-current="page">For Rights Holders</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- КОНТЕНТ -->
+                <div class="fp-content">
+
+                    <!-- НАША ПОЗИЦИЯ -->
+                    <section class="fp-section" id="position">
+                        <h2>Наша позиция</h2>
+                        <p>Busy Bee — независимый проект любительских переводов. Мы уважаем труд авторов и <strong>не претендуем на права на оригинальные произведения</strong> — только на сам перевод и оформление сайта.</p>
+                        <p>Если вы считаете, что перевод размещён без вашего разрешения, — просто напишите нам. Мы рассмотрим заявку в течение <strong>48 часов</strong> и, если она обоснована, снимем перевод с публикации.</p>
+                        <p>Если вместо удаления вам было бы интереснее договориться (например, о размещении на согласованных условиях), — тоже пишите, обсудим.</p>
+                    </section>
+
+                    <!-- КАК ПОДАТЬ ЗАЯВКУ -->
+                    <section class="fp-section" id="how">
+                        <h2>Как подать заявку</h2>
+                        <ol>
+                            <li>Найдите на Busy Bee страницу новеллы, к которой у вас есть претензии, и скопируйте её адрес.</li>
+                            <li>Заполните форму ниже или напишите на <a href="mailto:rights@busybee.example">rights@busybee.example</a> — оба способа равнозначны.</li>
+                            <li>Приложите подтверждение, что вы правообладатель или его уполномоченный представитель.</li>
+                            <li>Дождитесь ответа — мы напишем на указанную вами почту.</li>
+                        </ol>
+                    </section>
+
+                    <!-- ЧТО УКАЗАТЬ -->
+                    <section class="fp-section" id="what">
+                        <h2>Что указать в заявке</h2>
+                        <p>Чтобы мы могли быстро всё проверить, пожалуйста, укажите:</p>
+                        <ul>
+                            <li><strong>Кто вы</strong> — имя или название организации и email для ответа.</li>
+                            <li><strong>Ваша роль</strong> — правообладатель или его уполномоченный представитель.</li>
+                            <li><strong>Произведение</strong> — название оригинала, автор и, если есть, название перевода на сайте.</li>
+                            <li><strong>Где размещён перевод</strong> — ссылка на страницу новеллы или конкретных глав на Busy Bee.</li>
+                            <li><strong>Подтверждение прав</strong> — договор, регистрационные данные, ссылка на официальную страницу автора или издателя, любой документ, из которого видно, что произведение принадлежит вам.</li>
+                            <li><strong>Подтверждение добросовестности</strong> — что сведения в заявке верны и вы действуете от лица правообладателя.</li>
+                        </ul>
+                        <p>Заявки, отправленные не правообладателем и не его представителем, мы рассмотреть не сможем.</p>
+                    </section>
+
+                    <!-- СРОКИ -->
+                    <section class="fp-section" id="timing">
+                        <h2>Сроки и что дальше</h2>
+                        <ul>
+                            <li><strong>В течение 48 часов</strong> с момента получения заявки мы её рассматриваем и отвечаем вам.</li>
+                            <li>Если данных не хватает, напишем, что именно нужно уточнить.</li>
+                            <li>Если заявка обоснована, перевод снимается с публикации, и мы сообщаем вам об этом письмом.</li>
+                        </ul>
+                    </section>
+
+                    <!-- ФОРМА -->
+                    <section class="fp-section" id="form">
+                        <h2>Форма заявки</h2>
+                        <p>Все поля, кроме последнего, обязательны. Ответим на указанный email.</p>
+
+                        <form class="fp-form">
+                            <div class="fp-field">
+                                <label for="rhName">Имя или название организации</label>
+                                <input type="text" id="rhName" name="name" required>
+                            </div>
+
+                            <div class="fp-field">
+                                <label for="rhEmail">Email для ответа</label>
+                                <input type="email" id="rhEmail" name="email" required>
+                            </div>
+
+                            <div class="fp-field">
+                                <label for="rhRole">Ваша роль</label>
+                                <select id="rhRole" name="role">
+                                    <option value="owner">Правообладатель (автор, издатель)</option>
+                                    <option value="agent">Уполномоченный представитель</option>
+                                </select>
+                            </div>
+
+                            <div class="fp-field">
+                                <label for="rhWork">Произведение</label>
+                                <input type="text" id="rhWork" name="work" required placeholder="Название оригинала и автор">
+                            </div>
+
+                            <div class="fp-field">
+                                <label for="rhLinks">Ссылки на страницы Busy Bee</label>
+                                <textarea id="rhLinks" name="links" required placeholder="Адрес страницы новеллы или глав — по одной ссылке на строку"></textarea>
+                            </div>
+
+                            <div class="fp-field">
+                                <label for="rhProof">Подтверждение прав</label>
+                                <textarea id="rhProof" name="proof" required placeholder="Ссылка на документ, официальную страницу автора или издателя — или краткое описание"></textarea>
+                            </div>
+
+                            <div class="fp-field">
+                                <label for="rhComment">Комментарий (по желанию)</label>
+                                <textarea id="rhComment" name="comment"></textarea>
+                            </div>
+
+                            <label class="fp-check">
+                                <input type="checkbox" name="confirm" required>
+                                <span>Подтверждаю, что сведения в заявке верны и я являюсь правообладателем или его уполномоченным представителем.</span>
+                            </label>
+
+                            <button type="submit" class="fp-form-submit">Отправить заявку</button>
+                            <p class="fp-form-note">Заготовка формы — нужно подключить отправку на свою сторону (например, через сервис форм или собственный бэкенд).</p>
+                        </form>
+                    </section>
+
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+
+            <div class="footer-top">
+
+                <div class="footer-brand">
+                    <a href="index.html" class="logo footer-logo">
+                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
+                        <span>Busy Bee</span>
+                    </a>
+                    <p>Bringing stories to life, one chapter at a time.</p>
+                </div>
+
+                <p class="footer-disclaimer">
+                    Busy Bee is an independent translation project. All rights to the original novels belong to their
+                    respective authors and copyright holders — we don't claim ownership over the source material, only
+                    the translations themselves. If you're a rights holder and would like a translation removed, please
+                    get in touch with us.
+                </p>
+
+            </div>
+
+            <div class="footer-bottom">
+
+                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
+
+                <div class="footer-links">
+                    <a href="help-center.html">Help Center</a>
+                    <a href="contact-us.html">Contact Us</a>
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <a href="terms-of-use.html">Terms of Use</a>
+                    <a href="rights-holders.html">For Rights Holders</a>
+                </div>
+
+                <div class="footer-bottom-right">
+
+                    <div class="footer-social">
+                        <a href="#" class="footer-social-icon" title="Telegram">
+                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
+                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Pinterest">
+                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
+                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Boosty">
+                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
+                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="YouTube">
+                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
+                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
+                        </a>
+                        <a href="#" class="footer-social-icon" title="Patreon">
+                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
+                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
+                        </a>
+                    </div>
+
+                    <div class="footer-language">
+                        <button type="button" class="footer-language-option active">Ru</button>
+                        <span class="footer-language-sep">/</span>
+                        <button type="button" class="footer-language-option">Eng</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="footer-pages-script.js"></script>
+</body>
+</html>

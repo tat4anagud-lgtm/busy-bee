@@ -1,0 +1,604 @@
+/* ========================================
+   BUSY BEE — СТРАНИЦЫ ФУТЕРА
+   (Help Center, Contact Us, Privacy Policy, Terms of Use,
+   For Rights Holders)
+   ========================================
+   Один файл на все пять — макет у них общий (шапка-баннер, сайдбар
+   с разделами слева, контент справа), различается только сама
+   разметка контента внутри .fp-content на каждой странице. Тот же
+   принцип, что у novels-grid.css/js для «Коллекции» и «Жанра».
+   Префикс fp- (footer pages). Sidebar построен так же, как на
+   «Анонсах» (.sidebar-menu/.menu-item), FAQ-аккордеон — свой,
+   раскрывающие карточки в духе .term-card из глоссария.
+
+   Header/footer/nav/search и т.д. — из общего style.css. */
+
+:root {
+    --fs-micro: 10px;
+    --fs-small: 11px;
+    --fs-body: 12px;
+    --fs-base: 13px;
+}
+
+.fp-container {
+    padding: 0 32px 60px;
+}
+
+/* ---------- Баннер ----------
+   position/overflow/radius/фон-подложка/padding/height/отступ
+   снизу — всё из общего .page-hero (page-hero.css). У этих страниц
+   баннер без фото — просто текст на подложке, поэтому page-hero-media
+   в разметку не добавляется, а .page-hero задаёт только рамку/фон. */
+.fp-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: auto;
+    min-height: 160px;
+}
+
+.fp-hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--honey);
+}
+
+.fp-title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text-primary);
+}
+
+.fp-subtitle {
+    margin: 0;
+    max-width: 560px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.fp-updated {
+    margin: 14px 0 0;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+/* ---------- Раскладка ---------- */
+.fp-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ---------- Сайдбар ---------- */
+.fp-sidebar {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.fp-sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fp-sidebar-menu a {
+    display: block;
+    padding: 10px 16px;
+    border-radius: 8px;
+
+    font-size: var(--fs-base);
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.fp-sidebar-menu a:hover {
+    color: var(--text-primary);
+    background: var(--surface-warm);
+}
+
+.fp-sidebar-menu a.active {
+    color: var(--text-primary);
+    background: var(--surface-warm);
+    font-weight: 600;
+}
+
+/* «Ещё по теме» — ссылки на остальные четыре страницы этой же
+   группы (см. .fp-crosslinks в каждом HTML — список статичный,
+   текущая страница помечена aria-current="page" прямо в разметке) */
+.fp-crosslinks {
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.fp-crosslinks h4 {
+    margin: 0 0 10px;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--text-muted);
+}
+
+.fp-crosslinks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.fp-crosslinks-list a {
+    padding: 7px 16px;
+    border-radius: 8px;
+
+    font-size: var(--fs-body);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.fp-crosslinks-list a:hover {
+    color: var(--text-primary);
+    background: var(--surface-warm);
+}
+
+.fp-crosslinks-list a[aria-current="page"] {
+    color: var(--honey);
+    font-weight: 600;
+}
+
+/* ---------- Контент ---------- */
+.fp-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    max-width: 760px;
+}
+
+.fp-section {
+    /* Якоря из сайдбара не прячутся под sticky-шапкой браузера —
+       запас сверху при прокрутке к разделу */
+    scroll-margin-top: 24px;
+}
+
+.fp-section h2 {
+    margin: 0 0 14px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.fp-section > p {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.fp-section > p:last-child {
+    margin-bottom: 0;
+}
+
+.fp-section ul,
+.fp-section ol {
+    margin: 0 0 12px;
+    padding-left: 20px;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.fp-section li {
+    margin-bottom: 6px;
+}
+
+.fp-section li:last-child {
+    margin-bottom: 0;
+}
+
+.fp-section strong {
+    color: var(--text-primary);
+}
+
+.fp-section a {
+    color: var(--honey);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 2px;
+}
+
+.fp-section a:hover {
+    text-decoration-color: var(--honey);
+}
+
+/* Мелкие подзаголовки внутри раздела (например, «Что мы собираем»
+   внутри Privacy Policy) — на ступень меньше h2, без якоря в сайдбаре */
+.fp-subhead {
+    margin: 20px 0 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.fp-subhead:first-child {
+    margin-top: 0;
+}
+
+/* ---------- Поиск по вопросам (только Help Center) ---------- */
+.fp-search-box {
+    position: relative;
+    max-width: 480px;
+    margin-bottom: 8px;
+}
+
+.fp-search-box input {
+    width: 100%;
+    height: 46px;
+    padding: 0 18px 0 44px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+
+    box-shadow: 0 4px 14px var(--shadow);
+    transition: border-color 0.2s ease;
+}
+
+.fp-search-box input:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.fp-search-box .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    opacity: 0.5;
+}
+
+/* ---------- FAQ-аккордеон ---------- */
+.fp-faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fp-faq-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.fp-faq-item[hidden] {
+    display: none;
+}
+
+.fp-faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 16px 20px;
+
+    background: none;
+    border: none;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.fp-faq-question .fp-faq-icon {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    opacity: 0.5;
+    transition: transform 0.2s ease;
+}
+
+.fp-faq-item.open .fp-faq-question .fp-faq-icon {
+    transform: rotate(180deg);
+}
+
+.fp-faq-item.open {
+    border-color: var(--honey);
+}
+
+.fp-faq-answer {
+    padding: 0 20px 18px;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.fp-faq-answer[hidden] {
+    display: none;
+}
+
+.fp-faq-answer p {
+    margin: 0 0 8px;
+}
+
+.fp-faq-answer p:last-child {
+    margin-bottom: 0;
+}
+
+.fp-faq-nothing-found {
+    margin: 0;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+.fp-faq-nothing-found[hidden] {
+    display: none;
+}
+
+/* ---------- Плашка контактов внизу страницы ---------- */
+.fp-contact-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 30px;
+
+    background: var(--surface-warm);
+    border-radius: 16px;
+}
+
+.fp-contact-banner-text h3 {
+    margin: 0 0 4px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.fp-contact-banner-text p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.fp-contact-banner .cl-btn {
+    flex-shrink: 0;
+    padding: 10px 24px;
+    background: var(--honey);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: filter 0.2s ease;
+}
+
+.fp-contact-banner .cl-btn:hover {
+    filter: brightness(0.94);
+}
+
+/* ---------- Простая форма (Contact Us) ---------- */
+.fp-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 480px;
+}
+
+.fp-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fp-field label {
+    font-size: var(--fs-base);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.fp-field input,
+.fp-field select,
+.fp-field textarea {
+    width: 100%;
+    padding: 11px 14px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--text-primary);
+    transition: border-color 0.2s ease;
+}
+
+.fp-field textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+.fp-field input:focus,
+.fp-field select:focus,
+.fp-field textarea:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.fp-form-submit {
+    align-self: flex-start;
+    margin-top: 4px;
+    padding: 11px 28px;
+
+    background: var(--honey);
+    border: none;
+    border-radius: 999px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.fp-form-submit:hover {
+    filter: brightness(0.94);
+}
+
+.fp-form-note {
+    margin: 0;
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+}
+
+/* Список прямых способов связи (email/Telegram) — карточки-строки,
+   используются на Contact Us рядом с формой */
+.fp-contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fp-contact-method {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: border-color 0.2s ease;
+}
+
+.fp-contact-method:hover {
+    border-color: var(--honey);
+}
+
+.fp-contact-method-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--surface-warm);
+    color: var(--honey);
+}
+
+.fp-contact-method-icon img {
+    width: 17px;
+    height: 17px;
+}
+
+.fp-contact-method-body strong {
+    display: block;
+    font-size: 13px;
+    color: var(--text-primary);
+    margin-bottom: 1px;
+}
+
+.fp-contact-method-body span {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Чекбокс подтверждения под формой (For Rights Holders). Вне .fp-field
+   специально: иначе на него легли бы стили текстовых полей (width:100%) */
+.fp-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: var(--fs-body);
+    line-height: 1.5;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.fp-check input {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin: 2px 0 0;
+    accent-color: var(--honey);
+    cursor: pointer;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 900px) {
+    .fp-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .fp-sidebar {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+
+    .fp-sidebar-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .fp-crosslinks {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .fp-content {
+        max-width: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .fp-container {
+        padding: 0 16px 40px;
+    }
+
+    .fp-title {
+        font-size: 28px;
+    }
+
+    .fp-contact-banner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
