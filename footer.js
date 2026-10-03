@@ -14,16 +14,25 @@ document.currentScript.insertAdjacentHTML("afterend", `
                 <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
                 <span>Busy Bee</span>
             </a>
-            <p>Bringing stories to life, one chapter at a time.</p>
+            <p>Истории, которые согревают</p>
         </div>
 
-        <!-- Placeholder wording — rewrite in your own voice -->
-        <p class="footer-disclaimer">
-            Busy Bee is an independent translation project. All rights to the original novels belong to their
-            respective authors and copyright holders — we don't claim ownership over the source material, only
-            the translations themselves. If you're a rights holder and would like a translation removed, please
-            get in touch with us.
-        </p>
+        <!-- Два языка: русский — для читателей, английский — для зарубежных
+             правообладателей (ссылка в обоих ведёт на страницу «Правообладателям») -->
+        <div class="footer-disclaimer">
+            <p style="margin: 0 0 8px;">
+                Busy Bee — независимый переводческий проект. Все права на оригинальные произведения
+                принадлежат их авторам и правообладателям: мы не претендуем на права на исходный
+                материал, только на сами переводы. Если вы правообладатель и хотите, чтобы перевод
+                убрали, пожалуйста, <a href="rights-holders.html?lang=ru" style="color: var(--honey); text-decoration: underline; text-underline-offset: 2px;">свяжитесь с нами</a>.
+            </p>
+            <p lang="en" style="margin: 0; color: var(--text-muted);">
+                Busy Bee is an independent translation project. All rights to the original novels belong to their
+                respective authors and copyright holders — we don't claim ownership over the source material, only
+                the translations themselves. If you're a rights holder and would like a translation removed, please
+                <a href="rights-holders.html?lang=en" style="color: var(--honey); text-decoration: underline; text-underline-offset: 2px;">get in touch with us</a>.
+            </p>
+        </div>
 
     </div>
 
@@ -32,11 +41,11 @@ document.currentScript.insertAdjacentHTML("afterend", `
         <span class="footer-copyright">&copy; 2026 Busy Bee</span>
 
         <div class="footer-links">
-            <a href="#">Help Center</a>
-            <a href="#">Contact Us</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Use</a>
-            <a href="#">For Rights Holders</a>
+            <a href="help-center.html">Центр помощи</a>
+            <a href="contact-us.html">Связаться с нами</a>
+            <a href="privacy-policy.html">Политика конфиденциальности</a>
+            <a href="terms-of-use.html">Условия использования</a>
+            <a href="rights-holders.html">Правообладателям</a>
         </div>
 
         <div class="footer-bottom-right">

@@ -118,24 +118,148 @@ if (userButton && userDropdown) {
     });
 }
 
-// Theme icon in the header: swaps the moon/sun icon, visible to guests
-// and signed-in users alike. Placeholder for now — it doesn't switch
-// the site's colors yet.
-const themeToggle = document.querySelector(".theme-toggle");
+// Theme icon: swaps the moon/sun icon, visible to guests and signed-in
+// users alike. Placeholder for now — it doesn't switch the site's
+// colors yet. querySelectorAll (not just the header's one) because the
+// mobile burger panel (mobile-nav.js) has its own copy of this same
+// button for when the header's is hidden — both stay in sync below.
+const themeToggles = document.querySelectorAll(".theme-toggle");
+let isDarkTheme = false;
 
-if (themeToggle) {
-    const themeIcon = themeToggle.querySelector("img");
-    let isDarkTheme = false;
+function paintThemeToggles() {
+    themeToggles.forEach((toggle) => {
+        const icon = toggle.querySelector("img");
+        if (icon) icon.src = isDarkTheme ? "images/icons/sun.svg" : "images/icons/moon.svg";
+    });
+}
 
-    themeToggle.addEventListener("click", (event) => {
+themeToggles.forEach((toggle) => {
+    toggle.addEventListener("click", (event) => {
         // No longer needed for a dropdown-closing reason (this button
         // isn't inside a dropdown anymore), left in as a harmless no-op
         event.stopPropagation();
 
         isDarkTheme = !isDarkTheme;
-        themeIcon.src = isDarkTheme
-            ? "images/icons/sun.svg"
-            : "images/icons/moon.svg";
+        paintThemeToggles();
+    });
+});
+
+
+/* ========================================
+   MOBILE MENU (бургер) + НИЖНЯЯ ПАНЕЛЬ
+   ========================================
+   Разметка обеих вещей — не здесь: бургер-кнопка сама по себе лежит в
+   header.js (просто кнопка-иконка, ей не нужен position:fixed), а то,
+   что она открывает (.mobile-nav-overlay), и сама .bottom-nav —
+   в mobile-nav.js, который вставляет их ВНЕ .page-shell (у него
+   overflow:hidden и zoom — fixed-элементы внутри вели бы себя
+   непредсказуемо). Здесь — только поведение после того, как обе
+   разметки уже в DOM (mobile-nav.js подключается раньше этого файла).
+
+   BOTTOM_NAV_FIFTH_TAB — какая вкладка занимает пятое место в нижней
+   панели: "profile" (сейчас) или "announcements" (когда профиля ещё
+   нет на сайте). Меняется одной строкой, без правки разметки — обе
+   вкладки уже лежат в mobile-nav.js, лишняя просто скрывается. */
+const BOTTOM_NAV_FIFTH_TAB = "profile"; // "profile" | "announcements"
+
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+const mobileNavOverlay = document.getElementById("mobileNavOverlay");
+
+if (mobileMenuBtn && mobileNavOverlay) {
+    const menuIcon = mobileMenuBtn.querySelector("img");
+    const backdrop = mobileNavOverlay.querySelector(".mobile-nav-backdrop");
+    const closeBtn = mobileNavOverlay.querySelector(".mobile-nav-close");
+
+    function openMobileNav() {
+        mobileNavOverlay.classList.add("open");
+        mobileMenuBtn.setAttribute("aria-expanded", "true");
+        document.body.classList.add("mobile-nav-locked");
+        if (menuIcon) menuIcon.src = menuIcon.dataset.filled;
+    }
+
+    function closeMobileNav() {
+        mobileNavOverlay.classList.remove("open");
+        mobileMenuBtn.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("mobile-nav-locked");
+        if (menuIcon) menuIcon.src = menuIcon.dataset.outline;
+    }
+
+    mobileMenuBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (mobileNavOverlay.classList.contains("open")) closeMobileNav();
+        else openMobileNav();
+    });
+
+    if (backdrop) backdrop.addEventListener("click", closeMobileNav);
+    if (closeBtn) closeBtn.addEventListener("click", closeMobileNav);
+
+    // Переход по любой ссылке внутри панели — она должна закрыться,
+    // а не остаться открытой поверх новой загруженной страницы
+    mobileNavOverlay.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeMobileNav);
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && mobileNavOverlay.classList.contains("open")) closeMobileNav();
+    });
+
+    // Скрываем в панели ту вкладку, что и так уже есть в нижней панели
+    // (сейчас это «Профиль» ИЛИ «Анонсы», смотря что выбрано выше)
+    const duplicateLink = mobileNavOverlay.querySelector(
+        `[data-duplicate-of="${BOTTOM_NAV_FIFTH_TAB}"]`
+    );
+    if (duplicateLink) duplicateLink.hidden = true;
+}
+
+
+/* ---------- Нижняя панель: пятая вкладка + подсветка активной ---------- */
+const bottomNav = document.querySelector(".bottom-nav");
+
+if (bottomNav) {
+    // Пятая вкладка — профиль или анонсы, см. BOTTOM_NAV_FIFTH_TAB выше
+    bottomNav.querySelectorAll("[data-fifth-tab]").forEach((item) => {
+        item.hidden = item.dataset.fifthTab !== BOTTOM_NAV_FIFTH_TAB;
+    });
+
+    // Активная вкладка — по имени текущего файла, не по полному адресу
+    // (у catalog.html, bookmarks.html и т.д. бывают ?query-параметры)
+    const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+    // Центральная кнопка (#bottomNavCenter) намеренно не участвует:
+    // это кнопка-действие «продолжить чтение», а не «вы здесь», и её
+    // href в момент этой проверки ещё запасной (catalog.html) — само
+    // чтение подставляется позже, отдельным блоком ближе к концу файла
+    bottomNav.querySelectorAll(".bottom-nav-item[href]:not(#bottomNavCenter)").forEach((item) => {
+        const itemPage = item.getAttribute("href").split("?")[0].split("#")[0];
+        if (itemPage === currentPage || (currentPage === "" && itemPage === "index.html")) {
+            item.classList.add("active");
+        }
+    });
+}
+
+
+/* ---------- Поиск в шапке на мобильном — сворачивается до иконки ----------
+   На узких экранах .search схлопывается в одну круглую иконку (см.
+   style.css, медиа-запрос 768px); тап по ней разворачивает инпут,
+   повторный тап вне поля — сворачивает обратно. На десктопе .search
+   всегда развёрнут, этот код там просто не нужен (клик по уже
+   развёрнутому полю ничего не переключает за пределами breakpoint'а). */
+const headerSearch = document.querySelector(".header-actions > .search");
+
+if (headerSearch) {
+    const searchInput = headerSearch.querySelector("input");
+
+    headerSearch.addEventListener("click", (event) => {
+        if (headerSearch.classList.contains("expanded")) return;
+        event.stopPropagation();
+        headerSearch.classList.add("expanded");
+        searchInput?.focus();
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!headerSearch.contains(event.target)) {
+            headerSearch.classList.remove("expanded");
+        }
     });
 }
 
@@ -1687,6 +1811,102 @@ function saveReadingProgress(novelId, chapterNumber) {
         console.error("Couldn't save reading progress:", error);
     }
 }
+
+/* ---------- Приподнятая кнопка «Продолжить чтение» в нижней панели ----------
+   Кнопка всегда одна и та же (иконка + общая подпись, без названия
+   конкретной книги — так попросили: выбор, что продолжать, должен
+   быть за читателем, а не за кнопкой). По клику:
+     • есть хоть одна начатая новелла — открывает шторку со списком
+       всех, от самой свежей к самой старой;
+     • прогресса нет вообще — сразу ведёт в каталог, шторка в этом
+       случае не нужна.
+   В отличие от getReadingProgress() выше (прогресс ОДНОЙ конкретной
+   новеллы — так его зовут страницы книги/главы), здесь нужны СРАЗУ
+   ВСЕ записи — читаем тот же ключ READING_PROGRESS_KEY напрямую. */
+(function initBottomNavContinueReading() {
+    const centerBtn = document.getElementById("bottomNavCenter");
+    const sheet = document.getElementById("continueSheet");
+    if (!centerBtn || !sheet) return;
+
+    const labelEl = document.getElementById("bottomNavCenterLabel");
+    const listEl = document.getElementById("continueSheetList");
+    const backdrop = sheet.querySelector(".continue-sheet-backdrop");
+    const closeBtn = document.getElementById("continueSheetClose");
+
+    let all;
+    try {
+        all = JSON.parse(localStorage.getItem(READING_PROGRESS_KEY)) || {};
+    } catch (error) {
+        all = {};
+    }
+
+    const entries = Object.entries(all).sort(
+        (a, b) => new Date(b[1].updatedAt) - new Date(a[1].updatedAt)
+    );
+
+    // Прогресса нет нигде — кнопка просто ведёт в каталог, шторка не нужна
+    if (!entries.length) {
+        centerBtn.addEventListener("click", () => {
+            window.location.href = "catalog.html";
+        });
+        return;
+    }
+
+    if (labelEl) labelEl.textContent = "Продолжить";
+
+    function openSheet() {
+        sheet.classList.add("open");
+        centerBtn.setAttribute("aria-expanded", "true");
+        document.body.classList.add("mobile-nav-locked");
+    }
+
+    function closeSheet() {
+        sheet.classList.remove("open");
+        centerBtn.setAttribute("aria-expanded", "false");
+        document.body.classList.remove("mobile-nav-locked");
+    }
+
+    centerBtn.addEventListener("click", openSheet);
+    if (backdrop) backdrop.addEventListener("click", closeSheet);
+    if (closeBtn) closeBtn.addEventListener("click", closeSheet);
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && sheet.classList.contains("open")) closeSheet();
+    });
+
+    // Список строится один раз, сразу при загрузке страницы — тому,
+    // кто откроет шторку, не придётся ждать подгрузки
+    Promise.all(
+        entries.map(([novelId, progress]) =>
+            getNovelData(novelId)
+                .then((novel) => ({ novel, progress }))
+                .catch(() => null) // нет файла новеллы — пропускаем строку, а не ломаем список
+        )
+    ).then((loaded) => {
+        const rows = loaded.filter(Boolean);
+        if (!listEl) return;
+
+        if (!rows.length) {
+            listEl.innerHTML = `<p class="continue-sheet-empty">Не удалось загрузить список. Попробуйте обновить страницу.</p>`;
+            return;
+        }
+
+        listEl.innerHTML = rows.map(({ novel, progress }) => {
+            const total = novel.totalChapters || 0;
+            const chapterLine = total
+                ? `Глава ${progress.chapter || 1} из ${total}`
+                : `Глава ${progress.chapter || 1}`;
+
+            return `
+                <a href="${chapterHref(novel.id, progress.chapter)}" class="continue-sheet-row">
+                    <img class="continue-sheet-row-cover" src="${escapeHtml(novel.cover)}" alt="">
+                    <span class="continue-sheet-row-body">
+                        <strong>${escapeHtml(novel.title)}</strong>
+                        <span>${escapeHtml(chapterLine)}</span>
+                    </span>
+                </a>`;
+        }).join("");
+    });
+})();
 
 /* ========================================
    READER MODE (reader.html)

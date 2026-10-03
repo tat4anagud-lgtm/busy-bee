@@ -26,8 +26,26 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
+/* Пока JS (loadAuthorPage() в author-script.js) не подставил реальный
+   src, у img нет изображения — без этого фона браузер на долю секунды
+   показывает иконку «битой картинки». Как только src появляется,
+   background всё равно перекрывается самим изображением. */
+.author-avatar-box {
+    flex-shrink: 0;
+}
+
+.author-avatar-box .author-avatar {
+    display: block;
+    background: var(--surface-warm);
+}
+
 .author-hero-content {
     flex: 1;
+    /* Без этого блок-контейнер как flex-элемент не сжимается меньше
+       min-content своих потомков — а у .author-pills-row ниже он был
+       широким (см. следующий комментарий) и раздвигал весь блок,
+       а с ним и всю карточку (.author-hero-card), шире экрана */
+    min-width: 0;
 }
 
 .author-header-title {
@@ -76,7 +94,15 @@
 
 .author-pills-row {
     display: flex;
+    /* Две pill-группы рядом не помещались на узком экране и не могли
+       сжаться (см. .author-hero-content выше) — из-за этого весь блок
+       описания «вылезал» за пределы экрана вместо того, чтобы
+       перенестись, как на странице переводчика. flex-wrap ничего не
+       меняет на десктопе — там места достаточно, перенос просто не
+       нужен и не происходит. */
+    flex-wrap: wrap;
     gap: 16px;
+    row-gap: 10px;
 }
 
 .pill-group {
@@ -105,6 +131,111 @@
 
 .pill-items {
     color: var(--text-primary);
+}
+
+/* ---------- Подписка на автора + колокольчик уведомлений ----------
+   Те же классы и то же поведение, что на translator.html (см. там
+   .hero-actions/.subscribe-btn/.notify-btn в translator-style.css) —
+   продублировано здесь, а не вынесено в общий style.css, потому что
+   каждая страница держит свой CSS отдельно от остальных. */
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.subscribe-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 22px;
+
+    background: var(--honey);
+    border: 1px solid var(--honey);
+    border-radius: 8px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--white);
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.subscribe-btn:hover {
+    filter: brightness(0.95);
+}
+
+.subscribe-check {
+    display: none;
+}
+
+.subscribe-btn[aria-pressed="true"] {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-secondary);
+}
+
+.subscribe-btn[aria-pressed="true"]:hover {
+    filter: none;
+    border-color: var(--honey);
+    color: var(--text-primary);
+}
+
+.subscribe-btn[aria-pressed="true"] .subscribe-check {
+    display: block;
+    color: var(--honey);
+}
+
+.notify-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    color: var(--text-muted);
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.notify-btn[hidden] {
+    display: none;
+}
+
+.notify-btn:hover {
+    border-color: var(--honey);
+}
+
+.notify-btn[aria-pressed="true"] {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--honey);
+}
+
+.notify-btn .bell-off,
+.notify-btn[aria-pressed="false"] .bell-on {
+    display: none;
+}
+
+.notify-btn[aria-pressed="false"] .bell-off {
+    display: block;
+}
+
+.subscribe-btn:focus-visible,
+.notify-btn:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
 }
 
 /* Stats Cards Grid */
@@ -211,21 +342,6 @@
     gap: 14px;
 }
 
-@media (max-width: 1100px) {
-    .works-grid--full {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (max-width: 720px) {
-    .works-grid--full {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .quotes-grid {
-        grid-template-columns: 1fr;
-    }
-}
 
 /* Two Column Grid */
 .author-grid {
@@ -271,6 +387,13 @@
     padding: 12px;
     display: flex;
     flex-direction: column;
+    /* Без этого карточка как flex-элемент (в мобильной карусели,
+       flex: 0 0 62%/78% — см. низ файла) не может сжаться меньше
+       min-content своего содержимого. Виновник — .work-tags ниже:
+       ряд из 4-5 тегов без переноса, который сам по себе шире 62%
+       экрана и раздувал всю карточку, поэтому она и «вылезала» за
+       пределы вместо того, чтобы остаться в заданных 62%. */
+    min-width: 0;
 }
 
 .work-cover-box {
@@ -345,6 +468,7 @@
 
 .work-tags {
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
     margin-bottom: 12px;
 }
@@ -539,9 +663,44 @@
 }
 
 .authors-horizontal-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    display: flex;
     gap: 14px;
+
+    /* Свайп пальцем на телефоне и планшете, жестом по трекпаду на
+       ноутбуке (то самое двупальцевое смахивание влево-вправо) — тот
+       же приём, что и у каруселей на странице переводчика. Работает
+       «из коробки»: overflow-x: auto сам умеет и то, и другое, без
+       единой строчки JS. */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    /* Карточки подставляются в этот ряд скриптом уже после первой
+       отрисовки страницы (см. author-script.js) — без этого браузер
+       сам «компенсирует» появление новых карточек прокруткой вперёд,
+       и ряд на старте оказывается пролистанным почти до конца. */
+    overflow-anchor: none;
+}
+
+.authors-horizontal-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.author-mini-card,
+.author-explore-more {
+    /* Раньше ширина считалась в процентах от контейнера — из-за этого
+       на узком экране карточки не «уезжали за край» для свайпа, а
+       просто дружно сжимались все шестеро сразу, до нечитаемой ширины
+       (в процентах ширина карточки всегда пропорциональна контейнеру,
+       какой бы узкий он ни был). Теперь ширина фиксированная в
+       пикселях и не зависит от экрана: на широком она даёт примерно
+       те же ~6 карточек в ряд, что были в сетке, а на узком просто
+       показывается меньше карточек одинакового удобного размера,
+       остальные — свайпом. */
+    flex: 0 0 128px;
+    min-width: 0;
+    scroll-snap-align: start;
 }
 
 .author-mini-card {
@@ -578,6 +737,7 @@
 
 .mini-tags {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 4px;
 }
@@ -617,4 +777,170 @@
 .author-explore-more span {
     font-size: 9px;
     text-align: center;
+}
+
+/* ========================================
+   HERO: АВАТАР + БАННЕР НА УЗКИХ ЭКРАНАХ
+   ========================================
+   Тот же порог (992px) и тот же приём, что на странице переводчика:
+   аватар и текст переносятся в колонку, декоративная картинка справа
+   прячется — на такой ширине ей всё равно уже некуда деваться. */
+@media (max-width: 992px) {
+    .author-hero-card {
+        flex-wrap: wrap;
+        background-image: none;
+    }
+
+    /* Настоящая причина того, что блок не переносился под аватар, а
+       вместо этого сжимался в узкую колонку: у .author-hero-content
+       (базово flex: 1, то есть flex-basis: 0%) «желаемая» ширина для
+       расчёта переноса равна нулю — с точки зрения flex-wrap блок
+       «и так помещается» в любую щель рядом с аватаром, сколько бы
+       места ни было, поэтому перенос строки никогда не наступал.
+       На мобильном явно задаём ему нормальную базовую ширину (220px,
+       как у .profile-info-main на странице переводчика) — теперь
+       аватар (110px) + отступ + 220px не помещаются рядом на телефоне,
+       и блок переносится на всю ширину карточки под аватар, как надо. */
+    .author-hero-content {
+        flex: 1 1 220px;
+    }
+
+    .author-avatar {
+        width: 110px;
+        height: 110px;
+    }
+
+    /* Имя — та же лесенка размеров (32 → 24 → 20), что у переводчика */
+    .author-header-title h1 {
+        font-size: 24px;
+    }
+
+    /* Отступы — как на странице переводчика: .author-container (было
+       32px с каждой стороны на любой ширине, без этого правила) и сама
+       карточка (было 32px) сужаются, так что на телефоне рамка
+       занимает почти весь экран, а не выглядит уже, чем нужно */
+    .author-container {
+        padding: 0 16px 40px;
+    }
+
+    .author-hero-card {
+        padding: 20px;
+    }
+
+    /* Двухколоночная сетка «Обзора» — с этой ширины сайдбар (заметки
+       переводчика, цитаты, похожие авторы) уходит под работы автора,
+       а не сжимается вместе с ними до нечитаемой узкой полоски.
+       Порядок в HTML (работы → сайдбар) остаётся как есть — так и
+       выглядит логичнее: сначала главное, потом дополнительное. */
+    .author-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 1100px) {
+    .works-grid--full {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* «Работы автора» на вкладке «Обзор» — не путать с .works-grid--full
+       выше (это вкладка «Новеллы», у неё свой отдельный адаптив) */
+    .works-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 5 карточек статистики уже не помещаются по 1fr каждая — 3 колонки,
+       «Любимые жанры» (последняя, с самым длинным текстом) — во всю
+       ширину нижней строки */
+    .author-stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .author-stats-grid .stat-card:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 720px) {
+    /* Вкладка «Новеллы» остаётся сеткой на любом устройстве, но на
+       телефоне — это сетка из одной колонки, то есть по сути список:
+       карточки друг под другом на всю ширину, а не сжатые в 2 узкие
+       колонки. Отличается от «Обзора» (.works-grid) ниже — там на
+       телефоне карусель, а не список. */
+    .works-grid--full {
+        grid-template-columns: 1fr;
+    }
+
+    .quotes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* На телефоне — 2 колонки вместо 3: 4 карточки парами (книга/жанры,
+       главы/подписчики), «Любимые жанры» — отдельной строкой во всю
+       ширину. Получается что-то вроде таблицы 2×2 + 1, а не 5 сжатых
+       в нитку полосок */
+    .author-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    /* «Работы автора» (вкладка «Обзор») — та же логика, что у каруселей
+       на странице переводчика: вместо ужимания в колонки, которые на
+       телефоне превращаются в нечитаемые узкие карточки, ряд листается
+       пальцем. Стрелок здесь и не было — только свайп. Вкладка
+       «Новеллы» (.works-grid--full) не затрагивается, у неё останется
+       обычная сетка в 2 колонки, заданная выше. */
+    .works-grid {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .works-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .work-card {
+        flex: 0 0 62%;
+        scroll-snap-align: start;
+    }
+
+    .author-avatar {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+@media (max-width: 400px) {
+    .author-container {
+        padding: 0 8px 24px;
+    }
+
+    .author-hero-card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .author-avatar {
+        width: 76px;
+        height: 76px;
+    }
+
+    .author-header-title h1 {
+        font-size: 20px;
+    }
+
+    .author-bio {
+        font-size: 11px;
+    }
+
+    .work-card {
+        flex-basis: 78%;
+    }
 }

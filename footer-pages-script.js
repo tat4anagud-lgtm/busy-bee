@@ -12,7 +12,10 @@
      (только Help Center).
    • .fp-form — валидация "неотправить пустую форму" по умолчанию
      браузера (required на полях) — здесь просто мягкое сообщение
-     после отправки, без реального бэкенда (Contact Us).
+     после отправки, без реального бэкенда (Contact Us, For Rights
+     Holders).
+   • .fp-lang-switch — переключатель русский/английский на странице
+     For Rights Holders (см. блок в конце файла).
 
    Подключать после script.js (нужен только для общего header/footer,
    сам этот файл от него ничего не использует). */
@@ -155,17 +158,80 @@ document.addEventListener("DOMContentLoaded", () => {
             // Заготовка без бэкенда: просто подтверждаем отправку и чистим
             // форму — реальную отправку подключишь на своей стороне позже
             const submitBtn = contactForm.querySelector(".fp-form-submit");
-            const originalLabel = submitBtn.textContent;
+            const originalHtml = submitBtn.innerHTML;
+            const isEnglish = document.body.dataset.pageLang === "en";
 
-            submitBtn.textContent = "Отправлено!";
+            submitBtn.textContent = isEnglish ? "Sent!" : "Отправлено!";
             submitBtn.disabled = true;
 
             setTimeout(() => {
                 contactForm.reset();
-                submitBtn.textContent = originalLabel;
+                submitBtn.innerHTML = originalHtml;
                 submitBtn.disabled = false;
             }, 2400);
         });
+    }
+
+    /* ---------- Язык страницы (For Rights Holders) ----------
+       Оба языка лежат в разметке парами (<span data-lang="ru"> и
+       <span data-lang="en">), лишний прячет CSS по body[data-page-lang].
+       Отсюда меняется только то, что CSS не достаёт: placeholder'ы,
+       подписи в <select>, <title> и lang у <html>.
+
+       Какой язык открыть:
+         1. ?lang=en / ?lang=ru в адресе — на английский вариант ведёт
+            ссылка из английского дисклеймера в футере;
+         2. иначе — русский, если русский есть среди языков браузера,
+            и английский во всех остальных случаях. */
+    const langSwitch = document.querySelector(".fp-lang-switch");
+
+    if (langSwitch) {
+        const LANGS = ["ru", "en"];
+        const langButtons = Array.from(langSwitch.querySelectorAll("[data-set-lang]"));
+
+        function detectLang() {
+            const fromUrl = new URLSearchParams(location.search).get("lang");
+            if (LANGS.includes(fromUrl)) return fromUrl;
+
+            const browserLangs = navigator.languages && navigator.languages.length
+                ? navigator.languages
+                : [navigator.language || ""];
+            return browserLangs.some((l) => String(l).toLowerCase().startsWith("ru")) ? "ru" : "en";
+        }
+
+        function setLang(lang, { updateUrl = false } = {}) {
+            document.body.dataset.pageLang = lang;
+            document.documentElement.lang = lang;
+
+            langButtons.forEach((btn) => {
+                const isActive = btn.dataset.setLang === lang;
+                btn.classList.toggle("active", isActive);
+                btn.setAttribute("aria-pressed", isActive);
+            });
+
+            document.querySelectorAll("[data-placeholder-ru]").forEach((el) => {
+                el.placeholder = lang === "en" ? el.dataset.placeholderEn : el.dataset.placeholderRu;
+            });
+
+            document.querySelectorAll("option[data-ru]").forEach((option) => {
+                option.textContent = lang === "en" ? option.dataset.en : option.dataset.ru;
+            });
+
+            const titleEl = document.querySelector("title[data-ru]");
+            if (titleEl) titleEl.textContent = lang === "en" ? titleEl.dataset.en : titleEl.dataset.ru;
+
+            // Адрес обновляем только по клику: на первом показе не нужно
+            // дописывать ?lang= к чужой ссылке. Якорь (#form и т.п.) сохраняем
+            if (updateUrl) {
+                history.replaceState(null, "", `?lang=${lang}${location.hash}`);
+            }
+        }
+
+        langButtons.forEach((btn) => {
+            btn.addEventListener("click", () => setLang(btn.dataset.setLang, { updateUrl: true }));
+        });
+
+        setLang(detectLang());
     }
 
 });

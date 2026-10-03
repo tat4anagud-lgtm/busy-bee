@@ -111,99 +111,157 @@
 
         </section>
 
-        <!-- 3-column layout: Recommendations | Latest Releases | Featured Authors.
-             All three must stay direct children of .content-grid (see style.css) -->
-        <section class="content-grid">
+        <!-- Топ 10 за неделю. ЗАГЛУШКА: пока сортируем все новеллы по рейтингу (см. renderTop10 в index-script.js) — настоящий недельный топ появится, когда будет статистика просмотров -->
+        <section class="home-section">
 
-            <!-- "Busy Bee Recommends": card carousel with prev/next arrows -->
-            <section class="recommendations">
+            <div class="section-header">
+                <h2 class="section-title">Топ 10 за неделю</h2>
+                <a href="catalog.html" class="view-all">Посмотреть всё</a>
+            </div>
+
+            <div class="book-carousel">
+
+                <button type="button" class="carousel-arrow" aria-label="Previous">‹</button>
+
+                <div class="book-list carousel-track" id="top10Track"></div>
+
+                <button type="button" class="carousel-arrow" aria-label="Next">›</button>
+
+            </div>
+
+        </section>
+
+        <!-- Busy Bee рекомендует: редакционный блок — одна большая карточка (с описанием)
+             и две поменьше. Какие новеллы показывать, задаётся в index-script.js
+             (EDITORS_PICK_IDS); пока — первые три из novels.json. Рисует index-script.js -->
+        <section class="home-section">
+
+            <div class="section-header">
+                <h2 class="section-title">Busy Bee рекомендует</h2>
+                <a href="#" class="view-all">Посмотреть всё</a>
+            </div>
+
+            <div class="editor-pick" id="editorsPick"></div>
+
+        </section>
+
+        <!-- Вы хотели прочитать: новеллы с полки «Буду читать» (те же, что на странице
+             Закладок). Пока полка пуста — вместо карусели показывается подсказка.
+             TODO: для новых пользователей вместо этой подсказки показывать отдельный
+             блок рекомендаций (не «Busy Bee рекомендует») — надо продумать -->
+        <section class="home-section" id="wantToReadSection">
+
+            <div class="section-header">
+                <h2 class="section-title">Вы хотели прочитать</h2>
+                <a href="bookmarks.html#novels" class="view-all">Посмотреть всё</a>
+            </div>
+
+            <div class="book-carousel" id="wantToReadCarousel">
+
+                <button type="button" class="carousel-arrow" aria-label="Previous">‹</button>
+
+                <div class="book-list carousel-track" id="wantToReadTrack"></div>
+
+                <button type="button" class="carousel-arrow" aria-label="Next">›</button>
+
+            </div>
+
+            <p class="home-empty" id="wantToReadEmpty" hidden>Здесь появятся новеллы, которые вы хотите прочитать. Нажмите на закладку на карточке любой новеллы — и она окажется здесь.</p>
+
+        </section>
+
+        <!-- Новинки: компактный список. ЗАГЛУШКА: в данных новеллы пока нет даты
+             добавления, поэтому показываем новеллы с конца novels.json
+             (см. index-script.js). Рисует index-script.js -->
+        <section class="home-section">
+
+            <div class="section-header">
+                <h2 class="section-title">Новинки</h2>
+                <a href="catalog.html" class="view-all">Посмотреть всё</a>
+            </div>
+
+            <div class="new-list" id="newReleasesList"></div>
+
+        </section>
+
+        <!-- Жанры (вынесены из узкой колонки на всю ширину) -->
+        <section class="home-section">
+
+            <div class="genre-section">
 
                 <div class="section-header">
-                    <h2 class="section-title">Busy Bee рекомендует</h2>
+                    <h2 class="section-title">Жанры</h2>
                     <a href="#" class="view-all">Посмотреть всё</a>
                 </div>
 
-                <div class="book-carousel">
+                <div class="genre-carousel">
 
-                    <button type="button" class="carousel-arrow" aria-label="Previous">‹</button>
+                    <button type="button" class="carousel-arrow" aria-label="Previous genres">‹</button>
 
-                    <div class="book-list carousel-track" id="recommendationsTrack"></div>
+                    <div class="genre-list carousel-track">
+                        <a href="genre.html?name=%D0%90%D1%80%D0%BC%D0%B8%D1%8F" class="genre-card">
+                            <img src="images/genres/army.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Армия</span>
+                        </a>
+                        <a href="genre.html?name=%D0%94%D0%B2%D0%BE%D1%80%D1%86%D0%BE%D0%B2%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%82%D1%80%D0%B8%D0%B3%D0%B8" class="genre-card">
+                            <img src="images/genres/court-intrigue.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Дворцовые интриги</span>
+                        </a>
+                        <a href="genre.html?name=%D0%94%D1%80%D0%B0%D0%BC%D0%B0" class="genre-card">
+                            <img src="images/genres/drama.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Драма</span>
+                        </a>
+                        <a href="genre.html?name=%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5" class="genre-card">
+                            <img src="images/genres/historical.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Исторические</span>
+                        </a>
+                        <a href="genre.html?name=%D0%9A%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F" class="genre-card">
+                            <img src="images/genres/comedy.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Комедия</span>
+                        </a>
+                        <a href="genre.html?name=%D0%9C%D0%B5%D1%81%D1%82%D1%8C" class="genre-card">
+                            <img src="images/genres/revenge.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Месть</span>
+                        </a>
+                        <a href="genre.html?name=%D0%9C%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0" class="genre-card">
+                            <img src="images/genres/mystery.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Мистика</span>
+                        </a>
+                        <a href="genre.html?name=%D0%A0%D0%BE%D0%BC%D0%B0%D0%BD%D1%82%D0%B8%D0%BA%D0%B0" class="genre-card">
+                            <img src="images/genres/romance.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Романтика</span>
+                        </a>
+                        <a href="genre.html?name=%D0%A1%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5" class="genre-card">
+                            <img src="images/genres/modern.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Современные</span>
+                        </a>
+                        <a href="genre.html?name=%D0%A4%D1%8D%D0%BD%D1%82%D0%B5%D0%B7%D0%B8" class="genre-card">
+                            <img src="images/genres/fantasy.png" alt="">
+                            <div class="genre-overlay"></div>
+                            <span>Фэнтези</span>
+                        </a>
+                    </div>
 
-                    <button type="button" class="carousel-arrow" aria-label="Next">›</button>
+                    <button type="button" class="carousel-arrow" aria-label="Next genres">›</button>
 
                 </div>
 
-                <div class="genre-section">
+            </div>
 
-                    <div class="section-header">
-                        <h2 class="section-title">Жанры</h2>
-                        <a href="#" class="view-all">Посмотреть всё</a>
-                    </div>
+        </section>
 
-                    <div class="genre-carousel">
-
-                        <button type="button" class="carousel-arrow" aria-label="Previous genres">‹</button>
-
-                        <div class="genre-list carousel-track">
-                            <a href="genre.html?name=%D0%90%D1%80%D0%BC%D0%B8%D1%8F" class="genre-card">
-                                <img src="images/genres/army.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Армия</span>
-                            </a>
-                            <a href="genre.html?name=%D0%94%D0%B2%D0%BE%D1%80%D1%86%D0%BE%D0%B2%D1%8B%D0%B5%20%D0%B8%D0%BD%D1%82%D1%80%D0%B8%D0%B3%D0%B8" class="genre-card">
-                                <img src="images/genres/court-intrigue.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Дворцовые интриги</span>
-                            </a>
-                            <a href="genre.html?name=%D0%94%D1%80%D0%B0%D0%BC%D0%B0" class="genre-card">
-                                <img src="images/genres/drama.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Драма</span>
-                            </a>
-                            <a href="genre.html?name=%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5" class="genre-card">
-                                <img src="images/genres/historical.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Исторические</span>
-                            </a>
-                            <a href="genre.html?name=%D0%9A%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F" class="genre-card">
-                                <img src="images/genres/comedy.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Комедия</span>
-                            </a>
-                            <a href="genre.html?name=%D0%9C%D0%B5%D1%81%D1%82%D1%8C" class="genre-card">
-                                <img src="images/genres/revenge.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Месть</span>
-                            </a>
-                            <a href="genre.html?name=%D0%9C%D0%B8%D1%81%D1%82%D0%B8%D0%BA%D0%B0" class="genre-card">
-                                <img src="images/genres/mystery.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Мистика</span>
-                            </a>
-                            <a href="genre.html?name=%D0%A0%D0%BE%D0%BC%D0%B0%D0%BD%D1%82%D0%B8%D0%BA%D0%B0" class="genre-card">
-                                <img src="images/genres/romance.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Романтика</span>
-                            </a>
-                            <a href="genre.html?name=%D0%A1%D0%BE%D0%B2%D1%80%D0%B5%D0%BC%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5" class="genre-card">
-                                <img src="images/genres/modern.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Современные</span>
-                            </a>
-                            <a href="genre.html?name=%D0%A4%D1%8D%D0%BD%D1%82%D0%B5%D0%B7%D0%B8" class="genre-card">
-                                <img src="images/genres/fantasy.png" alt="">
-                                <div class="genre-overlay"></div>
-                                <span>Фэнтези</span>
-                            </a>
-                        </div>
-
-                        <button type="button" class="carousel-arrow" aria-label="Next genres">›</button>
-
-                    </div>
-
-                </div>
-
-            </section>
+        <!-- 2 колонки: Последние обновления | Избранные авторы.
+             Обе должны оставаться прямыми детьми .content-grid (см. index-style.css) -->
+        <section class="content-grid">
 
             <section class="latest-releases">
 

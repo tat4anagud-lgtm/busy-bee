@@ -25,22 +25,33 @@ function ngStatusLabel(novel) {
     return "Выходит";
 }
 
-function ngCardHtml(novel) {
+/* options (необязательные, для полок на главной — страницы коллекции и
+   жанра вызывают ngCardHtml(novel) как раньше и ничего не замечают):
+     rank        — число: бейдж места на обложке («Топ 10»)
+     showRating  — true: вместо «Выходит • 259 глав» показать
+                   «★ 4.8 · Выходит» */
+function ngCardHtml(novel, options = {}) {
+    const rank = options.rank ?? null;
+    const showRating = Boolean(options.showRating);
+
     const href = `novel.html?id=${encodeURIComponent(novel.id)}`;
     const tags = (novel.genres || []).slice(0, 2)
         .map((genre) => `<span class="ng-tag">${escapeHtml(genre)}</span>`).join("");
     const total = novel.totalChapters || 0;
     const chapters = total ? ` • ${total} ${pluralRu(total, "глава", "главы", "глав")}` : "";
+    const statusHtml = showRating && novel.rating
+        ? `<b class="ng-rating">★ ${novel.rating.score.toFixed(1)}</b> · ${ngStatusLabel(novel)}`
+        : `${ngStatusLabel(novel)}${chapters}`;
 
     return `
         <article class="ng-card">
-            <a href="${href}" class="ng-cover"><img src="${escapeHtml(novel.cover)}" alt="${escapeHtml(novel.title)}"></a>
+            <a href="${href}" class="ng-cover">${rank !== null ? `<span class="ng-rank" aria-label="Место ${rank}">${rank}</span>` : ""}<img src="${escapeHtml(novel.cover)}" alt="${escapeHtml(novel.title)}"></a>
             <div class="ng-card-body">
                 <h3 class="ng-card-title"><a href="${href}">${escapeHtml(novel.title)}</a></h3>
                 <p class="ng-card-author">${escapeHtml(novel.author ? novel.author.name : "")}</p>
                 ${tags ? `<div class="ng-card-tags">${tags}</div>` : ""}
                 <div class="ng-card-footer">
-                    <span class="ng-card-status">${ngStatusLabel(novel)}${chapters}</span>
+                    <span class="ng-card-status">${statusHtml}</span>
                     <button type="button" class="mini-bookmark" data-novel-id="${escapeHtml(novel.id)}" aria-label="Сохранить в закладки" aria-pressed="false">
                         <img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg">
                     </button>

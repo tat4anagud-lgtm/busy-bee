@@ -242,111 +242,27 @@
    MAIN CONTENT GRID
    ======================================== */
 
-/* 3 columns: Recommendations (widest) | Latest Releases | Featured Authors.
-   Each of those three must be a DIRECT child of .content-grid,
-   otherwise the grid breaks and items land in the wrong column. */
+/* Полноширинные «полосы» страницы: Топ 10, Вы хотели прочитать,
+   Busy Bee рекомендует, Новинки, Жанры. Тот же отступ и ширина, что у
+   .collections-section в style.css, чтобы ритм страницы был одинаковый. */
+.home-section {
+    width: calc(100% - 48px);
+    margin: 36px auto 0;
+}
+
+/* 2 columns: Latest Releases | Featured Authors (раньше здесь была ещё
+   третья колонка — «Busy Bee рекомендует» + «Жанры», теперь они
+   вынесены в свои полноширинные секции выше). Обе колонки должны быть
+   ПРЯМЫМИ детьми .content-grid. */
 .content-grid {
     width: calc(100% - 48px);
-    margin: 30px auto 0;
+    margin: 36px auto 0;
 
     display: grid;
 
-    grid-template-columns: 2.15fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 
     column-gap: 24px;
-}
-
-
-/* ========================================
-   BOOK CARDS — «Busy Bee рекомендует»
-   ========================================
-   .mini-bookmark и .carousel-arrow остались в общем style.css — их же
-   использует novels-grid.js на других страницах. */
-
-.book-card {
-    /* Fixed width so exactly 3 cards show per row and the
-       carousel arrows have something meaningful to scroll past */
-    flex: 0 0 calc((100% - 16px) / 3);
-    min-width: 0;
-    height: 128px;
-
-    display: flex;
-
-    overflow: hidden;
-
-    border: 1px solid var(--border);
-    border-radius: 11px;
-
-    background: var(--surface);
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.book-card:hover {
-    transform: translateY(-2px);
-
-    box-shadow: 0 5px 16px var(--shadow);
-}
-
-.book-card > img {
-    width: 60px;
-    height: 118px;
-
-    margin: 5px 0 5px 5px;
-
-    flex-shrink: 0;
-
-    object-fit: cover;
-
-    border-radius: 7px;
-}
-
-.book-card-info {
-    min-width: 0;
-
-    padding: 14px 10px 10px;
-
-    display: flex;
-    flex-direction: column;
-}
-
-.book-card-info h3 {
-    margin: 0;
-
-    color: var(--text-primary);
-
-    font-family: "Inter", sans-serif;
-    font-size: 12px;
-    line-height: 1.3;
-    font-weight: 500;
-}
-
-.book-card-info p {
-    margin: 8px 0 0;
-
-    color: var(--text-muted);
-
-    font-size: 10px;
-    line-height: 1.3;
-}
-
-.book-meta {
-    margin-top: auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    font-size: 10px;
-}
-
-.rating {
-    color: var(--honey);
-
-    font-size: 10px;
-    font-weight: 600;
 }
 
 
@@ -354,8 +270,9 @@
    GENRE CARDS
    ======================================== */
 
+/* Отступ сверху теперь задаёт обёртка .home-section */
 .genre-section {
-    margin-top: 24px;
+    margin-top: 0;
 }
 
 .genre-carousel {
@@ -377,10 +294,12 @@
 }
 
 .genre-card {
-    /* Fixed width so exactly 3 cards show per row and the
-       carousel arrows have something meaningful to scroll past —
-       more genres can be appended to .genre-list later */
-    flex: 0 0 calc((100% - 14px) / 3);
+    /* Fixed width so exactly 5 cards show per row (gap 7px × 4 = 28px)
+       and the carousel arrows have something meaningful to scroll past —
+       more genres can be appended to .genre-list later.
+       Раньше было 3: карусель жила в узкой колонке, а на всю ширину
+       страницы три карточки превращались в огромные плоские баннеры */
+    flex: 0 0 calc((100% - 28px) / 5);
     min-width: 0;
 
     position: relative;
@@ -442,10 +361,10 @@
    общем style.css — тот же рендер использует и catalog.html, только
    обёртка тут своя. */
 
-/* Left border acts as a visual divider from the Recommendations column */
+/* Слева теперь нет соседней колонки, поэтому разделитель только у
+   .featured-authors (между двумя колонками) */
 .latest-releases {
-    padding-left: 22px;
-    border-left: 1px solid var(--border);
+    padding-right: 2px;
 }
 
 
@@ -547,4 +466,662 @@
     background: var(--honey);
 
     color: white;
+}
+
+
+/* ========================================
+   КАРТОЧКА НОВЕЛЛЫ НА ПОЛКАХ (Топ 10 / Вы хотели прочитать / Busy Bee
+   рекомендует)
+   ========================================
+   Тот же .translation-card, что и на странице переводчика (см.
+   translator-style.css) — то же название класса, но это два разных
+   подключаемых файла на разных страницах, друг другу не мешают.
+   .badge-ongoing/.badge-completed и .favorite-btn/.mini-bookmark —
+   общие классы из style.css, здесь их стили не дублируются, только
+   локальный вариант бейджа (см. ниже) — как и на странице переводчика,
+   он не требует пары с базовым .badge. */
+
+.translation-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px;
+}
+
+/* 5 в ряд — .book-list общий (style.css), gap 8px, значит 4 зазора */
+.book-list .translation-card {
+    flex: 0 0 calc((100% - 32px) / 5);
+}
+
+.translation-card .cover-box {
+    position: relative;
+    margin-bottom: 8px;
+}
+
+.translation-card .cover-box img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* Локальный вариант — не требует пары с базовым .badge, как на
+   странице переводчика (см. .badge-ongoing/.badge-completed в
+   translator-style.css) */
+.translation-card .badge-ongoing,
+.translation-card .badge-completed {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 9px;
+    color: white;
+}
+
+.translation-card .badge-ongoing { background: var(--honey); }
+.translation-card .badge-completed { background: #5B8C5A; }
+
+/* Номер места — только у Топ 10, вместо бейджа статуса */
+.translation-card .card-rank {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
+
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--honey);
+    color: white;
+
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Максимум 2 строки — чтобы у всех карточек в ряду была одна и та же
+   высота названия, независимо от того, короткое оно или длинное */
+.translation-card h4 {
+    font-size: 11px;
+    margin: 0;
+    line-height: 1.3;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* В одну строку — длинное имя автора обрезается многоточием, а не
+   переносится и не раздвигает карточку по высоте */
+.translation-card .author {
+    font-size: 9px;
+    color: var(--text-secondary);
+    margin: 2px 0 6px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.translation-card .ch-info {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin: 0 0 6px;
+}
+
+/* margin-top: auto прижимает строку с сердечком и закладкой к самому
+   низу карточки — карточка с более коротким названием не оставляет
+   под ней пустой хвост */
+.translation-card .card-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+}
+
+
+/* ========================================
+   BUSY BEE РЕКОМЕНДУЕТ — редакционный блок
+   ========================================
+   Одна большая карточка (с описанием) + две обычные .translation-card.
+   Обычные карточки — те же, что на полках, тут они просто становятся
+   ячейками сетки (flex-свойства полок на них не действуют). */
+
+.editor-pick {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 14px;
+    align-items: stretch;
+}
+
+.pick-featured {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 24px;
+    min-width: 0;
+    padding: 16px;
+
+    background: linear-gradient(135deg, var(--surface) 0%, var(--surface-warm) 100%);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.pick-cover {
+    position: relative;
+    display: block;
+    min-height: 280px;
+
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px var(--shadow);
+}
+
+.pick-cover img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.pick-featured:hover .pick-cover img {
+    transform: scale(1.04);
+}
+
+.pick-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    padding: 4px 4px 4px 0;
+}
+
+.pick-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 14px 4px 10px;
+
+    background: var(--surface);
+    border: 1px solid var(--honey);
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--honey);
+}
+
+.pick-label img {
+    width: 16px;
+    height: 16px;
+}
+
+.pick-title {
+    margin: 2px 0 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    line-height: 1.15;
+}
+
+.pick-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.pick-title a:hover {
+    color: var(--honey);
+}
+
+.pick-author {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.pick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pick-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 4px 0 0;
+
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+}
+
+.pick-meta {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.pick-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+
+/* ========================================
+   НОВИНКИ — компактный список
+   ======================================== */
+
+.new-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 24px;
+}
+
+.new-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    padding: 12px 16px 12px 12px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.new-row:hover {
+    border-color: var(--honey);
+    box-shadow: 0 5px 16px var(--shadow);
+}
+
+.new-row-cover {
+    flex: 0 0 64px;
+    width: 64px;
+    height: 88px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.new-row-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.new-row-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.new-row-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0 0 4px;
+
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.25;
+}
+
+.new-row-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.new-row-title a:hover {
+    color: var(--honey);
+}
+
+.new-row-author {
+    margin: 0 0 6px;
+    overflow: hidden;
+
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.new-row-meta {
+    margin: 0;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.new-row .mini-bookmark {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+}
+
+
+/* ========================================
+   НОВЫЕ БЛОКИ: Топ 10 / Вы хотели прочитать / Новинки
+   ========================================
+   Используют .translation-card (см. выше) и одну и ту же карусель —
+   отличаются только данные (см. index-script.js) и номер места у
+   Топ 10 вместо бейджа статуса. */
+
+/* .book-carousel задаёт display: flex, а он перебивает атрибут hidden —
+   без этого правила пустая карусель «Вы хотели прочитать» не пряталась бы */
+.book-carousel[hidden] {
+    display: none;
+}
+
+/* Пустое состояние «Вы хотели прочитать» — та же «пунктирная плашка»,
+   что и на Закладках/Коллекциях/Авторах */
+.home-empty {
+    margin: 0;
+    padding: 28px 24px;
+
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 14px;
+}
+
+.home-empty[hidden] {
+    display: none;
+}
+
+
+/* ---------- Адаптив ---------- */
+/* Брейкпоинты 992/640 — как у страницы переводчика и большинства
+   остальных *-style.css */
+@media (max-width: 992px) {
+    /* Редакционный блок: большая карточка на всю ширину, две поменьше под ней */
+    .editor-pick {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .pick-featured {
+        grid-column: 1 / -1;
+    }
+
+    .book-list .translation-card {
+        flex-basis: calc((100% - 28px) / 3);
+    }
+
+    .genre-card {
+        flex-basis: calc((100% - 14px) / 3);
+    }
+
+    /* Коллекции — было жёстко 4 в ряд (общий style.css), на планшете 3,
+       как на странице переводчика */
+    .collection-card {
+        flex-basis: calc((100% - 32px) / 3);
+    }
+
+    /* Две колонки нижней сетки — друг под другом */
+    .content-grid {
+        grid-template-columns: 1fr;
+        row-gap: 36px;
+    }
+
+    .featured-authors {
+        padding-left: 0;
+        border-left: none;
+    }
+}
+
+@media (max-width: 640px) {
+    /* На этой странице у каждой секции (.hero, .home-section,
+       .collections-section, .newsletter, .footer) свой собственный
+       боковой отступ calc(100% - 48px) = по 24px с каждой стороны —
+       и он накладывается поверх отступа .page-shell (общий для всех
+       страниц). На странице переводчика один общий padding на весь
+       контейнер, без наложения — отсюда там заметно уже боковые
+       поля. .page-shell трогать нельзя (общий для всех 17 страниц),
+       поэтому сужаем только отступ самих секций: было 24px с каждой
+       стороны, стало 16px. */
+    .hero,
+    .home-section,
+    .content-grid,
+    .collections-section,
+    .newsletter,
+    .footer {
+        width: calc(100% - 32px);
+    }
+
+    /* «Продолжить чтение»: обложка и текст были в ряд, оба с
+       фиксированной пиксельной шириной (320px у картинки, 430px у
+       прогресс-бара) — на узком экране они не сжимались, и текст
+       наезжал поверх картинки вместо того, чтобы просто стать уже.
+       Теперь картинка сверху на всю ширину, подписи под ней. */
+    .hero-continue {
+        flex-direction: column;
+        height: auto;
+        background-image: none;
+    }
+
+    .hero-continue .hero-cover {
+        width: 100%;
+        padding: 16px 16px 0;
+    }
+
+    .hero-continue .hero-cover img {
+        width: 100%;
+        height: auto;
+        max-height: 260px;
+    }
+
+    .hero-continue .hero-info {
+        max-width: none;
+        padding: 16px;
+    }
+
+    /* Картинка и текст — это две соседние области с собственным
+       padding каждая (в отличие от карточки профиля, где это один
+       общий блок) — отступ от низа картинки до подписи складывается
+       из них обеих, поэтому дополнительно поджимаем ещё и расстояние
+       под самой подписью и заголовком */
+    .hero-continue .hero-label {
+        margin-bottom: 8px;
+    }
+
+    .hero-continue .hero-info h1 {
+        margin-bottom: 8px;
+    }
+
+    /* Отступы между описанием/прогрессом/кнопкой в общем style.css —
+       20-22px, рассчитаны на просторный десктопный hero. На телефоне
+       возьмём тот же масштаб, что у похожих блоков в profile-style.css
+       (там между карточками статистики и внутри них — 8-12px) */
+    .hero-continue .description {
+        max-width: none;
+        margin-top: 12px;
+    }
+
+    .hero-continue .progress-info,
+    .hero-continue .progress {
+        width: 100%;
+    }
+
+    .hero-continue .progress-info {
+        margin-top: 10px;
+    }
+
+    .hero-continue .hero-buttons {
+        flex-wrap: nowrap;
+        margin-top: 12px;
+    }
+
+    /* Отступ между блоками главной (Топ 10, Вы хотели прочитать и
+       т.д.) был 36px и на десктопе, и на телефоне — на узком экране,
+       где и так всё тесно, выглядело слишком просторно. 28px —
+       тот же отступ, что между блоками на странице профиля. */
+    .home-section {
+        margin-top: 28px;
+    }
+
+    /* Заголовок в 36px — это на всю ширину десктопного hero с текстом
+       сбоку от обложки; на телефоне в колонку такой размер растягивал
+       название на 4-5 строк на весь экран */
+    .hero-continue .hero-info h1 {
+        font-size: 24px;
+        line-height: 1.2;
+    }
+
+    /* Кнопка растягивается на доступное место (flex: 1), а закладка —
+       того же фиксированного размера, что и на десктопе — обе остаются
+       в один ряд вместо того, чтобы закладка падала на отдельную
+       строку, а текст кнопки переносился на 2 строки */
+    .hero-continue .continue-button {
+        flex: 1;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .hero-continue .hero-bookmark-button {
+        flex-shrink: 0;
+    }
+
+    /* Заголовок секции — на телефоне заметно у'же, «Busy Bee рекомендует»
+       переносится в 2 строки, а «Посмотреть всё» с align-items: center
+       (из общего style.css) повисало посередине этих двух строк и
+       смотрелось криво. Прижимаем оба элемента к верхнему краю. */
+    .home-section .section-header {
+        align-items: flex-start;
+    }
+
+    .home-section .section-title {
+        font-size: 20px;
+    }
+
+    /* Большая карточка на десктопе высокая специально — рядом с ней
+       по бокам текст. На телефоне всё встаёт в колонку, и та же
+       высота обложки (280px+) вместе с текстом ПОД ней растягивала
+       карточку на два экрана телефона: открываешь страницу — а видно
+       только её одну, будто это все контент. Обложка сильно ниже
+       (16:9 вместо почти квадрата) и описание короче (2 строки вместо
+       4) — карточка проходит примерно в один экран, и следующую
+       карточку видно сразу, без ощущения "куда делась страница". */
+    .pick-featured {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .pick-cover {
+        min-height: 0;
+        aspect-ratio: 16 / 9;
+    }
+
+    .pick-title {
+        font-size: 22px;
+    }
+
+    .pick-desc {
+        -webkit-line-clamp: 2;
+    }
+
+    .pick-actions {
+        padding-top: 8px;
+    }
+
+    .new-list {
+        grid-template-columns: 1fr;
+    }
+
+    .book-list .translation-card {
+        flex-basis: calc((100% - 14px) / 2);
+    }
+
+    /* Коллекции — по 2 в ряд, как на странице переводчика (там же и
+       подобрана эта пропорция: обложка карточки не сжимается до
+       нечитаемого размера) */
+    .collection-card {
+        flex-basis: calc((100% - 16px) / 2);
+    }
+
+    /* На телефоне стрелки по бокам съедали ширину (карточки выходили
+       ~110px) — вместо них обычный свайп пальцем со «залипанием» на
+       карточке. Касается полок, жанров и коллекций — секция коллекций
+       на этой странице не .home-section, а .collections-section, так
+       что перечисляем оба класса-обёртки. */
+    .home-section .carousel-arrow,
+    .collections-section .carousel-arrow {
+        display: none;
+    }
+
+    .home-section .book-list,
+    .home-section .genre-list,
+    .collections-section .collection-list {
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .home-section .book-list::-webkit-scrollbar,
+    .home-section .genre-list::-webkit-scrollbar,
+    .collections-section .collection-list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .home-section .translation-card,
+    .home-section .genre-card,
+    .collections-section .collection-card {
+        scroll-snap-align: start;
+    }
+
+    .genre-card {
+        flex-basis: calc((100% - 7px) / 2);
+    }
+
+    /* Подписка: было в ряд (текст слева, форма с полем шириной 240px
+       справа) — на узком экране поле вылезало за край. Текст и форма
+       теперь друг под другом, поле растягивается на всю ширину. */
+    .newsletter {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+        padding: 24px;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        align-items: stretch;
+        flex-shrink: 1;
+    }
+
+    .newsletter-form input {
+        width: auto;
+    }
+
+    .newsletter-form button {
+        width: 100%;
+    }
 }

@@ -177,6 +177,61 @@ document.addEventListener("DOMContentLoaded", () => {
         const originalNameEl = document.getElementById("authorOriginalName");
         if (originalNameEl) originalNameEl.textContent = author.originalName || "";
 
+        /* ---- Подписка на автора + колокольчик уведомлений (как на
+           странице переводчика). Ключ в localStorage включает authorId,
+           так что подписка на разных авторов хранится отдельно. ---- */
+        const subscribeBtn = document.getElementById("subscribeBtn");
+        const notifyBtn = document.getElementById("notifyBtn");
+
+        if (subscribeBtn && notifyBtn) {
+            const STORAGE_KEY = `busybee:author:${authorId}:subscription`;
+            const subscribeLabel = subscribeBtn.querySelector(".subscribe-label");
+
+            function loadSubscription() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                    if (saved && typeof saved.subscribed === "boolean") {
+                        return { subscribed: saved.subscribed, notify: saved.notify !== false };
+                    }
+                } catch (error) { /* нет доступа к storage — работаем без сохранения */ }
+                return { subscribed: false, notify: true };
+            }
+
+            function saveSubscription(state) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                } catch (error) { /* ignore */ }
+            }
+
+            const subscription = loadSubscription();
+
+            function renderSubscription() {
+                subscribeBtn.setAttribute("aria-pressed", String(subscription.subscribed));
+                subscribeLabel.textContent = subscription.subscribed ? "Вы подписаны" : "Подписаться";
+
+                notifyBtn.hidden = !subscription.subscribed;
+                notifyBtn.setAttribute("aria-pressed", String(subscription.notify));
+                const notifyText = subscription.notify ? "Уведомления включены" : "Уведомления выключены";
+                notifyBtn.setAttribute("aria-label", notifyText);
+                notifyBtn.title = notifyText;
+            }
+
+            subscribeBtn.addEventListener("click", () => {
+                subscription.subscribed = !subscription.subscribed;
+                subscription.notify = true;
+                saveSubscription(subscription);
+                renderSubscription();
+            });
+
+            notifyBtn.addEventListener("click", () => {
+                subscription.notify = !subscription.notify;
+                saveSubscription(subscription);
+                renderSubscription();
+            });
+
+            renderSubscription();
+        }
+
         // Первое имя в списке — как «главный» highlight-tag (обычно
         // это сокращение вроде MXTX), остальные — просто через точку
         const akaLineEl = document.getElementById("authorAkaLine");
@@ -248,10 +303,19 @@ document.addEventListener("DOMContentLoaded", () => {
         if (favoriteGenresEl) favoriteGenresEl.textContent = (author.favoriteGenres || []).join(", ");
 
         /* ---- Работы автора ---- */
+        // «Обзор» — только превью (первые 6), полный список — на вкладке
+        // «Новеллы» ниже. Порядок совпадает с тем, что уже отсортировано
+        // в author.json — если понадобится другая логика отбора «топ-6»
+        // (например, по рейтингу), менять здесь.
         const worksGridEl = document.getElementById("worksGrid");
-        if (worksGridEl) worksGridEl.innerHTML = works.map(workCardHtml).join("");
+        if (worksGridEl) worksGridEl.innerHTML = works.slice(0, 6).map(workCardHtml).join("");
 
-        // Вкладка «Новеллы» — те же карточки, на всю ширину
+        // Если работ 6 или меньше, «Обзор» и так показывает всё — кнопка
+        // на вкладку «Новеллы» с тем же самым списком не нужна
+        const viewAllWorksWrapEl = document.getElementById("viewAllWorksWrap");
+        if (viewAllWorksWrapEl) viewAllWorksWrapEl.hidden = works.length <= 6;
+
+        // Вкладка «Новеллы» — те же карточки, но целиком, без ограничения
         const worksGridFullEl = document.getElementById("worksGridFull");
         if (worksGridFullEl) worksGridFullEl.innerHTML = works.map(workCardHtml).join("");
 
@@ -331,6 +395,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // "Больше авторов" — статичная карточка в конце разметки,
             // остальные вставляем перед ней
             relatedGridEl.insertAdjacentHTML("afterbegin", cardsHtml);
+
+            // Без этого ряд открывается прокрученным в конец: пока карточки
+            // ещё не вставлены, в контейнере — только «Больше авторов» на
+            // позиции 0, и когда мы добавляем карточки ПЕРЕД ней, браузер
+            // (CSS scroll anchoring) сам сдвигает прокрутку так, чтобы она
+            // осталась на том же месте экрана. overflow-anchor в CSS
+            // отключает эту компенсацию, а scrollLeft подстраховывает на
+            // случай, если что-то похожее сдвинет прокрутку и после
+            // (например, чуть позже подгрузятся картинки авторов).
+            relatedGridEl.scrollLeft = 0;
         }
     }
 

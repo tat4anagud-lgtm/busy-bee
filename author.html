@@ -15,86 +15,8 @@
 <body>
 
     <div class="page-shell">
-        <!-- HEADER (тот же, что на остальных страницах — см. catalog.html) -->
-        <header class="header">
-            <a href="index.html" class="logo">
-                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
-                <span>Busy Bee</span>
-            </a>
-
-            <nav class="navigation">
-                <div class="catalog-menu">
-                    <button class="catalog-button">
-                        Каталог
-                        <img src="images/icons/chevron-down.svg" alt="">
-                    </button>
-                    <div class="catalog-dropdown">
-                        <a href="catalog.html">Новеллы</a>
-                        <a href="authors.html">Авторы</a>
-                        <a href="genres.html">Жанры</a>
-                        <a href="collections.html">Коллекции</a>
-                        <a href="glossary.html">Глоссарий</a>
-                    </div>
-                </div>
-                <a href="announcements.html">Анонсы</a>
-                <a href="about.html">О Busy Bee</a>
-            </nav>
-
-            <div class="header-actions">
-                <div class="search">
-                    <input type="text" placeholder="Поиск по книгам, авторам...">
-                    <img src="images/icons/search.svg" alt="">
-                </div>
-
-                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
-                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
-
-                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
-
-                <div class="user-menu">
-                    <button class="user-button">
-                        <div class="user-avatar"></div>
-                        <img src="images/icons/chevron-down.svg" alt="">
-                    </button>
-                    <div class="user-dropdown">
-                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
-
-                        <div class="user-dropdown-divider"></div>
-
-                        <a href="profile.html" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="profile.html#library" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
-                        <a href="profile.html#favorites" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
-                        <a href="profile.html#quotes" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
-                        <a href="profile.html#notes" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
-                        <a href="profile.html#collections" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="profile.html#achievements" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
-
-                        <div class="user-dropdown-divider"></div>
-
-                        <a href="profile.html#settings" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
-                        <div class="language-menu">
-                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
-                            <div class="language-dropdown">
-                                <button class="language-option active">Русский</button>
-                                <button class="language-option">English</button>
-                            </div>
-                        </div>
-
-                        <div class="user-dropdown-divider"></div>
-
-                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
-                    </div>
-                </div>
-
-                <button class="header-login-button" title="Войти"><img src="images/icons/log-in.svg" alt=""></button>
-            </div>
-        </header>
+        <!-- HEADER — общий, вставляется скриптом header.js -->
+        <script src="header.js"></script>
 
         <main class="author-container">
 
@@ -134,6 +56,21 @@
                             <span class="pill-label">Основные жанры</span>
                             <span class="pill-items" id="authorMainGenres"></span>
                         </div>
+                    </div>
+
+                    <!-- Подписка на автора + колокольчик уведомлений — та же
+                         логика, что на translator.html (см. author-script.js,
+                         initSubscribeButton внутри loadAuthorPage) -->
+                    <div class="hero-actions">
+                        <button type="button" class="subscribe-btn" id="subscribeBtn" aria-pressed="false">
+                            <svg class="subscribe-check" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+                            <span class="subscribe-label">Подписаться</span>
+                        </button>
+
+                        <button type="button" class="notify-btn" id="notifyBtn" aria-pressed="true" aria-label="Уведомления включены" title="Уведомления включены" hidden>
+                            <svg class="bell-on" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                            <svg class="bell-off" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.7 3A6 6 0 0 1 18 8a21.3 21.3 0 0 0 .6 5"/><path d="M17 17H3s3-2 3-9a4.67 4.67 0 0 1 .3-1.7"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="m2 2 20 20"/></svg>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -210,7 +147,7 @@
 
                         <div class="works-grid" id="worksGrid"></div>
 
-                        <div class="view-all-works-btn-wrap">
+                        <div class="view-all-works-btn-wrap" id="viewAllWorksWrap">
                             <button type="button" class="btn-view-all-works" data-goto-tab="novels">Все работы →</button>
                         </div>
                     </section>
@@ -290,75 +227,8 @@
 
         </main>
 
-        <footer class="footer">
-
-            <div class="footer-top">
-
-                <div class="footer-brand">
-                    <a href="index.html" class="logo footer-logo">
-                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
-                        <span>Busy Bee</span>
-                    </a>
-                    <p>Bringing stories to life, one chapter at a time.</p>
-                </div>
-
-                <p class="footer-disclaimer">
-                    Busy Bee is an independent translation project. All rights to the original novels belong to their
-                    respective authors and copyright holders — we don't claim ownership over the source material, only
-                    the translations themselves. If you're a rights holder and would like a translation removed, please
-                    get in touch with us.
-                </p>
-
-            </div>
-
-            <div class="footer-bottom">
-
-                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
-
-                <div class="footer-links">
-                    <a href="#">Help Center</a>
-                    <a href="#">Contact Us</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Use</a>
-                    <a href="#">For Rights Holders</a>
-                </div>
-
-                <div class="footer-bottom-right">
-
-                    <div class="footer-social">
-                        <a href="#" class="footer-social-icon" title="Telegram">
-                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
-                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="Pinterest">
-                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
-                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="Boosty">
-                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
-                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="YouTube">
-                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
-                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="Patreon">
-                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
-                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
-                        </a>
-                    </div>
-
-                    <div class="footer-language">
-                        <button type="button" class="footer-language-option active">Ru</button>
-                        <span class="footer-language-sep">/</span>
-                        <button type="button" class="footer-language-option">Eng</button>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </footer>
+        <!-- FOOTER — общий, вставляется скриптом footer.js -->
+        <script src="footer.js"></script>
     </div>
 
     <script src="script.js"></script>

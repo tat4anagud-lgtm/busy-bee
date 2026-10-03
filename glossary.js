@@ -28,6 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const usedInModalItemsEl = document.getElementById("usedInModalItems");
     const usedInModalTitleEl = document.getElementById("usedInModalTitle");
     const usedInModalCloseEl = document.getElementById("usedInModalClose");
+    const paginationEl = document.getElementById("glossaryPagination");
+    const pageNumbersEl = document.getElementById("glossaryPageNumbers");
+    const pagePrevBtn = document.getElementById("glossaryPagePrev");
+    const pageNextBtn = document.getElementById("glossaryPageNext");
+    const toolbarEl = document.querySelector(".glossary-main-col .toolbar");
 
     if (!cardsListEl) return; // not the glossary page
 
@@ -39,6 +44,22 @@ document.addEventListener("DOMContentLoaded", () => {
     let activeLetter = "Все";
     let searchQuery = "";
     let sortMode = "az"; // "az" | "za"
+    let currentPage = 1;
+    let justOpenedId = null; // карточка, которую только что раскрыли — ей нужна анимация появления
+
+    // Сколько терминов на одной странице списка
+    const TERMS_PER_PAGE = 10;
+
+    // Сколько категорий-пилюль видно сразу (считая «Все»); остальные
+    // прячутся за кнопкой «Ещё». Какие именно остаются на виду — решает
+    // порядок кнопок в glossary.html: первые видны, остальные уходят в «Ещё».
+    const VISIBLE_PILLS = 6;
+
+    // Ниже этой ширины список идёт в одну колонку, боковой панели нет
+    // (в CSS она скрыта), а определение раскрывается прямо под выбранным
+    // термином. Значение то же, что в @media в glossary.css.
+    const mobileQuery = window.matchMedia("(max-width: 992px)");
+    const isMobile = () => mobileQuery.matches;
 
     // Arriving from a novel page's "Глоссарий" shortcut (glossary.html?novel=<id>)
     // pre-filters the list to just that novel's terms
@@ -49,6 +70,52 @@ document.addEventListener("DOMContentLoaded", () => {
     // (glossary.html?term=<id>) opens straight on that term instead
     // of the empty placeholder
     const deepLinkTermId = urlParams.get("term");
+
+    /* ---------- Категории: первые на виду, остальные по кнопке «Ещё» ---------- */
+
+    let categoryMoreBtn = null;
+    let categoryExtraPills = [];
+
+    function setupCategoryOverflow() {
+        if (!categoryPillsEl) return;
+
+        const pills = Array.from(categoryPillsEl.querySelectorAll(".pill-btn"));
+        categoryExtraPills = pills.slice(VISIBLE_PILLS);
+        if (categoryExtraPills.length === 0) return; // и так всё помещается
+
+        categoryExtraPills.forEach((pill) => pill.classList.add("is-extra"));
+
+        // Класс .pill-more, а не .pill-btn: иначе обработчик категорий ниже
+        // принял бы кнопку «Ещё» за очередную категорию
+        categoryMoreBtn = document.createElement("button");
+        categoryMoreBtn.type = "button";
+        categoryMoreBtn.className = "pill-more";
+        categoryMoreBtn.addEventListener("click", () => {
+            categoryPillsEl.classList.toggle("expanded");
+            refreshCategoryOverflow();
+        });
+        categoryPillsEl.appendChild(categoryMoreBtn);
+
+        refreshCategoryOverflow();
+    }
+
+    // Подпись и состояние кнопки: «Ещё 9» / «Свернуть». Выбранная
+    // категория из спрятанных остаётся на виду (так делает CSS), поэтому
+    // в счётчик «Ещё N» она не входит.
+    function refreshCategoryOverflow() {
+        if (!categoryMoreBtn) return;
+
+        const expanded = categoryPillsEl.classList.contains("expanded");
+        const hiddenCount = categoryExtraPills.filter((pill) => !pill.classList.contains("active")).length;
+
+        categoryMoreBtn.classList.toggle("is-open", expanded);
+        categoryMoreBtn.setAttribute("aria-expanded", expanded);
+        categoryMoreBtn.innerHTML =
+            (expanded ? "Свернуть" : `Ещё ${hiddenCount}`) +
+            `<img src="images/icons/chevron-down.svg" alt="">`;
+    }
+
+    setupCategoryOverflow();
 
     /* ---------- Bookmarks (localStorage, shared between the list
        cards and the sidebar detail panel — both are just different
@@ -126,7 +193,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* ---------- Render: term cards list ---------- */
 
-    function renderCards() {
+    // Все термины, прошедшие фильтры и сортировку, — без разбивки на
+    // страницы (её делает renderCards). Отдельной функцией, чтобы
+    // deep-link ?term=… мог узнать, на какой странице лежит термин.
+    function getVisibleTerms() {
         const query = searchQuery.trim().toLowerCase();
 
         const filtered = glossaryData.filter((item) => {
@@ -157,14 +227,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 : a.nameRu.localeCompare(b.nameRu, "ru")
         );
 
-        if (termsCountEl) termsCountEl.textContent = pluralizeTerms(filtered.length);
+        return filtered;
+    }
 
-        if (filtered.length === 0) {
+    function renderCards() {
+        const visible = getVisibleTerms();
+
+        if (termsCountEl) termsCountEl.textContent = pluralizeTerms(visible.length);
+
+        if (visible.length === 0) {
             cardsListEl.innerHTML = `<div class="empty-state"><p>Ничего не найдено по вашему запросу.</p></div>`;
+            renderPagination(0);
             return;
         }
 
-        cardsListEl.innerHTML = filtered
+        // Страница могла «уехать» за край (например, после поиска) — возвращаем в границы
+        const totalPages = Math.ceil(visible.length / TERMS_PER_PAGE);
+        currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+
+        const pageStart = (currentPage - 1) * TERMS_PER_PAGE;
+        const pageItems = visible.slice(pageStart, pageStart + TERMS_PER_PAGE);
+
+        cardsListEl.innerHTML = pageItems
             .map((item) => `
                     <article class="term-card ${item.id === selectedTermId ? "selected" : ""}" data-id="${item.id}">
                         <div class="term-card-hanzi">
@@ -177,18 +261,32 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <h3 class="term-name-ru">${item.nameRu}</h3>
                                     <span class="badge-tag">${item.category}</span>
                                 </div>
-                                ${bookmarkButtonHtml(item.id)}
+                                <div class="term-card-actions">
+                                    ${bookmarkButtonHtml(item.id)}
+                                    <img src="images/icons/chevron-down.svg" alt="" class="term-card-chevron">
+                                </div>
                             </div>
                             <p class="term-desc">${item.definition}</p>
                         </div>
+                        ${isMobile() && item.id === selectedTermId ? expandedPanelHtml(item) : ""}
                     </article>`)
             .join("");
 
+        renderPagination(totalPages);
+
         bindBookmarkButtons(cardsListEl);
+        bindViewAllButton(cardsListEl);
+        justOpenedId = null;
 
         cardsListEl.querySelectorAll(".term-card").forEach((card) => {
             card.addEventListener("click", (event) => {
-                if (event.target.closest(".mini-bookmark")) return;
+                // Закладка, ссылки и кнопка внутри раскрытой панели — свои действия, карточку не трогают
+                if (event.target.closest(".mini-bookmark, .term-card-expand")) return;
+
+                if (isMobile()) {
+                    toggleAccordion(card);
+                    return;
+                }
 
                 selectedTermId = card.dataset.id;
                 renderCards();
@@ -196,6 +294,112 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+    /* ---------- Mobile: определение раскрывается под самим термином ---------- */
+
+    // Раскрыть термин / свернуть, если он уже раскрыт. Открыт всегда не
+    // больше одного: выбираем новый — прежний сворачивается.
+    function toggleAccordion(card) {
+        const id = card.dataset.id;
+
+        // Запоминаем, где на экране стояла карточка. Если прежняя раскрытая
+        // схлопнется ВЫШЕ нажатой, всё под ней сдвинется вверх — без
+        // поправки палец вдруг оказался бы на другом слове.
+        const topBefore = card.getBoundingClientRect().top;
+
+        selectedTermId = selectedTermId === id ? null : id;
+        justOpenedId = selectedTermId;
+        renderCards();
+
+        keepCardInPlace(id, topBefore);
+
+        if (selectedTermId === id) {
+            // Раскрытая часть могла уйти за нижний край экрана — подкручиваем ровно настолько,
+            // чтобы она была видна целиком (если и так видно, ничего не двигается)
+            const panel = cardsListEl.querySelector(`.term-card[data-id="${id}"] .term-card-expand`);
+            if (panel) panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        }
+    }
+
+    // Возвращает карточку на то же место экрана, где она была до перерисовки.
+    // Несколько проходов, а не один: страница уменьшена через zoom, и
+    // браузеры по-разному считают пиксели — повторная проверка добирает остаток.
+    function keepCardInPlace(id, topBefore) {
+        const card = cardsListEl.querySelector(`.term-card[data-id="${id}"]`);
+        if (!card) return;
+
+        for (let i = 0; i < 3; i++) {
+            const diff = card.getBoundingClientRect().top - topBefore;
+            if (Math.abs(diff) < 1) break;
+            window.scrollBy(0, diff);
+        }
+    }
+
+    // Раскрытая часть: карточка уже показывает иероглиф, перевод, категорию и
+    // само определение, поэтому добавляем только то, чего в ней нет —
+    // где термин встречается
+    function expandedPanelHtml(term) {
+        return `
+            <div class="term-card-expand ${term.id === justOpenedId ? "is-opening" : ""}">
+                ${usedInSectionHtml(term)}
+            </div>`;
+    }
+
+    /* ---------- Pagination ---------- */
+
+    function renderPagination(totalPages) {
+        if (!paginationEl || !pageNumbersEl) return;
+
+        // Одной страницы хватает — переключатель не нужен
+        paginationEl.hidden = totalPages <= 1;
+        if (totalPages <= 1) {
+            pageNumbersEl.innerHTML = "";
+            return;
+        }
+
+        if (pagePrevBtn) pagePrevBtn.disabled = currentPage <= 1;
+        if (pageNextBtn) pageNextBtn.disabled = currentPage >= totalPages;
+
+        // Тот же компактный список, что в каталоге и в таблице глав:
+        // первая/последняя страница, текущая и соседние, «…» на месте пропусков
+        const pagesToShow = new Set([1, totalPages, currentPage, currentPage - 1, currentPage + 1]);
+        const sortedPages = Array.from(pagesToShow)
+            .filter((p) => p >= 1 && p <= totalPages)
+            .sort((a, b) => a - b);
+
+        pageNumbersEl.innerHTML = "";
+        let previousPage = 0;
+
+        sortedPages.forEach((pageNum) => {
+            if (pageNum - previousPage > 1) {
+                const ellipsis = document.createElement("span");
+                ellipsis.className = "page-ellipsis";
+                ellipsis.textContent = "…";
+                pageNumbersEl.appendChild(ellipsis);
+            }
+
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "page-number" + (pageNum === currentPage ? " active" : "");
+            btn.textContent = pageNum;
+            if (pageNum === currentPage) btn.setAttribute("aria-current", "page");
+            btn.addEventListener("click", () => goToPage(pageNum));
+            pageNumbersEl.appendChild(btn);
+
+            previousPage = pageNum;
+        });
+    }
+
+    // Листание — только по клику на переключатель: возвращаем читателя к
+    // началу списка, иначе после «2» он так и остался бы внизу страницы
+    function goToPage(pageNum) {
+        currentPage = pageNum;
+        renderCards();
+        if (toolbarEl) toolbarEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    if (pagePrevBtn) pagePrevBtn.addEventListener("click", () => goToPage(currentPage - 1));
+    if (pageNextBtn) pageNextBtn.addEventListener("click", () => goToPage(currentPage + 1));
 
     /* ---------- Render: right-hand detail panel ---------- */
 
@@ -219,8 +423,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const term = glossaryData.find((item) => item.id === selectedTermId);
         if (!term) return;
 
-        const usedIn = term.usedIn || [];
-
         detailCardEl.innerHTML = `
             <div class="detail-top">
                 <h2 class="detail-name-ru">${term.nameRu}</h2>
@@ -234,30 +436,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
             <p class="detail-desc">${term.definition}</p>
 
+            ${usedInSectionHtml(term)}
+        `;
+
+        bindBookmarkButtons(detailCardEl);
+        bindViewAllButton(detailCardEl);
+    }
+
+    // Блок «Используется в» с кнопкой «Все вхождения» — общий для боковой
+    // панели (десктоп) и раскрытой карточки (телефон). Кнопка опознаётся
+    // по data-атрибуту, а не по id: id был бы один на двоих.
+    function usedInSectionHtml(term) {
+        const usedIn = term.usedIn || [];
+
+        return `
             <div class="used-in-section">
                 <h3>Используется в</h3>
                 <div class="used-in-list">
-                    ${usedIn
-                        .slice(0, 3)
-                        .map((entry) => usedInItemHtml(entry))
-                        .join("")}
+                    ${usedIn.length
+                        ? usedIn.slice(0, 3).map((entry) => usedInItemHtml(entry)).join("")
+                        : `<p class="used-in-empty">Пока не встречается ни в одной главе.</p>`}
                 </div>
             </div>
 
             ${usedIn.length > 3
-                ? `<button class="view-all-btn" type="button" id="viewAllOccurrencesBtn">
+                ? `<button class="view-all-btn" type="button" data-view-all="${term.id}">
                         <img src="images/icons/filter.svg" alt="">
                         Все вхождения (${usedIn.length})
                    </button>`
-                : ""}
-        `;
+                : ""}`;
+    }
 
-        bindBookmarkButtons(detailCardEl);
+    function bindViewAllButton(container) {
+        const button = container.querySelector("[data-view-all]");
+        if (!button) return;
 
-        const viewAllBtn = document.getElementById("viewAllOccurrencesBtn");
-        if (viewAllBtn) {
-            viewAllBtn.addEventListener("click", () => openUsedInModal(term));
-        }
+        button.addEventListener("click", () => {
+            const term = glossaryData.find((item) => item.id === button.dataset.viewAll);
+            if (term) openUsedInModal(term);
+        });
     }
 
     // Shared row markup for one novel/chapter occurrence — used by
@@ -308,6 +525,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Окно растянули или повернули телефон — панель переезжает между
+    // боковой колонкой и раскрытой карточкой
+    mobileQuery.addEventListener("change", () => {
+        renderCards();
+        renderDetailPanel();
+    });
+
     /* ---------- Data loading ---------- */
 
     fetch("glossary/glossary.json")
@@ -343,6 +567,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (deepLinkTermId && glossaryData.some((item) => item.id === deepLinkTermId)) {
                 selectedTermId = deepLinkTermId;
+
+                // Открываем ту страницу списка, на которой лежит этот термин
+                const termIndex = getVisibleTerms().findIndex((item) => item.id === selectedTermId);
+                if (termIndex >= 0) currentPage = Math.floor(termIndex / TERMS_PER_PAGE) + 1;
             }
 
             renderCards();
@@ -363,6 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchInputEl) {
         searchInputEl.addEventListener("input", (event) => {
             searchQuery = event.target.value;
+            currentPage = 1;
             renderCards();
         });
     }
@@ -375,6 +604,8 @@ document.addEventListener("DOMContentLoaded", () => {
             categoryPillsEl.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
             btn.classList.add("active");
             activeCategory = btn.dataset.category;
+            currentPage = 1;
+            refreshCategoryOverflow();
             renderCards();
         });
     }
@@ -388,6 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
             alphabetNavEl.querySelectorAll(".alphabet-link").forEach((l) => l.classList.remove("active-pill"));
             link.classList.add("active-pill");
             activeLetter = link.dataset.letter;
+            currentPage = 1;
             renderCards();
         });
     }
@@ -412,6 +644,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             sortWrapEl.classList.remove("open");
             sortBtnEl.setAttribute("aria-expanded", "false");
+            currentPage = 1;
             renderCards();
         });
 

@@ -16,6 +16,9 @@
     padding: 30px;
     margin-top: 20px;
     position: relative;
+    /* overflow: hidden здесь ставить нельзя — пчёлка по клику летает по
+       всему экрану (transform из translator-script.js) и была бы
+       обрезана рамкой карточки. Скругление баннера — на .hero-decor. */
 }
 
 .profile-hero-top {
@@ -24,24 +27,38 @@
     gap: 30px;
 }
 
-/* Small decorative image at the end of the row — doesn't shrink, and
-   its height is capped to the row's natural height (set by the avatar)
-   so it can never stretch the card taller */
-/* Takes over the leftover space that .profile-info-main used to grab —
-   grows/shrinks with the card's width, image stays anchored to the
-   right edge and never stretches past the row's own height */
+/* Баннер на всю карточку. .hero-decor вынесен из потока (absolute) и
+   растянут на .profile-hero-card — ближайший positioned-предок, потому
+   что .profile-hero-top не positioned. Разметка не менялась.
+   Растушёвка слева — через mask-image, а не цветным градиентом поверх:
+   картинка сама «растворяется» в фоне карточки, никакого захардкоженного
+   цвета, так что позже это не сломает тёмную тему. */
 .hero-decor {
-    flex: 1;
-    min-width: 0;
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    /* обрезаем саму картинку по скруглению карточки (20px) */
+    border-radius: 20px;
+    overflow: hidden;
 }
 
 .hero-decor img {
     display: block;
     width: 100%;
-    height: auto;
-    max-height: 140px;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
     object-position: right center;
+
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 30%, rgba(0, 0, 0, 0.6) 55%, #000 80%);
+            mask-image: linear-gradient(to right, transparent 0%, transparent 30%, rgba(0, 0, 0, 0.6) 55%, #000 80%);
+}
+
+/* Весь контент шапки — поверх баннера */
+.profile-hero-top > *:not(.hero-decor) {
+    position: relative;
+    z-index: 1;
 }
 
 .profile-avatar-wrapper {
@@ -59,8 +76,11 @@
 }
 
 .profile-info-main {
-    flex: 0 0 auto;
-    max-width: 340px;
+    /* может сжиматься (0 1), если места впритык — иначе на ширине
+       чуть больше 992px строка не помещалась бы рядом со статистикой.
+       440px — чтобы био из двух предложений ложилось в две строки */
+    flex: 0 1 auto;
+    max-width: 440px;
 }
 
 .profile-name-row {
@@ -148,7 +168,10 @@
 
 .profile-stats-box {
     flex-shrink: 0;
-    align-self: flex-end;
+    /* к правому краю карточки и по центру по вертикали — стекло лежит
+       поверх баннера, а не висит «в воздухе» рядом с текстом */
+    align-self: center;
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -816,6 +839,110 @@
     text-decoration: none;
 }
 
+/* ---------- Кнопка «Подписаться» + колокольчик ---------- */
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.subscribe-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 22px;
+
+    background: var(--honey);
+    border: 1px solid var(--honey);
+    border-radius: 8px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--white);
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.subscribe-btn:hover {
+    filter: brightness(0.95);
+}
+
+/* Галочка видна только в состоянии «Вы подписаны» */
+.subscribe-check {
+    display: none;
+}
+
+.subscribe-btn[aria-pressed="true"] {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text-secondary);
+}
+
+.subscribe-btn[aria-pressed="true"]:hover {
+    filter: none;
+    border-color: var(--honey);
+    color: var(--text-primary);
+}
+
+.subscribe-btn[aria-pressed="true"] .subscribe-check {
+    display: block;
+    color: var(--honey);
+}
+
+.notify-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    color: var(--text-muted);
+    cursor: pointer;
+
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.notify-btn[hidden] {
+    display: none;
+}
+
+.notify-btn:hover {
+    border-color: var(--honey);
+}
+
+/* Уведомления включены — колокольчик медовый, с лёгкой подложкой;
+   выключены — серый, перечёркнутый */
+.notify-btn[aria-pressed="true"] {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+    color: var(--honey);
+}
+
+.notify-btn .bell-off,
+.notify-btn[aria-pressed="false"] .bell-on {
+    display: none;
+}
+
+.notify-btn[aria-pressed="false"] .bell-off {
+    display: block;
+}
+
+.subscribe-btn:focus-visible,
+.notify-btn:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
 .hero-about-link:hover {
     text-decoration: underline;
 }
@@ -926,6 +1053,33 @@
    реальной ширине карточки (card.offsetWidth), так что при смене
    flex-basis ниже она продолжит работать как есть. */
 
+/* ========================================
+   КАРУСЕЛИ: СВАЙП НА ВСЕХ ШИРИНАХ
+   ========================================
+   Последние переводы, Рекомендации, Коллекции. Трек — обычная
+   горизонтальная прокрутка со «залипанием» на карточке: листается
+   пальцем на телефоне и планшете, жестом по тачпаду на ноутбуке.
+   Стрелки при этом остаются (на телефоне их прячет блок 640px ниже) —
+   они просто вызывают scrollBy у того же трека, так что оба способа
+   работают вместе. Полные сетки вкладок (без .carousel-track) не
+   затрагиваются. */
+.translator-grid .carousel-track {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.translator-grid .carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.translation-card,
+.recommend-card,
+.collection-card {
+    scroll-snap-align: start;
+}
+
 @media (max-width: 992px) {
 
     /* Hero: аватар + инфо + статистика больше не помещаются в один ряд —
@@ -946,12 +1100,15 @@
         flex: 1 1 220px;
     }
 
-    /* Была прижата к низу через align-self: flex-end — на переносе
-       строк это больше не нужно, пусть просто идёт своей строкой */
+    /* На планшете — компактная карточка под аватаром и текстом, а не
+       на всю ширину: иначе две цифры разъезжаются к краям, а между
+       ними пустота. Строка ниже, на телефоне, снова растягивается. */
     .profile-stats-box {
-        align-self: stretch;
-        justify-content: space-between;
-        width: 100%;
+        align-self: flex-start;
+        margin-left: 0;
+        justify-content: flex-start;
+        gap: 28px;
+        width: auto;
     }
 
     /* Двухколоночная сетка обзора — с этой ширины левая колонка
@@ -1031,25 +1188,91 @@
         font-size: 24px;
     }
 
+    /* Порядок в шапке на телефоне: аватар → имя/подпись/«О Busy Bee» →
+       статистика → «Подписаться». На десктопе кнопка живёт внутри
+       .profile-info-main, а статистика — отдельным блоком рядом, поэтому
+       разметку не трогаем: «растворяем» .profile-info-main
+       (display: contents), его дети становятся прямыми элементами
+       колонки .profile-hero-top, и порядок задаёт order. Отступы между
+       ними — свои собственные (gap: 0), иначе имя, тег и подпись
+       разъехались бы на величину gap. */
+    .profile-hero-top {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        gap: 0;
+    }
+
+    .profile-avatar-wrapper {
+        align-self: flex-start;
+        margin-bottom: 16px;
+    }
+
+    .profile-info-main {
+        display: contents;
+    }
+
+    /* Тег «Official» и ссылка — по ширине содержимого, не на всю колонку */
+    .profile-info-main > :not(.profile-name-row):not(.profile-bio):not(.hero-actions) {
+        align-self: flex-start;
+    }
+
+    .profile-stats-box {
+        order: 2;
+        margin-top: 16px;
+        align-self: stretch;
+        width: 100%;
+    }
+
+    .hero-actions {
+        order: 3;
+        margin-top: 14px;
+    }
+
+    /* Подписка: кнопка тянется на всю ширину (нормальная зона нажатия
+       для пальца), колокольчик остаётся квадратом справа */
+    .subscribe-btn {
+        flex: 1;
+        height: 40px;
+    }
+
+    .notify-btn {
+        width: 40px;
+        height: 40px;
+    }
+
     .bee-box {
         width: 34px;
         height: 34px;
     }
 
-    /* Три показателя рядом с делителями — на узком экране переносим,
-       а сами вертикальные разделители убираем: при переносе flex-строк
-       разделитель — такой же элемент потока, как и .stat-item, и мог
-       уехать один, в начало новой строки, «осиротевшей» палочкой —
-       gap между .stat-item и так достаточно отделяет их друг от друга */
+    /* Статистика — всегда в одну строку: цифры поменьше, подписи могут
+       переноситься на две строки внутри своей колонки. Разделитель
+       остаётся — переноса строк теперь нет, «осиротеть» ему негде. */
     .profile-stats-box {
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 14px 20px;
-        padding: 14px 18px;
+        flex-wrap: nowrap;
+        justify-content: space-around;
+        gap: 10px;
+        padding: 12px 14px;
+    }
+
+    .stat-item {
+        flex: 1 1 0;
+        min-width: 0;
+        text-align: center;
+    }
+
+    .stat-item strong {
+        font-size: 18px;
+    }
+
+    .stat-item span {
+        font-size: 10px;
+        line-height: 1.3;
     }
 
     .stat-divider {
-        display: none;
+        height: 40px;
     }
 
     /* Шесть вкладок точно не влезают в ширину телефона — превращаем
@@ -1071,31 +1294,87 @@
         flex-shrink: 0;
     }
 
-    /* Карточка активного проекта — полностью в колонку, без фоновой
-       декоративной ветки (ей не остаётся места сбоку) */
+    /* Карточка активного проекта — компактная: обложка слева, справа
+       название и автор, ниже на всю ширину прогресс и кнопки. Без
+       переводчика, описания и жанров — эта информация только для
+       больших экранов (полностью она есть на странице новеллы).
+       Без фоновой декоративной ветки — ей не остаётся места сбоку. */
     .featured-project-card {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
+        text-align: left;
+        gap: 14px;
         background-image: none;
-        padding: 20px;
+        padding: 16px;
     }
 
-    /* Именно align-items: stretch выше и чинит переполнение: базовое
-       правило .featured-project-card держит align-items: center — для
-       горизонтального ряда (desktop) это просто центрирует блоки по
-       высоте, но при flex-direction: column тот же center начинает
-       работать по горизонтали и сжимает текстовые блоки до их
-       «естественной» ширины без переноса — отсюда текст описания,
-       прогресс-бар и кнопки вылезали за край экрана вместо того,
-       чтобы просто быть уже */
-    .featured-info-box {
-        flex: none;
-        width: 100%;
+    .featured-cover-box {
+        margin: 0;
     }
 
     .featured-cover-box img {
-        width: 120px;
-        height: 168px;
+        width: 92px;
+        height: 130px;
+    }
+
+    .featured-info-box {
+        flex: 1 1 0;
+        min-width: 0;
+        width: auto;
+    }
+
+    .featured-info-box h2 {
+        font-size: 18px;
+        line-height: 1.25;
+        margin: 2px 0;
+    }
+
+    .orig-title {
+        margin-bottom: 6px;
+    }
+
+    .authors {
+        margin-bottom: 0;
+    }
+
+    .authors-translator,
+    .featured-desc,
+    .featured-tags {
+        display: none;
+    }
+
+    /* Прогресс — на всю ширину карточки, кнопки в один ряд, а не
+       друг под другом: экономит высоту */
+    .featured-action-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 8px;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+    }
+
+    .chapter-status-title,
+    .chapter-status-subtitle,
+    .mini-progress-bar,
+    .percent-label {
+        grid-column: 1 / -1;
+    }
+
+    .chapter-status-subtitle {
+        margin-bottom: 8px;
+    }
+
+    .percent-label {
+        margin-bottom: 12px;
+    }
+
+    .featured-action-box .btn-read-now,
+    .featured-action-box .btn-view-details {
+        height: 36px;
+        margin-bottom: 0;
     }
 
     /* Было 4 в ряд, на планшете 3 — на телефоне 2, чтобы обложка
@@ -1113,6 +1392,32 @@
         flex-basis: calc((100% - 16px) / 2);
     }
 
+    /* Карусели: на телефоне стрелок нет — они съедали ширину, а
+       карточки выходили узкими. Листать можно пальцем (свайп включён
+       на всех ширинах, см. блок «Карусели» выше). */
+    .translator-grid .carousel-arrow {
+        display: none;
+    }
+
+    /* Заголовки блоков («Последние переводы», «Busy Bee рекомендует»
+       и т.д.) чуть мельче, а «Посмотреть всё» не переносится на две
+       строки и не сжимается — сжиматься и переноситься должен
+       заголовок */
+    .widget-header {
+        gap: 12px;
+    }
+
+    .widget-header h3 {
+        min-width: 0;
+        font-size: 16px;
+        line-height: 1.25;
+    }
+
+    .widget-header .view-all {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
     /* Полные сетки вкладок — уже адаптивны через auto-fill/minmax,
        просто сужаем нижнюю границу колонки под ширину телефона */
     .translations-full-grid {
@@ -1128,7 +1433,8 @@
     }
 
     /* Баннер поддержки — текст и блок спонсоров были прижаты по
-       краям одной строки, теперь друг под другом и оба по левому краю */
+       краям одной строки, теперь друг под другом: текст и кнопка
+       слева, «Недавние спонсоры» — по центру карточки */
     .support-banner {
         flex-direction: column;
         align-items: flex-start;
@@ -1137,10 +1443,87 @@
     }
 
     .support-right {
-        text-align: left;
+        align-self: stretch;
+        text-align: center;
     }
 
     .supporters-avatars {
-        justify-content: flex-start;
+        justify-content: center;
+        /* аватарки наезжают друг на друга через margin-left: -8px у
+           каждой, из-за чего вся группа сдвигается влево — возвращаем */
+        padding-left: 8px;
+    }
+}
+
+/* ========================================
+   ОЧЕНЬ УЗКИЕ ЭКРАНЫ (≈260–400px)
+   ========================================
+   Galaxy Z Flip во сложенном виде и похожие. Главное — вернуть
+   ширину содержимому: на 260px вложенные отступы (рамка страницы +
+   поля контейнера + поля карточки) раньше съедали больше половины. */
+@media (max-width: 400px) {
+    .translator-container {
+        padding: 0 8px 24px;
+    }
+
+    .profile-hero-card {
+        padding: 16px;
+        margin-top: 12px;
+        border-radius: 16px;
+    }
+
+    .profile-avatar-img {
+        width: 84px;
+        height: 84px;
+    }
+
+    .profile-name-row h1 {
+        font-size: 20px;
+    }
+
+    .widget-header h3 {
+        font-size: 15px;
+    }
+
+    .profile-bio {
+        font-size: 12px;
+    }
+
+    .profile-stats-box {
+        padding: 10px 10px;
+        gap: 8px;
+    }
+
+    .stat-item strong {
+        font-size: 16px;
+    }
+}
+
+/* Совсем узко (≈260–340px): рядом с обложкой уже нет места для
+   названия — карточка активного проекта снова в колонку, обложка
+   по центру, текст под ней */
+@media (max-width: 340px) {
+    /* Две карточки в ряд на 260px — по ~90px каждая, текст не читается.
+       Одна карточка почти на всю ширину + край следующей: и читается,
+       и сразу видно, что ряд можно листать */
+    .translation-card,
+    .recommend-card,
+    .collection-card {
+        flex-basis: 72%;
+    }
+
+    .featured-project-card {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .featured-cover-box {
+        margin: 0 auto;
+    }
+
+    .featured-info-box {
+        flex: none;
+        width: 100%;
     }
 }

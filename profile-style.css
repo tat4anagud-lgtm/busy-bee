@@ -344,13 +344,37 @@
 
     display: flex;
     gap: var(--gap);
-    overflow-x: hidden;
+    /* Было overflow-x: hidden — весь ряд листался только по клику на
+       стрелки (JS двигал scrollLeft), а пальцем или трекпадом сдвинуть
+       было нельзя: hidden блокирует любую прокрутку жестом, а не только
+       прячет полосу прокрутки. С auto жест работает «из коробки», а
+       если карточек как раз ровно --per-view и лишнего нет — снаружи
+       вообще ничего не меняется, скроллить просто нечего. */
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    /* Карточки подставляются уже после первой отрисовки (см.
+       profile-script.js) — без этого браузер может сам «компенсировать»
+       их появление прокруткой, как было с похожими авторами на
+       странице автора */
+    overflow-anchor: none;
     scroll-behavior: smooth;
 
     /* запас под тень и «подъём» карточки при наведении:
-       overflow-x: hidden обрезает и по вертикали */
+       overflow-x: hidden обрезала и по вертикали */
     padding: 4px 4px 10px;
     margin: -4px -4px -10px;
+}
+
+.profile-track::-webkit-scrollbar {
+    display: none;
+}
+
+.profile-track > .reading-card,
+.profile-track > .collection-card,
+.profile-track > .fav-novel-card {
+    scroll-snap-align: start;
 }
 
 .profile-track > .reading-card,
@@ -365,6 +389,11 @@
     --gap: 12px;
 }
 
+/* «Избранное → Коллекции»: 4 в ряд по умолчанию — столько же, сколько
+   у переводчика (там это тоже базовое значение .collection-card).
+   На самых узких экранах — отдельное правило ниже по файлу, в @media
+   (max-width: 400px): флажок не количество в ряд, а сама ширина
+   карточки в процентах, с «подглядыванием» следующей, как у переводчика. */
 /* ---------- Continue Reading ---------- */
 .reading-card {
     position: relative;
@@ -597,28 +626,11 @@
 }
 
 /* ---------- Collections ----------
-   .collection-card также описан в style.css (главная) — здесь
-   переопределены только отличия профиля */
-.collection-card {
-    padding: 10px;
-    color: var(--text-primary);
-    text-decoration: none;
-}
-
-.collection-img {
-    height: 70px;
-    border-radius: 6px;
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 8px;
-}
-
-.collection-card h4 {
-    font-size: var(--fs-body);
-    margin: 0 0 4px;
-    line-height: 1.3;
-}
-
+   Раньше у .collection-card в профиле была своя, более простая
+   разметка (маленькая картинка-подложка + h4) — теперь здесь та же
+   разметка и тот же класс .collection-card-info > h3, что на странице
+   переводчика, поэтому стили полностью берутся из общего style.css,
+   переопределять здесь больше нечего. */
 .collection-count {
     font-size: var(--fs-small);
     color: var(--text-muted);
@@ -1041,9 +1053,205 @@
     .tab-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
+    /* 6 карточек статистики уже не помещаются по 1fr каждая — 3 колонки,
+       тот же приём, что у автора */
+    .user-stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 @media (max-width: 720px) {
+    /* Та же причина, что раньше была у шапок переводчика/автора/профиля:
+       .activity-content был жёстко ограничен 62% ширины, чтобы оставить
+       место декоративной картинке справа (фон на .recent-activity-card).
+       На мобильном картинке и так уже некуда деваться — прячем её и
+       отдаём всю ширину карточки тексту: именно нехватка места, а не
+       длина названий, превращала список в кашу на скрине. */
+    .recent-activity-card {
+        background-image: none;
+    }
+
+    .activity-content {
+        max-width: none;
+    }
+
+    /* Время — под текстом, а не справа от него: иначе длинным названиям
+       новелл оставалось ещё меньше места в строке. Переключаем строку
+       с flex на grid — так можно явно поставить иконку слева на всю
+       высоту, а текст и время друг под другом справа от неё, не трогая
+       HTML (три элемента остаются обычными соседями, просто по-другому
+       расставлены через grid-column/grid-row). */
+    .activity-feed li {
+        display: grid;
+        grid-template-columns: 32px 1fr;
+        column-gap: 12px;
+        row-gap: 4px;
+    }
+
+    .activity-icon-badge {
+        grid-column: 1;
+        grid-row: 1 / 3;
+        align-self: start;
+    }
+
+    .activity-text {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .activity-time {
+        grid-column: 2;
+        grid-row: 2;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    /* Линия-«стебель» между значками была рассчитана на фиксированную
+       высоту 10px — ровно отступ между строками, когда весь текст
+       помещался в одну-две коротких строки. Теперь строки разной высоты
+       (от одной строки до трёх плюс время), и фиксированная линия до
+       следующего значка уже не дотягивается. Привязываем линию не к
+       значку, а к самой строке (<li>, уже position: relative) — от низа
+       значка (32px) до низа строки и чуть дальше, в отступ до следующей
+       (-10px = тот же gap, что у .activity-feed): так длина сама
+       подстраивается под высоту конкретной записи. */
+    .activity-feed li:not(:last-child) .activity-icon-badge::after {
+        content: none;
+    }
+
+    .activity-feed li:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 32px;
+        bottom: -10px;
+        left: 16px;
+        width: 1px;
+        background: rgba(73, 53, 38, 0.15);
+    }
+
+    /* «Мои цитаты» / «Мои заметки» / «Достижения» — 3 колонки совсем не
+       помещались на телефоне (текст и карточки достижений наезжали друг
+       на друга), поэтому в столбик, одна под другой */
+    .widgets-three-column {
+        grid-template-columns: 1fr;
+    }
+
+    /* Как на страницах переводчика и автора — .profile-layout держал
+       32px по бокам на любой ширине, из-за чего вся рамка оказывалась
+       заметно уже, чем у остального контента */
+    .profile-layout {
+        padding: 20px 16px 40px;
+    }
+
+    /* Карусели на .profile-track (Продолжить чтение, Избранное,
+       Коллекции) — на телефоне по 4-5 карточек в ряд были слишком
+       мелкими. Показываем по 2 покрупнее, остальные — свайпом или
+       трекпадом (прокрутка уже включена в базовом .profile-track выше
+       по файлу). И у базового трека, и у .fav-novels-track (другое
+       умолчание --per-view: 5) — оба на одном и том же элементе, так
+       что переопределяем явно оба класса. */
+    .profile-track,
+    .fav-novels-track {
+        --per-view: 2;
+    }
+
+    /* Стрелки по бокам — как и в других каруселях на сайте, на телефоне
+       убираем совсем: место отдаём карточкам, листать можно пальцем
+       или трекпадом (прокрутка уже включена в .profile-track выше) */
+    .profile-carousel .carousel-arrow {
+        display: none;
+    }
+
+    /* Карточка «Продолжить чтение» — при 2 в ряд обложке слева (84px)
+       и тексту справа не хватало ширины, название и «Глава X из Y»
+       переносились по слову. Переносим обложку наверх во всю ширину
+       карточки, текст — под ней: ровно тот же вертикальный формат,
+       что у карточек новелл в каталоге и у автора. */
+    .reading-card {
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .reading-cover-wrap {
+        flex: 0 0 auto;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    .reading-info {
+        padding: 10px;
+        justify-content: flex-start;
+    }
+
+    /* «⋮» в углу карточки раньше лежал над текстом, теперь оказывается
+       над обложкой — тот же приём, что у «···» на карточках каталога:
+       белым цветом с тенью, чтобы не теряться на тёмных картинках */
+    .reading-card > .btn-dots {
+        color: #fff;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Личные полки — на десктопе/планшете сетка в 5 колонок (не
+       трогаем), а на телефоне 5 колонок по 1fr сжимались настолько,
+       что подписи вроде «Отложено» не помещались и наезжали на соседние
+       карточки. Ширина карточки в пикселях, а не в процентах контейнера
+       — важно: процент типа (100%/5) уменьшался бы вместе с экраном
+       и карточки снова стали бы слишком узкими, просто более плавно
+       (та же ошибка, что была с похожими авторами на странице автора).
+       Фиксированная ширина держит карточки читаемыми, а то, что не
+       поместилось, листается свайпом или трекпадом. */
+    .bookshelves-grid {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .bookshelves-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .bookshelf-card {
+        flex: 0 0 108px;
+        min-width: 0;
+        scroll-snap-align: start;
+    }
+
+    /* Статистика — табличкой 2×3, как у автора. Здесь ровно 6 карточек,
+       поэтому без «сироты», которую пришлось бы растягивать на всю
+       ширину нижней строки. */
+    .user-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-head {
+        gap: 6px;
+        margin-bottom: 6px;
+    }
+
+    .stat-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .stat-value {
+        font-size: 18px;
+        margin-bottom: 4px;
+    }
+
+    .stat-text-value {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
     .tab-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -1056,6 +1264,64 @@
 
     .page-tab {
         flex-shrink: 0;
+    }
+
+    /* Сайдбар («Мой профиль», «Моя библиотека» и т.д.) — на телефоне
+       его убираем: 220px под навигацию на экране в 2 раза уже — это
+       слишком много места впустую. Пока переключаться между разделами
+       на телефоне будет нечем (сайдбар был единственным способом), это
+       первый шаг, вопрос мобильной навигации решим отдельно следующим. */
+    .profile-sidebar {
+        display: none;
+    }
+
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    /* Аватар + информация — тот же приём, что на страницах переводчика
+       и автора: декоративный баннер справа прячется (на такой ширине
+       ему всё равно уже некуда деваться), а сама карточка переносится
+       в колонку: аватар сверху, блок с именем и статистикой — под ним,
+       на всю ширину. */
+    .profile-hero-card {
+        flex-wrap: wrap;
+        background-image: none;
+    }
+
+    /* Без явной flex-basis перенос не сработает: у .profile-hero-info
+       flex: 1 — это flex-basis: 0%, а с ним «желаемая» ширина блока
+       для расчёта переноса всегда равна нулю, и браузер решает, что
+       блоку «достаточно» любой щели рядом с аватаром, сколько бы места
+       ни было (та же причина, из-за которой не переносился текст в
+       шапке автора). */
+    .profile-hero-info {
+        flex: 1 1 220px;
+    }
+
+    .profile-user-avatar {
+        width: 110px;
+        height: 110px;
+    }
+
+    /* Шрифт и отступы — карточка была рассчитана на широкий десктопный
+       ряд (аватар + текст рядом), в колонку на телефоне те же отступы
+       выглядят слишком просторными */
+    .profile-hero-card {
+        gap: 16px;
+        padding: 20px;
+    }
+
+    .user-title-row h1 {
+        font-size: 24px;
+    }
+
+    .level-progress-row {
+        margin: 8px 0 6px;
+    }
+
+    .user-joined-date {
+        margin-bottom: 6px;
     }
 }
 
@@ -1193,6 +1459,12 @@
 
 @media (max-width: 900px) {
     .saved-list--quotes {
+        grid-template-columns: 1fr;
+    }
+
+    /* Та же сетка цитат, что и «Мои цитаты» выше, только внутри вкладки
+       «Избранное» — раньше была без адаптива вообще, 2 колонки всегда */
+    .fav-quotes-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -1344,6 +1616,35 @@
 
     .page-head--action {
         flex-direction: column;
+    }
+
+    .profile-layout {
+        padding: 16px 8px 24px;
+    }
+
+    .profile-user-avatar {
+        width: 90px;
+        height: 90px;
+    }
+
+    .user-title-row h1 {
+        font-size: 20px;
+    }
+
+    .profile-hero-card {
+        padding: 16px;
+    }
+}
+
+/* Тот же приём, что на странице переводчика: на совсем узких экранах
+   (Galaxy Z Flip и похожие) 2 карточки в ряд всё ещё мелковаты — вместо
+   деления по --per-view здесь задаём ширину карточки напрямую в
+   процентах. 72% — ровно то же число, что у .collection-card на
+   translator.html на этом же пороге: почти одна карточка во весь экран
+   с «подглядыванием» следующей. */
+@media (max-width: 400px) {
+    .fav-collections-track > .collection-card {
+        flex-basis: 72%;
     }
 }
 

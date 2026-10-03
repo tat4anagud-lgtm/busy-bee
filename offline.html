@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нет соединения — Busy Bee</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="errors-style.css">
+</head>
+<body>
+
+    <div class="page-shell">
+        <script src="header.js"></script>
+
+        <main class="err-page">
+            <img class="err-illustration" src="images/illustrations/offline-bee.png" alt="Пчела в очках связывает оборванную лиану на ветке">
+
+            <p class="err-code">Офлайн</p>
+            <h1 class="err-title">Ой, нить оборвалась</h1>
+            <p class="err-subtitle">Проверьте соединение — и возвращайтесь дочитывать.</p>
+
+            <div class="err-actions">
+                <button type="button" class="err-btn-primary" data-retry>Обновить страницу</button>
+                <a href="index.html" class="err-btn-secondary">На главную</a>
+            </div>
+        </main>
+
+        <script src="footer.js"></script>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="errors-script.js"></script>
+</body>
+</html>

@@ -114,6 +114,53 @@
     background: var(--white);
 }
 
+/* Категорий много: на виду первые (см. VISIBLE_PILLS в glossary.js),
+   остальные раскрываются кнопкой «Ещё». Выбранная категория из
+   спрятанных остаётся на виду — чтобы было понятно, что фильтр включён. */
+.category-pills:not(.expanded) .pill-btn.is-extra:not(.active) {
+    display: none;
+}
+
+/* Кнопка «Ещё N» / «Свернуть» — пунктиром и без заливки, чтобы её не
+   приняли за ещё одну категорию */
+.pill-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: none;
+    border: 1px dashed var(--honey);
+    color: var(--text-secondary);
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.pill-more:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+.pill-more:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+.pill-more img {
+    width: 10px;
+    height: 10px;
+    transition: transform 0.2s ease;
+}
+
+.pill-more.is-open img {
+    transform: rotate(180deg);
+}
+
 .pill-btn.active {
     background: var(--surface-warm);
     border-color: var(--honey);
@@ -149,6 +196,19 @@
 
 /* ---------- Main layout ---------- */
 
+/* Боковая карточка с определением (.sidebar-detail-card) — sticky,
+   но у .page-shell в style.css стоит overflow: hidden, а он превращает
+   контейнер в «скролл-контейнер» и тихо отключает sticky у всего
+   внутри: карточка оставалась наверху страницы, пока читатель листал
+   список вниз. overflow: clip обрезает углы так же, но скролл-контейнера
+   не создаёт — sticky снова работает. Первая строка — запасная для
+   старых браузеров, которые clip не знают.
+   Если захочется того же на всём сайте — перенести в style.css. */
+.page-shell {
+    overflow: hidden;
+    overflow: clip;
+}
+
 .glossary-layout {
     display: grid;
     grid-template-columns: 1fr 360px;
@@ -160,6 +220,9 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
+
+    /* чтобы при переходе на другую страницу список не прилипал к самому краю окна */
+    scroll-margin-top: 20px;
 }
 
 .novel-filter-banner {
@@ -288,6 +351,20 @@
     font-weight: 600;
 }
 
+/* ---------- Pagination ----------
+   Сами кнопки (.page-arrow, .page-number, .page-ellipsis) — из style.css,
+   те же, что в каталоге. Здесь только отступы и [hidden]: у
+   .chapters-pagination стоит display: flex, и он перебивает атрибут
+   hidden, поэтому прячем явно. */
+
+.glossary-pagination {
+    margin-top: 28px;
+}
+
+.glossary-pagination[hidden] {
+    display: none;
+}
+
 /* ---------- Term cards ---------- */
 
 .cards-list {
@@ -387,6 +464,29 @@
     white-space: nowrap;
 }
 
+/* Закладка и стрелка «раскрыть» справа в шапке карточки.
+   Стрелка нужна только на телефоне (см. @media внизу) */
+.term-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.term-card-chevron {
+    display: none;
+    width: 14px;
+    height: 14px;
+    opacity: 0.5;
+    transition: transform 0.2s ease;
+}
+
+.used-in-empty {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
 .bookmark-icon-btn {
     color: var(--text-muted);
     transition: color 0.2s ease;
@@ -420,6 +520,11 @@
     position: sticky;
     top: 24px;
     box-shadow: 0 4px 14px var(--shadow);
+
+    /* на низком окне карточка не должна вылезать за экран — тогда
+       её содержимое прокручивается внутри неё самой */
+    max-height: calc(100vh - 48px);
+    overflow-y: auto;
 }
 
 .detail-empty-state {
@@ -604,7 +709,76 @@
         grid-template-columns: 1fr;
     }
 
-    .sidebar-detail-card {
-        position: static;
+    /* Боковой панели на телефоне нет: определение раскрывается прямо
+       под нажатым термином (.term-card-expand, см. glossary.js).
+       Граница 992px должна совпадать с mobileQuery в glossary.js. */
+    .glossary-sidebar {
+        display: none;
+    }
+
+    /* Карточка переносится на две строки: иероглиф + текст, а под ними —
+       раскрытая часть на всю ширину */
+    .term-card {
+        flex-wrap: wrap;
+        row-gap: 0;
+
+        /* когда карточку подкручивают в видимую область, она не прилипает к краю окна */
+        scroll-margin: 12px;
+    }
+
+    .term-card-chevron {
+        display: block;
+    }
+
+    .term-card.selected .term-card-chevron {
+        transform: rotate(180deg);
+    }
+
+    .term-card-expand {
+        flex: 0 0 100%;
+        min-width: 0;
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px dashed var(--border);
+        cursor: default;
+        scroll-margin: 12px;
+    }
+
+    .term-card-expand .used-in-section h3 {
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .term-card-expand .used-in-list {
+        margin-bottom: 14px;
+    }
+
+    /* Мягкое появление только у того, что раскрыли сейчас — а не при
+       каждой перерисовке списка (закладка, смена страницы) */
+    .term-card-expand.is-opening {
+        animation: term-expand-in 0.22s ease both;
+    }
+}
+
+@keyframes term-expand-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .term-card-expand.is-opening { animation: none; }
+}
+
+/* ---------- Телефон: как на странице «Закладки» ----------
+   Те же значения и тот же порог (640px), что в bookmarks-style.css:
+   поля страницы 16px вместо 32px и заголовок 34px вместо 38px.
+   Внутренние поля самой hero-плашки теперь общие — в page-hero.css. */
+@media (max-width: 640px) {
+    .glossary-container {
+        padding: 0 16px 40px;
+    }
+
+    .glossary-title {
+        font-size: 34px;
     }
 }

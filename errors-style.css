@@ -1,0 +1,171 @@
+/* ========================================
+   BUSY BEE — СТРАНИЦЫ-ЗАГЛУШКИ
+   (404, нет интернета, 500 и т.д.)
+   ========================================
+   Один файл на всю группу — в отличие от «обычных» страниц (каталог,
+   коллекции и т.д.), тут не витрина с баннером и сеткой карточек, а
+   просто центр экрана: иллюстрация, код, заголовок, подпись, кнопки.
+   Разный контент — разные HTML (404.html, offline.html, 500.html…),
+   разметка внутри .err-page у всех одна и та же. Префикс err-.
+
+   Header/footer — из header.js/footer.js, как на остальных
+   перенесённых страницах; сами они сюда не входят. */
+
+.err-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    /* Страница короткая (одна картинка и пара строк текста) — без
+       этого футер прилипал бы прямо под контентом, а не к низу
+       .page-shell. Не трогаем сам .page-shell (общий для всего
+       сайта) — вместо этого просто отдаём контенту достаточно
+       высоты, чтобы страница выглядела уравновешенно сама по себе. */
+    min-height: 62vh;
+
+    padding: 60px 24px 70px;
+}
+
+.err-illustration {
+    display: block;
+    width: 260px;
+    height: auto;
+    margin-bottom: 8px;
+}
+
+.err-code {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--honey);
+}
+
+.err-title {
+    margin: 6px 0 12px;
+    max-width: 520px;
+
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-primary);
+}
+
+.err-subtitle {
+    margin: 0 0 30px;
+    max-width: 440px;
+
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.err-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.err-btn-primary,
+.err-btn-secondary {
+    appearance: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.err-btn-primary {
+    padding: 12px 28px;
+
+    background: var(--honey);
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    text-decoration: none;
+    transition: filter 0.2s ease;
+}
+
+.err-btn-primary:hover {
+    filter: brightness(0.94);
+}
+
+.err-btn-secondary {
+    padding: 12px 26px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.err-btn-secondary:hover {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+}
+
+.err-quicklinks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 4px;
+
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.err-quicklinks a {
+    padding: 4px 10px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.err-quicklinks a:hover {
+    color: var(--honey);
+    background: var(--surface-warm);
+}
+
+.err-quicklinks .sep {
+    opacity: 0.5;
+}
+
+/* ---------- Адаптив ---------- */
+@media (max-width: 560px) {
+    .err-page {
+        min-height: 50vh;
+        padding: 44px 20px 50px;
+    }
+
+    .err-illustration {
+        width: 200px;
+    }
+
+    .err-title {
+        font-size: 25px;
+    }
+
+    .err-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 260px;
+    }
+
+    .err-btn-primary,
+    .err-btn-secondary {
+        width: 100%;
+    }
+}

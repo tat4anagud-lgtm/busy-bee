@@ -76,6 +76,22 @@ body {
     font-family: "Inter", Arial, sans-serif;
 }
 
+/* Базовый сброс ссылок: без него любая ссылка, у которой нет своего
+   класса со стилями, красится браузером — синяя, а после клика
+   фиолетовая, с подчёркиванием. Специфичность у `a` самая низкая,
+   поэтому все уже написанные правила (.stat-link, .btn-continue,
+   .breadcrumbs a и т.д.) продолжают работать как раньше. */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Названия новелл внутри карточек (переводчик, профиль): выглядят
+   как обычный заголовок, а что это ссылка, видно по наведению */
+.hero-title-link:hover {
+    color: var(--honey);
+}
+
 .page-shell {
     width: calc(100% - 48px);
     max-width: 1296px;
@@ -363,7 +379,8 @@ body {
 .header-actions .header-bookmark-button, 
 .header-actions .bell-button,
 .header-actions .theme-toggle-button,
-.header-actions .header-login-button {
+.header-actions .header-login-button,
+.header-actions .mobile-menu-button {
     width: 34px;
     height: 34px;
 
@@ -387,7 +404,8 @@ body {
 .header-actions .header-bookmark-button:hover,
 .header-actions .bell-button:hover,
 .header-actions .theme-toggle-button:hover,
-.header-actions .header-login-button:hover {
+.header-actions .header-login-button:hover,
+.header-actions .mobile-menu-button:hover {
     background: var(--surface-warm);
     border-color: var(--border);
 
@@ -395,11 +413,18 @@ body {
 }
 
 .header-actions .theme-toggle-button img,
-.header-actions .header-login-button img {
+.header-actions .header-login-button img,
+.header-actions .mobile-menu-button img {
     width: 18px;
     height: 18px;
 
     object-fit: contain;
+}
+
+/* Скрыта по умолчанию (десктоп) — появляется только ниже 768px,
+   см. медиа-запрос в разделе «МОБИЛЬНАЯ НАВИГАЦИЯ» в конце файла */
+.header-actions .mobile-menu-button {
+    display: none;
 }
 
 
@@ -670,6 +695,53 @@ body {
     box-shadow: none;
 }
 
+/* Background art, one full-size image per hero variant (both files are
+   the same dimensions as .hero). On hero-welcome the art fills both
+   sides; on hero-continue the same canvas is used but only the right
+   side has actual artwork — the left is just flat fill in the PNG
+   itself, so it reads as "no art" without needing a second image. */
+.hero-welcome,
+.hero-continue {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.hero-welcome {
+    background-image: url("images/hero/hero-welcome-bg.png");
+}
+
+.hero-continue {
+    background-image: url("images/hero/hero-continue-bg.png");
+
+    /* Hidden by default, same reasoning as .hero-welcome below —
+       script.js decides which one to reveal once it has actually
+       checked localStorage (and, for hero-continue, fetched the
+       novel's data), so nothing flashes on screen before then */
+    display: none;
+}
+
+/* ---------- Novel cover ---------- */
+
+.hero-cover {
+    position: relative;
+    z-index: 1;
+
+    width: 31%;
+
+    padding: 20px 0 0 55px;
+}
+
+.hero-cover img {
+    width: 320px;
+    height: 340px;
+
+    object-fit: cover;
+
+    border-radius: 6px;
+}
+
+
 /* ---------- Hero information ---------- */
 
 .hero-info {
@@ -686,6 +758,18 @@ body {
 }
 
 
+/* Small label */
+
+.hero-label {
+    margin: 0 0 12px;
+
+    color: var(--text-primary);
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+
 /* Novel title */
 
 .hero-info h1 {
@@ -697,6 +781,23 @@ body {
 
     font-weight: 500;
 }
+
+/* Novel title as a link: looks like plain text until hovered, so it
+   doesn't read as a generic blue link but is still clearly clickable */
+.hero-title-link {
+    color: var(--text-primary);
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.hero-title-link:hover {
+    color: var(--honey);
+
+    text-decoration: underline;
+}
+
 
 /* Author */
 
@@ -798,6 +899,176 @@ body {
 }
 
 
+/* ========================================
+   HERO BUTTONS
+   ======================================== */
+
+.hero-buttons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    margin-top: 22px;
+}
+
+
+/* Continue Reading */
+
+.continue-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 11px 24px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--honey);
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 13px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.continue-button img {
+    width: 17px;
+    height: 17px;
+
+    object-fit: contain;
+}
+
+.continue-button:hover {
+    background: #C7962F;
+
+    transform: translateY(-1px);
+}
+
+
+/* Bookmark */
+
+.hero-bookmark-button {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+    border-radius: 50%;
+
+    background: transparent;
+    color: var(--text-primary);
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.hero-bookmark-button:hover {
+    background: var(--white);
+    border-color: var(--honey);
+}
+
+.hero-bookmark-button.active {
+    border-color: var(--honey);
+}
+
+.hero-bookmark-button img {
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+}
+
+
+/* ========================================
+   HERO — WELCOME VARIANT
+   ========================================
+   Shown instead of .hero-continue when HAS_ACTIVE_NOVEL is false
+   (see the toggle at the top of script.js). Search-first layout for
+   new users or someone who just finished their last novel. */
+
+.hero-welcome {
+    position: relative;
+
+    /* Hidden by default; script.js switches this to "flex" when
+       HAS_ACTIVE_NOVEL is false, so there's no flash of both heroes
+       stacked on top of each other while the page loads */
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 48px;
+
+    text-align: center;
+}
+
+.hero-welcome-content {
+    position: relative;
+    z-index: 1;
+
+    /* Wider than the search bar itself so the Popular Searches row
+       (which needs more horizontal room) still fits on one line */
+    max-width: 700px;
+}
+
+.hero-welcome h1 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 34px;
+    font-weight: 500;
+}
+
+.hero-welcome-subtitle {
+    margin: 10px 0 0;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+}
+
+/* A bit more breathing room than the catalog's version gets — here
+   the search box sits right under a subtitle line instead of at the
+   top of the hero, so it needs extra clearance to avoid crowding it */
+.hero-welcome-content .hero-search-box {
+    margin-top: 24px;
+}
+
+/* ---------- Popular searches ---------- */
+
+
+/* ========================================
+   MAIN CONTENT GRID
+   ======================================== */
+
+/* 3 columns: Recommendations (widest) | Latest Releases | Featured Authors.
+   Each of those three must be a DIRECT child of .content-grid,
+   otherwise the grid breaks and items land in the wrong column. */
+.content-grid {
+    width: calc(100% - 48px);
+    margin: 30px auto 0;
+
+    display: grid;
+
+    grid-template-columns: 2.15fr 1fr 1fr;
+
+    column-gap: 24px;
+}
+
 .section-header {
     display: flex;
     align-items: center;
@@ -850,6 +1121,92 @@ body {
 
     overflow-x: hidden;
     scroll-behavior: smooth;
+}
+
+.book-card {
+    /* Fixed width so exactly 3 cards show per row and the
+       carousel arrows have something meaningful to scroll past */
+    flex: 0 0 calc((100% - 16px) / 3);
+    min-width: 0;
+    height: 128px;
+
+    display: flex;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: var(--surface);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 16px var(--shadow);
+}
+
+.book-card > img {
+    width: 60px;
+    height: 118px;
+
+    margin: 5px 0 5px 5px;
+
+    flex-shrink: 0;
+
+    object-fit: cover;
+
+    border-radius: 7px;
+}
+
+.book-card-info {
+    min-width: 0;
+
+    padding: 14px 10px 10px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.book-card-info h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 500;
+}
+
+.book-card-info p {
+    margin: 8px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+.book-meta {
+    margin-top: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 10px;
+}
+
+.rating {
+    color: var(--honey);
+
+    font-size: 10px;
+    font-weight: 600;
 }
 
 .mini-bookmark {
@@ -913,6 +1270,101 @@ body {
 .carousel-arrow:hover {
     background: var(--surface-warm);
     border-color: var(--honey);
+}
+
+/* ========================================
+   GENRE CARDS
+   ======================================== */
+
+.genre-section {
+    margin-top: 24px;
+}
+
+.genre-carousel {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.genre-list {
+    flex: 1;
+
+    display: flex;
+
+    gap: 7px;
+
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+}
+
+.genre-card {
+    /* Fixed width so exactly 3 cards show per row and the
+       carousel arrows have something meaningful to scroll past —
+       more genres can be appended to .genre-list later */
+    flex: 0 0 calc((100% - 14px) / 3);
+    min-width: 0;
+
+    position: relative;
+
+    height: 80px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    padding: 12px 5px;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    /* Fallback color while images/genres/*.jpg is loading (or missing) */
+    background: #6b5f4f;
+
+    color: white;
+
+    text-decoration: none;
+
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* The genre photo sits behind the overlay + label, filling the card */
+.genre-card > img {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.genre-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background: rgba(35, 28, 22, 0.35);
+}
+
+.genre-card span {
+    position: relative;
+    z-index: 2;
+}
+
+/* ========================================
+   LATEST RELEASES
+   ======================================== */
+
+/* Left border acts as a visual divider from the Recommendations column */
+.latest-releases {
+    padding-left: 2px;
+    border-left: 1px solid var(--border);
+    padding-left: 22px;
 }
 
 .release-list {
@@ -992,6 +1444,40 @@ body {
     font-weight: 500;
 }
 
+/* ========================================
+   FEATURED AUTHORS
+   ======================================== */
+
+/* Same divider treatment as .latest-releases */
+.featured-authors {
+    padding-left: 22px;
+
+    border-left: 1px solid var(--border);
+}
+
+.author-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.author-card {
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--surface);
+}
+
 .author-avatar {
     width: 36px;
     height: 36px;
@@ -1004,6 +1490,71 @@ body {
 
     background: #D9CCBC;
 }
+
+.author-info {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.author-info h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.author-info p {
+    margin: 4px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 8px;
+}
+
+.follow-button {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--surface);
+
+    color: var(--text-primary);
+
+    font-family: "Inter", sans-serif;
+    font-size: 9px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.follow-button img {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+}
+
+.follow-button.following {
+    border-color: var(--honey);
+
+    background: var(--honey);
+
+    color: white;
+}
+
 
 /* ========================================
    NEWSLETTER
@@ -1163,7 +1714,11 @@ body {
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
 
-    gap: 16px;
+    /* column-gap (40px) отдельно от row-gap (16px, срабатывает только
+       при переносе на мобильном) — ссылки на страницы футера стали
+       длиннее после перевода и без лишнего зазора почти упирались в
+       иконки соцсетей справа */
+    gap: 16px 40px;
 
     margin-top: 32px;
     padding-top: 20px;
@@ -3528,6 +4083,159 @@ a.pill:hover {
     color: var(--text-muted);
 }
 
+/* ========================================
+   АДАПТИВ: ШАПКА, ФУТЕР, ОБОЛОЧКА СТРАНИЦЫ
+   ========================================
+   Общее для всех страниц (шапка и футер приходят из header.js /
+   footer.js). Всё ниже действует ТОЛЬКО на узких экранах — на десктопе
+   ничего не меняется. Рассчитано вплоть до ~260px (Galaxy Z Flip во
+   сложенном виде).
+   Идея: 1024 — чуть сжимаем; 820 — шапка в две строки (логотип +
+   иконки / меню); 480 — поиск отдельной третьей строкой;
+   340 — у логотипа остаётся только значок. */
+
+@media (max-width: 1024px) {
+    .header {
+        padding: 0 20px;
+    }
+
+    .navigation {
+        margin-left: 40px;
+        gap: 22px;
+    }
+
+    .header-actions {
+        gap: 10px;
+    }
+
+    .search {
+        width: 180px;
+    }
+}
+
+@media (max-width: 820px) {
+    /* Шапка: строка 1 — логотип + иконки (поиск занимает остаток),
+       строка 2 — меню на всю ширину */
+    .header {
+        height: auto;
+        flex-wrap: wrap;
+        padding: 12px 20px;
+        row-gap: 10px;
+    }
+
+    .navigation {
+        order: 3;
+        width: 100%;
+        margin-left: 0;
+        gap: 24px;
+    }
+
+    .header-actions {
+        flex: 1 1 0;
+        min-width: 0;
+        justify-content: flex-end;
+        gap: 6px;
+    }
+
+    .header-actions > button,
+    .header-actions > .user-menu {
+        flex-shrink: 0;
+    }
+
+    .search {
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+        max-width: 260px;
+    }
+
+    .search input {
+        min-width: 0;
+    }
+
+    /* Футер: бренд над описанием, нижняя строка — столбиком по центру */
+    .footer {
+        width: calc(100% - 40px);
+    }
+
+    .footer-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .footer-brand {
+        flex: none;
+    }
+
+    .footer-bottom {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 14px;
+        text-align: center;
+    }
+
+    .footer-copyright,
+    .footer-bottom-right {
+        justify-self: center;
+    }
+
+    .footer-bottom-right {
+        justify-content: center;
+        gap: 14px 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Меньше «рамки» вокруг страницы: на 260px 24px с каждой стороны
+       съедали почти пятую часть ширины */
+    .page-shell {
+        width: calc(100% - 16px);
+        min-height: calc(100vh - 16px);
+        margin: 8px auto;
+        border-radius: 14px;
+    }
+
+    /* Прежний трюк с трёхстрочной шапкой (.header-actions: display:
+       contents + order, .search на всю ширину второй строкой) отсюда
+       убран — ниже 768px теперь работает другая схема: .navigation
+       скрыта целиком, .search сворачивается в иконку, вместо неё
+       появляется бургер. Все три правила — в разделе «МОБИЛЬНАЯ
+       НАВИГАЦИЯ» в конце файла, вместе с разметкой нижней панели и
+       самого бургер-меню, а не здесь вперемешку с остальным 480px. */
+    .header {
+        padding: 10px 12px;
+        column-gap: 4px;
+    }
+
+    .logo {
+        gap: 8px;
+        font-size: 20px;
+    }
+
+    .logo img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .footer {
+        width: calc(100% - 32px);
+        margin: 28px auto 24px;
+    }
+
+    .footer-links a:not(:last-child)::after {
+        margin: 0 6px;
+    }
+}
+
+@media (max-width: 340px) {
+    /* На самых узких экранах у логотипа остаётся только значок —
+       иначе иконки справа не помещаются в одну строку */
+    .logo span {
+        display: none;
+    }
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1100px) {
@@ -5151,4 +5859,502 @@ body.reader-page.theme-dark .btn-web-version {
 
 body.reader-page.theme-dark .saved-item {
     border-bottom-color: var(--border-dark);
+}
+
+
+/* ========================================
+   МОБИЛЬНАЯ НАВИГАЦИЯ — бургер + нижняя панель
+   ========================================
+   Разметка (.bottom-nav, .mobile-nav-overlay) вставляется mobile-nav.js
+   ВНЕ .page-shell — см. комментарий в начале того файла про overflow/
+   zoom. Сама кнопка-бургер (.mobile-menu-button) живёт в header.js,
+   внутри шапки, ей fixed-позиция не нужна.
+
+   Активная вкладка нижней панели подсвечивается не перекраской иконки
+   (пришлось бы рисовать вторую, «цветную» версию каждой картинки),
+   а подложкой-плашкой за иконкой и текстом — см. .bottom-nav-item.active.
+   Поведение (открытие/закрытие, подсветка, подстановка «Продолжить
+   чтение») — в script.js. */
+
+.bottom-nav,
+.mobile-nav-overlay {
+    display: none;
+}
+
+/* Сама видимая «полоса» панели — отдельным слоем позади иконок
+   (z-index: -1), а не фоном на .bottom-nav напрямую: иначе вырез-маска
+   обрезала бы заодно и центральную кнопку, которая тоже лежит внутри
+   .bottom-nav. mask-image вырезает круг ровно там, где торчит кнопка —
+   получается не плоская полка с кружком сверху, а дуга: ровно над
+   обычными иконками, вверх-дугой над приподнятой, и снова ровно. */
+.bottom-nav::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -4px 16px var(--shadow);
+
+    -webkit-mask-image: radial-gradient(circle 36px at 50% 0px, transparent 98%, #000 100%);
+    mask-image: radial-gradient(circle 36px at 50% 0px, transparent 98%, #000 100%);
+}
+
+.mobile-nav-overlay.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+}
+
+.mobile-nav-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(35, 28, 22, 0.45);
+}
+
+.mobile-nav-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(320px, 84vw);
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+    padding-top: calc(18px + env(safe-area-inset-top, 0px));
+    overflow-y: auto;
+
+    background: var(--surface);
+    box-shadow: -8px 0 28px rgba(0, 0, 0, 0.18);
+
+    /* Открытие/закрытие — транзишен в обе стороны, класс .open
+       переключается на .mobile-nav-overlay, не на самой панели */
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+}
+
+.mobile-nav-overlay.open .mobile-nav-panel {
+    transform: translateX(0);
+}
+
+.mobile-nav-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 6px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.mobile-nav-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 50%;
+    background: var(--surface-warm);
+
+    cursor: pointer;
+}
+
+.mobile-nav-close img {
+    width: 14px;
+    height: 14px;
+}
+
+.mobile-nav-section {
+    display: flex;
+    flex-direction: column;
+
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.mobile-nav-section:last-child {
+    border-bottom: none;
+}
+
+.mobile-nav-link {
+    padding: 12px 8px;
+    border-radius: 8px;
+
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    text-decoration: none;
+
+    transition: background 0.15s ease;
+}
+
+.mobile-nav-link:active,
+.mobile-nav-link:hover {
+    background: var(--surface-warm);
+}
+
+.mobile-nav-link.secondary {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.mobile-nav-theme-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 8px;
+
+    border: none;
+    border-radius: 8px;
+    background: none;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.mobile-nav-theme-row:hover {
+    background: var(--surface-warm);
+}
+
+.mobile-nav-theme-row img {
+    width: 18px;
+    height: 18px;
+}
+
+/* ---------- Нижняя панель ---------- */
+
+/* Без этого правила [hidden] не срабатывает: у .bottom-nav-item ниже
+   стоит свой display:flex той же специфичности, что и у встроенного
+   браузерного [hidden]{display:none} — он его перебивает, и скрытая
+   через JS вкладка (Профиль или Анонсы, см. BOTTOM_NAV_FIFTH_TAB в
+   script.js) всё равно остаётся видна. Выше специфичность — и всё
+   встаёт на место. */
+.bottom-nav-item[hidden] {
+    display: none;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+
+    padding: 6px 2px;
+    border-radius: 12px;
+
+    color: var(--text-muted);
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.bottom-nav-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 26px;
+    border-radius: 10px;
+
+    transition: background 0.2s ease;
+}
+
+.bottom-nav-item img {
+    width: 19px;
+    height: 19px;
+    object-fit: contain;
+    opacity: 0.75;
+}
+
+.bottom-nav-item span {
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.bottom-nav-item.active {
+    color: var(--honey);
+}
+
+.bottom-nav-item.active .bottom-nav-icon-wrap {
+    background: var(--surface-warm);
+}
+
+.bottom-nav-item.active img {
+    opacity: 1;
+}
+
+/* Приподнятая центральная кнопка «Продолжить чтение» — обложка книги
+   (или заглушка с иконкой, пока история не начата) вместо обычной
+   иконки, крупнее и выступает над линией панели */
+.bottom-nav-center {
+    flex: 0 0 auto;
+    position: relative;
+    top: -16px;
+}
+
+/* Кнопка всегда показывает одну и ту же иконку — без названия и
+   обложки конкретной книги (открывает список, выбор за читателем,
+   см. комментарий в script.js) */
+.bottom-nav-center-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+
+    background: var(--honey);
+    border: 3px solid var(--surface);
+    box-shadow: 0 4px 14px var(--shadow);
+}
+
+.bottom-nav-center-cover img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    opacity: 1; /* перебивает общее затемнение .bottom-nav-item img — тут всегда в полную силу */
+    filter: brightness(0) invert(1);
+}
+
+.bottom-nav-center span {
+    max-width: 72px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ---------- Шторка «Продолжить чтение» ----------
+   Тот же приём, что у .mobile-nav-overlay (фикс-оверлей + задник +
+   едущая панель), только едет не сбоку, а снизу вверх, и всегда поверх
+   .bottom-nav (z-index больше). Открывается центральной кнопкой, но
+   только если есть хоть одна начатая новелла — иначе кнопка просто
+   ведёт в каталог, и эта разметка вообще не используется (см. script.js). */
+.continue-sheet {
+    display: none;
+}
+
+.continue-sheet.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+}
+
+.continue-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(35, 28, 22, 0.45);
+}
+
+.continue-sheet-panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 72vh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px 18px calc(18px + env(safe-area-inset-bottom, 0px));
+
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.18);
+
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+}
+
+.continue-sheet.open .continue-sheet-panel {
+    transform: translateY(0);
+}
+
+.continue-sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.continue-sheet-head h3 {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.continue-sheet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+}
+
+.continue-sheet-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 8px;
+    border-radius: 12px;
+
+    text-decoration: none;
+    transition: background 0.15s ease;
+}
+
+.continue-sheet-row:hover,
+.continue-sheet-row:active {
+    background: var(--surface-warm);
+}
+
+.continue-sheet-row-cover {
+    width: 42px;
+    height: 56px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+
+.continue-sheet-row-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.continue-sheet-row-body strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.continue-sheet-row-body span {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.continue-sheet-empty {
+    margin: 0;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ---------- Брейкпоинт ---------- */
+
+@media (max-width: 768px) {
+    /* Полная навигация и текстовое поле поиска не помещаются — прячем
+       первую целиком, второе сворачиваем в иконку (разворачивается по
+       тапу, см. script.js) */
+    .navigation {
+        display: none;
+    }
+
+    .header-actions .mobile-menu-button {
+        display: flex;
+    }
+
+    /* Профиль и вход для гостя — теперь вкладка «Профиль» в нижней
+       панели (ведёт на profile.html, а там в сайдбаре и так есть все
+       те же пункты: Настройки, Достижения, Выйти и т.д. — дублировать
+       их ещё и здесь уже незачем) */
+    .header-actions .user-menu,
+    .header-actions .header-login-button {
+        display: none;
+    }
+
+    .search {
+        width: 34px;
+        padding: 0;
+        justify-content: center;
+        overflow: hidden;
+        cursor: pointer;
+        transition: width 0.25s ease;
+    }
+
+    .search input {
+        width: 0;
+        padding: 0;
+        border: none;
+        opacity: 0;
+        transition: opacity 0.2s ease, width 0.25s ease;
+    }
+
+    .search.expanded {
+        width: 190px;
+        padding: 0 10px;
+        justify-content: flex-start;
+    }
+
+    .search.expanded input {
+        width: 100%;
+        opacity: 1;
+    }
+
+    .bottom-nav {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 300;
+
+        padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+
+        /* фон/бордер/тень — не здесь, а в ::before (см. ниже, вне
+           медиа-запроса): отдельным слоем позади иконок, с вырезанной
+           дугой под центральную кнопку. Если повесить то же самое
+           прямо на .bottom-nav, маска заодно обрежет и саму кнопку —
+           она ведь тоже его потомок */
+    }
+
+    body.mobile-nav-locked {
+        overflow: hidden;
+    }
+
+    /* Место под фиксированную нижнюю панель — иначе последний блок
+       страницы (и сам футер) окажется у неё под низом. .page-shell
+       и так даёт 24px отступа снизу (см. .page-shell в начале файла) —
+       здесь просто добавляем к нему высоту самой панели */
+    .page-shell {
+        margin-bottom: calc(24px + 68px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 480px) {
+    .page-shell {
+        margin-bottom: calc(8px + 68px + env(safe-area-inset-bottom, 0px));
+    }
 }

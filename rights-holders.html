@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Правообладателям — Busy Bee</title>
+    <title data-ru="Правообладателям — Busy Bee" data-en="For Rights Holders — Busy Bee">Правообладателям — Busy Bee</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,128 +13,59 @@
     <link rel="stylesheet" href="page-hero.css">
     <link rel="stylesheet" href="footer-pages-style.css">
 </head>
-<body>
+<body data-page-lang="ru">
 
     <div class="page-shell">
-        <!-- HEADER (тот же, что на остальных страницах) -->
-        <header class="header">
-            <a href="index.html" class="logo">
-                <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
-                <span>Busy Bee</span>
-            </a>
-
-            <nav class="navigation">
-                <div class="catalog-menu">
-                    <button class="catalog-button">
-                        Каталог
-                        <img src="images/icons/chevron-down.svg" alt="">
-                    </button>
-                    <div class="catalog-dropdown">
-                        <a href="catalog.html">Новеллы</a>
-                        <a href="authors.html">Авторы</a>
-                        <a href="genres.html">Жанры</a>
-                        <a href="collections.html">Коллекции</a>
-                        <a href="glossary.html">Глоссарий</a>
-                    </div>
-                </div>
-                <a href="announcements.html">Анонсы</a>
-                <a href="about.html">О Busy Bee</a>
-            </nav>
-
-            <div class="header-actions">
-                <div class="search">
-                    <input type="text" placeholder="Поиск по книгам, авторам...">
-                    <img src="images/icons/search.svg" alt="">
-                </div>
-
-                <button class="header-bookmark-button"><img src="images/icons/bookmark.svg" alt=""></button>
-                <button class="bell-button"><img src="images/icons/bell.svg" alt=""></button>
-
-                <button class="theme-toggle-button theme-toggle" title="Тема"><img src="images/icons/moon.svg" alt=""></button>
-
-                <div class="user-menu">
-                    <button class="user-button">
-                        <div class="user-avatar"></div>
-                        <img src="images/icons/chevron-down.svg" alt="">
-                    </button>
-                    <div class="user-dropdown">
-                        <div class="user-dropdown-greeting">Добро пожаловать, Татьяна!</div>
-
-                        <div class="user-dropdown-divider"></div>
-
-                        <a href="profile.html" class="user-dropdown-item"><img src="images/icons/user.svg" alt="" class="user-dropdown-icon"> Мой профиль</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="profile.html#library" class="user-dropdown-item"><img src="images/icons/book.svg" alt="" class="user-dropdown-icon"> Моя библиотека</a>
-                        <a href="profile.html#favorites" class="user-dropdown-item"><img src="images/icons/heart.svg" alt="" class="user-dropdown-icon"> Избранное</a>
-                        <a href="profile.html#quotes" class="user-dropdown-item"><img src="images/icons/quote.svg" alt="" class="user-dropdown-icon"> Мои цитаты</a>
-                        <a href="profile.html#notes" class="user-dropdown-item"><img src="images/icons/edit.svg" alt="" class="user-dropdown-icon"> Мои заметки</a>
-                        <a href="profile.html#collections" class="user-dropdown-item"><img src="images/icons/folder.svg" alt="" class="user-dropdown-icon"> Мои коллекции</a>
-
-                        <div class="user-dropdown-spacer"></div>
-
-                        <a href="profile.html#achievements" class="user-dropdown-item"><img src="images/icons/award.svg" alt="" class="user-dropdown-icon"> Достижения</a>
-
-                        <div class="user-dropdown-divider"></div>
-
-                        <a href="profile.html#settings" class="user-dropdown-item"><img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки</a>
-                        <div class="language-menu">
-                            <button type="button" class="user-dropdown-item language-button"><img src="images/icons/globe.svg" alt="" class="user-dropdown-icon"> Язык</button>
-                            <div class="language-dropdown">
-                                <button class="language-option active">Русский</button>
-                                <button class="language-option">English</button>
-                            </div>
-                        </div>
-
-                        <div class="user-dropdown-divider"></div>
-
-                        <a href="#" class="user-dropdown-item user-dropdown-item-danger"><img src="images/icons/log-out.svg" alt="" class="user-dropdown-icon"> Выйти</a>
-                    </div>
-                </div>
-
-                <button class="header-login-button" title="Войти"><img src="images/icons/log-in.svg" alt=""></button>
-            </div>
-        </header>
+    <script src="header.js"></script>
 
         <main class="fp-container">
 
             <nav class="breadcrumbs">
-                <a href="index.html">Главная</a> <span>›</span>
-                <span class="current">Правообладателям</span>
+                <a href="index.html"><span data-lang="ru">Главная</span><span data-lang="en">Home</span></a> <span>›</span>
+                <span class="current"><span data-lang="ru">Правообладателям</span><span data-lang="en">For Rights Holders</span></span>
             </nav>
 
-            <!-- HERO -->
+            <!-- HERO. Переключатель языка страницы: русский / английский.
+                 Тексты лежат парами <span data-lang="ru">/<span data-lang="en">,
+                 лишний язык прячет CSS (см. footer-pages-style.css), а
+                 переключает footer-pages-script.js. Адрес ?lang=en открывает
+                 страницу сразу по-английски (на него ведёт английская ссылка
+                 в дисклеймере футера). -->
             <section class="fp-hero page-hero">
+                <div class="fp-lang-switch" role="group" aria-label="Язык страницы / Page language">
+                    <button type="button" class="fp-lang-btn active" data-set-lang="ru" aria-pressed="true">Русский</button>
+                    <button type="button" class="fp-lang-btn" data-set-lang="en" aria-pressed="false">English</button>
+                </div>
+
                 <span class="fp-hero-eyebrow">
                     <img src="images/icons/bee-icon.svg" alt="" style="width:14px;height:14px;">
-                    Документы
+                    <span data-lang="ru">Документы</span><span data-lang="en">Documents</span>
                 </span>
-                <h1 class="fp-title">Правообладателям</h1>
-                <p class="fp-subtitle">Если вы автор или правообладатель и хотите, чтобы перевод вашего произведения убрали с сайта, — вот как это сделать быстро и без лишней бюрократии.</p>
-                <p class="fp-updated">Последнее обновление: 28 сентября 2026</p>
+                <h1 class="fp-title"><span data-lang="ru">Правообладателям</span><span data-lang="en">For Rights Holders</span></h1>
+                <p class="fp-subtitle"><span data-lang="ru">Если вы автор или правообладатель и хотите, чтобы перевод вашего произведения убрали с сайта, — вот как это сделать быстро и без лишней бюрократии.</span><span data-lang="en">If you are an author or rights holder and would like a translation of your work removed from the site, here is how to do it quickly and without unnecessary bureaucracy.</span></p>
+                <p class="fp-updated"><span data-lang="ru">Последнее обновление: 28 сентября 2026</span><span data-lang="en">Last updated: September 28, 2026</span></p>
             </section>
 
             <div class="fp-layout">
 
                 <!-- САЙДБАР -->
                 <aside class="fp-sidebar">
-                    <nav class="fp-sidebar-menu" aria-label="Разделы">
-                        <a href="#position">Наша позиция</a>
-                        <a href="#how">Как подать заявку</a>
-                        <a href="#what">Что указать в заявке</a>
-                        <a href="#timing">Сроки и что дальше</a>
-                        <a href="#form">Форма заявки</a>
+                    <nav class="fp-sidebar-menu" aria-label="Разделы / Sections">
+                        <a href="#position"><span data-lang="ru">Наша позиция</span><span data-lang="en">Our position</span></a>
+                        <a href="#how"><span data-lang="ru">Как подать заявку</span><span data-lang="en">How to submit a request</span></a>
+                        <a href="#what"><span data-lang="ru">Что указать в заявке</span><span data-lang="en">What to include</span></a>
+                        <a href="#timing"><span data-lang="ru">Сроки и что дальше</span><span data-lang="en">Timing and next steps</span></a>
+                        <a href="#form"><span data-lang="ru">Форма заявки</span><span data-lang="en">Request form</span></a>
                     </nav>
 
                     <div class="fp-crosslinks">
-                        <h4>Ещё по теме</h4>
+                        <h4><span data-lang="ru">Ещё по теме</span><span data-lang="en">Related pages</span></h4>
                         <div class="fp-crosslinks-list">
-                            <a href="help-center.html">Help Center</a>
-                            <a href="contact-us.html">Contact Us</a>
-                            <a href="privacy-policy.html">Privacy Policy</a>
-                            <a href="terms-of-use.html">Terms of Use</a>
-                            <a href="rights-holders.html" aria-current="page">For Rights Holders</a>
+                            <a href="help-center.html"><span data-lang="ru">Центр помощи</span><span data-lang="en">Help Center</span></a>
+                            <a href="contact-us.html"><span data-lang="ru">Связаться с нами</span><span data-lang="en">Contact Us</span></a>
+                            <a href="privacy-policy.html"><span data-lang="ru">Политика конфиденциальности</span><span data-lang="en">Privacy Policy</span></a>
+                            <a href="terms-of-use.html"><span data-lang="ru">Условия использования</span><span data-lang="en">Terms of Use</span></a>
+                            <a href="rights-holders.html" aria-current="page"><span data-lang="ru">Правообладателям</span><span data-lang="en">For Rights Holders</span></a>
                         </div>
                     </div>
                 </aside>
@@ -144,99 +75,108 @@
 
                     <!-- НАША ПОЗИЦИЯ -->
                     <section class="fp-section" id="position">
-                        <h2>Наша позиция</h2>
-                        <p>Busy Bee — независимый проект любительских переводов. Мы уважаем труд авторов и <strong>не претендуем на права на оригинальные произведения</strong> — только на сам перевод и оформление сайта.</p>
-                        <p>Если вы считаете, что перевод размещён без вашего разрешения, — просто напишите нам. Мы рассмотрим заявку в течение <strong>48 часов</strong> и, если она обоснована, снимем перевод с публикации.</p>
-                        <p>Если вместо удаления вам было бы интереснее договориться (например, о размещении на согласованных условиях), — тоже пишите, обсудим.</p>
+                        <h2><span data-lang="ru">Наша позиция</span><span data-lang="en">Our position</span></h2>
+                        <p><span data-lang="ru">Busy Bee — независимый проект любительских переводов. Мы уважаем труд авторов и <strong>не претендуем на права на оригинальные произведения</strong> — только на сам перевод и оформление сайта.</span><span data-lang="en">Busy Bee is an independent project of unofficial fan translations. We respect authors' work and <strong>do not claim any rights to the original works</strong> — only to the translation itself and the design of the site.</span></p>
+                        <p><span data-lang="ru">Если вы считаете, что перевод размещён без вашего разрешения, — просто напишите нам. Мы рассмотрим заявку в течение <strong>48 часов</strong> и, если она обоснована, снимем перевод с публикации.</span><span data-lang="en">If you believe a translation has been published without your permission, simply write to us. We will review your request within <strong>48 hours</strong> and, if it is well-founded, take the translation down.</span></p>
+                        <p><span data-lang="ru">Если вместо удаления вам было бы интереснее договориться (например, о размещении на согласованных условиях), — тоже пишите, обсудим.</span><span data-lang="en">If you would rather come to an agreement than have the work removed (for example, about publication on agreed terms), feel free to write to us too — we will be happy to discuss it.</span></p>
                     </section>
 
                     <!-- КАК ПОДАТЬ ЗАЯВКУ -->
                     <section class="fp-section" id="how">
-                        <h2>Как подать заявку</h2>
+                        <h2><span data-lang="ru">Как подать заявку</span><span data-lang="en">How to submit a request</span></h2>
                         <ol>
-                            <li>Найдите на Busy Bee страницу новеллы, к которой у вас есть претензии, и скопируйте её адрес.</li>
-                            <li>Заполните форму ниже или напишите на <a href="mailto:rights@busybee.example">rights@busybee.example</a> — оба способа равнозначны.</li>
-                            <li>Приложите подтверждение, что вы правообладатель или его уполномоченный представитель.</li>
-                            <li>Дождитесь ответа — мы напишем на указанную вами почту.</li>
+                            <li><span data-lang="ru">Найдите на Busy Bee страницу новеллы, к которой у вас есть претензии, и скопируйте её адрес.</span><span data-lang="en">Find the novel's page on Busy Bee that your request concerns and copy its address.</span></li>
+                            <li><span data-lang="ru">Заполните форму ниже или напишите на <a href="mailto:rights@busybee.example">rights@busybee.example</a> — оба способа равнозначны.</span><span data-lang="en">Fill in the form below or write to <a href="mailto:rights@busybee.example">rights@busybee.example</a> — both ways are equivalent.</span></li>
+                            <li><span data-lang="ru">Приложите подтверждение, что вы правообладатель или его уполномоченный представитель.</span><span data-lang="en">Attach proof that you are the rights holder or their authorized representative.</span></li>
+                            <li><span data-lang="ru">Дождитесь ответа — мы напишем на указанную вами почту.</span><span data-lang="en">Wait for our reply — we will write to the email address you provide.</span></li>
                         </ol>
                     </section>
 
                     <!-- ЧТО УКАЗАТЬ -->
                     <section class="fp-section" id="what">
-                        <h2>Что указать в заявке</h2>
-                        <p>Чтобы мы могли быстро всё проверить, пожалуйста, укажите:</p>
+                        <h2><span data-lang="ru">Что указать в заявке</span><span data-lang="en">What to include</span></h2>
+                        <p><span data-lang="ru">Чтобы мы могли быстро всё проверить, пожалуйста, укажите:</span><span data-lang="en">To help us verify everything quickly, please include:</span></p>
                         <ul>
-                            <li><strong>Кто вы</strong> — имя или название организации и email для ответа.</li>
-                            <li><strong>Ваша роль</strong> — правообладатель или его уполномоченный представитель.</li>
-                            <li><strong>Произведение</strong> — название оригинала, автор и, если есть, название перевода на сайте.</li>
-                            <li><strong>Где размещён перевод</strong> — ссылка на страницу новеллы или конкретных глав на Busy Bee.</li>
-                            <li><strong>Подтверждение прав</strong> — договор, регистрационные данные, ссылка на официальную страницу автора или издателя, любой документ, из которого видно, что произведение принадлежит вам.</li>
-                            <li><strong>Подтверждение добросовестности</strong> — что сведения в заявке верны и вы действуете от лица правообладателя.</li>
+                            <li><span data-lang="ru"><strong>Кто вы</strong> — имя или название организации и email для ответа.</span><span data-lang="en"><strong>Who you are</strong> — your name or organization name and an email address for our reply.</span></li>
+                            <li><span data-lang="ru"><strong>Ваша роль</strong> — правообладатель или его уполномоченный представитель.</span><span data-lang="en"><strong>Your role</strong> — rights holder or authorized representative.</span></li>
+                            <li><span data-lang="ru"><strong>Произведение</strong> — название оригинала, автор и, если есть, название перевода на сайте.</span><span data-lang="en"><strong>The work</strong> — the title of the original, its author and, if known, the title of the translation on the site.</span></li>
+                            <li><span data-lang="ru"><strong>Где размещён перевод</strong> — ссылка на страницу новеллы или конкретных глав на Busy Bee.</span><span data-lang="en"><strong>Where the translation is published</strong> — a link to the novel's page or specific chapters on Busy Bee.</span></li>
+                            <li><span data-lang="ru"><strong>Подтверждение прав</strong> — договор, регистрационные данные, ссылка на официальную страницу автора или издателя, любой документ, из которого видно, что произведение принадлежит вам.</span><span data-lang="en"><strong>Proof of rights</strong> — a contract, registration details, a link to the official page of the author or publisher, or any document showing that the work belongs to you.</span></li>
+                            <li><span data-lang="ru"><strong>Подтверждение добросовестности</strong> — что сведения в заявке верны и вы действуете от лица правообладателя.</span><span data-lang="en"><strong>Good-faith confirmation</strong> — that the information in the request is accurate and that you act on behalf of the rights holder.</span></li>
                         </ul>
-                        <p>Заявки, отправленные не правообладателем и не его представителем, мы рассмотреть не сможем.</p>
+                        <p><span data-lang="ru">Заявки, отправленные не правообладателем и не его представителем, мы рассмотреть не сможем.</span><span data-lang="en">We are unable to review requests sent by anyone who is neither the rights holder nor their representative.</span></p>
                     </section>
 
                     <!-- СРОКИ -->
                     <section class="fp-section" id="timing">
-                        <h2>Сроки и что дальше</h2>
+                        <h2><span data-lang="ru">Сроки и что дальше</span><span data-lang="en">Timing and next steps</span></h2>
                         <ul>
-                            <li><strong>В течение 48 часов</strong> с момента получения заявки мы её рассматриваем и отвечаем вам.</li>
-                            <li>Если данных не хватает, напишем, что именно нужно уточнить.</li>
-                            <li>Если заявка обоснована, перевод снимается с публикации, и мы сообщаем вам об этом письмом.</li>
+                            <li><span data-lang="ru"><strong>В течение 48 часов</strong> с момента получения заявки мы её рассматриваем и отвечаем вам.</span><span data-lang="en"><strong>Within 48 hours</strong> of receiving your request, we review it and reply.</span></li>
+                            <li><span data-lang="ru">Если данных не хватает, напишем, что именно нужно уточнить.</span><span data-lang="en">If information is missing, we will tell you exactly what needs to be clarified.</span></li>
+                            <li><span data-lang="ru">Если заявка обоснована, перевод снимается с публикации, и мы сообщаем вам об этом письмом.</span><span data-lang="en">If the request is well-founded, the translation is taken down and we let you know by email.</span></li>
                         </ul>
                     </section>
 
                     <!-- ФОРМА -->
                     <section class="fp-section" id="form">
-                        <h2>Форма заявки</h2>
-                        <p>Все поля, кроме последнего, обязательны. Ответим на указанный email.</p>
+                        <h2><span data-lang="ru">Форма заявки</span><span data-lang="en">Request form</span></h2>
+                        <p><span data-lang="ru">Все поля, кроме последнего, обязательны. Ответим на указанный email.</span><span data-lang="en">All fields except the last one are required. We will reply to the email address you provide.</span></p>
 
                         <form class="fp-form">
                             <div class="fp-field">
-                                <label for="rhName">Имя или название организации</label>
+                                <label for="rhName"><span data-lang="ru">Имя или название организации</span><span data-lang="en">Name or organization</span></label>
                                 <input type="text" id="rhName" name="name" required>
                             </div>
 
                             <div class="fp-field">
-                                <label for="rhEmail">Email для ответа</label>
+                                <label for="rhEmail"><span data-lang="ru">Email для ответа</span><span data-lang="en">Email for our reply</span></label>
                                 <input type="email" id="rhEmail" name="email" required>
                             </div>
 
                             <div class="fp-field">
-                                <label for="rhRole">Ваша роль</label>
+                                <label for="rhRole"><span data-lang="ru">Ваша роль</span><span data-lang="en">Your role</span></label>
                                 <select id="rhRole" name="role">
-                                    <option value="owner">Правообладатель (автор, издатель)</option>
-                                    <option value="agent">Уполномоченный представитель</option>
+                                    <option value="owner" data-ru="Правообладатель (автор, издатель)" data-en="Rights holder (author, publisher)">Правообладатель (автор, издатель)</option>
+                                    <option value="agent" data-ru="Уполномоченный представитель" data-en="Authorized representative">Уполномоченный представитель</option>
                                 </select>
                             </div>
 
                             <div class="fp-field">
-                                <label for="rhWork">Произведение</label>
-                                <input type="text" id="rhWork" name="work" required placeholder="Название оригинала и автор">
+                                <label for="rhWork"><span data-lang="ru">Произведение</span><span data-lang="en">Work</span></label>
+                                <input type="text" id="rhWork" name="work" required
+                                       placeholder="Название оригинала и автор"
+                                       data-placeholder-ru="Название оригинала и автор"
+                                       data-placeholder-en="Title of the original and its author">
                             </div>
 
                             <div class="fp-field">
-                                <label for="rhLinks">Ссылки на страницы Busy Bee</label>
-                                <textarea id="rhLinks" name="links" required placeholder="Адрес страницы новеллы или глав — по одной ссылке на строку"></textarea>
+                                <label for="rhLinks"><span data-lang="ru">Ссылки на страницы Busy Bee</span><span data-lang="en">Links to Busy Bee pages</span></label>
+                                <textarea id="rhLinks" name="links" required
+                                          placeholder="Адрес страницы новеллы или глав — по одной ссылке на строку"
+                                          data-placeholder-ru="Адрес страницы новеллы или глав — по одной ссылке на строку"
+                                          data-placeholder-en="Address of the novel's page or chapters — one link per line"></textarea>
                             </div>
 
                             <div class="fp-field">
-                                <label for="rhProof">Подтверждение прав</label>
-                                <textarea id="rhProof" name="proof" required placeholder="Ссылка на документ, официальную страницу автора или издателя — или краткое описание"></textarea>
+                                <label for="rhProof"><span data-lang="ru">Подтверждение прав</span><span data-lang="en">Proof of rights</span></label>
+                                <textarea id="rhProof" name="proof" required
+                                          placeholder="Ссылка на документ, официальную страницу автора или издателя — или краткое описание"
+                                          data-placeholder-ru="Ссылка на документ, официальную страницу автора или издателя — или краткое описание"
+                                          data-placeholder-en="A link to a document, the official page of the author or publisher — or a short description"></textarea>
                             </div>
 
                             <div class="fp-field">
-                                <label for="rhComment">Комментарий (по желанию)</label>
+                                <label for="rhComment"><span data-lang="ru">Комментарий (по желанию)</span><span data-lang="en">Comment (optional)</span></label>
                                 <textarea id="rhComment" name="comment"></textarea>
                             </div>
 
                             <label class="fp-check">
                                 <input type="checkbox" name="confirm" required>
-                                <span>Подтверждаю, что сведения в заявке верны и я являюсь правообладателем или его уполномоченным представителем.</span>
+                                <span><span data-lang="ru">Подтверждаю, что сведения в заявке верны и я являюсь правообладателем или его уполномоченным представителем.</span><span data-lang="en">I confirm that the information in this request is accurate and that I am the rights holder or their authorized representative.</span></span>
                             </label>
 
-                            <button type="submit" class="fp-form-submit">Отправить заявку</button>
-                            <p class="fp-form-note">Заготовка формы — нужно подключить отправку на свою сторону (например, через сервис форм или собственный бэкенд).</p>
+                            <button type="submit" class="fp-form-submit"><span data-lang="ru">Отправить заявку</span><span data-lang="en">Submit request</span></button>
+                            <p class="fp-form-note"><span data-lang="ru">Заготовка формы — нужно подключить отправку на свою сторону (например, через сервис форм или собственный бэкенд).</span><span data-lang="en">Placeholder form — sending still needs to be connected (for example, via a form service or your own backend).</span></p>
                         </form>
                     </section>
 
@@ -245,75 +185,7 @@
 
         </main>
 
-        <footer class="footer">
-
-            <div class="footer-top">
-
-                <div class="footer-brand">
-                    <a href="index.html" class="logo footer-logo">
-                        <img src="images/logo/BusyBee_logo.png" alt="Busy Bee">
-                        <span>Busy Bee</span>
-                    </a>
-                    <p>Bringing stories to life, one chapter at a time.</p>
-                </div>
-
-                <p class="footer-disclaimer">
-                    Busy Bee is an independent translation project. All rights to the original novels belong to their
-                    respective authors and copyright holders — we don't claim ownership over the source material, only
-                    the translations themselves. If you're a rights holder and would like a translation removed, please
-                    get in touch with us.
-                </p>
-
-            </div>
-
-            <div class="footer-bottom">
-
-                <span class="footer-copyright">&copy; 2026 Busy Bee</span>
-
-                <div class="footer-links">
-                    <a href="help-center.html">Help Center</a>
-                    <a href="contact-us.html">Contact Us</a>
-                    <a href="privacy-policy.html">Privacy Policy</a>
-                    <a href="terms-of-use.html">Terms of Use</a>
-                    <a href="rights-holders.html">For Rights Holders</a>
-                </div>
-
-                <div class="footer-bottom-right">
-
-                    <div class="footer-social">
-                        <a href="#" class="footer-social-icon" title="Telegram">
-                            <img class="icon-mono" src="images/icons/telegram.svg" alt="Telegram">
-                            <img class="icon-color" src="images/icons/telegram-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="Pinterest">
-                            <img class="icon-mono" src="images/icons/pinterest.svg" alt="Pinterest">
-                            <img class="icon-color" src="images/icons/pinterest-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="Boosty">
-                            <img class="icon-mono" src="images/icons/boosty.svg" alt="Boosty">
-                            <img class="icon-color" src="images/icons/boosty-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="YouTube">
-                            <img class="icon-mono" src="images/icons/youtube.svg" alt="YouTube">
-                            <img class="icon-color" src="images/icons/youtube-color.svg" alt="">
-                        </a>
-                        <a href="#" class="footer-social-icon" title="Patreon">
-                            <img class="icon-mono" src="images/icons/patreon.svg" alt="Patreon">
-                            <img class="icon-color" src="images/icons/patreon-color.svg" alt="">
-                        </a>
-                    </div>
-
-                    <div class="footer-language">
-                        <button type="button" class="footer-language-option active">Ru</button>
-                        <span class="footer-language-sep">/</span>
-                        <button type="button" class="footer-language-option">Eng</button>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </footer>
+    <script src="footer.js"></script>
     </div>
 
     <script src="script.js"></script>

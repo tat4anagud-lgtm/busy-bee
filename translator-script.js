@@ -349,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const authorsEl = featuredCard.querySelector(".authors");
                 if (authorsEl) {
-                    authorsEl.innerHTML = `автор — <strong>${novel.author?.name || ""}</strong> <span>|</span> перевод — <strong>Busy Bee</strong>`;
+                    authorsEl.innerHTML = `автор — <strong>${novel.author?.name || ""}</strong><span class="authors-translator"> <span>|</span> перевод — <strong>Busy Bee</strong></span>`;
                 }
 
                 const descEl = featuredCard.querySelector(".featured-desc");
@@ -693,6 +693,65 @@ document.addEventListener("DOMContentLoaded", () => {
 
             requestAnimationFrame(step);
         });
+    }
+
+    /* ----------------------------------------------------------------
+       Подписка на переводчика + колокольчик уведомлений (как на YouTube).
+       Состояние пока хранится только в браузере (localStorage) — когда
+       появится бэкенд, достаточно заменить load/save на запросы.
+       Колокольчик виден только после подписки; при подписке
+       уведомления включаются сразу, при отписке сбрасываются.
+       ---------------------------------------------------------------- */
+    const subscribeBtn = document.getElementById("subscribeBtn");
+    const notifyBtn = document.getElementById("notifyBtn");
+
+    if (subscribeBtn && notifyBtn) {
+        const STORAGE_KEY = "busybee:translator:busybee:subscription";
+        const subscribeLabel = subscribeBtn.querySelector(".subscribe-label");
+
+        function loadSubscription() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                if (saved && typeof saved.subscribed === "boolean") {
+                    return { subscribed: saved.subscribed, notify: saved.notify !== false };
+                }
+            } catch (error) { /* нет доступа к storage — работаем без сохранения */ }
+            return { subscribed: false, notify: true };
+        }
+
+        function saveSubscription(state) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (error) { /* ignore */ }
+        }
+
+        const subscription = loadSubscription();
+
+        function renderSubscription() {
+            subscribeBtn.setAttribute("aria-pressed", String(subscription.subscribed));
+            subscribeLabel.textContent = subscription.subscribed ? "Вы подписаны" : "Подписаться";
+
+            notifyBtn.hidden = !subscription.subscribed;
+            notifyBtn.setAttribute("aria-pressed", String(subscription.notify));
+            const notifyText = subscription.notify ? "Уведомления включены" : "Уведомления выключены";
+            notifyBtn.setAttribute("aria-label", notifyText);
+            notifyBtn.title = notifyText;
+        }
+
+        subscribeBtn.addEventListener("click", () => {
+            subscription.subscribed = !subscription.subscribed;
+            subscription.notify = true;
+            saveSubscription(subscription);
+            renderSubscription();
+        });
+
+        notifyBtn.addEventListener("click", () => {
+            subscription.notify = !subscription.notify;
+            saveSubscription(subscription);
+            renderSubscription();
+        });
+
+        renderSubscription();
     }
 
 });

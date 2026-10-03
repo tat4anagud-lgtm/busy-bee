@@ -133,8 +133,8 @@ document.currentScript.insertAdjacentHTML("afterend", `
                     </button>
 
                     <div class="language-dropdown">
-                        <button class="language-option">Русский</button>
-                        <button class="language-option active">English</button>
+                        <button class="language-option active">Русский</button>
+                        <button class="language-option">English</button>
                     </div>
 
                 </div>
@@ -153,6 +153,16 @@ document.currentScript.insertAdjacentHTML("afterend", `
              Shown when IS_LOGGED_IN is false (see script.js). -->
         <button class="header-login-button" title="Войти">
             <img src="images/icons/log-in.svg" alt="Log In">
+        </button>
+
+        <!-- Мобильное меню (бургер) — видна только ниже 768px (style.css).
+             Открывает .mobile-nav-overlay, которую вставляет mobile-nav.js
+             ВНЕ .page-shell (см. комментарий в начале того файла) — сама
+             кнопка остаётся здесь, в обычной шапке, ей fixed-позиция не
+             нужна. Иконка меняется на крестик через тот же приём
+             data-outline/data-filled, что и везде на сайте. -->
+        <button class="mobile-menu-button" id="mobileMenuBtn" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobileNavOverlay">
+            <img src="images/icons/menu.svg" alt="" data-outline="images/icons/menu.svg" data-filled="images/icons/close.svg">
         </button>
 
     </div>
