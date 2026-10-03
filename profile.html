@@ -54,7 +54,7 @@
                         <span>Достижения</span>
                     </a>
                     <a href="#settings" data-view="settings" class="sidebar-item">
-                        <img src="images/icons/settings.svg" alt="" class="sidebar-icon">
+                        <img src="images/icons/gear.svg" alt="" class="sidebar-icon">
                         <span>Настройки</span>
                     </a>
                     <a href="#" class="sidebar-item sidebar-item-danger">
@@ -71,10 +71,23 @@
             <!-- MAIN CONTENT AREA -->
             <main class="profile-main">
 
+                <!-- «‹ Мой профиль» — только на телефоне (profile-style.css), только
+                     внутри разделов: роутер в profile-script.js прячет её на самом
+                     профиле. Заменяет пункт «Мой профиль» из сайдбара. -->
+                <a href="#profile" class="profile-back-link" id="profileBackLink" hidden>
+                    <span class="profile-back-arrow" aria-hidden="true">‹</span> Мой профиль
+                </a>
+
                 <!-- ============ РАЗДЕЛ: Мой профиль ============ -->
                 <div class="profile-view" id="view-profile">
                     <!-- USER HERO BANNER -->
                     <section class="profile-hero-card">
+                        <!-- Только на телефоне (profile-style.css): сайдбара там нет, поэтому
+                             «Настройки» — шестерёнка в углу шапки профиля -->
+                        <a href="#settings" class="profile-settings-btn" aria-label="Настройки">
+                            <img src="images/icons/gear.svg" alt="">
+                        </a>
+
                         <div class="user-avatar-wrapper">
                             <img src="https://placehold.co/160x160" alt="Татьяна" class="profile-user-avatar">
                             <button class="btn-edit-avatar"><img src="images/icons/edit.svg" alt="Изменить"></button>
@@ -98,6 +111,37 @@
                             <p class="user-bio">«Ещё одна глава» — знакомо каждому. 🌿</p>
                         </div>
                     </section>
+
+                    <!-- РАЗДЕЛЫ — только на телефоне (profile-style.css). Вместо левого
+                         сайдбара: тот же список переходов, но плитками. «Мой профиль»
+                         здесь не нужен (это и есть эта страница), «Настройки» — шестерёнка
+                         в шапке, «Выйти» — внизу страницы. -->
+                    <nav class="profile-sections" aria-label="Разделы профиля">
+                        <a href="#library" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/book.svg" alt=""></span>
+                            <span>Библиотека</span>
+                        </a>
+                        <a href="#favorites" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/heart.svg" alt=""></span>
+                            <span>Избранное</span>
+                        </a>
+                        <a href="#quotes" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/quote.svg" alt=""></span>
+                            <span>Цитаты</span>
+                        </a>
+                        <a href="#notes" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/edit.svg" alt=""></span>
+                            <span>Заметки</span>
+                        </a>
+                        <a href="#collections" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/folder.svg" alt=""></span>
+                            <span>Коллекции</span>
+                        </a>
+                        <a href="#achievements" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/award.svg" alt=""></span>
+                            <span>Достижения</span>
+                        </a>
+                    </nav>
 
                     <!-- STATS GRID -->
                     <section class="user-stats-grid">
@@ -418,6 +462,15 @@
                             </ul>
                         </div>
                     </section>
+
+                    <!-- Только на телефоне (profile-style.css) — вместо пункта «Выйти»
+                         из сайдбара. Ссылка такая же заглушка, как там. -->
+                    <div class="profile-logout-row">
+                        <a href="#" class="profile-logout-btn">
+                            <img src="images/icons/log-out.svg" alt="">
+                            <span>Выйти</span>
+                        </a>
+                    </div>
 
             
                 </div>

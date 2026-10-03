@@ -61,9 +61,14 @@ document.currentScript.insertAdjacentHTML("afterend", `
             <img src="images/icons/bookmark.svg" alt="Bookmark">
         </button>
 
-        <button class="bell-button">
-            <img src="images/icons/bell.svg" alt="Bell">
-        </button>
+        <!-- Уведомления — обычная ссылка на страницу, а не кнопка: раньше
+             у <button> не было ни адреса, ни обработчика, и клик ничего
+             не делал. Внешний вид тот же, что у соседних кнопок (см.
+             .header-actions > a.bell-button в style.css). У ссылки без
+             текста нужен aria-label, а у картинки пустой alt. -->
+        <a href="notifications.html" class="bell-button" aria-label="Уведомления" title="Уведомления">
+            <img src="images/icons/bell.svg" alt="">
+        </a>
 
         <!-- Theme toggle: a device/browser preference, not an account
              setting, so it lives in the header itself now and stays
@@ -121,7 +126,7 @@ document.currentScript.insertAdjacentHTML("afterend", `
 
                 <!-- App settings -->
                 <a href="profile.html#settings" class="user-dropdown-item">
-                    <img src="images/icons/settings.svg" alt="" class="user-dropdown-icon"> Настройки
+                    <img src="images/icons/gear.svg" alt="" class="user-dropdown-icon"> Настройки
                 </a>
 
                 <!-- Language switcher: same open/close logic as before, just moved

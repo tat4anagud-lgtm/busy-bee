@@ -514,16 +514,91 @@
         grid-template-columns: 1fr;
     }
 
-    /* Строка страницы: дата и кнопка уходят под текст */
+    /* Заголовок раздела: счётчик уходит под заголовок, а не жмётся
+       справа от двух строк текста */
+    .bm-section-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .bm-section-title {
+        font-size: 22px;
+    }
+
+    /* Карточка новеллы: обложка слева, текст справа. В колонку она
+       занимала почти пол-экрана на каждую новеллу. Блок с обложкой и
+       кнопкой «убрать» «растворяется» (display: contents), чтобы оба его
+       элемента встали в общую сетку карточки. */
+    .bm-novel-card {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr) 30px;
+        column-gap: 14px;
+        row-gap: 4px;
+        align-content: start;
+        padding: 14px 12px 14px 16px;
+    }
+
+    .bm-novel-top {
+        display: contents;
+    }
+
+    .bm-novel-cover {
+        grid-column: 1;
+        grid-row: 1 / span 6;
+        width: 72px;
+        height: 100px;
+    }
+
+    .bm-remove {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .bm-novel-title {
+        grid-column: 2;
+        grid-row: 1;
+        font-size: 17px;
+    }
+
+    .bm-novel-author,
+    .bm-chip,
+    .bm-chapter-line,
+    .bm-progress,
+    .bm-genres {
+        grid-column: 2 / -1;
+    }
+
+    .bm-chip {
+        justify-self: start; /* в сетке align-self: flex-start не работает — без этого плашка тянулась на всю ширину */
+        margin: 2px 0;
+    }
+
+    .bm-genres {
+        margin-top: 2px;
+    }
+
+    /* Строка страницы: дата и кнопка уходят под текст. Раньше они лежали
+       в одной строке и не помещались — «Открыть страницу» вылезала за
+       край карточки. Теперь строка занимает всю ширину под текстом и при
+       нехватке места переносит кнопку на следующую строку. */
     .bm-page-row {
         grid-template-columns: 56px minmax(0, 1fr) 30px;
+        gap: 12px 14px;
+        padding: 14px;
     }
 
     .bm-page-side {
-        grid-column: 2 / 3;
+        grid-column: 2 / -1;
         grid-row: 2;
         flex-direction: row;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
+        gap: 8px 12px;
+    }
+
+    .bm-page-date {
+        white-space: normal;
     }
 }

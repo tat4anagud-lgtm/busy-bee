@@ -1268,9 +1268,11 @@
 
     /* Сайдбар («Мой профиль», «Моя библиотека» и т.д.) — на телефоне
        его убираем: 220px под навигацию на экране в 2 раза уже — это
-       слишком много места впустую. Пока переключаться между разделами
-       на телефоне будет нечем (сайдбар был единственным способом), это
-       первый шаг, вопрос мобильной навигации решим отдельно следующим. */
+       слишком много места впустую. Его роль на телефоне играют:
+       плитки разделов под шапкой профиля (.profile-sections), шестерёнка
+       «Настройки» в шапке (.profile-settings-btn), «Выйти» внизу страницы
+       (.profile-logout-row) и ссылка «‹ Мой профиль» внутри разделов
+       (.profile-back-link) — все они в конце файла. */
     .profile-sidebar {
         display: none;
     }
@@ -1923,5 +1925,170 @@
 
     .settings-control {
         justify-content: flex-start;
+    }
+}
+
+
+/* ========================================
+   НАВИГАЦИЯ ПО РАЗДЕЛАМ НА ТЕЛЕФОНЕ
+   ========================================
+   Вместо левого сайдбара (скрыт ниже 720px) профиль на телефоне —
+   «главная» с плитками разделов, а внутри раздела наверху стоит
+   ссылка «‹ Мой профиль». Горизонтальных вкладок поверх этого нет
+   нарочно: в «Библиотеке» и «Избранном» уже есть свои (.page-tabs),
+   и вторая полоса вкладок только путала бы.
+
+   На десктопе всё это скрыто — там сайдбар. Разметка лежит в
+   profile.html, показ/скрытие «назад» — в роутере profile-script.js. */
+.profile-settings-btn,
+.profile-sections,
+.profile-logout-row,
+.profile-back-link {
+    display: none;
+}
+
+@media (max-width: 720px) {
+
+    /* ---------- Шестерёнка «Настройки» в углу шапки ---------- */
+    .profile-hero-card {
+        position: relative;
+    }
+
+    .profile-settings-btn {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+
+        background: var(--surface-warm);
+        border-radius: 50%;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .profile-settings-btn img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .profile-settings-btn:active {
+        background: var(--border);
+    }
+
+    /* ---------- Плитки разделов ---------- */
+    .profile-sections {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .profile-section-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 6px 12px;
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+
+        color: var(--text-primary);
+        font-size: 12.5px;
+        font-weight: 500;
+        text-align: center;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.2s;
+    }
+
+    .profile-section-tile:active {
+        background: var(--surface-warm);
+    }
+
+    .profile-section-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+
+        background: var(--surface-warm);
+        border-radius: 50%;
+    }
+
+    .profile-section-icon img {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
+
+    /* ---------- «Выйти» внизу страницы профиля ---------- */
+    .profile-logout-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 24px;
+    }
+
+    .profile-logout-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 22px;
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+
+        color: var(--text-secondary);
+        font-size: var(--fs-base);
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .profile-logout-btn img {
+        width: 16px;
+        height: 16px;
+    }
+
+    .profile-logout-btn:active {
+        background: #FBEAEA;
+        color: #C0392B;
+    }
+
+    /* ---------- «‹ Мой профиль» внутри разделов ---------- */
+    .profile-back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin: 0 0 12px;
+        padding: 6px 4px;
+
+        color: var(--text-secondary);
+        font-size: var(--fs-base);
+        font-weight: 500;
+        text-decoration: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .profile-back-link[hidden] {
+        display: none;
+    }
+
+    .profile-back-arrow {
+        margin-top: -2px;
+        font-size: 24px;
+        line-height: 1;
+    }
+}
+
+/* Совсем узкие экраны: три плитки в ряд уже не помещаются — по две */
+@media (max-width: 340px) {
+    .profile-sections {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }

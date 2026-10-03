@@ -702,6 +702,24 @@
     gap: 6px;
 }
 
+/* Метки жанров и оценка внутри карточек главной
+   (генерируются в index-script.js: pickFeaturedHtml, newRowHtml) */
+.ng-tag {
+    padding: 3px 10px;
+    background: var(--surface-warm);
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+.ng-rating {
+    font-weight: 600;
+    color: var(--honey);
+}
+
 .pick-desc {
     display: -webkit-box;
     -webkit-line-clamp: 4;
@@ -726,6 +744,31 @@
     gap: 12px;
     margin-top: auto;
     padding-top: 12px;
+}
+
+
+/* Только десктоп (от 1025px). Большая карточка по высоте задаёт ряд, а две
+   маленькие тянутся за ней — и обложка в них забирает всё свободное место
+   (flex: 1), вместо пустоты между текстом и сердечком/закладкой.
+   min-height — страховка, если большая карточка вдруг окажется низкой.
+   На планшете и телефоне (≤1024px) этот блок не действует — там карточки
+   идут как раньше. */
+@media (min-width: 1025px) {
+    .editor-pick .translation-card .cover-box {
+        flex: 1 1 auto;
+        min-height: 160px;
+    }
+
+    /* Картинка лежит внутри <a>, поэтому растягиваем и ссылку, и картинку */
+    .editor-pick .translation-card .cover-box > a {
+        position: absolute;
+        inset: 0;
+        display: block;
+    }
+
+    .editor-pick .translation-card .cover-box img {
+        height: 100%;
+    }
 }
 
 
@@ -857,10 +900,41 @@
 }
 
 
+/* ---------- Прокрутка каруселей трекпадом (десктоп) ----------
+   Раньше у дорожек стоял overflow-x: hidden — стрелки двигали их через JS,
+   а жест двумя пальцами браузер игнорировал, потому что в «скрытом»
+   контейнере пользовательской прокрутки нет вообще. Теперь overflow-x: auto
+   (+ спрятанный скроллбар, чтобы вид не изменился): трекпад и Shift+колесо
+   мыши листают дорожку, стрелки работают как раньше.
+   scroll-snap — чтобы после жеста карточка вставала ровно по левому краю.
+   overscroll-behavior-x: contain — на краю дорожки жест не уходит в
+   «назад/вперёд» браузера на Mac.
+   Селекторы с .home-section / .collections-section — чтобы перебить
+   overflow-x: hidden у .book-list / .genre-list / .collection-list выше. */
+.home-section .carousel-track,
+.collections-section .carousel-track {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+}
+
+.home-section .carousel-track::-webkit-scrollbar,
+.collections-section .carousel-track::-webkit-scrollbar {
+    display: none;
+}
+
+.home-section .carousel-track > *,
+.collections-section .carousel-track > * {
+    scroll-snap-align: start;
+}
+
+
 /* ---------- Адаптив ---------- */
-/* Брейкпоинты 992/640 — как у страницы переводчика и большинства
-   остальных *-style.css */
-@media (max-width: 992px) {
+/* Единые брейкпоинты сайта: 1024 (планшет) / 768 (телефон, здесь же
+   включается бургер и нижняя панель — см. style.css) / 480 (маленький
+   телефон; на главной отдельных правил для него пока нет). */
+@media (max-width: 1024px) {
     /* Редакционный блок: большая карточка на всю ширину, две поменьше под ней */
     .editor-pick {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -896,7 +970,54 @@
     }
 }
 
-@media (max-width: 640px) {
+/* «Продолжить чтение» на средних ширинах (769–1280px).
+   Обложка — 31% ширины hero + 55px отступа слева, а сама картинка была
+   жёстко 320px, и ниже ~1200px она переставала помещаться в свою колонку
+   и выступала поверх текста (на 960px — заметно). Здесь картинка
+   сжимается вместе с колонкой (не больше прежних 320px), а текст
+   получает оставшееся место и не вылезает за hero. Широкий десктоп
+   (>1280px) и телефон (≤768px, там обложка и так сверху) не затронуты. */
+@media (min-width: 769px) and (max-width: 1280px) {
+    .hero-continue .hero-cover {
+        flex: 0 0 34%;
+        box-sizing: border-box;
+        width: auto;
+        min-width: 0;
+        padding: 20px 0 0 32px;
+    }
+
+    .hero-continue .hero-cover img {
+        width: 100%;
+        max-width: 320px;
+        height: auto;
+        aspect-ratio: 16 / 17;
+    }
+
+    /* Справа в фоне hero — рисунок (ваза, книги, чашка). Правый отступ
+       не даёт тексту заходить на него: название переносится на вторую
+       строку раньше, а не наезжает на картинку. Отступ растёт вместе
+       с шириной hero, но не больше 160px. */
+    .hero-continue .hero-info {
+        flex: 1;
+        min-width: 0;
+        padding: 28px clamp(32px, 18%, 160px) 28px 32px;
+    }
+
+    .hero-continue .progress-info,
+    .hero-continue .progress {
+        width: 100%;
+        max-width: 430px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .hero-continue .hero-info h1 {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+}
+
+@media (max-width: 768px) {
     /* На этой странице у каждой секции (.hero, .home-section,
        .collections-section, .newsletter, .footer) свой собственный
        боковой отступ calc(100% - 48px) = по 24px с каждой стороны —

@@ -1,0 +1,1871 @@
+/* ========================================
+   BUSY BEE — ЧИТАЛКА (reader.html + chapter.html)
+   ========================================
+   Общие стили двух режимов чтения:
+     • READER MODE (reader.html) — постраничный режим «как в Kindle»,
+       всё под body.reader-page;
+     • WEB-MODE CHAPTER PAGE (chapter.html) — глава в обычной шапке
+       сайта, с комментариями и навигацией;
+     • общие части: оглавление-модалка, сноски, панель выделения
+       текста, панель сохранённых цитат/заметок.
+
+   Подключается ПОСЛЕ style.css (переменные цветов, шапка, футер и
+   общие правила остаются там):
+       <link rel="stylesheet" href="style.css">
+       <link rel="stylesheet" href="reader-style.css">
+
+   Адаптив (1024 / 768 / 480 — единые брейкпоинты сайта) лежит в конце
+   файла. Сейчас там мобильная версия веб-режима (chapter.html) и
+   общих окон (оглавление, панель выделения); режим «Kindle»
+   (reader.html) — следующим блоком. */
+
+/* ============================================================
+   READER MODE (reader.html)
+   ============================================================
+   Everything below is scoped under body.reader-page so it can't
+   leak onto index.html / novel.html — the class/theme names here
+   (theme-warm, font-serif, etc.) are generic and would otherwise
+   collide with unrelated markup on other pages.
+   ============================================================ */
+
+body.reader-page {
+    margin: 0;
+    padding: 0;
+    font-family: 'Literata', Georgia, serif;
+    background-color: var(--bg-warm);
+    color: var(--text-warm);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* THEMES */
+body.reader-page.theme-warm {
+    background-color: var(--bg-warm);
+    color: var(--text-warm);
+}
+
+body.reader-page.theme-light {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+
+body.reader-page.theme-sepia {
+    background-color: var(--bg-sepia);
+    color: var(--text-sepia);
+}
+
+body.reader-page.theme-dark {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+}
+
+/* FONT FAMILIES */
+body.reader-page.font-serif {
+    font-family: 'EB Garamond', Georgia, serif;
+}
+body.reader-page.font-playfair {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+body.reader-page.font-sans {
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+body.reader-page.font-literata {
+    font-family: 'Literata', Georgia, serif;
+}
+body.reader-page.font-merriweather {
+    font-family: 'Merriweather', Georgia, serif;
+}
+body.reader-page.font-georgia {
+    /* System stack — no webfont to load, so it renders instantly
+       and works even if Google Fonts is blocked/offline */
+    font-family: Georgia, Cambria, 'Times New Roman', Times, serif;
+}
+
+/* TOP READER HEADER */
+.reader-header {
+    height: 56px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+
+    /* Stays pinned to the top of the viewport while the chapter
+       scrolls underneath it (Scroll mode) so Quotes/Notes/Settings/
+       Bookmark are always one click away, no matter how far down
+       the reader has scrolled. "inherit" picks up whatever
+       background-color the current theme has set on <body>, so it
+       stays opaque and correctly themed (light/warm/sepia/dark)
+       instead of hardcoding one color. */
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background-color: inherit;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+}
+
+.btn-exit {
+    color: var(--muted-warm);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+}
+
+.btn-exit:hover {
+    color: var(--text-warm);
+}
+
+.header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.novel-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-warm);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.novel-title:hover {
+    color: var(--accent-gold);
+}
+
+body.reader-page.theme-dark .reader-header {
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+body.reader-page.theme-dark .novel-title {
+    color: var(--text-dark);
+}
+
+.chapter-selector-btn {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: var(--muted-warm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 1px;
+    transition: color 0.2s;
+}
+
+.chapter-selector-btn:hover {
+    color: var(--text-warm);
+}
+
+.caret-icon {
+    width: 7px;
+    height: 7px;
+    object-fit: contain;
+}
+
+.chapter-subtitle {
+    /* now sized/colored via the parent .chapter-selector-btn */
+}
+
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+.tool-btn {
+    background: none;
+    border: none;
+    color: var(--muted-warm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 9px;
+    font-family: 'Inter', sans-serif;
+    transition: color 0.2s;
+}
+
+.tool-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tool-icon img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    transition: filter 0.2s ease;
+}
+
+.tool-btn:hover .tool-icon,
+.tool-btn.active .tool-icon {
+    background: rgba(140, 130, 117, 0.14);
+    border-color: var(--border-warm);
+    transform: translateY(-1px);
+}
+
+body.reader-page.theme-dark .tool-btn:hover .tool-icon,
+body.reader-page.theme-dark .tool-btn.active .tool-icon {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-dark);
+}
+
+.tool-btn:hover, .tool-btn.active {
+    color: var(--text-warm);
+}
+
+body.reader-page.theme-dark .tool-btn:hover,
+body.reader-page.theme-dark .tool-btn.active {
+    color: var(--text-dark);
+}
+
+/* Bookmark: no gold fill here either — same reasoning as the Scroll/
+   Book toggle above. The "saved" state is now shown purely by
+   swapping to the filled icon (bookmark.svg → bookmark-filled.svg,
+   ink-brown instead of gold), so it stays legible without pulling
+   the eye the way a big gold badge does. Still gets the same plain
+   hover tint as every other .tool-btn via the generic rule above. */
+
+/* Reading mode toggle: no gold highlight here on purpose — same idea
+   as the moon/sun theme icon on the homepage, where only the icon
+   itself changes to show the current state, nothing gets a colored
+   fill. It still gets the same plain hover tint as every other
+   .tool-btn (Quotes/Notes/Settings/Bookmark) via the generic rule
+   above, just never the persistent "active" gold state. */
+
+/* MAIN READING VIEWPORT */
+.reader-viewport {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 20px 0 100px;
+}
+
+.page-nav {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(73, 53, 38, 0.12);
+    font-size: 20px;
+    line-height: 1;
+    color: var(--muted-warm);
+    cursor: pointer;
+    user-select: none;
+    z-index: 90;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.page-nav.nav-prev {
+    left: 24px;
+}
+
+.page-nav.nav-next {
+    right: 24px;
+}
+
+.page-nav:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--accent-gold);
+    color: var(--text-warm);
+}
+
+body.reader-page.theme-dark .page-nav {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    color: var(--text-dark);
+}
+
+body.reader-page.theme-dark .page-nav:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent-gold);
+}
+
+.reader-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    transition: max-width 0.3s ease;
+}
+
+.chapter-head {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.chapter-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--accent-gold);
+    letter-spacing: 0.5px;
+}
+
+.chapter-divider {
+    margin: 8px 0 12px;
+    display: flex;
+    justify-content: center;
+}
+
+.chapter-divider .ornament {
+    /* Fixed size for the divider image — adjust these two values if
+       you swap in a PNG with different proportions */
+    width: 220px;
+    height: auto;
+    display: block;
+}
+
+.chapter-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* PROSE TYPOGRAPHY */
+.prose {
+    font-size: 20px;
+    line-height: 1.8;
+
+}
+
+.prose p {
+    margin: 0 0 1.4em;
+}
+
+/* Produced by the "> text" / "---" shorthand in formatChapterParagraph()
+   (script.js) — shared between Reading mode (.prose, themed) and the
+   Web version (.chapter-web-text, plain site palette). currentColor +
+   color-mix picks up whichever text color is active in either context
+   (including all four reader themes) automatically, so this doesn't
+   need its own per-theme override rules the way most of this file does. */
+.prose blockquote,
+.chapter-web-text blockquote {
+    margin: 1.6em 0;
+    padding: 0.1em 0 0.1em 1.2em;
+    border-left: 3px solid color-mix(in srgb, currentColor 30%, transparent);
+    font-style: italic;
+    break-inside: avoid;
+}
+
+.prose hr,
+.chapter-web-text hr {
+    width: 120px;
+    margin: 2.4em auto;
+    border: none;
+    border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+}
+
+/* BOOK MODE — paginated layout. .prose gets an explicit height (set
+   by script.js, since it depends on the actual rendered header/
+   chapter-head/footer heights) and lays its content out as a single
+   CSS column of that height; "turning a page" is just scrolling this
+   column horizontally by one screen-width from script.js. */
+body.reader-page.book-mode .reader-viewport {
+    padding-bottom: 20px;
+    align-items: flex-start;
+}
+
+body.reader-page.book-mode .prose {
+    column-gap: 60px;
+    column-fill: auto; /* fill each column to the top before overflowing
+                           into the next one — without this the browser
+                           defaults to "balance" and tries to spread text
+                           evenly across ALL columns in the chapter, which
+                           is why later pages were ending up half-empty */
+    overflow: hidden;
+    box-sizing: border-box; /* padding-top below is included in the JS-set
+                                height instead of adding to it — otherwise
+                                every page would overflow past the footer */
+    padding-top: 28px; /* breathing room at the top of every page. In
+                           CSS multi-column layout all columns share one
+                           row, so this applies equally to page 1, 2, 3...
+                           not just the first one — page 1 ends up with
+                           more visual space than the rest (28px stacked
+                           on top of the chapter title block's own
+                           spacing), which is the intended look here. */
+    /* column-width and height set inline by script.js
+       (applyBookModeLayout) since both depend on actual rendered
+       dimensions that can't be expressed as a plain CSS percentage */
+}
+
+/* Drop cap — Variant A (baseline for both Scroll and Book mode).
+   Targets ::first-letter of the chapter's opening paragraph directly,
+   instead of a manually JS-wrapped <span> — ::first-letter is a real
+   CSS pseudo-element with universal browser support since 2018, so
+   this alone is already reliable everywhere without any JS involved.
+
+   Deliberately NOT using float here: float-based drop caps (with real
+   text wrap-around) are what caused the original Book mode bug, since
+   float interacts badly with CSS multi-column layout. Instead this is
+   a plain inline oversized letter — no wrap-around, just a noticeably
+   larger/colored first character.
+
+   This stays as the fallback for Firefox (which doesn't implement
+   initial-letter at all) and for any browser where the @supports
+   check below doesn't pass. */
+#proseParagraphs p:first-of-type::first-letter {
+    font-size: 1.9em;
+    font-weight: 600;
+    line-height: 1;
+    vertical-align: -0.06em;
+    padding-right: 2px;
+    color: var(--accent-gold);
+    font-family: 'Playfair Display', serif;
+}
+
+/* Drop cap — Variant C, progressive enhancement on top of Variant A.
+   `initial-letter` is the CSS-native way to do a real wrap-around
+   drop cap (the letter spans N lines, text flows around it) without
+   using float — so unlike the old float approach, it doesn't fight
+   with Book mode's CSS columns.
+
+   Applying it to ::first-letter (rather than a manually styled
+   <span>, which is what this used to target) matters here: browser
+   implementations of initial-letter were built and tested against
+   ::first-letter specifically — that's the pattern in Chrome's own
+   reference examples — so this is the version actually likely to
+   trigger the real enlarge-and-wrap behavior rather than silently
+   no-op and fall through to a plain, unenlarged letter.
+
+   Support: Chrome/Edge (unprefixed) and Safari (-webkit- prefixed)
+   as of 2026. Firefox implements neither, so this whole block is
+   simply skipped there and Variant A above keeps applying as-is —
+   that's the point of @supports: browsers that don't understand the
+   condition treat it as false rather than erroring.
+
+   NOTE: this combination (initial-letter + CSS multi-column) hasn't
+   been battle-tested the way float-in-columns has — please check
+   Book mode specifically in Chrome and Safari once this is live. If
+   it misbehaves there, the fix is to scope this whole block to
+   `body:not(.book-mode) #proseParagraphs p:first-of-type::first-letter`
+   so Book mode always stays on the guaranteed-safe Variant A while
+   Scroll mode gets the upgrade. */
+@supports (initial-letter: 2) or (-webkit-initial-letter: 2) {
+    /* Scoped to :not(.book-mode) — the spec requires the lines an
+       initial-letter wraps around to stay together as one unbreakable
+       unit, and that appears to be exactly why Book mode's first page
+       was rendering shorter than every other page: the browser was
+       playing it safe around the drop cap and cutting the column early
+       rather than risk splitting it. Scroll mode has no columns, so
+       this constraint never causes a problem there — Book mode falls
+       back to the plain Variant A letter (see the base rule above)
+       instead, which never had this issue in the first place. */
+    body:not(.book-mode) #proseParagraphs p:first-of-type::first-letter {
+        initial-letter: 2;
+        -webkit-initial-letter: 2;
+
+        /* font-size/line-height are irrelevant once initial-letter is
+           active — the browser computes the size needed to span 3
+           lines on its own — but vertical-align/padding were tuned
+           for the plain-inline Variant A look, so those are reset */
+        vertical-align: initial;
+        padding-right: 8px; /* breathing room now that text wraps beside it */
+    }
+}
+
+/* FLOATING SETTINGS CONTROL PANEL */
+.floating-settings-panel {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-radius: 18px;
+    padding: 14px 22px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 12px 32px rgba(73, 53, 38, 0.1);
+    z-index: 100;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+body.reader-page.theme-dark .floating-settings-panel {
+    background: rgba(26, 24, 22, 0.97);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-dark);
+}
+
+.panel-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.panel-group label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--muted-warm);
+}
+
+body.reader-page.theme-dark .panel-group label {
+    color: #8a8478;
+}
+
+.panel-divider {
+    width: 1px;
+    height: 30px;
+    background: var(--border-warm);
+}
+
+body.reader-page.theme-dark .panel-divider {
+    background: var(--border-dark);
+}
+
+.panel-dropdown {
+    position: relative;
+}
+
+.panel-dropdown-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: -1px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-warm);
+    cursor: pointer;
+}
+
+.panel-dropdown-button img {
+    width: 9px;
+    height: 9px;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.panel-dropdown.open .panel-dropdown-button img {
+    transform: rotate(180deg);
+}
+
+body.reader-page.theme-dark .panel-dropdown-button {
+    color: var(--text-dark);
+}
+
+/* Menu opens upward, since this panel already sits at the bottom
+   of the viewport — same visual recipe as .filter-menu in the
+   header/chapters dropdowns, just anchored to the opposite edge */
+.panel-dropdown-menu {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 148px;
+    padding: 6px;
+    background: var(--bg-warm);
+    border: 1px solid var(--border-warm);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(73, 53, 38, 0.16);
+    display: none;
+    z-index: 200;
+}
+
+.panel-dropdown.open .panel-dropdown-menu {
+    display: block;
+}
+
+body.reader-page.theme-dark .panel-dropdown-menu {
+    background: #24211d;
+    border-color: var(--border-dark);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.panel-dropdown-option {
+    width: 100%;
+    display: block;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--text-warm);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.panel-dropdown-option:hover {
+    background: rgba(140, 130, 117, 0.14);
+}
+
+.panel-dropdown-option.active {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+body.reader-page.theme-dark .panel-dropdown-option {
+    color: var(--text-dark);
+}
+
+body.reader-page.theme-dark .panel-dropdown-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.size-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.size-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-warm);
+    min-width: 18px;
+    text-align: center;
+}
+
+body.reader-page.theme-dark .size-val {
+    color: var(--text-dark);
+}
+
+.btn-step {
+    background: none;
+    border: 1px solid transparent;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--text-warm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-step:hover {
+    background: rgba(198, 146, 20, 0.1);
+    border-color: var(--accent-gold);
+}
+
+body.reader-page.theme-dark .btn-step {
+    color: var(--text-dark);
+}
+
+body.reader-page.theme-dark .btn-step:hover {
+    background: rgba(198, 146, 20, 0.16);
+    border-color: var(--accent-gold);
+}
+
+.theme-swatches {
+    display: flex;
+    flex-direction: row;
+    gap: 9px;
+    align-items: center;
+}
+
+.swatch {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.swatch:hover {
+    transform: scale(1.12);
+}
+
+.swatch.active {
+    outline: 2px solid var(--accent-gold);
+    outline-offset: 2px;
+}
+
+.swatch-white { background-color: #FFFFFF; }
+.swatch-warm { background-color: #FAF7F2; border-color: #EAE3D9; }
+.swatch-sepia { background-color: #E8DEC9; }
+.swatch-dark { background-color: #1A1816; }
+
+/* BOTTOM PROGRESS FOOTER */
+.reader-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: 160px 1fr 340px;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    color: var(--muted-warm);
+    background: transparent;
+}
+
+.progress-bar-container {
+    padding: 0 16px;
+}
+
+.progress-track {
+    height: 3px;
+    background: var(--border-warm);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+}
+
+body.reader-page.theme-dark .progress-track {
+    background: var(--border-dark);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent-gold);
+    border-radius: 2px;
+}
+
+.progress-thumb {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-gold);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    white-space: nowrap;
+}
+
+.chapter-nav-links {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.nav-link {
+    color: var(--text-warm);
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+body.reader-page.theme-dark .nav-link {
+    color: var(--text-dark);
+}
+
+
+/* ====================================================================
+   WEB-MODE CHAPTER PAGE (chapter.html)
+   The "ordinary page" way of reading a chapter — full site header/
+   footer, normal --page-bg palette (NOT the reader-only --bg-warm/
+   theme system, which is exclusive to reader.html's immersive mode).
+   ==================================================================== */
+
+.chapter-web-main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+}
+
+/* Top meta block: chapter label, ornament, title, subtitle, and the
+   "Reading Mode" button (sits where "Aa / Reading Settings" was in
+   the first draft of this page — Web mode itself has no font/size/
+   theme controls, those stay exclusive to Reading mode) */
+.chapter-web-meta {
+    text-align: center;
+    padding: 8px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+}
+
+/* Full-width row under the header: breadcrumbs (left, lines up under
+   the logo) and Reading Mode (right, lines up under the profile
+   menu) — same edges as .header, wider than the 760px reading
+   column below it */
+.chapter-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 24px 30px 0;
+}
+
+.chapter-top-bar .breadcrumbs {
+    margin: 0; /* .chapter-top-bar's own padding handles the spacing */
+}
+
+.btn-reading-mode {
+    /* Neutral/outline look instead of the gold .btn-action.primary
+       fill — this is a view-switcher, not the site's main CTA
+       (that's still "Continue Reading" elsewhere), so it shouldn't
+       compete with it for attention. Roughly matches the "Aa ⌄
+       Reading Settings" pill from the original mockup, just
+       repurposed for switching into Reading mode instead. */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.btn-reading-mode:hover {
+    border-color: var(--honey);
+    color: var(--text-primary);
+    background: var(--surface-warm);
+}
+
+.btn-reading-mode img {
+    width: 14px;
+    height: 14px;
+}
+
+.chapter-web-subtitle {
+    margin: 10px 0 4px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.chapter-web-subtitle a {
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.chapter-web-subtitle a:hover {
+    color: var(--honey);
+}
+
+.chapter-web-info {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Chapter text — deliberately plain: no drop cap, no font/size
+   controls, just comfortable reading typography matching the same
+   serif used in Reading mode so switching between the two feels like
+   the same book, not a different site */
+.chapter-web-text {
+    font-family: 'Literata', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.85;
+    color: var(--text-primary);
+}
+
+.chapter-web-text p {
+    margin: 0 0 22px;
+}
+
+.chapter-web-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Static placeholder ad slot — no real ad logic, just reserves the
+   visual space called out in the mockup */
+.chapter-ad-banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 40px 0;
+    padding: 20px 24px;
+    background: var(--surface-warm);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.chapter-ad-banner .ad-label {
+    position: absolute;
+    top: 8px;
+    left: 20px;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.chapter-ad-banner {
+    position: relative;
+    padding-top: 30px;
+}
+
+.chapter-ad-banner img.ad-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.chapter-ad-banner .ad-copy h3 {
+    margin: 0 0 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text-primary);
+}
+
+.chapter-ad-banner .ad-copy p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.chapter-ad-banner .btn-action {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Previous / Table of Contents / Next row */
+.chapter-nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 40px 0;
+}
+
+.chapter-nav-row .chapter-nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.chapter-nav-row .chapter-nav-btn:hover {
+    border-color: var(--honey);
+}
+
+.chapter-nav-row .chapter-nav-btn.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.chapter-nav-row .chapter-toc-btn {
+    border-color: var(--honey);
+    color: var(--honey);
+    font-weight: 600;
+}
+
+/* Comments section */
+.chapter-comments {
+    margin-top: 48px;
+}
+
+.chapter-comments-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.chapter-comments-head h2 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--text-primary);
+}
+
+.chapter-comments-sort {
+    font-size: 12px;
+    color: var(--text-muted);
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.chapter-comments-subtitle {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.comment-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.comment-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--surface-warm);
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.comment-body {
+    flex: 1;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.comment-author {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+}
+
+.comment-date {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.comment-text {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.comment-actions button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0;
+}
+
+.comment-actions button:hover {
+    color: var(--honey);
+}
+
+.comment-composer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.comment-composer input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text-primary);
+}
+
+.comment-composer input:focus {
+    outline: none;
+    border-color: var(--honey);
+}
+
+.comment-composer .btn-post {
+    background: var(--honey);
+    color: var(--white);
+    border: none;
+    padding: 11px 20px;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* "Web Version" link back from Reading mode, next to Exit Reading */
+.btn-web-version {
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 1px solid var(--border-warm);
+}
+
+body.reader-page.theme-dark .btn-web-version {
+    border-left-color: var(--border-dark);
+}
+
+
+/* ====================================================================
+   CHAPTER LIST MODAL (shared by reader.html + chapter.html)
+   A quick-jump panel over a dimmed backdrop — the page underneath
+   stays visible (dimmed), this sits on top of it, not a full takeover.
+   Data comes from chapters/chapter-list.json, the same numbers/
+   titles/statuses as the table on novel.html.
+   ==================================================================== */
+
+.chapter-list-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 16, 12, 0.45);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chapter-list-modal {
+    width: 420px;
+    max-width: calc(100vw - 40px);
+    max-height: min(640px, calc(100vh - 80px));
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.chapter-list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.chapter-list-head h3 {
+    margin: 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--text-primary);
+}
+
+.chapter-list-close {
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.chapter-list-close:hover {
+    color: var(--text-primary);
+}
+
+.chapter-list-items {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.chapter-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.chapter-list-item:hover:not(.is-locked) {
+    background: var(--surface-warm);
+}
+
+.chapter-list-item .item-num {
+    flex-shrink: 0;
+    width: 32px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.chapter-list-item .item-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chapter-list-item .item-status {
+    flex-shrink: 0;
+    font-size: 13px;
+    color: var(--honey);
+}
+
+/* Not yet translated — no title to show, nothing to open */
+.chapter-list-item.is-locked {
+    cursor: default;
+    color: var(--text-muted);
+}
+
+.chapter-list-item.is-locked .item-title {
+    font-style: italic;
+}
+
+/* The chapter currently open — highlighted so it's easy to spot
+   where you are in the list at a glance */
+.chapter-list-item.is-current {
+    background: var(--surface-warm);
+    font-weight: 600;
+}
+
+.chapter-list-item.is-current .item-num {
+    color: var(--honey);
+}
+
+
+/* ====================================================================
+   FOOTNOTES (shared by reader.html + chapter.html)
+   Small superscript numbers inside the chapter text — for one-off
+   context that doesn't belong in the glossary (a joke that only works
+   in the original language, what a character's name means, etc.),
+   as opposed to reusable terms, which link into the Glossary instead.
+   Defined per-chapter, in that chapter's own JSON (see script.js).
+   ==================================================================== */
+
+.footnote-marker {
+    position: relative;
+
+    color: var(--honey);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 1px;
+}
+
+.footnote-marker:hover {
+    text-decoration: underline;
+}
+
+/* Anchored as a CSS-positioned child of the marker itself (script.js
+   moves the single #footnotePopover node in there on open) instead of
+   a JS-computed `position: fixed` + getBoundingClientRect() pixel
+   offset. That JS approach broke in Safari specifically: the marker
+   sits inside .page-shell's `zoom: 0.9`, and Safari's non-standard
+   support for `zoom` doesn't keep getBoundingClientRect() consistent
+   across that boundary, throwing the calculated position off (fine in
+   Chrome, wrong in Safari). Anchoring via plain CSS instead means the
+   browser resolves the position natively within the marker's own
+   layout context — nothing crosses the zoom boundary, so there's
+   nothing for that inconsistency to break. */
+.footnote-popover {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+
+    z-index: 60;
+    width: 280px;
+    max-width: min(280px, calc(100vw - 48px));
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+
+    box-shadow: 0 12px 32px var(--shadow);
+}
+
+/* Added by script.js when the default (left-aligned, opening below)
+   placement would run past the edge of the reading column */
+.footnote-popover.align-right {
+    left: auto;
+    right: 0;
+}
+
+.footnote-popover.flip-above {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.footnote-popover-term {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.footnote-popover-pinyin {
+    font-style: italic;
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+.footnote-popover-definition {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-primary);
+}
+
+.footnote-popover-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--honey);
+}
+
+.footnote-popover-link[hidden] {
+    display: none;
+}
+
+.footnote-popover-link:hover {
+    text-decoration: underline;
+}
+
+/* ====================================================================
+   SELECTION TOOLBAR (shared by reader.html + chapter.html)
+   A small floating pill that appears above whatever text the reader
+   just selected. Positioned via JS (script.js tracks the actual
+   selection's bounding box), not fixed in CSS — its coordinates
+   change every time depending on where the selection is.
+   ==================================================================== */
+
+.selection-toolbar {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(30, 22, 12, 0.18);
+    padding: 6px;
+    z-index: 600;
+}
+
+.sel-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #3B332B;
+    white-space: nowrap;
+}
+
+.sel-btn:hover {
+    background: #F5EFE4;
+}
+
+.sel-btn img,
+.sel-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.sel-divider {
+    width: 1px;
+    height: 18px;
+    background: #E8E0D4;
+    flex-shrink: 0;
+}
+
+/* Small composer that opens under the toolbar for Comment / Note —
+   same markup serves both, script.js swaps the label/placeholder and
+   which localStorage list it saves into */
+.selection-composer {
+    position: fixed;
+    width: 280px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(30, 22, 12, 0.18);
+    padding: 14px;
+    z-index: 600;
+}
+
+.selection-composer-quoted {
+    font-size: 12px;
+    font-style: italic;
+    color: #8C8275;
+    border-left: 2px solid #D9A94E;
+    padding-left: 8px;
+    margin-bottom: 10px;
+    max-height: 48px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selection-composer-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #3B332B;
+    margin-bottom: 8px;
+}
+
+.selection-composer-input {
+    width: 100%;
+    resize: none;
+    border: 1px solid #E8E0D4;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #3B332B;
+    box-sizing: border-box;
+}
+
+.selection-composer-input:focus {
+    outline: none;
+    border-color: #D9A94E;
+}
+
+.selection-composer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.btn-composer-cancel,
+.btn-composer-save {
+    border: none;
+    border-radius: 16px;
+    padding: 7px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-composer-cancel {
+    background: none;
+    color: #8C8275;
+}
+
+.btn-composer-cancel:hover {
+    color: #3B332B;
+}
+
+.btn-composer-save {
+    background: #D9A94E;
+    color: #FFFFFF;
+}
+
+/* Brief bottom-center confirmation toast ("Copied to clipboard",
+   "Saved as quote"...) shown after any selection-toolbar action */
+.reader-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 90px;
+    transform: translateX(-50%) translateY(12px);
+    background: #3B332B;
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 700;
+}
+
+.reader-toast.is-visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+
+/* ====================================================================
+   SAVED QUOTES / NOTES PANEL (reader.html only)
+   Reuses .chapter-list-backdrop/.chapter-list-modal/.chapter-list-head
+   for the modal shell — just its own item style below, since a saved
+   quote/note is a block of text, not a single-line row like a
+   chapter number + title.
+   ==================================================================== */
+
+.saved-item {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-warm);
+}
+
+.saved-item-quote {
+    font-style: italic;
+    font-size: 13px;
+    color: var(--text-warm);
+    border-left: 2px solid var(--accent-gold);
+    padding-left: 10px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.saved-item-note {
+    font-size: 13px;
+    color: var(--text-warm);
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.saved-item-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted-warm);
+}
+
+.saved-item-delete {
+    border: none;
+    background: none;
+    color: var(--muted-warm);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 0;
+}
+
+.saved-item-delete:hover {
+    color: var(--accent-gold);
+}
+
+.saved-items-empty {
+    padding: 40px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted-warm);
+}
+
+body.reader-page.theme-dark .saved-item {
+    border-bottom-color: var(--border-dark);
+}
+
+
+/* ========================================
+   АДАПТИВ — 1024 / 768 / 480
+   ======================================== */
+
+/* ============================================================
+   ВЕБ-РЕЖИМ ГЛАВЫ (chapter.html) + ОБЩИЕ ОКНА
+   ============================================================ */
+
+/* ---------- Планшет (≤1024px) ---------- */
+@media (max-width: 1024px) {
+    .chapter-top-bar {
+        padding: 20px 24px 0;
+    }
+
+    .chapter-web-main {
+        padding: 0 24px 48px;
+    }
+}
+
+
+/* ---------- Телефон (≤768px) ---------- */
+@media (max-width: 768px) {
+
+    /* ----- Верхняя полоса: крошки и «Режим чтения» ----- */
+    /* В одну строку они не помещаются (длинное название новеллы в
+       крошках) — ставим друг под другом: крошки сверху в одну строку с
+       «…», кнопка перехода в режим чтения — на всю ширину под ними */
+    .chapter-top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px 16px 0;
+    }
+
+    .chapter-top-bar .breadcrumbs {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .chapter-top-bar .breadcrumbs a {
+        flex-shrink: 0;
+    }
+
+    /* Название новеллы в крошках можно сжать, «Глава N» (current) — нет */
+    .chapter-top-bar .breadcrumbs a#breadcrumbNovelLink {
+        flex-shrink: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .chapter-top-bar .breadcrumbs .current {
+        flex-shrink: 0;
+    }
+
+    .btn-reading-mode {
+        justify-content: center;
+        padding: 11px 14px;
+        font-size: 13px;
+    }
+
+    /* ----- Колонка с текстом ----- */
+    .chapter-web-main {
+        padding: 0 16px 32px;
+    }
+
+    .chapter-web-meta {
+        padding: 16px 0 24px;
+        margin-bottom: 24px;
+    }
+
+    .chapter-divider .ornament {
+        width: 180px;
+    }
+
+    .chapter-title {
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .chapter-web-text {
+        line-height: 1.8;
+    }
+
+    .chapter-web-text p {
+        margin-bottom: 18px;
+    }
+
+    /* ----- Рекламный блок: значок + текст в ряд, кнопка — на всю ширину ----- */
+    .chapter-ad-banner {
+        flex-wrap: wrap;
+        gap: 12px 14px;
+        margin: 28px 0;
+        padding: 30px 16px 16px;
+    }
+
+    .chapter-ad-banner .ad-label {
+        left: 16px;
+    }
+
+    .chapter-ad-banner .ad-copy {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .chapter-ad-banner .btn-action {
+        flex: 1 1 100%;
+        margin-left: 0;
+        height: 44px;
+        flex-direction: row;
+        font-size: 13px;
+    }
+
+    /* ----- Предыдущая / Оглавление / Следующая -----
+       «Предыдущая» и «Следующая» — рядом, «Оглавление» — отдельной
+       строкой на всю ширину под ними. Порядок в HTML (prev, toc, next)
+       не меняется — только раскладка */
+    .chapter-nav-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            "prev next"
+            "toc  toc";
+        gap: 10px;
+        margin: 28px 0;
+    }
+
+    .chapter-nav-row #prevChapterBtn {
+        grid-area: prev;
+    }
+
+    .chapter-nav-row #nextChapterBtn {
+        grid-area: next;
+    }
+
+    .chapter-nav-row #chapterTocBtn {
+        grid-area: toc;
+    }
+
+    .chapter-nav-row .chapter-nav-btn {
+        justify-content: center;
+        min-height: 46px;
+        padding: 10px 12px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    /* ----- Комментарии ----- */
+    .chapter-comments {
+        margin-top: 36px;
+    }
+
+    .chapter-comments-head h2 {
+        font-size: 20px;
+    }
+
+    .comment-item {
+        gap: 10px;
+    }
+
+    .comment-actions {
+        gap: 20px;
+    }
+
+    .comment-actions button {
+        min-height: 32px;
+    }
+
+    /* Меньше 16px — iOS приближает страницу при фокусе на поле */
+    .comment-composer input {
+        font-size: 16px;
+    }
+
+    .comment-composer .btn-post {
+        padding: 12px 18px;
+    }
+
+    /* ============================================================
+       ОБЩИЕ ОКНА (работают и в reader.html, и в chapter.html)
+       ============================================================ */
+
+    /* Оглавление — шторка снизу вместо центрированного окна */
+    .chapter-list-backdrop {
+        align-items: flex-end;
+    }
+
+    .chapter-list-modal {
+        width: 100%;
+        max-width: 100%;
+        max-height: 80vh;
+        max-height: 80dvh;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .chapter-list-head {
+        padding: 16px;
+    }
+
+    .chapter-list-close {
+        min-width: 36px;
+        min-height: 36px;
+        font-size: 20px;
+    }
+
+    .chapter-list-item {
+        padding: 14px 16px;
+        font-size: 14px;
+    }
+
+    /* Панель выделения текста: пять кнопок с подписями (~490px) на
+       телефон не помещаются и обрезались бы по краям экрана — оставляем
+       одни иконки; подпись всё равно есть в title у каждой кнопки */
+    .selection-toolbar {
+        max-width: calc(100vw - 24px);
+    }
+
+    .sel-btn {
+        padding: 10px 11px;
+    }
+
+    .sel-btn span {
+        display: none;
+    }
+
+    .sel-btn img,
+    .sel-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .selection-composer {
+        width: min(280px, calc(100vw - 24px));
+    }
+
+    /* Меньше 16px — iOS приближает страницу при фокусе на поле */
+    .selection-composer-input {
+        font-size: 16px;
+    }
+
+    /* Всплывающая подсказка «Скопировано / Сохранено» — над нижней
+       панелью сайта (она есть только на chapter.html; в reader.html своя
+       нижняя полоса прогресса, там значение прежнее) */
+    body:not(.reader-page) .reader-toast {
+        bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+
+/* ---------- Маленький телефон (≤480px) ---------- */
+@media (max-width: 480px) {
+    .chapter-web-main {
+        padding: 0 16px 24px;
+    }
+
+    .chapter-title {
+        font-size: 26px;
+    }
+
+    .chapter-divider .ornament {
+        width: 160px;
+    }
+
+    .chapter-nav-row .chapter-nav-btn {
+        font-size: 12px;
+        padding: 10px 8px;
+    }
+}

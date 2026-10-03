@@ -501,6 +501,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.title = `${VIEWS[view]} — Татьяна | Busy Bee`;
 
+        // «‹ Мой профиль» (видна только на телефоне) — только внутри разделов
+        const backLink = document.getElementById("profileBackLink");
+        if (backLink) backLink.hidden = view === "profile";
+
         // #library/paused — открыть нужную вкладку раздела
         if (sub) {
             const tab = tabsOf(view).find((t) => t.dataset.tab === sub);

@@ -192,6 +192,12 @@
     overflow: hidden;
 }
 
+/* У непрочитанной карточки фон такой же тёплый, как у плашки иконки, —
+   иконка сливалась с ним. Светлая плашка возвращает ей контур. */
+.notification-item.unread .notif-icon-wrap {
+    background: var(--surface);
+}
+
 .notif-icon-wrap .notif-icon {
     width: 20px;
     height: 20px;
@@ -283,5 +289,16 @@
 
     .notif-chevron {
         display: none;
+    }
+}
+
+/* Телефон — те же значения и порог (640px), что у страницы «Закладки» */
+@media (max-width: 640px) {
+    .notifications-container {
+        padding: 0 16px 40px;
+    }
+
+    .notifications-hero-left h1 {
+        font-size: 34px;
     }
 }

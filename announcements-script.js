@@ -22,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll(".menu-item").forEach((m) => m.classList.remove("active"));
             btn.classList.add("active");
 
+            // На телефоне меню — горизонтальный ряд с прокруткой: частично
+            // видимую «пилюлю» подводим к центру. block: "nearest" — чтобы
+            // страница при этом не прыгала по вертикали.
+            btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+
             const selectedCategory = btn.getAttribute("data-category");
 
             feedCards.forEach((card) => {

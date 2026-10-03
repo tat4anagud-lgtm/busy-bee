@@ -112,6 +112,7 @@
     font-family: "Playfair Display", Georgia, serif;
     font-size: 15px;
     font-weight: 600;
+    margin-top: 0; /* без этого оставался стандартный верхний отступ браузера */
     margin-bottom: 6px;
     color: var(--text-primary);
 }
@@ -596,35 +597,205 @@
 }
 
 /* ==================== RESPONSIVE ==================== */
+
+/* Планшет и телефон: боковая колонка «распадается» на части. Меню
+   остаётся сверху и превращается в ряд «пилюль» с горизонтальной
+   прокруткой, лента идёт следом, а виджет «Поделиться» уезжает под
+   неё — иначе перед первой новостью приходится пролистывать
+   два экрана меню и рекламы. */
 @media (max-width: 868px) {
+    .announcements-container {
+        --bleed: 32px; /* насколько ряд пилюль выходит к краям страницы — равно боковому padding */
+    }
+
     .announcements-layout {
         grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* aside перестаёт быть блоком: его дети (меню, виджет, картинка)
+       становятся прямыми ячейками сетки и их можно переставлять order */
+    .announcements-sidebar {
+        display: contents;
     }
 
     .sidebar-menu {
+        order: 0;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 8px;
+
+        overflow-x: auto;
+        margin: 0 calc(var(--bleed) * -1);
+        padding: 2px var(--bleed);
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sidebar-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .menu-item {
+        width: auto;
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 8px 14px;
+        font-size: var(--fs-body);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+    }
+
+    .menu-item:hover {
+        background: var(--surface-warm);
+    }
+
+    .menu-item.active {
+        background: var(--surface-warm);
+        border-color: var(--honey);
+    }
+
+    .announcements-feed {
+        order: 1;
+    }
+
+    .share-widget {
+        order: 2;
     }
 
     .sidebar-decor-illustration {
         display: none;
     }
 
-    .featured-layout,
+    /* Карточка с миниатюрой: картинка слева от мета-строки, заголовка и
+       текста, а строка с лайками и кнопкой — под ними на всю ширину.
+       Для этого .media-body «растворяется» (display: contents), и его
+       дети встают в общую сетку вместе с миниатюрой. */
     .media-layout {
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 0 14px; /* gap из десктопной версии (20px) стал бы зазором между строками */
     }
 
+    .media-body {
+        display: contents;
+    }
+
+    .card-thumb {
+        grid-column: 1;
+        grid-row: 1 / span 3;
+        align-self: start;
+        width: 72px;
+        height: 84px;
+    }
+
+    .media-body > .post-meta,
+    .media-body > .post-title,
+    .media-body > .post-text {
+        grid-column: 2;
+    }
+
+    .media-body > .card-footer-actions {
+        grid-column: 1 / -1;
+        margin-top: 4px;
+    }
+
+    /* Опрос: прежний вариант прятал полоски совсем, и результаты
+       превращались в голые проценты. Теперь у каждого варианта две
+       строки: переключатель, текст и процент — сверху, полоска — под ним. */
     .poll-options {
-        grid-template-columns: 20px 1fr 40px;
+        display: flex;
+        flex-direction: column;
+        row-gap: 4px;
     }
 
     .poll-option {
-        grid-template-columns: subgrid;
+        display: grid;
+        grid-template-columns: 20px minmax(0, 1fr) auto;
+        column-gap: 12px;
+        row-gap: 8px;
+        align-items: center;
+        padding: 10px;
     }
 
-    .progress-bar-bg {
-        display: none;
+    .poll-option input[type="radio"] {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .poll-option .option-label {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .poll-option .option-percent {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .poll-option .progress-bar-bg {
+        grid-column: 2 / -1;
+        grid-row: 2;
+    }
+}
+
+/* Телефон — те же значения и порог (640px), что у страницы «Закладки» */
+@media (max-width: 640px) {
+    .announcements-container {
+        --bleed: 16px;
+        padding: 0 16px 40px;
+    }
+
+    .hero-title {
+        font-size: 34px;
+    }
+
+    .feed-card {
+        padding: 18px;
+    }
+
+    .featured-card {
+        padding: 20px;
+    }
+
+    .featured-badge {
+        top: 14px;
+        left: 14px;
+    }
+
+    /* Главная карточка: обложка над текстом — только на телефоне,
+       на планшете ширины хватает на две колонки */
+    .featured-layout {
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 22px;
+    }
+
+    .featured-cover-wrapper {
+        width: 100px;
+    }
+
+    .novel-cover {
+        height: 140px;
+    }
+
+    .featured-card .post-title {
+        font-size: 20px;
+    }
+
+    /* «Читать главу» и «Глава 47» раньше ломались на две строки каждая */
+    .featured-actions {
+        flex-wrap: wrap;
+        gap: 12px 16px;
+    }
+
+    .btn-primary,
+    .btn-link {
+        white-space: nowrap;
+    }
+
+    .card-footer-actions {
+        gap: 12px;
     }
 }

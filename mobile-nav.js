@@ -70,7 +70,7 @@ document.currentScript.insertAdjacentHTML("afterend", `
 
     <a href="bookmarks.html" class="bottom-nav-item">
         <span class="bottom-nav-icon-wrap"><img src="images/icons/bookmark.svg" alt=""></span>
-        <span>Сохранённое</span>
+        <span>Закладки</span>
     </a>
 
     <a href="profile.html" class="bottom-nav-item" data-fifth-tab="profile">
@@ -113,7 +113,8 @@ document.currentScript.insertAdjacentHTML("afterend", `
      Всё, что не поместилось в шапку и нижнюю панель: остальной каталог,
      Анонсы/Профиль (тот из двух, которого нет в нижней панели — см.
      data-duplicate-of и BOTTOM_NAV_FIFTH_TAB в script.js), «О Busy Bee»,
-     пять страниц футера, переключатель темы. -->
+     пять страниц футера, переключатель темы, «Войти» (гостю — сверху)
+     и «Выйти» (вошедшему — внизу). -->
 <div class="mobile-nav-overlay" id="mobileNavOverlay">
 
     <div class="mobile-nav-backdrop"></div>
@@ -128,6 +129,16 @@ document.currentScript.insertAdjacentHTML("afterend", `
             <button type="button" class="mobile-nav-close" aria-label="Закрыть меню">
                 <img src="images/icons/close.svg" alt="">
             </button>
+        </div>
+
+        <div class="mobile-nav-section" data-auth="guest" hidden>
+            <!-- «Войти» — сверху и заметной кнопкой, только гостю (см. data-auth
+                 выше и в script.js). href="#" — заглушка до появления
+                 настоящей страницы входа. -->
+            <a href="#" class="mobile-nav-login">
+                <img src="images/icons/log-in.svg" alt="">
+                <span>Войти</span>
+            </a>
         </div>
 
         <div class="mobile-nav-section">
@@ -160,6 +171,17 @@ document.currentScript.insertAdjacentHTML("afterend", `
                 <span>Тёмная тема</span>
                 <img src="images/icons/moon.svg" alt="">
             </button>
+        </div>
+
+        <div class="mobile-nav-section" data-auth="logged-in">
+            <!-- «Выйти» — самым последним пунктом, только вошедшему
+                 (script.js прячет блок по IS_LOGGED_IN через data-auth).
+                 href="#" — заглушка, как «Выйти» в сайдбаре профиля;
+                 настоящий адрес появится вместе с авторизацией. -->
+            <a href="#" class="mobile-nav-link mobile-nav-account-link">
+                <img src="images/icons/log-out.svg" alt="">
+                <span>Выйти</span>
+            </a>
         </div>
 
     </div>
