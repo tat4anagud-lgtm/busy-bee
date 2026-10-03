@@ -1279,45 +1279,53 @@
         grid-template-columns: 1fr;
     }
 
-    /* Аватар + информация — тот же приём, что на страницах переводчика
-       и автора: декоративный баннер справа прячется (на такой ширине
-       ему всё равно уже некуда деваться), а сама карточка переносится
-       в колонку: аватар сверху, блок с именем и статистикой — под ним,
-       на всю ширину. */
+    /* Шапка профиля — настоящая колонка по центру: аватар сверху, под
+       ним имя, бейдж, уровень и полоска опыта на всю ширину карточки,
+       ниже дата и цитата. Раньше аватар и текст стояли рядом и делили
+       ширину пополам — тексту и полоске опыта было тесно.
+       Декоративный фон справа прячем: на такой ширине ему некуда деться. */
     .profile-hero-card {
-        flex-wrap: wrap;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
         background-image: none;
+        gap: 16px;
+        padding: 24px 20px;
     }
 
-    /* Без явной flex-basis перенос не сработает: у .profile-hero-info
-       flex: 1 — это flex-basis: 0%, а с ним «желаемая» ширина блока
-       для расчёта переноса всегда равна нулю, и браузер решает, что
-       блоку «достаточно» любой щели рядом с аватаром, сколько бы места
-       ни было (та же причина, из-за которой не переносился текст в
-       шапке автора). */
+    /* В колонке flex: 1 превратился бы в высоту блока — задаём ширину */
     .profile-hero-info {
-        flex: 1 1 220px;
+        flex: none;
+        width: 100%;
     }
 
     .profile-user-avatar {
-        width: 110px;
-        height: 110px;
+        width: 120px;
+        height: 120px;
     }
 
-    /* Шрифт и отступы — карточка была рассчитана на широкий десктопный
-       ряд (аватар + текст рядом), в колонку на телефоне те же отступы
-       выглядят слишком просторными */
-    .profile-hero-card {
-        gap: 16px;
-        padding: 20px;
+    /* Имя и бейдж — одно под другим, по центру */
+    .user-title-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
     }
 
     .user-title-row h1 {
         font-size: 24px;
     }
 
+    /* «Уровень 18 • Медовый мудрец», полоска опыта на всю ширину,
+       под ней «1 250 / 2 000 опыта» */
     .level-progress-row {
-        margin: 8px 0 6px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        margin: 14px 0 12px;
+    }
+
+    .xp-bar {
+        width: 100%;
     }
 
     .user-joined-date {
@@ -1618,21 +1626,24 @@
         flex-direction: column;
     }
 
+    /* Боковые поля — 16px, как у страницы глоссария (.glossary-container
+       на ≤640px). Раньше здесь было 8px, из-за чего блоки почти
+       касались краёв страницы */
     .profile-layout {
-        padding: 16px 8px 24px;
+        padding: 16px 16px 40px;
     }
 
     .profile-user-avatar {
-        width: 90px;
-        height: 90px;
+        width: 104px;
+        height: 104px;
     }
 
     .user-title-row h1 {
-        font-size: 20px;
+        font-size: 22px;
     }
 
     .profile-hero-card {
-        padding: 16px;
+        padding: 20px 16px;
     }
 }
 

@@ -911,29 +911,79 @@
         scroll-snap-align: start;
     }
 
+    /* Шапка автора — колонка по центру, как шапка профиля: аватар
+       сверху, под ним имя, оригинальное имя, «другие имена», описание,
+       плашки и кнопка подписки — всё по центру и на всю ширину карточки.
+       Раньше аватар и текст стояли рядом и делили ширину пополам. */
+    .author-hero-card {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+        text-align: center;
+        gap: 16px;
+        padding: 24px 20px;
+    }
+
+    /* В колонке flex: 1 1 220px (см. блок 992px) превратился бы в высоту
+       блока — задаём ширину вместо этого */
+    .author-hero-content {
+        flex: none;
+        width: 100%;
+    }
+
     .author-avatar {
-        width: 90px;
-        height: 90px;
+        width: 120px;
+        height: 120px;
+    }
+
+    .author-header-title {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .author-bio {
+        margin: 0 auto 16px;
+    }
+
+    /* Две плашки («Стиль письма», «Основные жанры») — каждая на всю
+       ширину, подпись сверху, значения под ней. В одну строку длинный
+       список жанров не помещался и ломал форму плашки */
+    .author-pills-row {
+        justify-content: center;
+    }
+
+    .pill-group {
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+        padding: 8px 14px;
+        border-radius: 16px;
+    }
+
+    .hero-actions {
+        justify-content: center;
     }
 }
 
 @media (max-width: 400px) {
+    /* Боковые поля — 16px, как у глоссария и профиля (раньше 8px —
+       блоки почти касались краёв страницы) */
     .author-container {
-        padding: 0 8px 24px;
+        padding: 0 16px 40px;
     }
 
     .author-hero-card {
-        padding: 16px;
+        padding: 20px 16px;
         border-radius: 16px;
     }
 
     .author-avatar {
-        width: 76px;
-        height: 76px;
+        width: 104px;
+        height: 104px;
     }
 
     .author-header-title h1 {
-        font-size: 20px;
+        font-size: 22px;
     }
 
     .author-bio {

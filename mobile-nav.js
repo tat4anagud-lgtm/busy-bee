@@ -39,6 +39,10 @@ document.currentScript.insertAdjacentHTML("afterend", `
 <!-- ============ НИЖНЯЯ ПАНЕЛЬ ============ -->
 <nav class="bottom-nav" aria-label="Основная навигация">
 
+    <!-- Фон панели с «горбом» над центральной кнопкой — только слой формы,
+         без содержимого (см. .bottom-nav-bg в style.css) -->
+    <span class="bottom-nav-bg" aria-hidden="true"></span>
+
     <a href="index.html" class="bottom-nav-item">
         <span class="bottom-nav-icon-wrap"><img src="images/icons/home.svg" alt=""></span>
         <span>Главная</span>

@@ -1176,12 +1176,14 @@
     }
 
     .profile-hero-card {
-        padding: 20px;
+        padding: 24px 20px;
     }
 
+    /* Шапка — по центру, как у профиля и автора: аватар крупнее,
+       имя, тег, подпись — по центру карточки */
     .profile-avatar-img {
-        width: 96px;
-        height: 96px;
+        width: 120px;
+        height: 120px;
     }
 
     .profile-name-row h1 {
@@ -1201,20 +1203,25 @@
         flex-wrap: nowrap;
         align-items: stretch;
         gap: 0;
+        text-align: center;
     }
 
     .profile-avatar-wrapper {
-        align-self: flex-start;
+        align-self: center;
         margin-bottom: 16px;
+    }
+
+    .profile-name-row {
+        justify-content: center;
     }
 
     .profile-info-main {
         display: contents;
     }
 
-    /* Тег «Official» и ссылка — по ширине содержимого, не на всю колонку */
+    /* Тег «Official» и ссылка — по ширине содержимого, по центру колонки */
     .profile-info-main > :not(.profile-name-row):not(.profile-bio):not(.hero-actions) {
-        align-self: flex-start;
+        align-self: center;
     }
 
     .profile-stats-box {
@@ -1433,13 +1440,20 @@
     }
 
     /* Баннер поддержки — текст и блок спонсоров были прижаты по
-       краям одной строки, теперь друг под другом: текст и кнопка
-       слева, «Недавние спонсоры» — по центру карточки */
+       краям одной строки, теперь друг под другом и всё по центру:
+       заголовок, текст, кнопка, «Недавние спонсоры», «Спасибо!» */
     .support-banner {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        text-align: center;
         gap: 18px;
-        padding: 20px;
+        padding: 24px 20px;
+    }
+
+    /* max-width: 360px у абзаца на десктопе прижимал его влево —
+       центрируем сам блок текста, а не только строки внутри него */
+    .support-left p {
+        margin: 0 auto 16px;
     }
 
     .support-right {
@@ -1462,23 +1476,25 @@
    ширину содержимому: на 260px вложенные отступы (рамка страницы +
    поля контейнера + поля карточки) раньше съедали больше половины. */
 @media (max-width: 400px) {
+    /* Боковые поля — 16px, как у глоссария и профиля (раньше 8px —
+       блоки почти касались краёв страницы) */
     .translator-container {
-        padding: 0 8px 24px;
+        padding: 0 16px 40px;
     }
 
     .profile-hero-card {
-        padding: 16px;
+        padding: 20px 16px;
         margin-top: 12px;
         border-radius: 16px;
     }
 
     .profile-avatar-img {
-        width: 84px;
-        height: 84px;
+        width: 104px;
+        height: 104px;
     }
 
     .profile-name-row h1 {
-        font-size: 20px;
+        font-size: 22px;
     }
 
     .widget-header h3 {

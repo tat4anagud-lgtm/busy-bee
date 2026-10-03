@@ -5881,24 +5881,69 @@ body.reader-page.theme-dark .saved-item {
     display: none;
 }
 
-/* Сама видимая «полоса» панели — отдельным слоем позади иконок
-   (z-index: -1), а не фоном на .bottom-nav напрямую: иначе вырез-маска
-   обрезала бы заодно и центральную кнопку, которая тоже лежит внутри
-   .bottom-nav. mask-image вырезает круг ровно там, где торчит кнопка —
-   получается не плоская полка с кружком сверху, а дуга: ровно над
-   обычными иконками, вверх-дугой над приподнятой, и снова ровно. */
-.bottom-nav::before {
+/* Фон нижней панели — отдельный слой <span class="bottom-nav-bg">
+   (его вставляет mobile-nav.js первым ребёнком панели), позади иконок
+   (z-index: -1): так маска формы не обрезает заодно и сами иконки с
+   центральной кнопкой.
+
+   Форма: верхняя линия панели ровная над обычными вкладками, а над
+   центральной кнопкой плавно поднимается дугой — горб, который
+   повторяет круг кнопки на одинаковом расстоянии от неё. Горб и
+   плавные «плечи» на стыке с линией — готовая SVG-фигура в маске
+   (68×19px, дуга радиусом 30px вокруг центра кнопки, плечи радиусом
+   10px), ниже неё маска — обычный прямоугольник на всю ширину.
+
+   Цвета не зашиты в картинку, а берутся из переменных (маска задаёт
+   только форму) — поэтому тёмная тема работает сама. Обводка — тот же
+   приём: нижний слой цвета --border, поверх него слой цвета --surface,
+   сдвинутый на 1px вниз, так что 1px обводки остаётся только сверху,
+   по линии и по дуге горба. Тень — drop-shadow на самом слое, она
+   повторяет форму вместе с горбом.
+
+   Если поменяешь размеры кнопки (.bottom-nav-center-cover) — горб
+   нужно пересчитать: 16px (высота горба) встречается в top ниже и
+   в mask-size / mask-position, 30px — радиус дуги в самой SVG. */
+.bottom-nav-bg {
+    position: absolute;
+    top: -16px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    filter: drop-shadow(0 -3px 8px var(--shadow));
+}
+
+.bottom-nav-bg::before,
+.bottom-nav-bg::after {
     content: "";
     position: absolute;
     inset: 0;
-    z-index: -1;
 
+    -webkit-mask-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-34 -16 68 19'%3E%3Cpath d='M-32 0A10 10 0 0 0 -24 -4A30 30 0 0 1 24 -4A10 10 0 0 0 32 0V3H-32Z'/%3E%3C/svg%3E"),
+        linear-gradient(#000, #000);
+            mask-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-34 -16 68 19'%3E%3Cpath d='M-32 0A10 10 0 0 0 -24 -4A30 30 0 0 1 24 -4A10 10 0 0 0 32 0V3H-32Z'/%3E%3C/svg%3E"),
+        linear-gradient(#000, #000);
+    -webkit-mask-size: 68px 19px, 100% calc(100% - 16px);
+            mask-size: 68px 19px, 100% calc(100% - 16px);
+    -webkit-mask-position: 50% 0, 0 100%;
+            mask-position: 50% 0, 0 100%;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+}
+
+/* нижний слой — обводка */
+.bottom-nav-bg::before {
+    background: var(--border);
+}
+
+/* верхний слой — сам фон панели, на 1px ниже обводки */
+.bottom-nav-bg::after {
     background: var(--surface);
-    border-top: 1px solid var(--border);
-    box-shadow: 0 -4px 16px var(--shadow);
-
-    -webkit-mask-image: radial-gradient(circle 36px at 50% 0px, transparent 98%, #000 100%);
-    mask-image: radial-gradient(circle 36px at 50% 0px, transparent 98%, #000 100%);
+    top: 1px;
 }
 
 .mobile-nav-overlay.open {
@@ -6103,7 +6148,26 @@ body.reader-page.theme-dark .saved-item {
 .bottom-nav-center {
     flex: 0 0 auto;
     position: relative;
-    top: -16px;
+
+    /* Кнопка выше остальных вкладок (79px против 53px), и раньше это
+       раздувало всю панель — над обычными иконками оставалась пустота,
+       а саму кнопку приходилось ещё поднимать через top: -16px.
+       Отрицательный margin-top «съедает» лишнюю высоту: панель остаётся
+       такой же компактной, как без кнопки, а кнопка сама выступает над
+       линией панели на 12px (кружок до низа выровнен с иконками
+       соседних вкладок, подпись — с их подписями). */
+    margin-top: -26px;
+
+    /* Это <button>, а не <a>, как остальные вкладки — без сброса браузер
+       рисует серый фон, рамку и свой шрифт (тот самый серый
+       прямоугольник вокруг кнопки на скрине) */
+    background: none;
+    border: 0;
+    font: inherit;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Кнопка всегда показывает одну и ту же иконку — без названия и
