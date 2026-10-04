@@ -160,6 +160,19 @@ if (readerHeader) {
         : null;
     let isBookMode = false;
 
+    // Страница, на которую листание уже запущено, но анимация ещё идёт.
+    // Нужна для быстрых нажатий: каждое новое нажатие считается от неё,
+    // а не от текущей (ещё не доехавшей) позиции прокрутки — иначе при
+    // частых тапах позиции накладывались и на экране оказывалась
+    // «половина страницы». См. turnPage.
+    let pendingBookIndex = null;
+    let pendingBookTimer;
+
+    function resetPendingBookPage() {
+        pendingBookIndex = null;
+        clearTimeout(pendingBookTimer);
+    }
+
     function applyBookModeLayout() {
         const proseEl = document.getElementById("readingProse");
         if (!isBookMode || !proseEl) return;
@@ -212,6 +225,7 @@ if (readerHeader) {
     function refreshBookLayoutIfNeeded() {
         if (!isBookMode) return;
         applyBookModeLayout();
+        resetPendingBookPage();
         const proseEl = document.getElementById("readingProse");
         if (proseEl) proseEl.scrollLeft = 0;
         updateReadingProgress();
@@ -234,6 +248,7 @@ if (readerHeader) {
                 : "images/icons/scroll.svg";
         }
 
+        resetPendingBookPage();
         const proseEl = document.getElementById("readingProse");
         if (enabled) {
             applyBookModeLayout();
@@ -581,22 +596,65 @@ if (readerHeader) {
         }
     }
 
-    // Clicking anywhere on the track jumps to that point in the chapter
-    if (progressTrack) {
-        progressTrack.addEventListener("click", (event) => {
-            if (!prose) return;
-            const rect = progressTrack.getBoundingClientRect();
-            const clickPercent = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
+    /* Ползунок прогресса: клик по полоске или перетаскивание точки
+       переходит в нужное место главы. Раньше был только обработчик клика
+       по самой полоске (3px в высоту — попасть почти невозможно), а в
+       режиме «Книга» он ещё и ставил прокрутку в произвольную точку, а не
+       на границу страницы. Теперь:
+         • нажимать и тянуть можно по всей области рядом с полоской
+           (.progress-bar-container), на мыши и на тачскрине (pointer events);
+         • в режиме «Книга» позиция округляется до целой страницы;
+         • пока идёт перетаскивание, интерфейс не прячется от прокрутки
+           (isSeekingProgress). */
+    const progressBarContainer = document.querySelector(".progress-bar-container");
+    let isSeekingProgress = false;
 
-            if (isBookMode) {
-                const maxScroll = prose.scrollWidth - prose.clientWidth;
-                prose.scrollTo({ left: clickPercent * maxScroll, behavior: "smooth" });
-            } else {
-                const proseTop = prose.getBoundingClientRect().top + window.scrollY;
-                const targetScroll = proseTop - window.innerHeight + clickPercent * prose.offsetHeight;
-                window.scrollTo({ top: targetScroll, behavior: "smooth" });
-            }
+    function seekToFraction(fraction) {
+        if (!prose) return;
+        const clamped = Math.min(1, Math.max(0, fraction));
+
+        if (isBookMode) {
+            const pageWidth = prose.clientWidth + BOOK_COLUMN_GAP;
+            const maxScroll = prose.scrollWidth - prose.clientWidth;
+            const lastIndex = Math.max(0, Math.round(maxScroll / pageWidth));
+            const pageIndex = Math.round(clamped * lastIndex);
+            resetPendingBookPage();
+            prose.scrollLeft = Math.min(maxScroll, pageIndex * pageWidth);
+        } else {
+            const proseTop = prose.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({
+                top: proseTop - window.innerHeight + clamped * prose.offsetHeight,
+                behavior: "auto",
+            });
+        }
+        updateReadingProgress();
+    }
+
+    if (progressBarContainer && progressTrack) {
+        const fractionFromEvent = (event) => {
+            const rect = progressTrack.getBoundingClientRect();
+            return rect.width > 0 ? (event.clientX - rect.left) / rect.width : 0;
+        };
+
+        progressBarContainer.addEventListener("pointerdown", (event) => {
+            if (event.pointerType === "mouse" && event.button !== 0) return;
+            isSeekingProgress = true;
+            progressBarContainer.classList.add("is-dragging");
+            progressBarContainer.setPointerCapture(event.pointerId);
+            seekToFraction(fractionFromEvent(event));
+            event.preventDefault();
         });
+
+        progressBarContainer.addEventListener("pointermove", (event) => {
+            if (isSeekingProgress) seekToFraction(fractionFromEvent(event));
+        });
+
+        const stopSeeking = () => {
+            isSeekingProgress = false;
+            progressBarContainer.classList.remove("is-dragging");
+        };
+        progressBarContainer.addEventListener("pointerup", stopSeeking);
+        progressBarContainer.addEventListener("pointercancel", stopSeeking);
     }
 
     /* 10. Page-turn arrows — the big round ‹ › buttons beside the
@@ -614,20 +672,37 @@ if (readerHeader) {
             // На последней странице «вперёд» открывает следующую главу, на
             // первой «назад» — предыдущую (сразу на её последней странице).
             // Так на телефоне можно читать подряд одним свайпом
+            const pageWidth = prose.clientWidth + BOOK_COLUMN_GAP;
             const maxScroll = prose.scrollWidth - prose.clientWidth;
+            const lastIndex = Math.max(0, Math.round(maxScroll / pageWidth));
+            // Отсчитываем от страницы, на которую уже едем (если анимация
+            // ещё идёт), а не от текущей позиции прокрутки
+            const baseIndex = pendingBookIndex !== null
+                ? pendingBookIndex
+                : Math.round(prose.scrollLeft / pageWidth);
+
             const chapterIndex = availableChapters.indexOf(currentChapterNumber);
-            if (direction > 0 && prose.scrollLeft >= maxScroll - 4 && chapterIndex >= 0 && chapterIndex < availableChapters.length - 1) {
+            if (direction > 0 && baseIndex >= lastIndex && chapterIndex >= 0 && chapterIndex < availableChapters.length - 1) {
+                resetPendingBookPage();
                 loadChapter(availableChapters[chapterIndex + 1]);
                 return;
             }
-            if (direction < 0 && prose.scrollLeft <= 4 && chapterIndex > 0) {
+            if (direction < 0 && baseIndex <= 0 && chapterIndex > 0) {
+                resetPendingBookPage();
                 jumpToEndOnLoad = true;
                 loadChapter(availableChapters[chapterIndex - 1]);
                 return;
             }
 
-            const pageWidth = prose.clientWidth + BOOK_COLUMN_GAP;
-            prose.scrollBy({ left: direction * pageWidth, behavior: "smooth" });
+            // Всегда на целую страницу: индекс, а не «прибавить ширину»
+            const targetIndex = Math.min(lastIndex, Math.max(0, baseIndex + direction));
+            pendingBookIndex = targetIndex;
+            prose.scrollTo({ left: Math.min(maxScroll, targetIndex * pageWidth), behavior: "smooth" });
+
+            // Анимация листания заканчивается примерно за полсекунды —
+            // после этого снова считаем от реальной позиции
+            clearTimeout(pendingBookTimer);
+            pendingBookTimer = setTimeout(() => { pendingBookIndex = null; }, 500);
         } else {
             const index = availableChapters.indexOf(currentChapterNumber);
             if (direction < 0 && index > 0) {
@@ -674,10 +749,13 @@ if (readerHeader) {
         let hadSelectionOnTouchStart = false;
         const hasTextSelection = () => window.getSelection().toString().trim().length > 0;
 
+        let touchStartTime = 0;
+
         readerViewport.addEventListener("touchstart", (event) => {
             const touch = event.touches[0];
             touchStartX = touch.clientX;
             touchStartY = touch.clientY;
+            touchStartTime = Date.now();
             // Тап, которым читатель снимает выделение текста, интерфейс
             // не переключает
             hadSelectionOnTouchStart = hasTextSelection();
@@ -688,7 +766,15 @@ if (readerHeader) {
             const touch = event.changedTouches[0];
             const dx = touch.clientX - touchStartX;
             const dy = touch.clientY - touchStartY;
-            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            const elapsed = Date.now() - touchStartTime;
+
+            // Раньше требовалось ≥50px и почти горизонтальное движение —
+            // обычный свайп большим пальцем идёт по дуге и часто не
+            // проходил. Теперь: либо длинное движение (≥40px), либо
+            // быстрый «щелчок» (≥24px быстрее 300 мс), и по горизонтали
+            // оно должно быть заметно больше, чем по вертикали
+            const farEnough = Math.abs(dx) >= 40 || (Math.abs(dx) >= 24 && elapsed < 300);
+            if (farEnough && Math.abs(dx) > Math.abs(dy) * 1.2) {
                 lastSwipeAt = Date.now();
                 turnPage(dx < 0 ? 1 : -1);
             }
@@ -699,6 +785,12 @@ if (readerHeader) {
             if (event.target.closest("a, button, input, textarea, .footnote-marker, .footnote-popover")) return;
             if (hadSelectionOnTouchStart || hasTextSelection()) return;
             if (Date.now() - lastSwipeAt < 400) return;
+
+            // Открыта сноска — этот тап только закрывает её (это делает
+            // обработчик в script.js, он сработает следом), а интерфейс
+            // не переключаем и страницу не листаем
+            const openFootnote = document.getElementById("footnotePopover");
+            if (openFootnote && openFootnote.style.display === "block") return;
 
             // Открыта панель настроек — первый тап только закрывает её
             if (settingsPanel && settingsPanel.style.display !== "none") {
@@ -719,7 +811,7 @@ if (readerHeader) {
     // (Не нужно? Удалите этот блок целиком — тап по экрану продолжит работать.)
     let lastScrollY = window.scrollY;
     window.addEventListener("scroll", () => {
-        if (!isMobileReader() || isBookMode) {
+        if (!isMobileReader() || isBookMode || isSeekingProgress) {
             lastScrollY = window.scrollY;
             return;
         }

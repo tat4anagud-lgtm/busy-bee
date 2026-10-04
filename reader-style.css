@@ -55,7 +55,55 @@ body.reader-page.theme-sepia {
     color: var(--text-sepia);
 }
 
+/* Цвета всплывающих окон читалки (настройки, сноска, оглавление,
+   цитаты/заметки, панель выделения). Каждая тема задаёт свой набор, а в
+   самих окнах цвета берутся как var(--rp-…, запасной цвет сайта): в
+   читалке работают значения темы, а на chapter.html (там нет классов
+   .theme-*) те же окна остаются в цветах сайта и следуют его
+   светлой/тёмной теме.
+     --rp-bg      фон окна            --rp-bg-soft  вторичный фон (текущая глава…)
+     --rp-text    основной текст      --rp-muted    приглушённый текст
+     --rp-border  рамки и разделители --rp-hover    подсветка при наведении
+     --rp-shadow  тень */
+body.reader-page.theme-warm {
+    --rp-bg: #FDFBF7;
+    --rp-bg-soft: #F3ECDF;
+    --rp-text: #3B332B;
+    --rp-muted: #8C8275;
+    --rp-border: rgba(59, 51, 43, 0.12);
+    --rp-hover: rgba(140, 130, 117, 0.14);
+    --rp-shadow: rgba(73, 53, 38, 0.18);
+}
+
+body.reader-page.theme-light {
+    --rp-bg: #FFFFFF;
+    --rp-bg-soft: #F2F2F2;
+    --rp-text: #222222;
+    --rp-muted: #858585;
+    --rp-border: rgba(0, 0, 0, 0.1);
+    --rp-hover: rgba(0, 0, 0, 0.05);
+    --rp-shadow: rgba(0, 0, 0, 0.16);
+}
+
+body.reader-page.theme-sepia {
+    --rp-bg: #F1E9D8;
+    --rp-bg-soft: #E4D9C1;
+    --rp-text: #43382C;
+    --rp-muted: #85775F;
+    --rp-border: rgba(67, 56, 44, 0.18);
+    --rp-hover: rgba(67, 56, 44, 0.09);
+    --rp-shadow: rgba(67, 56, 44, 0.24);
+}
+
 body.reader-page.theme-dark {
+    --rp-bg: #24211D;
+    --rp-bg-soft: #302C26;
+    --rp-text: #D4CEB8;
+    --rp-muted: #8A8478;
+    --rp-border: rgba(255, 255, 255, 0.1);
+    --rp-hover: rgba(255, 255, 255, 0.08);
+    --rp-shadow: rgba(0, 0, 0, 0.55);
+
     background-color: var(--bg-dark);
     color: var(--text-dark);
 }
@@ -516,24 +564,19 @@ body.reader-page.book-mode .prose blockquote {
     bottom: 28px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.97);
+    background: var(--rp-bg, rgba(255, 255, 255, 0.97));
+    color: var(--rp-text, inherit);
     backdrop-filter: blur(14px);
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--rp-border, rgba(0, 0, 0, 0.06));
     border-radius: 18px;
     padding: 14px 22px;
     display: flex;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 12px 32px rgba(73, 53, 38, 0.1);
+    box-shadow: 0 12px 32px var(--rp-shadow, rgba(73, 53, 38, 0.1));
     z-index: 100;
     font-family: 'Inter', sans-serif;
     transition: opacity 0.3s, transform 0.3s;
-}
-
-body.reader-page.theme-dark .floating-settings-panel {
-    background: rgba(26, 24, 22, 0.97);
-    border-color: rgba(255, 255, 255, 0.08);
-    color: var(--text-dark);
 }
 
 .panel-group {
@@ -548,21 +591,13 @@ body.reader-page.theme-dark .floating-settings-panel {
     font-weight: 600;
     letter-spacing: 0.07em;
     text-transform: uppercase;
-    color: var(--muted-warm);
-}
-
-body.reader-page.theme-dark .panel-group label {
-    color: #8a8478;
+    color: var(--rp-muted, var(--muted-warm));
 }
 
 .panel-divider {
     width: 1px;
     height: 30px;
-    background: var(--border-warm);
-}
-
-body.reader-page.theme-dark .panel-divider {
-    background: var(--border-dark);
+    background: var(--rp-border, var(--border-warm));
 }
 
 .panel-dropdown {
@@ -580,7 +615,7 @@ body.reader-page.theme-dark .panel-divider {
     font-family: 'Inter', sans-serif;
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-warm);
+    color: var(--rp-text, var(--text-warm));
     cursor: pointer;
 }
 
@@ -595,10 +630,6 @@ body.reader-page.theme-dark .panel-divider {
     transform: rotate(180deg);
 }
 
-body.reader-page.theme-dark .panel-dropdown-button {
-    color: var(--text-dark);
-}
-
 /* Menu opens upward, since this panel already sits at the bottom
    of the viewport — same visual recipe as .filter-menu in the
    header/chapters dropdowns, just anchored to the opposite edge */
@@ -609,22 +640,16 @@ body.reader-page.theme-dark .panel-dropdown-button {
     transform: translateX(-50%);
     min-width: 148px;
     padding: 6px;
-    background: var(--bg-warm);
-    border: 1px solid var(--border-warm);
+    background: var(--rp-bg, var(--bg-warm));
+    border: 1px solid var(--rp-border, var(--border-warm));
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(73, 53, 38, 0.16);
+    box-shadow: 0 8px 25px var(--rp-shadow, rgba(73, 53, 38, 0.16));
     display: none;
     z-index: 200;
 }
 
 .panel-dropdown.open .panel-dropdown-menu {
     display: block;
-}
-
-body.reader-page.theme-dark .panel-dropdown-menu {
-    background: #24211d;
-    border-color: var(--border-dark);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
 }
 
 .panel-dropdown-option {
@@ -634,7 +659,7 @@ body.reader-page.theme-dark .panel-dropdown-menu {
     border: none;
     border-radius: 8px;
     background: none;
-    color: var(--text-warm);
+    color: var(--rp-text, var(--text-warm));
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     text-align: left;
@@ -643,20 +668,12 @@ body.reader-page.theme-dark .panel-dropdown-menu {
 }
 
 .panel-dropdown-option:hover {
-    background: rgba(140, 130, 117, 0.14);
+    background: var(--rp-hover, rgba(140, 130, 117, 0.14));
 }
 
 .panel-dropdown-option.active {
     color: var(--accent-gold);
     font-weight: 600;
-}
-
-body.reader-page.theme-dark .panel-dropdown-option {
-    color: var(--text-dark);
-}
-
-body.reader-page.theme-dark .panel-dropdown-option:hover {
-    background: rgba(255, 255, 255, 0.08);
 }
 
 .size-controls {
@@ -668,13 +685,9 @@ body.reader-page.theme-dark .panel-dropdown-option:hover {
 .size-val {
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-warm);
+    color: var(--rp-text, var(--text-warm));
     min-width: 18px;
     text-align: center;
-}
-
-body.reader-page.theme-dark .size-val {
-    color: var(--text-dark);
 }
 
 .btn-step {
@@ -685,7 +698,7 @@ body.reader-page.theme-dark .size-val {
     border-radius: 50%;
     font-size: 14px;
     line-height: 1;
-    color: var(--text-warm);
+    color: var(--rp-text, var(--text-warm));
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -695,15 +708,6 @@ body.reader-page.theme-dark .size-val {
 
 .btn-step:hover {
     background: rgba(198, 146, 20, 0.1);
-    border-color: var(--accent-gold);
-}
-
-body.reader-page.theme-dark .btn-step {
-    color: var(--text-dark);
-}
-
-body.reader-page.theme-dark .btn-step:hover {
-    background: rgba(198, 146, 20, 0.16);
     border-color: var(--accent-gold);
 }
 
@@ -754,8 +758,29 @@ body.reader-page.theme-dark .btn-step:hover {
     background: transparent;
 }
 
+/* Вся область рядом с полоской — «ручка» для нажатия и перетаскивания
+   (сама полоска всего 3px, попасть в неё курсором было почти нереально).
+   Логика — в reader-script.js (seekToFraction). touch-action: none —
+   чтобы при перетаскивании пальцем страница не прокручивалась. */
 .progress-bar-container {
     padding: 0 16px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.progress-bar-container .progress-track {
+    flex: 1;
+}
+
+.progress-bar-container:hover .progress-thumb,
+.progress-bar-container.is-dragging .progress-thumb {
+    width: 12px;
+    height: 12px;
 }
 
 .progress-track {
@@ -1195,9 +1220,9 @@ body.reader-page.theme-dark .btn-web-version {
     max-height: min(640px, calc(100vh - 80px));
     display: flex;
     flex-direction: column;
-    background: var(--surface);
+    background: var(--rp-bg, var(--surface));
     border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 20px 60px var(--rp-shadow, rgba(0, 0, 0, 0.25));
     overflow: hidden;
 }
 
@@ -1206,7 +1231,7 @@ body.reader-page.theme-dark .btn-web-version {
     align-items: center;
     justify-content: space-between;
     padding: 18px 20px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--rp-border, var(--border));
     flex-shrink: 0;
 }
 
@@ -1214,13 +1239,13 @@ body.reader-page.theme-dark .btn-web-version {
     margin: 0;
     font-family: 'Playfair Display', serif;
     font-size: 17px;
-    color: var(--text-primary);
+    color: var(--rp-text, var(--text-primary));
 }
 
 .chapter-list-close {
     border: none;
     background: none;
-    color: var(--text-muted);
+    color: var(--rp-muted, var(--text-muted));
     font-size: 18px;
     line-height: 1;
     cursor: pointer;
@@ -1228,7 +1253,7 @@ body.reader-page.theme-dark .btn-web-version {
 }
 
 .chapter-list-close:hover {
-    color: var(--text-primary);
+    color: var(--rp-text, var(--text-primary));
 }
 
 .chapter-list-items {
@@ -1244,21 +1269,21 @@ body.reader-page.theme-dark .btn-web-version {
     padding: 12px 20px;
     border: none;
     background: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--rp-border, var(--border));
     text-align: left;
     font-size: 13px;
-    color: var(--text-primary);
+    color: var(--rp-text, var(--text-primary));
     cursor: pointer;
 }
 
 .chapter-list-item:hover:not(.is-locked) {
-    background: var(--surface-warm);
+    background: var(--rp-hover, var(--surface-warm));
 }
 
 .chapter-list-item .item-num {
     flex-shrink: 0;
     width: 32px;
-    color: var(--text-muted);
+    color: var(--rp-muted, var(--text-muted));
     font-size: 12px;
 }
 
@@ -1278,7 +1303,7 @@ body.reader-page.theme-dark .btn-web-version {
 /* Not yet translated — no title to show, nothing to open */
 .chapter-list-item.is-locked {
     cursor: default;
-    color: var(--text-muted);
+    color: var(--rp-muted, var(--text-muted));
 }
 
 .chapter-list-item.is-locked .item-title {
@@ -1288,7 +1313,7 @@ body.reader-page.theme-dark .btn-web-version {
 /* The chapter currently open — highlighted so it's easy to spot
    where you are in the list at a glance */
 .chapter-list-item.is-current {
-    background: var(--surface-warm);
+    background: var(--rp-bg-soft, var(--surface-warm));
     font-weight: 600;
 }
 
@@ -1340,12 +1365,11 @@ body.reader-page.theme-dark .btn-web-version {
     width: 280px;
     max-width: min(280px, calc(100vw - 48px));
 
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--rp-bg, var(--surface));
+    border: 1px solid var(--rp-border, var(--border));
     border-radius: 12px;
     padding: 16px;
-
-    box-shadow: 0 12px 32px var(--shadow);
+    box-shadow: 0 12px 32px var(--rp-shadow, var(--shadow));
 }
 
 /* Added by script.js when the default (left-aligned, opening below)
@@ -1367,13 +1391,13 @@ body.reader-page.theme-dark .btn-web-version {
     font-weight: 600;
     letter-spacing: 0.03em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--rp-muted, var(--text-muted));
     margin-bottom: 6px;
 }
 
 .footnote-popover-pinyin {
     font-style: italic;
-    color: var(--text-secondary);
+    color: var(--rp-muted, var(--text-secondary));
     font-size: 12px;
     margin-bottom: 8px;
 }
@@ -1381,7 +1405,7 @@ body.reader-page.theme-dark .btn-web-version {
 .footnote-popover-definition {
     font-size: 13px;
     line-height: 1.5;
-    color: var(--text-primary);
+    color: var(--rp-text, var(--text-primary));
 }
 
 .footnote-popover-link {
@@ -1413,9 +1437,10 @@ body.reader-page.theme-dark .btn-web-version {
     display: flex;
     align-items: center;
     gap: 2px;
-    background: #FFFFFF;
+    background: var(--rp-bg, #FFFFFF);
+    border: 1px solid var(--rp-border, transparent);
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(30, 22, 12, 0.18);
+    box-shadow: 0 10px 30px var(--rp-shadow, rgba(30, 22, 12, 0.18));
     padding: 6px;
     z-index: 600;
 }
@@ -1432,12 +1457,18 @@ body.reader-page.theme-dark .btn-web-version {
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 500;
-    color: #3B332B;
+    color: var(--rp-text, #3B332B);
     white-space: nowrap;
 }
 
 .sel-btn:hover {
-    background: #F5EFE4;
+    background: var(--rp-hover, #F5EFE4);
+}
+
+/* Иконки-картинки (закладка, цитата, заметка) чёрные — на тёмной теме
+   их нужно осветлить; встроенные svg красятся через currentColor сами */
+body.reader-page.theme-dark .sel-btn img {
+    filter: invert(0.85);
 }
 
 .sel-btn img,
@@ -1450,7 +1481,7 @@ body.reader-page.theme-dark .btn-web-version {
 .sel-divider {
     width: 1px;
     height: 18px;
-    background: #E8E0D4;
+    background: var(--rp-border, #E8E0D4);
     flex-shrink: 0;
 }
 
@@ -1460,9 +1491,10 @@ body.reader-page.theme-dark .btn-web-version {
 .selection-composer {
     position: fixed;
     width: 280px;
-    background: #FFFFFF;
+    background: var(--rp-bg, #FFFFFF);
+    border: 1px solid var(--rp-border, transparent);
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(30, 22, 12, 0.18);
+    box-shadow: 0 10px 30px var(--rp-shadow, rgba(30, 22, 12, 0.18));
     padding: 14px;
     z-index: 600;
 }
@@ -1470,7 +1502,7 @@ body.reader-page.theme-dark .btn-web-version {
 .selection-composer-quoted {
     font-size: 12px;
     font-style: italic;
-    color: #8C8275;
+    color: var(--rp-muted, #8C8275);
     border-left: 2px solid #D9A94E;
     padding-left: 8px;
     margin-bottom: 10px;
@@ -1482,19 +1514,20 @@ body.reader-page.theme-dark .btn-web-version {
 .selection-composer-label {
     font-size: 12px;
     font-weight: 600;
-    color: #3B332B;
+    color: var(--rp-text, #3B332B);
     margin-bottom: 8px;
 }
 
 .selection-composer-input {
     width: 100%;
     resize: none;
-    border: 1px solid #E8E0D4;
+    border: 1px solid var(--rp-border, #E8E0D4);
     border-radius: 8px;
     padding: 8px 10px;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
-    color: #3B332B;
+    color: var(--rp-text, #3B332B);
+    background: var(--rp-bg-soft, #FFFFFF);
     box-sizing: border-box;
 }
 
@@ -1523,11 +1556,11 @@ body.reader-page.theme-dark .btn-web-version {
 
 .btn-composer-cancel {
     background: none;
-    color: #8C8275;
+    color: var(--rp-muted, #8C8275);
 }
 
 .btn-composer-cancel:hover {
-    color: #3B332B;
+    color: var(--rp-text, #3B332B);
 }
 
 .btn-composer-save {
@@ -1571,13 +1604,13 @@ body.reader-page.theme-dark .btn-web-version {
 
 .saved-item {
     padding: 14px 20px;
-    border-bottom: 1px solid var(--border-warm);
+    border-bottom: 1px solid var(--rp-border, var(--border-warm));
 }
 
 .saved-item-quote {
     font-style: italic;
     font-size: 13px;
-    color: var(--text-warm);
+    color: var(--rp-text, var(--text-warm));
     border-left: 2px solid var(--accent-gold);
     padding-left: 10px;
     margin-bottom: 8px;
@@ -1586,7 +1619,7 @@ body.reader-page.theme-dark .btn-web-version {
 
 .saved-item-note {
     font-size: 13px;
-    color: var(--text-warm);
+    color: var(--rp-text, var(--text-warm));
     line-height: 1.5;
     margin-bottom: 8px;
 }
@@ -1596,13 +1629,13 @@ body.reader-page.theme-dark .btn-web-version {
     align-items: center;
     justify-content: space-between;
     font-size: 11px;
-    color: var(--muted-warm);
+    color: var(--rp-muted, var(--muted-warm));
 }
 
 .saved-item-delete {
     border: none;
     background: none;
-    color: var(--muted-warm);
+    color: var(--rp-muted, var(--muted-warm));
     cursor: pointer;
     font-size: 11px;
     padding: 0;
@@ -1616,11 +1649,7 @@ body.reader-page.theme-dark .btn-web-version {
     padding: 40px 20px;
     text-align: center;
     font-size: 13px;
-    color: var(--muted-warm);
-}
-
-body.reader-page.theme-dark .saved-item {
-    border-bottom-color: var(--border-dark);
+    color: var(--rp-muted, var(--muted-warm));
 }
 
 
@@ -1890,7 +1919,7 @@ body.reader-page.theme-dark .saved-item {
         max-height: 50vh;
         overflow-y: auto;
         z-index: 450;
-        box-shadow: 0 -4px 24px var(--shadow);
+        box-shadow: 0 -4px 24px var(--rp-shadow, var(--shadow));
         /* метка лежит внутри абзаца — не наследуем его выравнивание и
            шрифт текста главы */
         font-family: 'Inter', sans-serif;
@@ -2198,6 +2227,19 @@ body.reader-page.theme-dark .saved-item {
     body.reader-ui-hidden .progress-text,
     body.reader-ui-hidden .pages-remaining {
         opacity: 0.75;
+    }
+
+    /* В режиме «Книга» вертикальная прокрутка не нужна — разрешаем
+       браузеру только её (pan-y), а горизонтальные жесты целиком
+       отдаём странице. Без этого браузер мог «забрать» свайп себе,
+       и скрипт не получал конец касания — листание срабатывало через раз */
+    body.reader-page.book-mode .reader-viewport {
+        touch-action: pan-y;
+    }
+
+    /* Скрытый интерфейс: шкалу не нажать случайно, пока она тонкая */
+    body.reader-ui-hidden .progress-bar-container {
+        pointer-events: none;
     }
 
     /* ----- Настройки: шторка над панелью инструментов ----- */
