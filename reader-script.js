@@ -31,6 +31,49 @@ const readerHeader = document.querySelector(".reader-header");
 if (readerHeader) {
     const readerBody = document.body;
 
+    // Телефон: шапка, нижняя панель инструментов и полоска прогресса — это
+    // накладки поверх текста (position: fixed, см. reader-style.css), а не
+    // часть раскладки. Брейкпоинт тот же, что у остального сайта (768px)
+    // (то же условие, что у @media мобильной раскладки в reader-style.css:
+    // узкий экран ИЛИ тачскрин с низкой высотой — телефон в ландшафте)
+    function isMobileReader() {
+        return window.matchMedia("(max-width: 768px), (max-height: 500px) and (pointer: coarse)").matches;
+    }
+
+    /* ----- Запоминание настроек читалки -----
+       Шрифт, размер, интервал, ширина, тема и режим (Прокрутка/Книга)
+       хранятся в localStorage одним объектом и применяются при открытии
+       читалки (applyReaderSettings, в конце этого блока). Тот же ключ
+       сможет читать раздел «Настройки» в профиле, когда до него дойдёт
+       очередь. Значения при чтении проверяются по тем вариантам, что
+       есть в панели настроек, — мусор в localStorage ничего не сломает. */
+    const READER_SETTINGS_KEY = "busybee_reader_settings";
+
+    function loadReaderSettings() {
+        try {
+            return JSON.parse(localStorage.getItem(READER_SETTINGS_KEY)) || {};
+        } catch (error) {
+            return {};
+        }
+    }
+
+    function saveReaderSettings() {
+        const classes = readerBody.className;
+        const settings = {
+            theme: (classes.match(/\btheme-\S+/) || [""])[0],
+            font: (classes.match(/\bfont-\S+/) || [""])[0],
+            fontSize: currentFontSize,
+            spacing: prose ? prose.style.lineHeight : "",
+            width: readerContainer ? readerContainer.style.maxWidth : "",
+            mode: isBookMode ? "book" : "scroll",
+        };
+        try {
+            localStorage.setItem(READER_SETTINGS_KEY, JSON.stringify(settings));
+        } catch (error) {
+            // localStorage недоступен — настройки просто не запомнятся
+        }
+    }
+
     /* 1. Toggle Settings Bar Visibility */
     const toggleSettingsBtn = document.getElementById("toggleSettings");
     const settingsPanel = document.getElementById("settingsPanel");
@@ -55,7 +98,7 @@ if (readerHeader) {
     // в режиме «Книга» — в текущей колонке (предыдущие уехали влево)
     function firstVisiblePassage() {
         const paragraphs = document.querySelectorAll("#proseParagraphs p");
-        const topEdge = readerHeader.offsetHeight + 4;
+        const topEdge = (isMobileReader() ? 28 : readerHeader.offsetHeight) + 4;
 
         for (const paragraph of paragraphs) {
             const rect = paragraph.getBoundingClientRect();
@@ -124,8 +167,13 @@ if (readerHeader) {
         const header = document.querySelector(".reader-header");
         const footer = document.querySelector(".reader-footer");
         const viewport = document.querySelector(".reader-viewport");
-        const headerH = header ? header.offsetHeight : 0;
-        const footerH = footer ? footer.offsetHeight : 0;
+        // На телефоне шапка и нижние панели — накладки поверх текста: место
+        // под край экрана резервирует padding у .reader-viewport (его читаем
+        // ниже), а высота самих панелей на размер страницы не влияет — иначе
+        // страницы «прыгали» бы при каждом скрытии/показе интерфейса
+        const overlayUi = isMobileReader();
+        const headerH = header && !overlayUi ? header.offsetHeight : 0;
+        const footerH = footer && !overlayUi ? footer.offsetHeight : 0;
 
         // Read .reader-viewport's actual top+bottom padding straight from
         // CSS instead of hardcoding a guessed number here — a hardcoded
@@ -201,7 +249,10 @@ if (readerHeader) {
     }
 
     if (toggleReadingModeBtn) {
-        toggleReadingModeBtn.addEventListener("click", () => setBookMode(!isBookMode));
+        toggleReadingModeBtn.addEventListener("click", () => {
+            setBookMode(!isBookMode);
+            saveReaderSettings();
+        });
     }
 
     /* 2. Theme Swatches */
@@ -214,6 +265,7 @@ if (readerHeader) {
             const selectedTheme = swatch.getAttribute("data-theme");
             readerBody.className = readerBody.className.replace(/\btheme-\S+/g, "").trim();
             readerBody.classList.add(selectedTheme);
+            saveReaderSettings();
         });
     });
 
@@ -261,6 +313,7 @@ if (readerHeader) {
             readerBody.className = readerBody.className.replace(/\bfont-\S+/g, "").trim();
             readerBody.classList.add(option.dataset.fontClass);
             refreshBookLayoutIfNeeded();
+            saveReaderSettings();
         },
     });
 
@@ -270,6 +323,14 @@ if (readerHeader) {
     const fontSizeVal = document.getElementById("fontSizeVal");
     let currentFontSize = 20;
 
+    // На телефоне стартуем с 18px (20px на узком экране даёт слишком
+    // короткие строки). Значение в панели настроек показываем то же
+    if (isMobileReader()) {
+        currentFontSize = 18;
+        if (prose) prose.style.fontSize = `${currentFontSize}px`;
+        if (fontSizeVal) fontSizeVal.textContent = currentFontSize;
+    }
+
     const btnIncreaseFont = document.getElementById("btnIncreaseFont");
     if (btnIncreaseFont) {
         btnIncreaseFont.addEventListener("click", () => {
@@ -278,6 +339,7 @@ if (readerHeader) {
                 prose.style.fontSize = `${currentFontSize}px`;
                 fontSizeVal.textContent = currentFontSize;
                 refreshBookLayoutIfNeeded();
+                saveReaderSettings();
             }
         });
     }
@@ -290,6 +352,7 @@ if (readerHeader) {
                 prose.style.fontSize = `${currentFontSize}px`;
                 fontSizeVal.textContent = currentFontSize;
                 refreshBookLayoutIfNeeded();
+                saveReaderSettings();
             }
         });
     }
@@ -302,6 +365,7 @@ if (readerHeader) {
         onSelect: (option) => {
             prose.style.lineHeight = option.dataset.spacing;
             refreshBookLayoutIfNeeded();
+            saveReaderSettings();
         },
     });
 
@@ -313,6 +377,7 @@ if (readerHeader) {
         onSelect: (option) => {
             readerContainer.style.maxWidth = option.dataset.width;
             refreshBookLayoutIfNeeded();
+            saveReaderSettings();
         },
     });
 
@@ -328,6 +393,9 @@ if (readerHeader) {
     let currentChapterNumber = readerChapterFromUrl;
     let availableChapters = [currentChapterNumber];
     let currentChapterFootnotes = [];
+    // Листание «назад» с первой страницы переходит в конец предыдущей
+    // главы — loadChapter по этому флагу прокручивает её до последней страницы
+    let jumpToEndOnLoad = false;
 
     setupFootnotePopover(prose, () => currentChapterFootnotes);
 
@@ -394,8 +462,13 @@ if (readerHeader) {
             // Scroll to top of the chapter on every switch
             window.scrollTo({ top: 0, behavior: "instant" });
             refreshBookLayoutIfNeeded();
+            if (jumpToEndOnLoad) {
+                jumpToEndOnLoad = false;
+                if (isBookMode && prose) prose.scrollLeft = prose.scrollWidth;
+            }
             updateReadingProgress();
         } catch (error) {
+            jumpToEndOnLoad = false;
             const paragraphsContainer = document.getElementById("proseParagraphs");
             const errorHtml = `<p>Не удалось загрузить главу (${chapterNumber}). ${error.message}</p>`;
             if (paragraphsContainer) {
@@ -538,6 +611,21 @@ if (readerHeader) {
         if (!prose) return;
 
         if (isBookMode) {
+            // На последней странице «вперёд» открывает следующую главу, на
+            // первой «назад» — предыдущую (сразу на её последней странице).
+            // Так на телефоне можно читать подряд одним свайпом
+            const maxScroll = prose.scrollWidth - prose.clientWidth;
+            const chapterIndex = availableChapters.indexOf(currentChapterNumber);
+            if (direction > 0 && prose.scrollLeft >= maxScroll - 4 && chapterIndex >= 0 && chapterIndex < availableChapters.length - 1) {
+                loadChapter(availableChapters[chapterIndex + 1]);
+                return;
+            }
+            if (direction < 0 && prose.scrollLeft <= 4 && chapterIndex > 0) {
+                jumpToEndOnLoad = true;
+                loadChapter(availableChapters[chapterIndex - 1]);
+                return;
+            }
+
             const pageWidth = prose.clientWidth + BOOK_COLUMN_GAP;
             prose.scrollBy({ left: direction * pageWidth, behavior: "smooth" });
         } else {
@@ -553,12 +641,162 @@ if (readerHeader) {
     if (navPrevBtn) navPrevBtn.addEventListener("click", () => turnPage(-1));
     if (navNextBtn) navNextBtn.addEventListener("click", () => turnPage(1));
 
+    /* 11. Телефон: тап по экрану скрывает/показывает интерфейс.
+       Шапка, нижняя панель инструментов и подробная полоска прогресса
+       прячутся классом body.reader-ui-hidden (сам внешний вид — в
+       reader-style.css), остаётся только текст и тонкая строка
+       «N% главы · осталось…» внизу.
+         • Режим «Книга»: тап по левой/правой трети экрана — страница
+           назад/вперёд, тап по середине — скрыть/показать интерфейс;
+           свайп влево/вправо — тоже листает.
+         • Режим «Прокрутка»: тап в любом месте — скрыть/показать;
+           прокрутка вниз прячет интерфейс, вверх — возвращает.
+       Ссылки, кнопки, сноски и выделенный текст тап не перехватывают. */
+    let readerUiHidden = false;
+    let lastSwipeAt = 0;
+
+    function closeReaderPanels() {
+        if (settingsPanel) settingsPanel.style.display = "none";
+        if (toggleSettingsBtn) toggleSettingsBtn.classList.remove("active");
+        document.querySelectorAll(".panel-dropdown.open").forEach((container) => container.classList.remove("open"));
+    }
+
+    function setReaderUiHidden(hidden) {
+        readerUiHidden = hidden;
+        document.body.classList.toggle("reader-ui-hidden", hidden);
+        if (hidden) closeReaderPanels();
+    }
+
+    const readerViewport = document.querySelector(".reader-viewport");
+    if (readerViewport) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let hadSelectionOnTouchStart = false;
+        const hasTextSelection = () => window.getSelection().toString().trim().length > 0;
+
+        readerViewport.addEventListener("touchstart", (event) => {
+            const touch = event.touches[0];
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+            // Тап, которым читатель снимает выделение текста, интерфейс
+            // не переключает
+            hadSelectionOnTouchStart = hasTextSelection();
+        }, { passive: true });
+
+        readerViewport.addEventListener("touchend", (event) => {
+            if (!isMobileReader() || !isBookMode || hadSelectionOnTouchStart) return;
+            const touch = event.changedTouches[0];
+            const dx = touch.clientX - touchStartX;
+            const dy = touch.clientY - touchStartY;
+            if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                lastSwipeAt = Date.now();
+                turnPage(dx < 0 ? 1 : -1);
+            }
+        }, { passive: true });
+
+        readerViewport.addEventListener("click", (event) => {
+            if (!isMobileReader()) return;
+            if (event.target.closest("a, button, input, textarea, .footnote-marker, .footnote-popover")) return;
+            if (hadSelectionOnTouchStart || hasTextSelection()) return;
+            if (Date.now() - lastSwipeAt < 400) return;
+
+            // Открыта панель настроек — первый тап только закрывает её
+            if (settingsPanel && settingsPanel.style.display !== "none") {
+                closeReaderPanels();
+                return;
+            }
+
+            if (isBookMode) {
+                const x = event.clientX / window.innerWidth;
+                if (x < 0.28) { turnPage(-1); return; }
+                if (x > 0.72) { turnPage(1); return; }
+            }
+            setReaderUiHidden(!readerUiHidden);
+        });
+    }
+
+    // Режим «Прокрутка»: вниз — прячем интерфейс, вверх — показываем.
+    // (Не нужно? Удалите этот блок целиком — тап по экрану продолжит работать.)
+    let lastScrollY = window.scrollY;
+    window.addEventListener("scroll", () => {
+        if (!isMobileReader() || isBookMode) {
+            lastScrollY = window.scrollY;
+            return;
+        }
+        const delta = window.scrollY - lastScrollY;
+        if (Math.abs(delta) < 10) return;
+        if (delta > 0 && window.scrollY > 80 && !readerUiHidden) setReaderUiHidden(true);
+        else if (delta < 0 && readerUiHidden) setReaderUiHidden(false);
+        lastScrollY = window.scrollY;
+    }, { passive: true });
+
     window.addEventListener("scroll", updateReadingProgress);
     if (prose) prose.addEventListener("scroll", updateReadingProgress);
     window.addEventListener("resize", () => {
         refreshBookLayoutIfNeeded();
         updateReadingProgress();
     });
+
+    /* 12. Применить сохранённые настройки — до загрузки главы, чтобы
+       текст сразу появился в нужном шрифте, размере и режиме */
+    function applyReaderSettings() {
+        const saved = loadReaderSettings();
+
+        // Меню настроек: подсветить вариант и подставить его название
+        // в подпись кнопки — ровно то, что делает клик по варианту
+        function chooseOption(containerId, labelId, matches) {
+            const container = document.getElementById(containerId);
+            if (!container) return null;
+            const options = [...container.querySelectorAll(".panel-dropdown-option")];
+            const option = options.find(matches);
+            if (!option) return null;
+            options.forEach((o) => o.classList.toggle("active", o === option));
+            const label = document.getElementById(labelId);
+            if (label) label.textContent = option.textContent;
+            return option;
+        }
+
+        // Тема
+        const swatch = [...readerSwatches].find((s) => s.dataset.theme === saved.theme);
+        if (swatch) {
+            readerSwatches.forEach((s) => s.classList.toggle("active", s === swatch));
+            readerBody.className = readerBody.className.replace(/\btheme-\S+/g, "").trim();
+            readerBody.classList.add(saved.theme);
+        }
+
+        // Шрифт
+        const fontOption = chooseOption("fontDropdown", "fontDropdownLabel", (o) => o.dataset.fontClass === saved.font);
+        if (fontOption) {
+            readerBody.className = readerBody.className.replace(/\bfont-\S+/g, "").trim();
+            readerBody.classList.add(saved.font);
+        }
+
+        // Размер (14–32, шаг 2 — как у кнопок «−» и «+»)
+        const size = Number(saved.fontSize);
+        if (Number.isInteger(size) && size >= 14 && size <= 32 && size % 2 === 0) {
+            currentFontSize = size;
+            if (prose) prose.style.fontSize = `${size}px`;
+            if (fontSizeVal) fontSizeVal.textContent = size;
+        }
+
+        // Интервал
+        const spacingOption = chooseOption("spacingDropdown", "spacingDropdownLabel", (o) => o.dataset.spacing === saved.spacing);
+        if (spacingOption && prose) prose.style.lineHeight = saved.spacing;
+
+        // Ширина колонки
+        const widthOption = chooseOption("widthDropdown", "widthDropdownLabel", (o) => o.dataset.width === saved.width);
+        if (widthOption && readerContainer) readerContainer.style.maxWidth = saved.width;
+
+        // Режим «Книга» / «Прокрутка»
+        if (saved.mode === "book") setBookMode(true);
+    }
+
+    applyReaderSettings();
+
+    // Запоминаем, что читатель открыл читалку (а не веб-версию): по кнопкам
+    // «Читать / Продолжить» на сайте он попадёт сюда же (см. chapterHref
+    // в script.js)
+    setPreferredReadingView("reader");
 
     loadChapter(currentChapterNumber);
 }
@@ -574,6 +812,10 @@ if (readerHeader) {
 const chapterWebText = document.getElementById("chapterWebText");
 
 if (chapterWebText) {
+    // Запоминаем, что читатель открыл веб-версию: по кнопкам «Читать /
+    // Продолжить» на сайте он попадёт сюда же (см. chapterHref в script.js)
+    setPreferredReadingView("web");
+
     const { novelId: webNovelId, chapterNumber: webChapterNumber } = getNovelAndChapterFromUrl();
     let webAvailableChapters = [webChapterNumber];
     let currentWebChapterFootnotes = [];
@@ -836,6 +1078,13 @@ if (selectionToolbar) {
         if (selectionComposerInput) selectionComposerInput.value = "";
     }
 
+    // Тачскрин (телефон/планшет): выделение делается долгим нажатием,
+    // и система сама показывает своё меню («Копировать» и т.п.) НАД
+    // выделенным текстом — наша панель не должна лезть на то же место
+    function isTouchDevice() {
+        return window.matchMedia("(pointer: coarse)").matches;
+    }
+
     function positionFloatingEl(el, rect) {
         // Centers the toolbar/composer horizontally over the
         // selection and sits it just above the selection's top edge,
@@ -843,7 +1092,26 @@ if (selectionToolbar) {
         const elWidth = el.offsetWidth;
         let left = rect.left + rect.width / 2 - elWidth / 2;
         left = Math.max(12, Math.min(left, window.innerWidth - elWidth - 12));
-        const top = Math.max(12, rect.top - el.offsetHeight - 10);
+        let top = Math.max(12, rect.top - el.offsetHeight - 10);
+
+        if (isTouchDevice()) {
+            if (el === selectionComposer) {
+                // Поле ввода открывает экранную клавиатуру, которая закрыла
+                // бы окно, стоящее у выделения — поэтому держим его вверху
+                // экрана, выше клавиатуры
+                top = 64;
+            } else {
+                // Панель — ПОД выделением, с запасом на «ручки» выделения
+                // (~30px под концом текста). Если внизу не помещается
+                // (там ещё нижняя панель сайта) — над выделением, выше
+                // системного меню
+                const below = rect.bottom + 36;
+                top = below + el.offsetHeight > window.innerHeight - 96
+                    ? Math.max(12, rect.top - el.offsetHeight - 56)
+                    : below;
+            }
+        }
+
         el.style.left = `${left}px`;
         el.style.top = `${top}px`;
     }
@@ -877,6 +1145,7 @@ if (selectionToolbar) {
         selectionToolbar.dataset.rectTop = rect.top;
         selectionToolbar.dataset.rectLeft = rect.left;
         selectionToolbar.dataset.rectWidth = rect.width;
+        selectionToolbar.dataset.rectBottom = rect.bottom;
     }
 
     document.addEventListener("mouseup", (event) => {
@@ -885,6 +1154,41 @@ if (selectionToolbar) {
         if (selectionToolbar.contains(event.target)) return;
         if (selectionComposer && selectionComposer.contains(event.target)) return;
         handleSelection();
+    });
+
+    /* ----- Выделение пальцем -----
+       mouseup при выделении долгим нажатием на телефоне НЕ срабатывает
+       (мышиные события браузер генерирует только для обычных тапов) —
+       из-за этого наша панель не появлялась, а показывалось только
+       системное меню. Здесь слушаем selectionchange: он срабатывает при
+       любом изменении выделения, в том числе когда читатель двигает
+       «ручки». Панель прячем сразу, а показываем, когда выделение
+       перестало меняться (350 мс), чтобы она не прыгала за пальцем. */
+    let selectionTimer;
+    let toolbarTouchUntil = 0;
+
+    // Нажатие на саму панель/окно может на iOS сбросить выделение раньше,
+    // чем сработает click — тогда кнопка «не нажималась». Помечаем момент
+    // нажатия и не реагируем на selectionchange ещё около секунды
+    [selectionToolbar, selectionComposer].forEach((el) => {
+        if (!el) return;
+        el.addEventListener("touchstart", () => {
+            toolbarTouchUntil = Date.now() + 1000;
+        }, { passive: true });
+    });
+
+    document.addEventListener("selectionchange", () => {
+        if (!isTouchDevice()) return; // на компьютере хватает mouseup
+        if (Date.now() < toolbarTouchUntil) return;
+
+        // Читатель печатает в окошке заметки — выделение внутри textarea
+        // нас не касается
+        const active = document.activeElement;
+        if (active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT")) return;
+
+        hideSelectionToolbar();
+        clearTimeout(selectionTimer);
+        selectionTimer = setTimeout(handleSelection, 350);
     });
 
     document.addEventListener("mousedown", (event) => {
@@ -967,6 +1271,7 @@ if (selectionToolbar) {
             top: parseFloat(selectionToolbar.dataset.rectTop) || 100,
             left: parseFloat(selectionToolbar.dataset.rectLeft) || 100,
             width: parseFloat(selectionToolbar.dataset.rectWidth) || 0,
+            bottom: parseFloat(selectionToolbar.dataset.rectBottom) || 100,
         };
 
         hideSelectionToolbar();

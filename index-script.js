@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
                     const continueBtn = document.getElementById("heroContinueBtn");
-                    if (continueBtn) continueBtn.href = `chapter.html?novel=${mostRecentNovelId}&chapter=${mostRecentChapterNumber}`;
+                    if (continueBtn) continueBtn.href = chapterHref(mostRecentNovelId, mostRecentChapterNumber);
 
                     // Закладка на карточке «Продолжить чтение» — та же новелла
                     const heroBookmark = heroContinue.querySelector(".hero-bookmark-button");
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (icon) {
                 icon.src = isFollowing ? "images/icons/following.svg" : "images/icons/follow.svg";
-                icon.alt = isFollowing ? "Following" : "Follow";
+                icon.alt = isFollowing ? "Вы подписаны" : "Подписаться";
             }
         });
     });

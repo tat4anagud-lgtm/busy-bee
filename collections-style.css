@@ -452,6 +452,38 @@
         padding: 0 16px 40px;
     }
 
+    /* Фильтры: четыре пилюли в одну строку на всю ширину, как переключатель.
+       Раньше они переносились (три в первой строке, «Мои подписки» одна
+       во второй), а счётчик оказывался ещё ниже. Теперь пилюли делят строку
+       поровну, а счётчик «N коллекций» — под ними. Если экран совсем узкий
+       и пилюли не помещаются, строка прокручивается вбок, а не ломается. */
+    .cl-toolbar {
+        flex-direction: column;
+        flex-wrap: nowrap; /* без этого колонка с переносом тянет ряд пилюль до его полной ширины, а не до ширины экрана */
+        align-items: stretch;
+        gap: 12px;
+        margin: 24px 0 16px;
+    }
+
+    .cl-chips {
+        min-width: 0;
+        flex-wrap: nowrap;
+        gap: 6px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .cl-chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    .cl-chip {
+        flex: 1 0 auto;
+        padding: 8px 10px;
+        text-align: center;
+        white-space: nowrap;
+    }
+
     .cl-hero {
         padding: 22px 20px 24px;
     }
@@ -474,5 +506,19 @@
 
     .cl-note {
         border-radius: 16px;
+    }
+}
+
+/* Узкие телефоны (≈ 320–360px): чуть плотнее пилюли, чтобы все четыре
+   по-прежнему помещались в одну строку. На совсем узких экранах
+   (например, сложенный Galaxy Fold, 280px) строка прокручивается вбок. */
+@media (max-width: 360px) {
+    .cl-chips {
+        gap: 5px;
+    }
+
+    .cl-chip {
+        padding: 8px 8px;
+        font-size: 11.5px;
     }
 }

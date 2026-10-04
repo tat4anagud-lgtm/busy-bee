@@ -659,7 +659,7 @@ async function loadSavedEntries(storageKey) {
                 novelTitle: (novels[entry.novelId] || {}).title || "",
                 novelCover: (novels[entry.novelId] || {}).cover || "",
                 novelHref: `novel.html?id=${id}`,
-                chapterHref: `chapter.html?novel=${id}&chapter=${entry.chapterNumber || 1}`,
+                chapterHref: chapterHref(entry.novelId, entry.chapterNumber || 1),
                 chapterLabel: `Глава ${entry.chapterNumber || 1}${title ? `: ${title}` : ""}`,
                 dateLabel: formatSavedDateLong(entry.savedAt),
             };
@@ -1318,10 +1318,34 @@ function chapterContentUrl(novelId, chapterNumber) {
     return `novels/${novelId}/chapters/glava-${chapterNumber}.json`;
 }
 
+/* Какой вид чтения открывать: веб-версию (chapter.html) или читалку
+   «как Kindle» (reader.html). Запоминается, в каком виде читатель
+   открывал главу в последний раз (запись делает reader-script.js при
+   открытии любой из двух страниц), и все ссылки «Читать / Продолжить»
+   на сайте ведут сразу в этот вид. По умолчанию — веб-версия. */
+const READING_VIEW_KEY = "busybee_reading_view"; // "web" | "reader"
+
+function getPreferredReadingView() {
+    try {
+        return localStorage.getItem(READING_VIEW_KEY) === "reader" ? "reader" : "web";
+    } catch (error) {
+        return "web";
+    }
+}
+
+function setPreferredReadingView(view) {
+    try {
+        localStorage.setItem(READING_VIEW_KEY, view === "reader" ? "reader" : "web");
+    } catch (error) {
+        // localStorage недоступен (приватный режим и т.п.) — просто не запоминаем
+    }
+}
+
 // novel=<id> is passed along so chapter.html / reader.html know which
 // novel's chapter to load
 function chapterHref(novelId, chapterNumber) {
-    return `chapter.html?novel=${encodeURIComponent(novelId)}&chapter=${chapterNumber}`;
+    const page = getPreferredReadingView() === "reader" ? "reader.html" : "chapter.html";
+    return `${page}?novel=${encodeURIComponent(novelId)}&chapter=${chapterNumber}`;
 }
 
 /* ---------- Paragraph formatting (shared by reader.html + chapter.html) ----------
@@ -1773,7 +1797,7 @@ if (catalogGrid) {
                     <a href="${novelHref}"><img src="${novel.cover}" alt="${novel.title}"></a>
                 </div>
                 <div class="card-menu">
-                    <button type="button" class="btn-card-menu" aria-label="More options" aria-haspopup="true" aria-expanded="false">···</button>
+                    <button type="button" class="btn-card-menu" aria-label="Ещё" aria-haspopup="true" aria-expanded="false">···</button>
                     <div class="card-menu-dropdown">
                         <button type="button" class="card-menu-item"><img src="images/icons/folder.svg" alt="">Добавить в коллекцию</button>
                         <button type="button" class="card-menu-item"><img src="images/icons/share.svg" alt="">Поделиться</button>
@@ -1794,8 +1818,8 @@ if (catalogGrid) {
                     ${progressZoneHtml}
 
                     <div class="card-actions">
-                        <button type="button" class="favorite-btn" aria-label="Like" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                        <button type="button" class="mini-bookmark" data-novel-id="${novel.id}" aria-label="Save to bookmarks" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
+                        <button type="button" class="favorite-btn" aria-label="В избранное" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                        <button type="button" class="mini-bookmark" data-novel-id="${novel.id}" aria-label="Сохранить в закладки" aria-pressed="false"><img src="images/icons/bookmark.svg" alt="" data-outline="images/icons/bookmark.svg" data-filled="images/icons/bookmark-filled-gold.svg"></button>
                         ${actionButtonHtml}
                     </div>
                 </div>

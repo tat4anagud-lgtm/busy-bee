@@ -30,7 +30,7 @@ document.currentScript.insertAdjacentHTML("afterend", `
 
             <button class="catalog-button">
                 Каталог
-                <img src="images/icons/chevron-down.svg" alt="Chevron-down">
+                <img src="images/icons/chevron-down.svg" alt="">
             </button>
 
             <div class="catalog-dropdown">
@@ -53,12 +53,12 @@ document.currentScript.insertAdjacentHTML("afterend", `
 
         <div class="search">
             <input type="text" placeholder="Поиск по книгам, авторам...">
-            <img src="images/icons/search.svg" alt="Search">
+            <img src="images/icons/search.svg" alt="Поиск">
         </div>
 
         <!-- Always visible, for guests and signed-in users alike -->
         <button class="header-bookmark-button">
-            <img src="images/icons/bookmark.svg" alt="Bookmark">
+            <img src="images/icons/bookmark.svg" alt="Закладки">
         </button>
 
         <!-- Уведомления — обычная ссылка на страницу, а не кнопка: раньше
@@ -74,7 +74,7 @@ document.currentScript.insertAdjacentHTML("afterend", `
              setting, so it lives in the header itself now and stays
              visible in both the guest and signed-in states -->
         <button class="theme-toggle-button theme-toggle" title="Тема">
-            <img src="images/icons/moon.svg" alt="Theme">
+            <img src="images/icons/moon.svg" alt="Тема">
         </button>
 
         <!-- Signed-in state: profile menu. Shown when IS_LOGGED_IN is
@@ -84,7 +84,7 @@ document.currentScript.insertAdjacentHTML("afterend", `
 
             <button class="user-button">
                 <div class="user-avatar"></div>
-                <img src="images/icons/chevron-down.svg" alt="Chevron-down">
+                <img src="images/icons/chevron-down.svg" alt="">
             </button>
 
             <div class="user-dropdown">
@@ -157,7 +157,7 @@ document.currentScript.insertAdjacentHTML("afterend", `
         <!-- Guest state: just a single icon-only login button, no text.
              Shown when IS_LOGGED_IN is false (see script.js). -->
         <button class="header-login-button" title="Войти">
-            <img src="images/icons/log-in.svg" alt="Log In">
+            <img src="images/icons/log-in.svg" alt="Войти">
         </button>
 
         <!-- Мобильное меню (бургер) — видна только ниже 768px (style.css).

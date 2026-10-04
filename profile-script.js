@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         return `
             <article class="reading-card">
-                <a href="chapter.html?novel=${encodeURIComponent(novelId)}&chapter=${chapterNumber}" class="reading-cover-wrap">
+                <a href="${chapterHref(novelId, chapterNumber)}" class="reading-cover-wrap">
                     <img src="${novel.cover}" alt="">
                 </a>
                 <div class="reading-info">

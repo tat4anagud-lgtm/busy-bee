@@ -584,7 +584,19 @@
     margin-bottom: 12px;
 }
 
+/* Размер пчелы задан здесь, а не только общим .bee-icon из style.css:
+   SVG без явных width/height сам растягивается на всю карточку, если
+   то правило по какой-то причине не сработало, и выталкивает подпись
+   «Репост от Busy Bee» за её край. */
+.shared-header .bee-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    object-fit: contain;
+}
+
 .shared-label {
+    min-width: 0; /* длинная подпись переносится внутри карточки, а не выпирает */
     font-size: var(--fs-small);
     color: var(--text-secondary);
 }

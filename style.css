@@ -4029,13 +4029,37 @@ a.pill:hover {
         display: none;
     }
 
+    /* Закладки в шапке — на телефоне их заменяет вкладка «Закладки»
+       нижней панели, а место в шапке дорого */
+    .header-actions .header-bookmark-button {
+        display: none;
+    }
+
+    /* ---------- Поиск: иконка, по тапу — поле поверх шапки ----------
+       Сложено до круглой иконки-лупы, такой же по размеру и форме, как
+       колокольчик и бургер рядом. flex: 0 0 auto — не случайность: выше
+       по файлу (медиа-запрос для планшетов) у .search стоит
+       flex: 1 1 auto, и без сброса он растягивался на всё свободное
+       место шапки, так что «иконка» оказывалась длинным полем. */
+    .header {
+        position: relative;   /* точка отсчёта для открытого поля поиска */
+    }
+
     .search {
+        flex: 0 0 auto;
         width: 34px;
+        height: 34px;
         padding: 0;
         justify-content: center;
         overflow: hidden;
+        border-radius: 50%;
         cursor: pointer;
-        transition: width 0.25s ease;
+        transition: none;
+
+        /* Без рамки и фона — как колокольчик и бургер рядом, у которых
+           рамка прозрачная. Возвращаем в открытом состоянии ниже. */
+        border-color: transparent;
+        background: transparent;
     }
 
     .search input {
@@ -4043,18 +4067,63 @@ a.pill:hover {
         padding: 0;
         border: none;
         opacity: 0;
-        transition: opacity 0.2s ease, width 0.25s ease;
     }
 
+    /* Открытое поле — поверх всей шапки (логотип, колокольчик, бургер
+       под ним), от края до края с отступом 16px, а не «вширь» на фиксированные
+       190px: после того как в шапке остались логотип, лупа, колокольчик
+       и бургер, увеличенное в ширину поле всё равно упиралось бы в
+       логотип. Растёт от лупы (она справа в поле) — transform-origin. */
     .search.expanded {
-        width: 190px;
-        padding: 0 10px;
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        right: 16px;
+        z-index: 10;
+
+        width: auto;
+        max-width: none;   /* у .search выше по файлу стоит max-width: 260px */
+        height: 42px;
+        padding: 0 14px;
         justify-content: flex-start;
+        gap: 10px;
+
+        border-radius: 12px;
+        border-color: var(--border);
+        background: var(--surface);
+        box-shadow: 0 6px 20px var(--shadow);
+        cursor: text;
+
+        transform: translateY(-50%);
+        transform-origin: right center;
+        animation: searchOpen 0.22s ease-out;
     }
 
     .search.expanded input {
         width: 100%;
         opacity: 1;
+
+        /* 16px, а не 12px, как в шапке на десктопе: Safari на iPhone
+           приближает страницу при фокусе на поле с шрифтом меньше 16px */
+        font-size: 16px;
+    }
+
+    /* Пока поле открыто, логотип, колокольчик и бургер скрыты совсем:
+       без этого их края выглядывали по бокам из-под поля */
+    .header:has(.search.expanded) .logo,
+    .header:has(.search.expanded) .header-actions > :not(.search) {
+        visibility: hidden;
+    }
+
+    @keyframes searchOpen {
+        from {
+            opacity: 0;
+            transform: translateY(-50%) scaleX(0.35);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(-50%) scaleX(1);
+        }
     }
 
     .bottom-nav {

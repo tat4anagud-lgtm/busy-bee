@@ -15,9 +15,8 @@
        <link rel="stylesheet" href="reader-style.css">
 
    Адаптив (1024 / 768 / 480 — единые брейкпоинты сайта) лежит в конце
-   файла. Сейчас там мобильная версия веб-режима (chapter.html) и
-   общих окон (оглавление, панель выделения); режим «Kindle»
-   (reader.html) — следующим блоком. */
+   файла: мобильная версия веб-режима (chapter.html) с общими окнами
+   (оглавление, панель выделения), затем режим «Kindle» (reader.html). */
 
 /* ============================================================
    READER MODE (reader.html)
@@ -415,6 +414,25 @@ body.reader-page.book-mode .prose {
     /* column-width and height set inline by script.js
        (applyBookModeLayout) since both depend on actual rendered
        dimensions that can't be expressed as a plain CSS percentage */
+}
+
+/* Режим «Книга»: абзац переносится на следующую страницу ровно там, где
+   кончилось место, — «сколько влезло, столько влезло». По умолчанию
+   браузер не оставляет на странице и не переносит наверх меньше двух
+   строк абзаца (orphans/widows: 2), поэтому, если внизу помещалась всего
+   одна строка, весь следующий абзац уезжал целиком и внизу страницы
+   оставалась пустота в пару строк. orphans/widows: 1 снимает это
+   ограничение. Цитаты (blockquote) тоже разрешаем делить: по
+   умолчанию у них break-inside: avoid (см. выше), из-за чего в
+   книжном режиме они тоже переезжали целиком */
+body.reader-page.book-mode .prose p,
+body.reader-page.book-mode .prose blockquote {
+    orphans: 1;
+    widows: 1;
+}
+
+body.reader-page.book-mode .prose blockquote {
+    break-inside: auto;
 }
 
 /* Drop cap — Variant A (baseline for both Scroll and Book mode).
@@ -1111,6 +1129,10 @@ body.reader-page.theme-dark .nav-link {
 
 .comment-composer input {
     flex: 1;
+    /* Без min-width: 0 поле ввода не сжимается уже своей «естественной»
+       ширины (size=20 символов) и выталкивает кнопку «Отправить» за край
+       экрана на узком телефоне */
+    min-width: 0;
     padding: 12px 16px;
     border: 1px solid var(--border);
     border-radius: 24px;
@@ -1816,6 +1838,10 @@ body.reader-page.theme-dark .saved-item {
        одни иконки; подпись всё равно есть в title у каждой кнопки */
     .selection-toolbar {
         max-width: calc(100vw - 24px);
+        /* Тап по кнопке панели не должен менять/сбрасывать выделение */
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
     }
 
     .sel-btn {
@@ -1839,6 +1865,49 @@ body.reader-page.theme-dark .saved-item {
     /* Меньше 16px — iOS приближает страницу при фокусе на поле */
     .selection-composer-input {
         font-size: 16px;
+    }
+
+    /* Сноски: на десктопе всплывашка привязана к метке в тексте (и сама
+       решает, открыться слева/справа, выше/ниже), но на узком экране
+       метка может быть где угодно в строке, и ни «влево», ни «вправо»
+       не гарантируют, что 280px влезут — часть сносок уезжала за край.
+       На телефоне делаем всплывашку карточкой, прижатой к низу экрана
+       на всю ширину (над нижней панелью сайта): всегда целиком на виду.
+       Правила с .align-right / .flip-above — чтобы перебить то, что
+       выставляет script.js (positionPopover). Закрывается тапом вне
+       карточки, как и раньше. */
+    .footnote-popover,
+    .footnote-popover.align-right,
+    .footnote-popover.flip-above {
+        position: fixed;
+        top: auto;
+        left: 12px;
+        right: 12px;
+        bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        max-width: none;
+        margin: 0;
+        max-height: 50vh;
+        overflow-y: auto;
+        z-index: 450;
+        box-shadow: 0 -4px 24px var(--shadow);
+        /* метка лежит внутри абзаца — не наследуем его выравнивание и
+           шрифт текста главы */
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 1.5;
+        letter-spacing: normal;
+        text-align: left;
+        text-transform: none;
+    }
+
+    /* В режиме «Kindle» нижней панели сайта нет, только тонкая полоса
+       прогресса (36px) */
+    body.reader-page .footnote-popover,
+    body.reader-page .footnote-popover.align-right,
+    body.reader-page .footnote-popover.flip-above {
+        bottom: calc(48px + env(safe-area-inset-bottom, 0px));
     }
 
     /* Всплывающая подсказка «Скопировано / Сохранено» — над нижней
@@ -1867,5 +1936,375 @@ body.reader-page.theme-dark .saved-item {
     .chapter-nav-row .chapter-nav-btn {
         font-size: 12px;
         padding: 10px 8px;
+    }
+}
+
+
+/* ============================================================
+   РЕЖИМ «KINDLE» (reader.html)
+   ============================================================
+   Телефон (≤768px). Идея: текст занимает почти весь экран, а всё
+   остальное — накладки поверх него, которые можно скрыть тапом:
+     • шапка (выйти / название / Web версия) — сверху;
+     • панель инструментов (Прокрутка, Цитаты, Заметки, Настройки,
+       Закладка) — внизу, это бывший .header-right;
+     • полоска прогресса со ссылками «Предыдущая / Следующая» — над
+       панелью инструментов;
+     • настройки — шторка над панелью инструментов.
+   Скрытие — класс body.reader-ui-hidden (ставит reader-script.js).
+   Накладки не меняют размер текстовой области, поэтому страницы в
+   режиме «Книга» не «прыгают» от скрытия/показа интерфейса. */
+
+/* ---------- Планшет (769–1024px): та же раскладка, что на десктопе,
+   только плотнее — шапка с пятью инструментами иначе не помещается ---------- */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .reader-header {
+        padding: 0 16px;
+    }
+
+    .header-right {
+        gap: 10px;
+    }
+
+    .reader-footer {
+        padding: 0 16px;
+        grid-template-columns: 120px 1fr 320px;
+    }
+
+    .page-nav.nav-prev {
+        left: 12px;
+    }
+
+    .page-nav.nav-next {
+        right: 12px;
+    }
+}
+
+
+/* ---------- Телефон (≤768px по ширине ИЛИ телефон в ландшафте) ----------
+   Телефон, повёрнутый горизонтально, шире 768px (например, 844px), но
+   высота у него всего ~390px — десктопная шапка и нижняя полоса съели бы
+   почти весь экран. Поэтому мобильная раскладка включается и по низкой
+   высоте, но только на устройствах с тачскрином (pointer: coarse), чтобы
+   узкое по высоте окно браузера на компьютере не переключилось на неё.
+   То же условие — в isMobileReader() в reader-script.js. */
+@media (max-width: 768px), (max-height: 500px) and (pointer: coarse) {
+
+    /* ----- Шапка: накладка сверху ----- */
+    /* .header-left и .header-center раскладываем по сетке шапки напрямую
+       (display: contents) — «Выйти» слева, название по центру,
+       «Web версия» справа. Сам .header-right (инструменты) уходит вниз.
+       ВАЖНО: transform на .reader-header нельзя — он сделал бы шапку
+       «опорой» для position: fixed у .header-right, и панель инструментов
+       перестала бы липнуть к низу экрана. Поэтому скрытие — через opacity */
+    .reader-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 52px;
+        padding: 0 14px;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        column-gap: 12px;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    .reader-header .header-left {
+        display: contents;
+    }
+
+    .reader-header .btn-exit {
+        grid-row: 1;
+        font-size: 12px;
+        padding: 8px 0;
+    }
+
+    .reader-header .btn-exit:not(.btn-web-version) {
+        grid-column: 1;
+    }
+
+    .reader-header .btn-web-version {
+        grid-column: 3;
+    }
+
+    .reader-header .header-center {
+        grid-row: 1;
+        grid-column: 2;
+        min-width: 0;
+    }
+
+    .novel-title,
+    .chapter-selector-btn {
+        max-width: 100%;
+    }
+
+    .novel-title {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .chapter-selector-btn {
+        min-width: 0;
+        padding: 2px 0;
+    }
+
+    .chapter-subtitle {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* ----- Панель инструментов: внизу экрана ----- */
+    .reader-header .header-right {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 200;
+        justify-content: space-around;
+        gap: 0;
+        padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+        background-color: inherit; /* цвет текущей темы, как у шапки */
+        box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    body.reader-page.theme-dark .reader-header .header-right {
+        box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .reader-header .tool-btn {
+        flex: 1;
+        min-width: 0;
+        font-size: 10px;
+    }
+
+    .reader-header .tool-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* ----- Текст: почти на весь экран ----- */
+    /* Сверху/снизу — запас под системную область и тонкую строку
+       прогресса, которая остаётся при скрытом интерфейсе. Шапка и панели
+       при показе перекрывают текст — как в приложениях-читалках */
+    .reader-viewport {
+        padding: 64px 0 calc(48px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body.reader-page.book-mode .reader-viewport {
+        padding: 28px 0 calc(48px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body.reader-page.book-mode .prose {
+        padding-top: 8px;
+    }
+
+    .reader-container {
+        box-sizing: border-box;
+        padding: 0 20px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body.reader-page .chapter-head {
+        margin-bottom: 24px;
+    }
+
+    body.reader-page .chapter-title {
+        font-size: 26px;
+        line-height: 1.2;
+    }
+
+    body.reader-page .chapter-divider .ornament {
+        width: 160px;
+    }
+
+    /* Боковые кнопки ‹ › не нужны: листание — тапом по краям и свайпом
+       (режим «Книга»), а между главами — «Предыдущая / Следующая»
+       в полоске прогресса и оглавление в шапке */
+    .page-nav {
+        display: none;
+    }
+
+    /* ----- Полоска прогресса: над панелью инструментов ----- */
+    /* Три строки: тонкая шкала, «N% главы … осталось», затем «Предыдущая
+       … Следующая». .footer-right «растворяем» (display: contents), чтобы
+       все её части были прямыми элементами flex-контейнера .reader-footer */
+    .reader-footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        height: auto;
+        padding: 0 16px 6px;
+        row-gap: 2px;
+        bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+        z-index: 150;
+        font-size: 11px;
+        background-color: inherit;
+        transition: bottom 0.25s ease;
+    }
+
+    .progress-bar-container {
+        order: 1;
+        flex: 0 0 100%;
+        padding: 10px 0 6px; /* больше зона нажатия на тонкой шкале */
+    }
+
+    .progress-text {
+        order: 2;
+    }
+
+    .footer-right {
+        display: contents;
+    }
+
+    .pages-remaining {
+        order: 3;
+    }
+
+    .chapter-nav-links {
+        order: 4;
+        flex: 0 0 100%;
+        justify-content: space-between;
+        padding: 6px 0 2px;
+    }
+
+    .chapter-nav-links .nav-link {
+        padding: 4px 0;
+        font-size: 12px;
+    }
+
+    /* ----- Интерфейс скрыт (тап по экрану) ----- */
+    body.reader-ui-hidden .reader-header {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    /* Остаётся только тонкая шкала и строка «N% главы · осталось…» у
+       самого низа экрана */
+    body.reader-ui-hidden .reader-footer {
+        bottom: 0;
+        padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body.reader-ui-hidden .chapter-nav-links,
+    body.reader-ui-hidden .progress-thumb {
+        display: none;
+    }
+
+    body.reader-ui-hidden .progress-text,
+    body.reader-ui-hidden .pages-remaining {
+        opacity: 0.75;
+    }
+
+    /* ----- Настройки: шторка над панелью инструментов ----- */
+    /* display у панели переключает JS (inline style, flex/none) —
+       поэтому здесь остаётся flex, а колонки делаем через flex-wrap.
+       Ширину колонки текста на телефоне не настраиваем (она и так на
+       весь экран), поэтому группа «Ширина» скрыта */
+    .floating-settings-panel {
+        left: 0;
+        right: 0;
+        bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+        transform: none;
+        width: auto;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px 20px;
+        padding: 18px 20px 16px;
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -8px 28px rgba(73, 53, 38, 0.12);
+        z-index: 180;
+    }
+
+    .floating-settings-panel .panel-group {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 0;
+    }
+
+    .floating-settings-panel .panel-divider,
+    .floating-settings-panel .panel-group-width {
+        display: none;
+    }
+
+    .floating-settings-panel .theme-swatches {
+        align-self: flex-end;
+        gap: 12px;
+    }
+
+    .swatch {
+        width: 28px;
+        height: 28px;
+    }
+
+    .btn-step {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
+
+    .size-val {
+        min-width: 28px;
+        font-size: 14px;
+    }
+
+    .panel-dropdown-button {
+        padding: 6px 0;
+        font-size: 14px;
+    }
+
+    /* Меню открывается вверх и привязано к левому краю кнопки — по
+       центру (как на десктопе) левое меню уходило бы за край экрана */
+    .panel-dropdown-menu {
+        left: 0;
+        transform: none;
+    }
+
+    .panel-dropdown-option {
+        padding: 11px 12px;
+        font-size: 14px;
+    }
+
+    /* ----- Окна поверх читалки ----- */
+    body.reader-page .reader-toast {
+        bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Сноска (карточка у низа экрана, см. выше) — над панелями */
+    body.reader-page .footnote-popover,
+    body.reader-page .footnote-popover.align-right,
+    body.reader-page .footnote-popover.flip-above {
+        bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+    }
+
+    body.reader-page.reader-ui-hidden .footnote-popover,
+    body.reader-page.reader-ui-hidden .footnote-popover.align-right,
+    body.reader-page.reader-ui-hidden .footnote-popover.flip-above {
+        bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+
+/* ---------- Маленький телефон (≤480px) ---------- */
+@media (max-width: 480px) {
+    .reader-header {
+        padding: 0 12px;
+        column-gap: 8px;
+    }
+
+    .reader-container {
+        padding: 0 18px;
+    }
+
+    body.reader-page .chapter-title {
+        font-size: 24px;
+    }
+
+    body.reader-page .chapter-divider .ornament {
+        width: 140px;
     }
 }
