@@ -13,7 +13,10 @@
    В style.css намеренно остались правила, которыми могут пользоваться
    и другие страницы: .breadcrumbs, .btn-action, .favorite-btn, .pill,
    .quote-card (+ .quote-mark/.quote-text/.quote-footer), .page-number,
-   .page-ellipsis, .catalog-pagination, .catalog-no-results и ещё
+   .page-ellipsis, .catalog-pagination, .catalog-no-results,
+   .no-results-notice, а также
+   .chapters-pagination / .page-arrow / .page-numbers (их использует и
+   каталог) и ещё
    несколько мелких. Когда проверишь, что на других страницах их нет,
    их можно перенести сюда.
 
@@ -927,59 +930,6 @@
 
 .icon-read {
     color: #4CAF50;
-}
-
-
-.no-results-notice {
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 20px;
-}
-
-
-/* Chapters pagination */
-.chapters-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 6px;
-    margin-top: 24px;
-}
-
-
-.page-arrow {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--white);
-    color: var(--text-secondary);
-    font-size: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-
-.page-arrow:hover:not(:disabled) {
-    background: var(--surface-warm);
-    color: var(--text-primary);
-}
-
-
-.page-arrow:disabled {
-    opacity: 0.35;
-    cursor: default;
-}
-
-
-.page-numbers {
-    display: flex;
-    align-items: center;
-    gap: 4px;
 }
 
 

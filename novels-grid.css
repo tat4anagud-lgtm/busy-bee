@@ -328,8 +328,47 @@
 }
 
 @media (max-width: 560px) {
+    /* Две колонки, а не одна: в одну колонку карточка занимала почти
+       всю ширину экрана, и 8 новелл превращались в длинную простыню.
+       Вид «список» (.list-view) остаётся в одну колонку — у него свой
+       селектор, он выше по специфичности и сюда не попадает. */
     .ng-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    /* Карточка в половину ширины — плотнее, чтобы название, автор и
+       подпись не раздували её по высоте */
+    .ng-card {
+        padding: 10px;
+    }
+
+    .ng-cover {
+        margin-bottom: 10px;
+    }
+
+    .ng-card-title {
+        font-size: 14px;
+    }
+
+    .ng-card-author {
+        margin-bottom: 8px;
+        font-size: 11px;
+    }
+
+    .ng-card-tags {
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    .ng-tag {
+        padding: 2px 8px;
+        font-size: 9.5px;
+    }
+
+    .ng-card-status {
+        font-size: 10.5px;
+        line-height: 1.3;
     }
 
     /* Панель «сортировка + вид» — в одну компактную строку под счётчиком.
@@ -368,5 +407,39 @@
 
     .ng-view {
         flex-shrink: 0;
+    }
+
+    /* Зоны нажатия. На проверке выпадающий список был 27px в высоту,
+       кнопки вида — 27×27, а закладка в карточке — 23×23, а сидит она
+       рядом с краем карточки, при прокрутке легко задеть случайно.
+       Список и кнопки вида — видимые элементы, им просто прибавляем
+       размер; закладка остаётся такой же на вид, зона нажатия
+       расширяется невидимым ::after. */
+    .ng-sort select {
+        min-height: 40px;
+    }
+
+    .ng-view-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .ng-card-footer .mini-bookmark {
+        position: relative;
+    }
+
+    .ng-card-footer .mini-bookmark::after {
+        content: "";
+        position: absolute;
+        inset: -10px;
+    }
+}
+
+/* Совсем узкие экраны (Galaxy Z Flip сложенный и похожие): карточка в
+   половину ширины там выходит около 100px — название и подпись уже
+   не помещаются, возвращаем одну колонку */
+@media (max-width: 340px) {
+    .ng-grid {
+        grid-template-columns: minmax(0, 1fr);
     }
 }

@@ -20,7 +20,27 @@
     --fs-base: 13px;
 }
 
+/* Сайдбар слева (.fp-sidebar) — sticky, чтобы меню разделов оставалось на
+   виду, пока читаешь длинную страницу (подсветка текущего раздела
+   работает именно в нём). Но у .page-shell в style.css стоит
+   overflow: hidden, а он превращает контейнер в «скролл-контейнер» и
+   тихо отключает sticky у всего внутри — меню уезжало за экран вместе со
+   страницей. overflow: clip обрезает углы так же, но скролл-контейнера
+   не создаёт. Первая строка — запасная для старых браузеров.
+   display: flow-root нужен в паре: без него clip перестаёт «удерживать»
+   нижний отступ футера (margin схлопывается наружу), и под последней
+   строкой футера остаётся пара пикселей вместо нормального поля.
+   Если захочется того же на всём сайте — перенести в style.css. */
+.page-shell {
+    overflow: hidden;
+    overflow: clip;
+    display: flow-root;
+}
+
 .fp-container {
+    /* насколько ряд «пилюль» на телефоне выходит к краям страницы —
+       равно боковому padding контейнера (см. @media ниже) */
+    --bleed: 32px;
     padding: 0 32px 60px;
 }
 
@@ -619,32 +639,67 @@ body[data-page-lang="ru"] [data-lang="en"] {
 @media (max-width: 900px) {
     .fp-layout {
         grid-template-columns: 1fr;
+        gap: 24px;
     }
 
+    /* aside перестаёт быть блоком: его дети (меню разделов и «Ещё по
+       теме») становятся прямыми ячейками сетки, и их можно переставлять.
+       Меню остаётся сверху, содержимое идёт следом, а «Ещё по теме»
+       уезжает под него — раньше перед первым разделом приходилось
+       пролистывать два списка ссылок подряд. */
     .fp-sidebar {
-        position: static;
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 16px;
+        display: contents;
     }
 
+    /* Меню разделов — один ряд «пилюль» с горизонтальной прокруткой
+       (как меню категорий в «Анонсах») вместо пяти строк обычных ссылок */
     .fp-sidebar-menu {
+        order: 0;
+        position: relative; /* нужно, чтобы offsetLeft пунктов считался от меню — см. footer-pages-script.js */
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        gap: 8px;
+
+        overflow-x: auto;
+        margin: 0 calc(var(--bleed) * -1);
+        padding: 2px var(--bleed);
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
     }
 
-    .fp-crosslinks {
-        border-top: none;
-        padding-top: 0;
+    .fp-sidebar-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .fp-sidebar-menu a {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 8px 14px;
+        font-size: var(--fs-body);
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+    }
+
+    .fp-sidebar-menu a.active {
+        border-color: var(--honey);
     }
 
     .fp-content {
+        order: 1;
         max-width: none;
+    }
+
+    .fp-crosslinks {
+        order: 2;
+        padding-top: 20px;
     }
 }
 
 @media (max-width: 640px) {
     .fp-container {
+        --bleed: 16px;
         padding: 0 16px 40px;
     }
 

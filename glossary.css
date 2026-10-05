@@ -207,6 +207,9 @@
 .page-shell {
     overflow: hidden;
     overflow: clip;
+    /* в паре с clip: без flow-root нижний отступ футера схлопывается
+       наружу, и под последней строкой футера остаётся пара пикселей */
+    display: flow-root;
 }
 
 .glossary-layout {

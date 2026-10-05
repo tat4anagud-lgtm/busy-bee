@@ -95,10 +95,30 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(Boolean);
 
     if (sidebarLinks.length && sections.length) {
+        const sidebarMenu = document.querySelector(".fp-sidebar-menu");
+        let lastActiveId = null;
+
         const setActive = (id) => {
             sidebarLinks.forEach((link) => {
                 link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
             });
+
+            // На телефоне меню разделов — ряд «пилюль» с горизонтальной
+            // прокруткой: когда раздел сменился, подводим активную пилюлю к
+            // центру ряда, чтобы она не оставалась за краем экрана. Двигаем
+            // только сам ряд (scrollLeft), а не страницу: scrollIntoView увёл
+            // бы страницу вверх, к самому меню. На десктопе меню — колонка,
+            // прокручивать нечего, и условие ниже просто не выполняется.
+            if (id !== lastActiveId && sidebarMenu && sidebarMenu.scrollWidth > sidebarMenu.clientWidth) {
+                const active = sidebarMenu.querySelector("a.active");
+                if (active) {
+                    sidebarMenu.scrollTo({
+                        left: active.offsetLeft - (sidebarMenu.clientWidth - active.offsetWidth) / 2,
+                        behavior: "smooth"
+                    });
+                }
+            }
+            lastActiveId = id;
         };
 
         // Строка, после которой заголовок раздела считается «прошедшим» —
@@ -114,8 +134,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const scrollLine = window.scrollY + SCROLL_OFFSET;
             let current = sections[0].id;
 
+            // Позицию раздела берём через getBoundingClientRect, а не offsetTop:
+            // у .page-shell стоит zoom: 0.9, и offsetTop считается в «неуменьшенных»
+            // пикселях, а scrollY — в экранных. Из-за этого расхождение росло
+            // к концу страницы (≈10%), и подсветка в меню отставала от текста.
             sections.forEach((section) => {
-                if (section.offsetTop <= scrollLine) current = section.id;
+                const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+                if (sectionTop <= scrollLine) current = section.id;
             });
 
             return current;
