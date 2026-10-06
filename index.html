@@ -6,6 +6,11 @@
 
     <title>Busy Bee</title>
 
+    <!-- Тема (светлая/тёмная) — ставится до отрисовки, чтобы не мигала -->
+
+    <script src="theme-init.js"></script>
+
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
@@ -13,6 +18,8 @@
     
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="index-style.css">
+    <link rel="stylesheet" href="seasonal-effects.css">
+    <link rel="stylesheet" href="theme-dark.css">
 
 </head>
 
@@ -89,22 +96,30 @@
 
             <div class="hero-welcome-content">
 
-                <h1>Добро пожаловать в Busy Bee</h1>
-                <p class="hero-welcome-subtitle">Открой свою следующую историю.</p>
-
-                <div class="hero-search-box">
-                    <img src="images/icons/search.svg" alt="">
-                    <input type="text" placeholder="Поиск по новеллам, авторам, жанрам...">
-                    <button type="button" class="btn-hero-search">Искать</button>
+                <!-- Заголовок и поиск — два блока: на десктопе они выглядят
+                     одним целым внутри баннера, а на телефоне баннер
+                     остаётся только за заголовком, поиск и «Популярные
+                     запросы» идут под ним (см. index-style.css, ≤768px) -->
+                <div class="hero-welcome-headline">
+                    <h1>Добро пожаловать в Busy&nbsp;Bee</h1>
+                    <p class="hero-welcome-subtitle">Открой свою следующую историю.</p>
                 </div>
 
-                <div class="popular-searches">
-                    <span class="popular-label">Популярные запросы:</span>
-                    <a href="#" class="search-tag">Исторические</a>
-                    <a href="#" class="search-tag">Романтика</a>
-                    <a href="#" class="search-tag">Месть</a>
-                    <a href="#" class="search-tag">Политика</a>
-                    <a href="#" class="search-tag">Завершённые</a>
+                <div class="hero-welcome-search">
+                    <div class="hero-search-box">
+                        <img src="images/icons/search.svg" alt="">
+                        <input type="text" placeholder="Поиск по новеллам, авторам, жанрам...">
+                        <button type="button" class="btn-hero-search">Искать</button>
+                    </div>
+
+                    <div class="popular-searches">
+                        <span class="popular-label">Популярные запросы:</span>
+                        <a href="#" class="search-tag">Исторические</a>
+                        <a href="#" class="search-tag">Романтика</a>
+                        <a href="#" class="search-tag">Месть</a>
+                        <a href="#" class="search-tag">Политика</a>
+                        <a href="#" class="search-tag">Завершённые</a>
+                    </div>
                 </div>
 
             </div>
@@ -489,6 +504,9 @@
 
     <script src="script.js"></script>
     <script src="index-script.js"></script>
+
+    <!-- Сезонные эффекты (сейчас — осенние листья; даты и сезоны — в seasonal-effects.js) -->
+    <script src="seasonal-effects.js"></script>
 
 </body>
 </html>

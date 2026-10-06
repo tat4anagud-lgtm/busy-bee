@@ -1036,6 +1036,101 @@
         width: calc(100% - 32px);
     }
 
+    /* «Добро пожаловать»: картинка только за заголовком (небольшой
+       баннер), а поиск и «Популярные запросы» — под ним на обычном фоне
+       страницы. На десктопе всё лежит внутри одного баннера; здесь у
+       самой секции фон и скругление убираем, а ту же картинку рисуем за
+       .hero-welcome-headline. display у секции переключает index-script.js
+       (inline flex) — поэтому ниже остаётся flex-колонка, а не block. */
+    .hero-welcome {
+        height: auto;
+        margin-top: 8px;
+        padding: 0;
+        overflow: visible;
+        align-items: stretch;
+        justify-content: flex-start;
+        border-radius: 0;
+        background: none;
+        text-align: left;
+    }
+
+    .hero-welcome-content {
+        width: 100%;
+        max-width: none;
+    }
+
+    .hero-welcome-headline {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 150px;
+        margin-bottom: 14px;
+        /* Широкие боковые поля: книги слева и ваза справа на картинке
+           не должны оказываться под текстом */
+        padding: 22px 44px;
+        border-radius: 16px;
+        text-align: center;
+        background: var(--surface-warm) url("images/hero/hero-welcome-bg.png") center / cover no-repeat;
+    }
+
+    .hero-welcome h1 {
+        font-size: 24px;
+        line-height: 1.2;
+        /* balance — строки заголовка делятся поровну, без «одинокого»
+           слова на второй строке (в старых браузерах свойство просто
+           игнорируется) */
+        text-wrap: balance;
+        text-shadow: 0 0 10px rgba(255, 250, 240, 0.8);
+    }
+
+    /* Подпись — темнее и плотнее, со светлым «свечением»: серый текст
+       терялся на бежевой картинке (то же сделано в каталоге) */
+    .hero-welcome-subtitle {
+        margin: 6px 0 0;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        color: var(--text-secondary);
+        text-shadow: 0 0 10px rgba(255, 250, 240, 0.95), 0 0 3px rgba(255, 250, 240, 0.95);
+    }
+
+    .hero-welcome-content .hero-search-box {
+        margin-top: 0;
+        margin-bottom: 12px;
+        padding: 4px 4px 4px 16px;
+    }
+
+    /* 16px — иначе iOS приближает страницу при фокусе на поле */
+    .hero-welcome-content .hero-search-box input {
+        min-width: 0;
+        font-size: 16px;
+    }
+
+    .hero-welcome-content .btn-hero-search {
+        padding: 11px 20px;
+        font-size: 14px;
+    }
+
+    /* «Популярные запросы»: подпись и метки переносятся по строкам,
+       выровнены влево */
+    .hero-welcome .popular-searches {
+        justify-content: flex-start;
+        gap: 8px;
+        font-size: 13px;
+    }
+
+    .hero-welcome .popular-label {
+        margin-right: 2px;
+        white-space: nowrap;
+    }
+
+    .hero-welcome .search-tag {
+        padding: 6px 14px;
+        font-size: 13px;
+        border-radius: 16px;
+    }
+
     /* «Продолжить чтение»: обложка и текст были в ряд, оба с
        фиксированной пиксельной шириной (320px у картинки, 430px у
        прогресс-бара) — на узком экране они не сжимались, и текст
@@ -1244,5 +1339,18 @@
 
     .newsletter-form button {
         width: 100%;
+    }
+}
+
+
+/* ---------- Маленький телефон (≤480px) ---------- */
+@media (max-width: 480px) {
+    .hero-welcome-headline {
+        min-height: 140px;
+        padding: 18px 36px;
+    }
+
+    .hero-welcome h1 {
+        font-size: 22px;
     }
 }

@@ -123,13 +123,25 @@ if (userButton && userDropdown) {
     });
 }
 
-// Theme icon: swaps the moon/sun icon, visible to guests and signed-in
-// users alike. Placeholder for now — it doesn't switch the site's
-// colors yet. querySelectorAll (not just the header's one) because the
-// mobile burger panel (mobile-nav.js) has its own copy of this same
-// button for when the header's is hidden — both stay in sync below.
+/* ---------- Тема: светлая / тёмная ----------
+   Переключатель луна/солнце виден и гостю, и вошедшему читателю.
+   querySelectorAll (а не один элемент шапки), потому что у мобильной
+   панели-бургера (mobile-nav.js) есть своя копия этой же кнопки — обе
+   всегда показывают одно и то же.
+
+   Как это работает:
+     • theme-init.js (в <head>, до отрисовки страницы) уже поставил
+       <html data-theme="light|dark"> — из localStorage (ключ ниже) или,
+       если читатель ещё не выбирал, по настройке системы;
+     • здесь мы только читаем это значение, меняем его по клику,
+       запоминаем выбор и перерисовываем иконку;
+     • сами цвета тёмной темы — в theme-dark.css, на этой странице
+       подключаются через <html data-theme="dark">.
+   На reader.html (там свои темы читалки) переключателя нет, и этот
+   блок просто ничего не делает. */
+const THEME_KEY = "busybee_theme"; // "light" | "dark"
 const themeToggles = document.querySelectorAll(".theme-toggle");
-let isDarkTheme = false;
+let isDarkTheme = document.documentElement.getAttribute("data-theme") === "dark";
 
 function paintThemeToggles() {
     themeToggles.forEach((toggle) => {
@@ -138,16 +150,43 @@ function paintThemeToggles() {
     });
 }
 
+function applyTheme(dark, remember) {
+    isDarkTheme = dark;
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    if (remember) {
+        try {
+            localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
+        } catch (error) {
+            // localStorage недоступен — выбор просто не запомнится
+        }
+    }
+    paintThemeToggles();
+}
+
 themeToggles.forEach((toggle) => {
     toggle.addEventListener("click", (event) => {
         // No longer needed for a dropdown-closing reason (this button
         // isn't inside a dropdown anymore), left in as a harmless no-op
         event.stopPropagation();
 
-        isDarkTheme = !isDarkTheme;
-        paintThemeToggles();
+        applyTheme(!isDarkTheme, true);
     });
 });
+
+// Иконка должна соответствовать теме, которую уже поставил theme-init.js
+paintThemeToggles();
+
+// Пока читатель сам ничего не выбирал, следуем настройке системы «вживую»
+// (например, телефон переключился на ночной режим)
+if (window.matchMedia) {
+    const systemDarkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const onSystemThemeChange = (event) => {
+        let hasChoice = false;
+        try { hasChoice = !!localStorage.getItem(THEME_KEY); } catch (error) { /* нет доступа */ }
+        if (!hasChoice) applyTheme(event.matches, false);
+    };
+    if (systemDarkQuery.addEventListener) systemDarkQuery.addEventListener("change", onSystemThemeChange);
+}
 
 
 /* ========================================

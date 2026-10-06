@@ -1,0 +1,227 @@
+/* ========================================
+   BUSY BEE — ТЁМНАЯ ТЕМА (весь сайт, кроме читалки reader.html)
+   ========================================
+   Подключается ПОСЛЕДНИМ, после style.css и css самой страницы:
+       <link rel="stylesheet" href="style.css">
+       <link rel="stylesheet" href="…-style.css">
+       <link rel="stylesheet" href="theme-dark.css">
+   Всё действует только при <html data-theme="dark"> (ставит
+   theme-init.js при загрузке, переключает script.js) — в светлой теме
+   файл ничего не меняет.
+
+   Схема: в основном тема — это новая палитра переменных (--surface,
+   --text-primary…), на них держится почти весь сайт. Ниже палитры —
+   то, что переменными не покрывается: цвет иконок, светлые баннеры,
+   несколько цветов, заданных прямо в правилах. Каждый блок подписан.
+
+   Селекторы вида :root[data-theme="dark"] .класс специфичнее обычных
+   .класс из остальных файлов, поэтому перебивают их независимо от
+   порядка подключения.
+
+   Читалка (reader.html) в этой теме не участвует: у неё свои четыре
+   темы в панели настроек (Тёплая / Светлая / Сепия / Тёмная). */
+
+/* ---------- 1. Палитра ---------- */
+:root[data-theme="dark"] {
+    color-scheme: dark; /* родные поля ввода, полосы прокрутки и т. п. — тёмные */
+
+    --page-bg: #151210;
+    --surface: #1F1B18;
+    --surface-warm: #29241F;
+
+    --text-primary: #EDE3D5;
+    --text-secondary: #C4B8A8;
+    --text-muted: #9A8E80;
+
+    --icon: #CFC3B2;
+
+    --border: #3A332C;
+    /* --white в светлой теме — «белый» фон полей и кнопок. Здесь это
+       тёмная карточка. Текст на золотых кнопках от этой переменной НЕ
+       зависит — он белый, см. блок 2 */
+    --white: #28231F;
+
+    --shadow: rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- 2. Белый текст на золотом ----------
+   В светлой теме эти правила берут цвет текста у var(--white). В тёмной
+   --white стал тёмным, поэтому цвет фиксируем белым явно */
+:root[data-theme="dark"] .continue-button,
+:root[data-theme="dark"] .newsletter-form button,
+:root[data-theme="dark"] a.pill:hover,
+:root[data-theme="dark"] .btn-continue-small,
+:root[data-theme="dark"] .page-number.active,
+:root[data-theme="dark"] .verified,
+:root[data-theme="dark"] .btn-action.primary,
+:root[data-theme="dark"] .floating-reading-btn,
+:root[data-theme="dark"] .comment-composer .btn-post,
+:root[data-theme="dark"] .btn-honey {
+    color: #FFFFFF;
+}
+
+/* ---------- 3. Цвета, заданные прямо в правилах ---------- */
+
+/* Дорожки прогресса (светло-бежевые полоски) */
+:root[data-theme="dark"] .progress,
+:root[data-theme="dark"] .row-progress,
+:root[data-theme="dark"] .progress-bar-bg,
+:root[data-theme="dark"] .xp-bar,
+:root[data-theme="dark"] .progress-bar-wrap {
+    background: #3A332C;
+}
+
+/* «Опасные» пункты меню («Выйти», «Удалить…»): розовая подложка на
+   тёмном фоне слепила бы */
+:root[data-theme="dark"] .user-dropdown-item-danger:hover,
+:root[data-theme="dark"] .card-menu-item-danger:hover,
+:root[data-theme="dark"] .sidebar-item-danger:hover,
+:root[data-theme="dark"] .btn-ghost-danger:hover {
+    background: rgba(192, 57, 43, 0.18);
+    color: #E8796D;
+}
+
+:root[data-theme="dark"] .btn-ghost-danger,
+:root[data-theme="dark"] .saved-delete:hover,
+:root[data-theme="dark"] .saved-delete.confirm {
+    color: #E8796D;
+}
+
+:root[data-theme="dark"] .btn-ghost-danger:hover {
+    border-color: #E8796D;
+}
+
+/* Плашка-предупреждение (.pill.warning) */
+:root[data-theme="dark"] .pill.warning {
+    background: rgba(163, 90, 75, 0.2);
+    color: #E3A394;
+}
+
+/* Строка текущей главы в таблице глав */
+:root[data-theme="dark"] .chapters-table tr.current-read {
+    background: rgba(216, 160, 58, 0.1);
+}
+
+/* Страница профиля: тёмная дорожка у переключателей в настройках и
+   светлая линия между записями ленты активности (была тёмно-коричневой
+   прозрачной — на тёмном фоне её не видно) */
+:root[data-theme="dark"] .switch-track {
+    background: #3A332C;
+}
+
+:root[data-theme="dark"] .activity-feed li:not(:last-child)::after,
+:root[data-theme="dark"] .activity-feed li:not(:last-child) .activity-icon-badge::after {
+    background: rgba(207, 195, 178, 0.18);
+}
+
+/* ---------- 4. Светлые баннеры ----------
+   Картинки-баннеры нарисованы для светлой темы. Пока нет тёмных версий,
+   затемняем их умножением на серый (background-blend-mode: multiply):
+   картинка остаётся той же, но приглушается; текст поверх неё — светлый
+   (берётся из переменных). Когда появятся тёмные картинки, эти правила
+   можно удалить и подставить новые файлы. */
+@media (min-width: 769px) {
+    :root[data-theme="dark"] .hero-welcome,
+    :root[data-theme="dark"] .hero-continue,
+    :root[data-theme="dark"] .catalog-hero {
+        background-color: #82796D;
+        background-blend-mode: multiply;
+    }
+}
+
+@media (max-width: 768px) {
+    :root[data-theme="dark"] .hero-welcome-headline,
+    :root[data-theme="dark"] .catalog-hero .hero-headline {
+        background-color: #82796D;
+        background-blend-mode: multiply;
+    }
+}
+
+/* Светлое «свечение» вокруг букв на баннере (оно помогало тёмному
+   тексту на светлой картинке) в тёмной теме меняем на тёмное */
+:root[data-theme="dark"] .hero-welcome h1,
+:root[data-theme="dark"] .hero-welcome-subtitle,
+:root[data-theme="dark"] .catalog-hero h1,
+:root[data-theme="dark"] .hero-sub {
+    text-shadow: 0 0 10px rgba(15, 12, 9, 0.85);
+}
+
+/* Декоративные картинки на странице новеллы: ветка справа в карточке
+   «Другие названия» и пейзаж в «Синопсисе» */
+:root[data-theme="dark"] .meta-card.decorative-bg::before {
+    filter: brightness(0.55);
+}
+
+/* На телефоне карточка узкая, и светло-серая картинка превращалась в
+   «светлую плиту» под нижней половиной текста (резкий переход от тёмного
+   верха) — здесь картинку темнее, чтобы она мягко растворялась в карточке */
+@media (max-width: 768px) {
+    :root[data-theme="dark"] .meta-card.decorative-bg::before {
+        filter: brightness(0.4);
+    }
+}
+
+/* Пейзаж в «Синопсисе» (только десктоп): раньше умножение на серый
+   красило ВСЮ карточку в грязно-коричневый, потому что у картинки слева
+   непрозрачный светлый фон. Теперь поверх картинки лежит затемнение
+   цветом самой карточки (--surface, 84%): рисунок остаётся, но тонет в
+   тёмном фоне, без серо-коричневой «плиты». На телефоне картинки нет
+   (см. novel-style.css), там обычная тёмная карточка — прежний серый
+   фон по ошибке красил и её, из-за этого была «чёрная полоса» у
+   затемнения под текстом */
+@media (min-width: 769px) {
+    :root[data-theme="dark"] .synopsis-card.decorative-bg-landscape {
+        background-color: var(--surface);
+        background-image:
+            linear-gradient(rgba(31, 27, 24, 0.84), rgba(31, 27, 24, 0.84)),
+            url("images/backgrounds/landscape.png");
+        background-position: 0 0, right center;
+        background-size: auto, cover;
+        background-repeat: no-repeat;
+        background-blend-mode: normal;
+    }
+}
+
+/* Орнамент-разделитель в начале главы (chapter.html): штрихи у него
+   тёмно-коричневые (#403000–#503010), на тёмном фоне контраст был бы
+   около 1.4:1 — почти не видно. Осветляем в 1.8 раза: штрихи становятся
+   золотисто-коричневыми (контраст ≈ 3.5:1), цветки — светлыми, детали
+   рисунка сохраняются (подбирала по превью на тёмном фоне; варианты
+   «плоский золотой» и «негатив» выглядели хуже/грубее) */
+:root[data-theme="dark"] .chapter-divider .ornament {
+    filter: brightness(1.8);
+}
+
+/* Логотип (BusyBee_logo.png) в тёмной теме не трогаем: тёмная обводка
+   сливается с фоном, но жёлтое тельце и белые крылья читаются
+   отлично (проверено по превью). Если захочется чётче контур — сюда
+   можно добавить: filter: drop-shadow(0 0 1px rgba(255, 240, 215, 0.5)); */
+
+/* ---------- 5. Иконки ----------
+   Все одноцветные иконки сайта нарисованы цветом #6B5846 — тёмным, на
+   тёмном фоне их не видно. Фильтр ниже перекрашивает их в --icon
+   (#CFC3B2): сначала всё в чёрное (brightness(0)), затем цепочка,
+   подобранная расчётом так, чтобы из чёрного получить ровно #CFC3B2.
+   Работает для любых иконок из images/icons, в том числе тех, что
+   script.js подставляет позже (луна/солнце, закладка пустая/заполненная).
+
+   Не перекрашиваем (оставляем как есть):
+     • *-color.svg — фирменные цвета соцсетей;
+     • bookmark-filled-gold, heart-filled — золотые (#D8A03A) —
+       видны на тёмном без изменений;
+     • book-open.svg — белая, лежит на золотой кнопке;
+     • log-out.svg — красная;
+     • bee-icon.svg — многоцветная пчела.
+   Отдельно — patreon-color.svg: он чёрный, на тёмном фоне его
+   просто выворачиваем в белый. */
+:root[data-theme="dark"] img[src*="images/icons/"]:not([src*="-color.svg"]):not([src*="gold"]):not([src*="heart-filled"]):not([src$="/book-open.svg"]):not([src*="log-out"]):not([src*="bee-icon"]):not([src$=".png"]) {
+    filter: brightness(0) saturate(100%) invert(73%) sepia(3%) saturate(3680%) hue-rotate(325deg) brightness(136%) contrast(62%);
+}
+
+:root[data-theme="dark"] img[src$="patreon-color.svg"] {
+    filter: invert(1);
+}
+
+/* Иконки на золотых кнопках и значках должны оставаться белыми/как
+   были — если какая-то из них окажется перекрашенной, добавить её
+   селектор сюда со значением filter: none */
