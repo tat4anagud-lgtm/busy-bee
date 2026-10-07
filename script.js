@@ -10,6 +10,31 @@
    ======================================== */
 
 
+/* ========================================
+   Сезонные эффекты — подгрузка на ВСЕХ страницах
+   ========================================
+   script.js подключён на каждой странице, поэтому seasonal-effects.js
+   подгружается отсюда — вручную в каждый HTML его вставлять не нужно.
+   Что именно он делает (шапочка на логотипе на всех страницах; снег и
+   листья с кнопкой — только на главной) и когда (по датам) — решает он
+   сам, см. комментарий в начале seasonal-effects.js. Не сезон — файл
+   ничего не рисует.
+
+   Адрес файла считается от адреса самого script.js, а не от текущей
+   страницы, поэтому работает и из подпапок. Если seasonal-effects.js
+   уже подключён на странице вручную — второй раз не грузим.
+
+   Убрать всё с сайта разом: удалить этот блок. */
+(function loadSeasonalEffects() {
+    if (document.querySelector('script[src*="seasonal-effects.js"]')) return;
+
+    const here = document.currentScript ? document.currentScript.src : location.href;
+    const script = document.createElement("script");
+    script.src = new URL("seasonal-effects.js", here).href;
+    document.body.appendChild(script);
+})();
+
+
 // Кэш getNovelData() (сама функция — ниже, в блоке «Reader / Chapter»).
 // Общий для всех страниц, которые запрашивают данные новелл (главная,
 // каталог, коллекции и т.д.) — держим его здесь, а не в index-script.js,

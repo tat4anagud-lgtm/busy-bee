@@ -114,26 +114,41 @@
     background: rgba(207, 195, 178, 0.18);
 }
 
-/* ---------- 4. Светлые баннеры ----------
-   Картинки-баннеры нарисованы для светлой темы. Пока нет тёмных версий,
-   затемняем их умножением на серый (background-blend-mode: multiply):
-   картинка остаётся той же, но приглушается; текст поверх неё — светлый
-   (берётся из переменных). Когда появятся тёмные картинки, эти правила
-   можно удалить и подставить новые файлы. */
+/* ---------- 4. Баннеры ----------
+   Светлые баннеры в тёмной теме заменены на «ночные» версии тех же
+   картинок (файлы *-dark.webp рядом с оригиналами в images/hero,
+   images/backgrounds, images/collections). Бумага у них почти того же
+   цвета, что и фон страницы (#1F1B18), поэтому баннер не выглядит
+   светлым или серым «пятном», а предметы (книги, ваза, чашка, пагода,
+   ветка с фонарём) тёпло подсвечены. Текст поверх них светлый — берётся
+   из переменных. Делаются скриптом из оригиналов: инвертируется
+   яркость с сохранением оттенка (бумага → тёмная, предметы → светлые),
+   затем добавляется мягкое затемнение по краям.
+
+   Подменяется только background-image, остальные свойства (размер,
+   позиция, цвет-подложка) остаются из обычных правил страницы.
+   Блоки ограничены той же шириной, что и исходные правила: на телефоне
+   у .hero-welcome / .hero-continue / .catalog-hero картинки нет
+   (фон убран, картинка рисуется за заголовком) — подставлять её туда
+   нельзя. */
 @media (min-width: 769px) {
-    :root[data-theme="dark"] .hero-welcome,
-    :root[data-theme="dark"] .hero-continue,
+    :root[data-theme="dark"] .hero-welcome {
+        background-image: url("images/hero/hero-welcome-bg-dark.webp");
+    }
+
+    :root[data-theme="dark"] .hero-continue {
+        background-image: url("images/hero/hero-continue-bg-dark.webp");
+    }
+
     :root[data-theme="dark"] .catalog-hero {
-        background-color: #82796D;
-        background-blend-mode: multiply;
+        background-image: url("images/hero/hero-welcome-bg-dark.webp");
     }
 }
 
 @media (max-width: 768px) {
     :root[data-theme="dark"] .hero-welcome-headline,
     :root[data-theme="dark"] .catalog-hero .hero-headline {
-        background-color: #82796D;
-        background-blend-mode: multiply;
+        background-image: url("images/hero/hero-welcome-bg-dark.webp");
     }
 }
 
@@ -146,40 +161,24 @@
     text-shadow: 0 0 10px rgba(15, 12, 9, 0.85);
 }
 
-/* Декоративные картинки на странице новеллы: ветка справа в карточке
-   «Другие названия» и пейзаж в «Синопсисе» */
+/* Страница новеллы: ветка с фонарём в «Других названиях» и пейзаж в
+   «Синопсисе» (на телефоне пейзажа нет — см. novel-style.css) */
 :root[data-theme="dark"] .meta-card.decorative-bg::before {
-    filter: brightness(0.55);
+    background-image: url("images/backgrounds/oriental-branch-dark.webp");
 }
 
-/* На телефоне карточка узкая, и светло-серая картинка превращалась в
-   «светлую плиту» под нижней половиной текста (резкий переход от тёмного
-   верха) — здесь картинку темнее, чтобы она мягко растворялась в карточке */
-@media (max-width: 768px) {
-    :root[data-theme="dark"] .meta-card.decorative-bg::before {
-        filter: brightness(0.4);
-    }
-}
-
-/* Пейзаж в «Синопсисе» (только десктоп): раньше умножение на серый
-   красило ВСЮ карточку в грязно-коричневый, потому что у картинки слева
-   непрозрачный светлый фон. Теперь поверх картинки лежит затемнение
-   цветом самой карточки (--surface, 84%): рисунок остаётся, но тонет в
-   тёмном фоне, без серо-коричневой «плиты». На телефоне картинки нет
-   (см. novel-style.css), там обычная тёмная карточка — прежний серый
-   фон по ошибке красил и её, из-за этого была «чёрная полоса» у
-   затемнения под текстом */
 @media (min-width: 769px) {
     :root[data-theme="dark"] .synopsis-card.decorative-bg-landscape {
-        background-color: var(--surface);
-        background-image:
-            linear-gradient(rgba(31, 27, 24, 0.84), rgba(31, 27, 24, 0.84)),
-            url("images/backgrounds/landscape.png");
-        background-position: 0 0, right center;
-        background-size: auto, cover;
-        background-repeat: no-repeat;
-        background-blend-mode: normal;
+        background-image: url("images/backgrounds/landscape-dark.webp");
     }
+}
+
+/* Профиль: баннер в шапке карточки пользователя. (Остальные
+   декоративные картинки профиля — sidebar-flowers, bookshelf-bg,
+   activity-bg — в архив не вошли; когда появятся их тёмные версии,
+   подключаются так же.) */
+:root[data-theme="dark"] .profile-hero-card {
+    background-image: url("images/backgrounds/user-hero-bg-dark.webp");
 }
 
 /* Орнамент-разделитель в начале главы (chapter.html): штрихи у него

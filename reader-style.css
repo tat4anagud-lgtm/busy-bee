@@ -2350,3 +2350,139 @@ body.reader-page.theme-dark .sel-btn img {
         width: 140px;
     }
 }
+
+
+/* ====================================================================
+   ЧАЙНЫЙ ПЕРЕРЫВ (reader.html + chapter.html)
+   ====================================================================
+   Карточка в углу экрана — «Вы читаете уже N без перерыва…» и кнопка
+   «Я в порядке, читаем дальше». Логика и разметка — tea-break.js.
+   Цвета, как у остальных окон читалки: --rp-… задаёт тема читалки, а
+   на chapter.html (там .theme-* нет) подставляются цвета сайта, которые
+   следуют его светлой/тёмной теме. Ничего не закрывает: стоит над
+   нижней полосой, кнопки навигации остаются доступны.
+   z-index 160: выше нижних панелей читалки (150), ниже окон
+   (оглавление 500, панель выделения 600, тост 700). */
+
+.tea-break {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 160;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: min(340px, calc(100vw - 32px));
+    padding: 16px 18px;
+
+    background: var(--rp-bg, var(--surface));
+    color: var(--rp-text, var(--text-primary));
+    border: 1px solid var(--rp-border, var(--border));
+    border-radius: 16px;
+    box-shadow: 0 12px 32px var(--rp-shadow, var(--shadow));
+    font-family: "Inter", sans-serif;
+
+    /* спрятана: не кликается и не попадает в табуляцию */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s;
+}
+
+.tea-break.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+.tea-break-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--rp-bg-soft, var(--surface-warm));
+    font-size: 20px;
+    line-height: 1;
+}
+
+.tea-break-body {
+    min-width: 0;
+}
+
+.tea-break-text {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--rp-text, var(--text-primary));
+}
+
+.tea-break-btn {
+    appearance: none;
+    margin-top: 12px;
+    padding: 8px 16px;
+
+    background: var(--honey);
+    border: none;
+    border-radius: 999px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+}
+
+.tea-break-btn:hover {
+    filter: brightness(0.94);
+}
+
+.tea-break-btn:focus-visible {
+    outline: 2px solid var(--honey);
+    outline-offset: 2px;
+}
+
+/* Читалка (reader.html), компьютер: снизу — тонкая полоса прогресса
+   (36px), карточка стоит над ней */
+body.reader-page .tea-break {
+    bottom: 56px;
+}
+
+/* Телефон: карточка на всю ширину, над нижними панелями — те же отметки,
+   что у тоста «Скопировано» и у сноски (см. «Окна поверх читалки») */
+@media (max-width: 768px) {
+    body:not(.reader-page) .tea-break {
+        left: 12px;
+        right: 12px;
+        width: auto;
+        bottom: calc(92px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 768px), (max-height: 500px) and (pointer: coarse) {
+    body.reader-page .tea-break {
+        left: 12px;
+        right: 12px;
+        width: auto;
+        bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Интерфейс читалки спрятан (читатель листает) — панелей нет,
+       карточка опускается ниже */
+    body.reader-page.reader-ui-hidden .tea-break {
+        bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tea-break {
+        transform: none;
+        transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+    }
+}

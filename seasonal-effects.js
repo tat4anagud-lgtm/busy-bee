@@ -1,17 +1,24 @@
 /* ========================================
    BUSY BEE — СЕЗОННЫЕ ЭФФЕКТЫ
    ========================================
-   Опадающие листья осенью, снегопад зимой (и «заготовка» под
-   остальные сезоны — китайский Новый год, сакура, лето: см. SEASONS
-   ниже).
+   Опадающие листья осенью, снегопад зимой, лепестки сакуры весной (и
+   «заготовка» под остальные сезоны — китайский Новый год, лето: см.
+   SEASONS ниже).
 
-   Подключение (только на тех страницах, где эффект нужен — сейчас
-   главная):
-       <link rel="stylesheet" href="seasonal-effects.css">
-       ...
-       <script src="seasonal-effects.js"></script>
-   Разметку страницы менять не нужно: холст и кнопку скрипт создаёт
-   сам. Файл самостоятельный — от script.js ничего не использует.
+   Подключение: отдельно на каждой странице подключать не нужно — его
+   сам подгружает общий script.js (блок «Сезонные эффекты» в начале
+   файла), так что работает на всех страницах сразу. Повторное
+   подключение вручную (как на главной раньше) тоже безвредно — второй
+   экземпляр сам отключится.
+
+   Что где показывается:
+   - шапочка на логотипе — на ВСЕХ страницах, где есть логотип
+     (шапка, футер, меню на телефоне);
+   - снег/листья и кнопка в углу — только на страницах из
+     EFFECT_PAGES (сейчас главная). Лишние страницы туда не добавляй
+     без нужды: падающие частицы мешают, например, читать.
+   Холст и кнопку скрипт создаёт сам, а нужные ему стили (seasonal-
+   effects.css) подгружает только там, где они действительно нужны.
 
    КАК ЭТО ВЕДЁТ СЕБЯ
    - Заходишь на страницу в «сезонные» даты → один раз за визит
@@ -35,12 +42,25 @@
    КАК ПРОВЕРИТЬ ВНЕ СЕЗОНА
    Добавь к адресу ?season=autumn (id сезона из SEASONS):
        index.html?season=autumn
-       index.html?season=winter */
+       index.html?season=winter
+       index.html?season=spring */
 
 (() => {
     "use strict";
 
+    // Файл могут подгрузить дважды (script.js сам + строка в HTML) — второй
+    // экземпляр тихо выходит, иначе были бы два холста и две кнопки
+    if (window.__busyBeeSeasonal) return;
+    window.__busyBeeSeasonal = true;
+
+    // Адрес этого файла — от него считаем путь к seasonal-effects.css
+    const SELF_SRC = document.currentScript ? document.currentScript.src : location.href;
+
     /* ---------- Настройки ---------- */
+
+    // Страницы, где сыплется снег/листья и есть кнопка. Остальные получают
+    // только украшения (шапочка)
+    const EFFECT_PAGES = ["index.html"];
 
     const RUN_MS = 11000;                      // сколько листья «сыплются» за один запуск
     const OFF_KEY = "busybee_seasonal_off";    // localStorage: "1" — автозапуск выключен пользователем
@@ -69,8 +89,17 @@
             icon: '<path d="M12 12L21.0 12.0M17.8 12.0L19.6 13.8M17.8 12.0L19.6 10.2M12 12L16.5 19.8M14.9 17.0L14.2 19.5M14.9 17.0L17.4 17.7M12 12L7.5 19.8M9.1 17.0L6.6 17.7M9.1 17.0L9.8 19.5M12 12L3.0 12.0M6.2 12.0L4.4 10.2M6.2 12.0L4.4 13.8M12 12L7.5 4.2M9.1 7.0L9.8 4.5M9.1 7.0L6.6 6.3M12 12L16.5 4.2M14.9 7.0L17.4 6.3M14.9 7.0L14.2 4.5"/>',
             decorate: () => addSantaHats(),   // украшения вне холста — см. addSantaHats
             effect: () => snowEffect()
+        },
+        {
+            id: "spring",
+            title: "Лепестки сакуры",
+            from: [3, 1],
+            to: [5, 15],
+            // пять лепестков вокруг центра — контурная иконка в стиле остальных
+            icon: '<ellipse cx="12" cy="6.8" rx="3.1" ry="4.4"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(72 12 12)"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(144 12 12)"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(216 12 12)"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(288 12 12)"/><circle cx="12" cy="12" r="1.1"/>',
+            effect: () => sakuraEffect()
         }
-        // { id: "sakura", title: "Лепестки сакуры", from: [3, 20], to: [4, 30], icon: "...", effect: () => sakuraEffect() },
+        // { id: "summer", title: "Одуванчики", from: [6, 1], to: [8, 31], icon: "...", effect: () => dandelionEffect() },
     ];
 
 
@@ -133,7 +162,31 @@
             </g>
         </svg>`;
 
+    // Стили шапочки живут здесь, а не в seasonal-effects.css: так достаточно
+    // одного подключаемого файла, и на обычных страницах не нужен лишний
+    // запрос CSS. Обёртка — размером ровно с картинку логотипа, шапочка
+    // позиционируется в процентах от неё (числа под логотип 832×841:
+    // viewBox шапочки 240 30 380 190 в пикселях картинки).
+    const HAT_CSS = `
+        .seasonal-hat-wrap { position: relative; display: block; flex: none; }
+        .seasonal-hat {
+            position: absolute;
+            left: 28.846%;      /* 240 / 832 */
+            top: 3.567%;        /* 30 / 841 */
+            width: 45.673%;     /* 380 / 832 */
+            height: auto;
+            overflow: visible;
+            pointer-events: none;
+        }`;
+
     function addSantaHats() {
+        if (!document.getElementById("seasonalHatStyle")) {
+            const style = document.createElement("style");
+            style.id = "seasonalHatStyle";
+            style.textContent = HAT_CSS;
+            document.head.appendChild(style);
+        }
+
         document.querySelectorAll(".logo img").forEach((img) => {
             if (img.parentElement.classList.contains("seasonal-hat-wrap")) return;
 
@@ -149,8 +202,19 @@
         season.decorate();
     }
 
-    // Дальше — холст со снегом/листьями. Ему не место при «уменьшить анимацию»
-    if (!season || reduceMotion) return;
+    // Дальше — холст со снегом/листьями и кнопка. Ему не место при «уменьшить
+    // анимацию» и на страницах не из EFFECT_PAGES (читать со снегом неудобно)
+    const thisPage = location.pathname.split("/").pop() || "index.html";
+    if (!season || reduceMotion || !EFFECT_PAGES.includes(thisPage)) return;
+
+    // Стили холста и кнопки — только там, где они нужны (если на странице уже
+    // подключены вручную — второй раз не добавляем)
+    if (!document.querySelector('link[href*="seasonal-effects.css"]')) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = new URL("seasonal-effects.css", SELF_SRC).href;
+        document.head.appendChild(link);
+    }
 
 
     /* ---------- Хранилище (с защитой: в приватном режиме может падать) ---------- */
@@ -318,6 +382,107 @@
                 ctx.lineWidth = 0.8;
                 ctx.strokeStyle = `rgba(160, 188, 216, ${p.alpha * 0.45})`;
                 ctx.stroke();
+            }
+        };
+    }
+
+
+    /* ---------- Эффект «сакура» ----------
+       Два вида частиц: отдельные лепестки (с характерной выемкой на
+       конце) и изредка целый цветок из пяти лепестков. Падают медленнее
+       листьев, заметно покачиваются и их сносит ветром в одну сторону
+       (у лепестков drift положительный). Цвета — оттенки розового:
+       на светлом фоне сайта они хорошо видны. */
+
+    const SAKURA_COLORS = ["#F7C1CF", "#F4A9BC", "#FADADF", "#F0A0B5", "#F8B8C8", "#EE97AE"];
+
+    // Лепесток в «единичном» размере (±10): узкое основание сверху, широкий
+    // конец снизу с выемкой посередине
+    const PETAL = new Path2D(
+        "M0 -10 C3 -8 8 -2 7 5 C6 9 2 10 0 7 C-2 10 -6 9 -7 5 C-8 -2 -3 -8 0 -10 Z"
+    );
+    const PETAL_VEIN = new Path2D("M0 -8 L0 3");
+
+    function sakuraEffect() {
+        const rand = (min, max) => min + Math.random() * (max - min);
+        const pick = (list) => list[Math.floor(Math.random() * list.length)];
+
+        return {
+            rate: (mobile) => (mobile ? 4 : 7),
+
+            spawn(width) {
+                const flower = Math.random() < 0.14;
+
+                return {
+                    // чуть левее экрана тоже: ветер сносит вправо, и иначе
+                    // левый край оставался бы пустым
+                    x: rand(-width * 0.15, width + 20),
+                    y: rand(-60, -15),
+                    flower,
+                    size: flower ? rand(7.5, 10.5) : rand(5, 9),
+                    stretch: rand(0.9, 1.2),
+                    vy: rand(34, 68),
+                    drift: rand(8, 34),
+                    amp: rand(22, 52),
+                    freq: rand(0.7, 1.5),
+                    phase: rand(0, Math.PI * 2),
+                    rot: rand(0, Math.PI * 2),
+                    spin: flower ? rand(-0.5, 0.5) : rand(-1.6, 1.6),
+                    flipSpeed: rand(1.1, 2.2),
+                    age: 0,
+                    color: pick(SAKURA_COLORS)
+                };
+            },
+
+            update(p, dt) {
+                p.age += dt;
+                p.y += p.vy * dt;
+                p.x += (p.drift + Math.cos(p.age * p.freq + p.phase) * p.amp) * dt;
+                p.rot += p.spin * dt;
+            },
+
+            isGone(p, width, height) {
+                return p.y - p.size * 2 > height || p.x < -120 || p.x > width + 100;
+            },
+
+            draw(ctx, p) {
+                // лепесток «переворачивается» (сужается по ширине), цветок —
+                // лишь слегка пружинит, чтобы оставаться похожим на цветок
+                const raw = Math.abs(Math.cos(p.age * p.flipSpeed + p.phase));
+                const flip = p.flower ? 0.7 + 0.3 * raw : 0.3 + 0.7 * raw;
+                const scale = p.size / 10;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.scale(scale * flip, scale * p.stretch);
+
+                if (p.flower) {
+                    ctx.fillStyle = p.color;
+                    ctx.strokeStyle = "rgba(200, 100, 130, 0.3)";
+                    ctx.lineWidth = 0.7;
+                    for (let i = 0; i < 5; i++) {
+                        ctx.save();
+                        ctx.rotate((i * Math.PI * 2) / 5);
+                        ctx.translate(0, -5.2);
+                        ctx.scale(0.6, 0.6);
+                        ctx.fill(PETAL);
+                        ctx.stroke(PETAL);
+                        ctx.restore();
+                    }
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 1.7, 0, Math.PI * 2);
+                    ctx.fillStyle = "#D9657F";
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = p.color;
+                    ctx.fill(PETAL);
+                    ctx.lineWidth = 0.7;
+                    ctx.strokeStyle = "rgba(200, 100, 130, 0.32)";
+                    ctx.stroke(PETAL_VEIN);
+                }
+
+                ctx.restore();
             }
         };
     }
