@@ -579,6 +579,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Ссылка вида translator.html?tab=recommendations (например, кнопка
+    // «Рекомендации переводчика» на странице новеллы) сразу открывает
+    // нужную вкладку и прокручивает к ней. Значение сверяется со списком
+    // реальных вкладок, а не подставляется в селектор как есть.
+    const requestedTab = new URLSearchParams(window.location.search).get("tab");
+    if (requestedTab && Array.from(tabButtons).some((btn) => btn.dataset.tab === requestedTab)) {
+        activateTab(requestedTab);
+        const tabsNav = document.querySelector(".profile-tabs");
+        if (tabsNav) tabsNav.scrollIntoView({ block: "start" });
+    }
+
     /* ----------------------------------------------------------------
        Интерактивная пчёлка рядом с именем — клик отправляет её в
        полёт по экрану: она облетает 2-3 случайные точки по плавным

@@ -43,7 +43,6 @@
                 <div class="novel-main-info">
                     <div class="title-row">
                         <h1 id="novelTitle">Загрузка…</h1>
-                        <button class="star-btn">☆</button>
                     </div>
                     <p class="original-title" id="novelOriginalTitle"></p>
                     
@@ -192,16 +191,20 @@
                     </div>
                     <p id="novelBeeNotesText"></p>
                     <div class="notes-buttons">
-                        <a href="#" class="btn-outline">О новелле →</a>
-                        <a href="#" class="btn-outline">Рекомендации переводчика →</a>
+                        <!-- href по умолчанию — страница переводчика, вкладка «Рекомендации»;
+                             novel-script.js подставляет адрес переводчика из JSON новеллы -->
+                        <a href="translator.html?tab=recommendations" class="btn-outline" id="novelTranslatorRecsLink">Рекомендации переводчика →</a>
                     </div>
                 </div>
 
                 <div class="notes-right-grid">
-                    <button class="note-shortcut"><img src="images/icons/book.svg" alt=""><span>Исторический контекст</span></button>
+                    <!-- Кнопки без страницы пока серые (disabled). Когда страница
+                         появится — замени <button disabled> на <a href="…"> с теми же
+                         классами, серый вид уйдёт сам -->
+                    <button type="button" class="note-shortcut" disabled title="Скоро появится"><img src="images/icons/book.svg" alt=""><span>Тайна названия</span></button>
                     <a class="note-shortcut" id="novelGlossaryShortcut" href="glossary.html"><img src="images/icons/edit.svg" alt=""><span>Глоссарий</span></a>
-                    <button class="note-shortcut"><img src="images/icons/folder.svg" alt=""><span>Порядок чтения</span></button>
-                    <button class="note-shortcut"><img src="images/icons/bell.svg" alt=""><span>Анонсы</span></button>
+                    <button type="button" class="note-shortcut" disabled title="Скоро появится"><img src="images/icons/waypoints.svg" alt=""><span>Карта судеб</span></button>
+                    <button type="button" class="note-shortcut" disabled title="Скоро появится"><img src="images/icons/bell.svg" alt=""><span>Анонсы</span></button>
                 </div>
             </section>
 

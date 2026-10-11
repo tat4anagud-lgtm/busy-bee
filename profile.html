@@ -55,9 +55,9 @@
                         <img src="images/icons/folder.svg" alt="" class="sidebar-icon">
                         <span>Мои коллекции</span>
                     </a>
-                    <a href="#achievements" data-view="achievements" class="sidebar-item">
-                        <img src="images/icons/award.svg" alt="" class="sidebar-icon">
-                        <span>Достижения</span>
+                    <a href="#spirit" data-view="spirit" class="sidebar-item">
+                        <img src="images/icons/paw-print.svg" alt="" class="sidebar-icon">
+                        <span>Дух-спутник</span>
                     </a>
                     <a href="#settings" data-view="settings" class="sidebar-item">
                         <img src="images/icons/gear.svg" alt="" class="sidebar-icon">
@@ -143,9 +143,9 @@
                             <span class="profile-section-icon"><img src="images/icons/folder.svg" alt=""></span>
                             <span>Коллекции</span>
                         </a>
-                        <a href="#achievements" class="profile-section-tile">
-                            <span class="profile-section-icon"><img src="images/icons/award.svg" alt=""></span>
-                            <span>Достижения</span>
+                        <a href="#spirit" class="profile-section-tile">
+                            <span class="profile-section-icon"><img src="images/icons/paw-print.svg" alt=""></span>
+                            <span>Спутник</span>
                         </a>
                     </nav>
 
@@ -265,6 +265,7 @@
 
                         <div class="chip-row" role="tablist" aria-label="Разделы избранного">
                             <button type="button" class="chip active" role="tab" id="favTabNovels" aria-selected="true" aria-controls="favPanelNovels">Новеллы</button>
+                            <button type="button" class="chip" role="tab" id="favTabChapters" aria-selected="false" aria-controls="favPanelChapters" tabindex="-1">Главы</button>
                             <button type="button" class="chip" role="tab" id="favTabQuotes" aria-selected="false" aria-controls="favPanelQuotes" tabindex="-1">Цитаты</button>
                             <button type="button" class="chip" role="tab" id="favTabCollections" aria-selected="false" aria-controls="favPanelCollections" tabindex="-1">Коллекции</button>
                         </div>
@@ -280,6 +281,18 @@
                             </div>
                             <p class="empty-state-text" id="favoriteNovelsEmpty" hidden>
                                 Пока нет избранных новелл — нажмите ♡ на странице новеллы, чтобы добавить сюда.
+                            </p>
+                        </div>
+
+                        <!-- Наполняется profile-script.js (renderFavoriteChapters) из
+                             busybee_favorite_chapters — сердечки у глав в списке глав
+                             на странице новеллы. Здесь — первые четыре, остальные
+                             по ссылке «Все избранные главы». -->
+                        <div role="tabpanel" id="favPanelChapters" aria-labelledby="favTabChapters" hidden>
+                            <div class="fav-chapters-grid" id="favoriteChaptersGrid"></div>
+                            <a href="#favorites/chapters" class="fav-chapters-more" id="favoriteChaptersMore" hidden></a>
+                            <p class="empty-state-text" id="favoriteChaptersEmpty">
+                                Пока нет избранных глав — нажмите ♡ рядом с главой в списке глав новеллы, чтобы добавить сюда.
                             </p>
                         </div>
 
@@ -338,7 +351,7 @@
                         </div>
                     </section>
 
-                    <!-- THREE-COLUMN GRID: MY QUOTES / NOTES / ACHIEVEMENTS -->
+                    <!-- THREE-COLUMN GRID: MY QUOTES / NOTES / SPIRIT COMPANION -->
                     <div class="widgets-three-column">
 
                         <!-- Мои цитаты — личные, без лайков (сохранены кнопкой «Цитата»
@@ -363,61 +376,16 @@
                             <p class="empty-state-text" id="profileNotesEmpty">Пока нет заметок — выделите текст в читалке и нажмите «Заметка».</p>
                         </div>
 
-                        <!-- Achievements -->
+                        <!-- Дух-спутник — выбранный зверь (busybee_spirit_pet +
+                             spirits/spirits.json). Заполняет profile-script.js
+                             (renderSpiritWidget); пока зверь не выбран — подсказка ниже. -->
                         <div class="column-widget">
                             <div class="widget-header">
-                                <h3>Достижения</h3>
-                                <a href="#achievements">Посмотреть всё</a>
+                                <h3>Дух-спутник</h3>
+                                <a href="#spirit">Подробнее</a>
                             </div>
-                            <!-- ВАЖНО при подключении реальных данных: это превью на
-                                 главной странице профиля, не полный список — здесь
-                                 всегда ровно 6 карточек (2 ряда по 3, сетка
-                                 .achievements-hex-grid рассчитана на repeat(3, 1fr)),
-                                 остальные достижения показываются только на отдельной
-                                 странице «Достижения» (см. #view-achievements ниже).
-                                 Так же, как «Мои цитаты» и «Мои заметки» выше уже
-                                 режутся через entries.slice(0, 3) в profile-script.js
-                                 (fillSavedWidget) — здесь нужен тот же приём, но с
-                                 лимитом 6: например, сортировка по дате получения и
-                                 .slice(0, 6) перед рендером. Без этого блок начнёт
-                                 расти по высоте вместе с ростом числа достижений
-                                 пользователя. -->
-                            <div class="achievements-hex-grid">
-                                <!-- Значки достижений пока эмодзи-заглушки — сюда
-                                     хорошо бы со временем нарисовать кастомные
-                                     иконки в стиле сайта, как и остальные
-                                     иллюстрации -->
-                                <div class="achievement-item">
-                                    <div class="hex-badge">🏹</div>
-                                    <strong>Ранняя пташка</strong>
-                                    <span>7 дней</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="hex-badge">🏛️</div>
-                                    <strong>Марафонец</strong>
-                                    <span>50 глав за день</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="hex-badge">🐝</div>
-                                    <strong>Трудолюбивая пчёлка</strong>
-                                    <span>7 дней подряд</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="hex-badge">📚</div>
-                                    <strong>Коллекционер</strong>
-                                    <span>50 новелл в библиотеке</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="hex-badge">👑</div>
-                                    <strong>Медовый мудрец</strong>
-                                    <span>10 уровень</span>
-                                </div>
-                                <div class="achievement-item">
-                                    <div class="hex-badge">🛡️</div>
-                                    <strong>Хранитель цитат</strong>
-                                    <span>100 сохранённых цитат</span>
-                                </div>
-                            </div>
+                            <div class="widget-content spirit-widget" id="spiritWidget"></div>
+                            <p class="empty-state-text" id="spiritWidgetEmpty">Пока нет спутника — <a href="#spirit" class="inline-link">выберите своего духа</a>, и он будет расти вместе с вашим чтением.</p>
                         </div>
 
                     </div>
@@ -603,7 +571,7 @@
                     <!-- PAGE TITLE -->
                     <section class="page-head">
                         <h1 class="page-title">Избранное</h1>
-                        <p class="page-subtitle">Новеллы, цитаты и коллекции, которые вы отметили сердечком.</p>
+                        <p class="page-subtitle">Новеллы, главы, цитаты и коллекции, которые вы отметили сердечком.</p>
                     </section>
 
                     <!-- ВКЛАДКИ — те же, что «Новеллы / Цитаты / Коллекции» в «Избранном»
@@ -614,6 +582,11 @@
                             <img src="images/icons/book.svg" alt="" class="sidebar-icon">
                             <span>Новеллы</span>
                             <span class="page-tab-count" data-fav-count="novels">0</span>
+                        </button>
+                        <button type="button" class="page-tab" role="tab" id="favViewTab-chapters" data-tab="chapters" aria-selected="false" aria-controls="favViewPanel-chapters" tabindex="-1">
+                            <img src="images/icons/file-text.svg" alt="" class="sidebar-icon">
+                            <span>Главы</span>
+                            <span class="page-tab-count" data-fav-count="chapters">0</span>
                         </button>
                         <button type="button" class="page-tab" role="tab" id="favViewTab-quotes" data-tab="quotes" aria-selected="false" aria-controls="favViewPanel-quotes" tabindex="-1">
                             <img src="images/icons/quote.svg" alt="" class="sidebar-icon">
@@ -642,6 +615,22 @@
                         <div class="tab-grid" data-fav-grid="novels"></div>
 
                         <p class="empty-state-text" data-fav-empty="novels">Пока нет избранных новелл — нажмите ♡ на странице новеллы, чтобы добавить сюда.</p>
+                    </div>
+
+                    <div class="tab-panel" role="tabpanel" id="favViewPanel-chapters" aria-labelledby="favViewTab-chapters" hidden>
+                        <div class="section-header">
+                            <div>
+                                <h2 class="section-title">Главы</h2>
+                                <p class="tab-desc">Главы, которые вы отметили сердечком в списке глав новеллы.</p>
+                            </div>
+                        </div>
+
+                        <!-- Заполняется profile-script.js (renderFavoriteChapters) из
+                                 busybee_favorite_chapters + novels/<id>/<id>.json (название и
+                                 дата главы, обложка новеллы). -->
+                        <div class="fav-chapters-grid" data-fav-grid="chapters"></div>
+
+                        <p class="empty-state-text" data-fav-empty="chapters">Пока нет избранных глав — нажмите ♡ рядом с главой в списке глав новеллы, чтобы добавить сюда.</p>
                     </div>
 
                     <div class="tab-panel" role="tabpanel" id="favViewPanel-quotes" aria-labelledby="favViewTab-quotes" hidden>
@@ -770,74 +759,30 @@
             
                 </div>
 
-                <!-- ============ РАЗДЕЛ: Достижения ============ -->
-                <div class="profile-view" id="view-achievements" hidden>
+                <!-- ============ РАЗДЕЛ: Дух-спутник ============ -->
+                <div class="profile-view" id="view-spirit" hidden>
                     <!-- PAGE TITLE -->
                     <section class="page-head">
-                        <h1 class="page-title">Достижения</h1>
-                        <p class="page-subtitle">Награды за чтение, серии и активность на сайте.</p>
+                        <h1 class="page-title">Дух-спутник</h1>
+                        <p class="page-subtitle">Зверь, который растёт вместе с вашим чтением.</p>
                     </section>
 
-                    <section class="section-block saved-panel">
+                    <!-- Выбранный зверь: картинка, имя, описание и «путь роста». Пока
+                         зверь не выбран — блок скрыт. Рисует profile-script.js
+                         (renderSpiritView). -->
+                    <section class="section-block spirit-hero" id="spiritHero" hidden></section>
+
+                    <!-- Каталог: карточки из spirits/spirits.json. Клик по карточке
+                         выбирает зверя (busybee_spirit_pet). -->
+                    <section class="section-block">
                         <div class="section-header">
                             <div>
-                                <h2 class="section-title">Ваши достижения</h2>
+                                <h2 class="section-title" id="spiritGalleryTitle">Выберите спутника</h2>
+                                <p class="tab-desc">Двенадцать духов — у каждого свой характер. Выбранный зверь поселится в вашем профиле.</p>
                             </div>
                         </div>
-
-                        <!-- ЗАГЛУШКА: список статичный, тот же, что в виджете профиля.
-                             Значки — эмодзи, со временем заменить на нарисованные иконки.
-                             Когда появится логика достижений, заполнять из данных
-                             (получено / ещё нет + прогресс). -->
-                        <div class="achievements-page-grid">
-                            <div class="achievement-card">
-                                <div class="hex-badge">🏹</div>
-                                <div class="achievement-card-info">
-                                    <strong>Ранняя пташка</strong>
-                                    <span>7 дней</span>
-                                </div>
-                            </div>
-                            <div class="achievement-card">
-                                <div class="hex-badge">🏛️</div>
-                                <div class="achievement-card-info">
-                                    <strong>Марафонец</strong>
-                                    <span>50 глав за день</span>
-                                </div>
-                            </div>
-                            <div class="achievement-card">
-                                <div class="hex-badge">🐝</div>
-                                <div class="achievement-card-info">
-                                    <strong>Трудолюбивая пчёлка</strong>
-                                    <span>7 дней подряд</span>
-                                </div>
-                            </div>
-                            <div class="achievement-card">
-                                <div class="hex-badge">📚</div>
-                                <div class="achievement-card-info">
-                                    <strong>Коллекционер</strong>
-                                    <span>50 новелл в библиотеке</span>
-                                </div>
-                            </div>
-                            <div class="achievement-card">
-                                <div class="hex-badge">👑</div>
-                                <div class="achievement-card-info">
-                                    <strong>Медовый мудрец</strong>
-                                    <span>10 уровень</span>
-                                </div>
-                            </div>
-                            <div class="achievement-card">
-                                <div class="hex-badge">🛡️</div>
-                                <div class="achievement-card-info">
-                                    <strong>Хранитель цитат</strong>
-                                    <span>100 сохранённых цитат</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p class="empty-state-text">Скоро здесь появятся новые достижения.</p>
+                        <div class="spirit-gallery" id="spiritGallery"></div>
                     </section>
-
-            
                 </div>
 
                 <!-- ============ РАЗДЕЛ: Настройки ============ -->

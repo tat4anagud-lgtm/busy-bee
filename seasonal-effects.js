@@ -74,6 +74,30 @@
     // как было, а снег и листья продолжат работать
     const DECORATIONS_ENABLED = true;
 
+    // Объёмные листья осенью: каждый лист — сложенная вдоль жилки «книжка»,
+    // которая кувыркается в 3D (с перспективой, освещением и бледной изнанкой).
+    // false — вернёт прежние плоские листья.
+    const LEAVES_3D = true;
+
+    // То же для весны: лепестки и цветы сакуры в 3D (изогнутый лепесток с
+    // выемкой, цветок из пяти лепестков, свет, перспектива). false — плоские.
+    const SAKURA_3D = true;
+
+    // И для китайского Нового года: красные конверты и монетки в 3D — с толщиной
+    // (виден торец при наклоне), изнанкой и светом. false — плоские.
+    const ENVELOPES_3D = true;
+
+    // И небесные фонарики Праздника фонарей: настоящая 3D-модель (десять
+    // бумажных граней, которые светятся изнутри и медленно вращаются).
+    // false — плоские фонарики из твоих sky-lantern.svg.
+    const LANTERNS_3D = true;
+
+    // Гирлянда фонариков в шапке (китайский Новый год, Праздник фонарей) —
+    // отдельный выключатель. Сейчас выключена: на реальных шрифтах сайта
+    // фонарики наезжали на пункт меню «О Busy Bee». Красные конверты и
+    // небесные фонарики это не затрагивает. Включить обратно — true.
+    const LANTERN_GARLAND_ENABLED = false;
+
     // Китайский Новый год (первый день года по лунному календарю) каждый год
     // выпадает на другую дату, поэтому его сезоны заданы не «с месяца-дня по
     // месяц-день», а списком окон по годам (windows). Праздник фонарей — 15-й
@@ -102,7 +126,7 @@
             from: [10, 1],
             to: [11, 30],
             icon: '<path d="M12 3C17.5 5.5 19.5 11 12 21C4.5 11 6.5 5.5 12 3Z"/><path d="M12 8V21"/>',
-            effect: () => leavesEffect()
+            effect: () => (LEAVES_3D ? leaves3dEffect() : leavesEffect())
         },
         {
             id: "winter",
@@ -120,7 +144,7 @@
             to: [5, 15],
             // пять лепестков вокруг центра — контурная иконка в стиле остальных
             icon: '<ellipse cx="12" cy="6.8" rx="3.1" ry="4.4"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(72 12 12)"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(144 12 12)"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(216 12 12)"/><ellipse cx="12" cy="6.8" rx="3.1" ry="4.4" transform="rotate(288 12 12)"/><circle cx="12" cy="12" r="1.1"/>',
-            effect: () => sakuraEffect()
+            effect: () => (SAKURA_3D ? sakura3dEffect() : sakuraEffect())
         },
         {
             id: "summer",
@@ -140,7 +164,7 @@
             windows: cnyWindows(-7, 12),
             icon: '<rect x="6" y="3" width="12" height="18" rx="2"/><path d="M6 8.5L12 13.2l6-4.7"/><circle cx="12" cy="14.8" r="1.4"/>',
             decorate: () => addLanterns("cny"),
-            effect: () => envelopesEffect()
+            effect: () => (ENVELOPES_3D ? envelopes3dEffect() : envelopesEffect())
         },
         {
             // Праздник фонарей (15-й день года) и день до/после: фонарики
@@ -151,7 +175,7 @@
             windows: cnyWindows(13, 15),
             icon: '<path d="M12 2v2.5"/><rect x="9" y="4.5" width="6" height="2" rx="0.6"/><ellipse cx="12" cy="12" rx="6.2" ry="5.6"/><path d="M12 6.4v11.2M8.5 8.3c-1.4 2.2-1.4 5.2 0 7.4M15.5 8.3c1.4 2.2 1.4 5.2 0 7.4"/><rect x="9" y="17.6" width="6" height="1.8" rx="0.6"/><path d="M12 19.4V22"/>',
             decorate: () => addLanterns("festival"),
-            effect: () => skyLanternsEffect()
+            effect: () => (LANTERNS_3D ? skyLanterns3dEffect() : skyLanternsEffect())
         }
     ];
 
@@ -407,6 +431,8 @@
     `;
 
     function addLanterns(kind) {
+        if (!LANTERN_GARLAND_ENABLED) return;
+
         if (!document.getElementById("seasonalLanternStyle")) {
             const style = document.createElement("style");
             style.id = "seasonalLanternStyle";
@@ -524,6 +550,182 @@
                 ctx.lineWidth = 0.9;
                 ctx.strokeStyle = "rgba(73, 53, 38, 0.28)";
                 ctx.stroke(LEAF_VEIN);
+                ctx.restore();
+            }
+        };
+    }
+
+
+    /* ---------- Эффект «листья» в 3D ----------
+       Лист — не плоская картинка, а настоящий трёхмерный объект:
+       - форма: контур листа (три силуэта: заострённый, округлый, узкий),
+         сложенный вдоль жилки «ёлочкой» (две половинки под углом), как
+         живой лист; конец чуть загнут;
+       - вращение: лист покачивается вокруг двух осей (ax, ay) и медленно
+         вертится в плоскости экрана (az), поэтому иногда показывает
+         изнанку и становится ребром;
+       - свет: источник слева сверху спереди. Каждая половинка листа
+         затеняется по своему наклону — отсюда ощущение объёма и «блики»
+         при повороте. Изнанка светлее и бледнее лицевой стороны;
+       - перспектива: ближние к зрителю концы листа чуть крупнее;
+       - глубина: у каждого листа своя «даль» (0 — далёкий, 1 — близкий):
+         далёкие мельче, медленнее и бледнее (растворяются в цвет фона),
+         рисуются раньше ближних (sortKey) — ближние их перекрывают.
+       Считается на холсте вручную (матрица поворота + проекция), без
+       WebGL и библиотек: на ~40 листьях это копейки. */
+
+    // Матрица поворота R = Rz · Ry · Rx (по строкам) — общая для объёмных
+    // листьев и сакуры
+    function rotation3d(ax, ay, az) {
+        const cx = Math.cos(ax), sx = Math.sin(ax);
+        const cy = Math.cos(ay), sy = Math.sin(ay);
+        const cz = Math.cos(az), sz = Math.sin(az);
+        return [
+            cz * cy, cz * sy * sx - sz * cx, cz * sy * cx + sz * sx,
+            sz * cy, sz * sy * sx + cz * cx, sz * sy * cx - cz * sx,
+            -sy,     cy * sx,                cy * cx
+        ];
+    }
+
+    const LEAF3D_BASE = [
+        [216, 160, 58], [224, 178, 78], [200, 116, 46], [181, 69, 46], [168, 103, 43], [201, 154, 60]
+    ];
+    const LEAF3D_UNDERSIDE = [244, 228, 178];   // изнанка: бледная, тёплая
+    const LEAF3D_FOG = [255, 253, 249];         // в этот цвет «тают» далёкие листья
+    const LEAF3D_LIGHT = (() => {               // направление на свет (нормированное)
+        const v = [-0.35, -0.55, 0.76];
+        const n = Math.hypot(v[0], v[1], v[2]);
+        return [v[0] / n, v[1] / n, v[2] / n];
+    })();
+
+    // Контуры листа: по N точек вдоль жилки; ширина w(t) — «половина ширины»
+    // на расстоянии t от основания (0) до кончика (1); y от +1 (основание) до -1
+    const LEAF3D_N = 10;
+    const LEAF3D_SHAPES = [
+        { length: 1.0, width: 0.62, profile: (t) => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.85)), 0.9) * (1 - 0.15 * t) },  // заострённый
+        { length: 0.9, width: 0.78, profile: (t) => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.7)), 0.7) },                   // округлый
+        { length: 1.15, width: 0.4, profile: (t) => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.9)), 0.8) }                    // узкий
+    ].map((shape) => {
+        const pts = [];
+        for (let i = 0; i <= LEAF3D_N; i++) {
+            const t = i / LEAF3D_N;
+            pts.push({ t, y: (1 - 2 * t) * shape.length, w: shape.profile(t) * shape.width });
+        }
+        return pts;
+    });
+
+    function leaves3dEffect() {
+        const rand = (min, max) => min + Math.random() * (max - min);
+        const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+
+        const rotation = rotation3d;
+
+        return {
+            rate: (mobile) => (mobile ? 3.5 : 6),
+
+            // дальние рисуются первыми
+            sortKey: (p) => p.depth,
+
+            spawn(width) {
+                const depth = Math.random();
+                return {
+                    x: rand(-20, width + 20),
+                    y: rand(-60, -15),
+                    depth,
+                    size: 7.5 + depth * 8.5,                     // «радиус» листа, px
+                    shape: LEAF3D_SHAPES[Math.floor(Math.random() * LEAF3D_SHAPES.length)],
+                    fold: rand(0.3, 0.6),                        // насколько сложен лист вдоль жилки
+                    curl: rand(0.1, 0.35),                       // загиб кончиков
+                    vy: 40 + depth * 65,
+                    drift: rand(-14, 14),
+                    amp: rand(18, 42) * (0.6 + 0.4 * depth),
+                    freq: rand(0.9, 1.8),
+                    // покачивание вокруг осей и вращение в плоскости
+                    // размах покачивания: большинство листьев качается умеренно (лицо
+                    // почти всегда видно), каждый седьмой переворачивается совсем —
+                    // тогда видна бледная изнанка
+                    ampX: Math.random() < 0.15 ? rand(1.7, 2.1) : rand(0.45, 1.1), wX: rand(1.0, 2.2), phX: rand(0, Math.PI * 2),
+                    ampY: Math.random() < 0.15 ? rand(1.5, 1.9) : rand(0.35, 0.95), wY: rand(0.8, 1.9), phY: rand(0, Math.PI * 2),
+                    spin: rand(-1.0, 1.0),
+                    az: rand(0, Math.PI * 2),
+                    phase: rand(0, Math.PI * 2),
+                    // цвет: лицо, изнанка и «дымка» для далёких
+                    face: mix(LEAF3D_BASE[Math.floor(Math.random() * LEAF3D_BASE.length)], LEAF3D_FOG, (1 - depth) * 0.3),
+                    alpha: 0.65 + 0.35 * depth,
+                    age: 0
+                };
+            },
+
+            update(p, dt) {
+                p.age += dt;
+                p.y += p.vy * dt;
+                p.x += (p.drift + Math.cos(p.age * p.freq + p.phase) * p.amp) * dt;
+                p.az += p.spin * dt;
+            },
+
+            isGone(p, width, height) {
+                return p.y - p.size * 2.5 > height || p.x < -80 || p.x > width + 80;
+            },
+
+            draw(ctx, p) {
+                const ax = 0.3 + Math.sin(p.age * p.wX + p.phX) * p.ampX;
+                const ay = Math.sin(p.age * p.wY + p.phY) * p.ampY;
+                const m = rotation(ax, ay, p.az);
+
+                const size = p.size;
+                const focal = size * 7;              // «фокусное расстояние» перспективы
+                const back = mix(p.face, LEAF3D_UNDERSIDE, 0.55);
+                const shape = p.shape;
+                const n = shape.length;
+
+                // одна половинка листа: sign = +1 правая, -1 левая
+                const half = (sign) => {
+                    const pts = [];
+                    // жилка от основания к кончику, затем край от кончика обратно
+                    for (let i = 0; i < n; i++) pts.push([0, shape[i].y, 0, shape[i].t]);
+                    for (let i = n - 1; i >= 0; i--) pts.push([sign * shape[i].w, shape[i].y, -p.fold * shape[i].w, shape[i].t]);
+
+                    const projected = pts.map(([x, y, z, t]) => {
+                        // загиб кончиков и основания — вперёд к зрителю
+                        const zc = z + p.curl * Math.pow(t - 0.5, 2) * 2;
+                        const X = x * size, Y = y * size, Z = zc * size;
+                        const rx = m[0] * X + m[1] * Y + m[2] * Z;
+                        const ry = m[3] * X + m[4] * Y + m[5] * Z;
+                        const rz = m[6] * X + m[7] * Y + m[8] * Z;
+                        const k = focal / (focal - rz);
+                        return [p.x + rx * k, p.y + ry * k];
+                    });
+
+                    // нормаль половинки: плоскость z = -fold·x, затем тот же поворот
+                    const len = Math.hypot(p.fold, 1);
+                    const nx = (sign * p.fold) / len, nz = 1 / len;
+                    const wx = m[0] * nx + m[2] * nz;
+                    const wy = m[3] * nx + m[5] * nz;
+                    const wz = m[6] * nx + m[8] * nz;
+                    const facing = wz >= 0 ? 1 : -1;          // видим лицо или изнанку
+                    const lit = Math.max(0, facing * (wx * LEAF3D_LIGHT[0] + wy * LEAF3D_LIGHT[1] + wz * LEAF3D_LIGHT[2]));
+                    const tone = 0.74 + 0.4 * lit;
+                    const base = facing > 0 ? p.face : back;
+                    return { projected, color: `rgb(${Math.min(255, base[0] * tone) | 0}, ${Math.min(255, base[1] * tone) | 0}, ${Math.min(255, base[2] * tone) | 0})` };
+                };
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.lineWidth = 0.7;
+                ctx.lineJoin = "round";
+                ctx.strokeStyle = "rgba(70, 40, 15, 0.38)";
+
+                for (const sign of [1, -1]) {
+                    const { projected, color } = half(sign);
+                    ctx.beginPath();
+                    ctx.moveTo(projected[0][0], projected[0][1]);
+                    for (let i = 1; i < projected.length; i++) ctx.lineTo(projected[i][0], projected[i][1]);
+                    ctx.closePath();
+                    ctx.fillStyle = color;
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
                 ctx.restore();
             }
         };
@@ -715,6 +917,201 @@
                     ctx.stroke(PETAL_VEIN);
                 }
 
+                ctx.restore();
+            }
+        };
+    }
+
+
+    /* ---------- Сакура в 3D ----------
+       Те же приёмы, что у объёмных листьев (складка вдоль средней линии,
+       вращение в 3D, свет слева сверху, перспектива, глубина), но формы
+       свои:
+       - лепесток: узкое основание, широкий округлый конец и характерная
+         выемка на кончике; лёгкая складка и загнутый кончик;
+       - цветок (каждый седьмой): пять лепестков, расходящихся от центра
+         и слегка приподнятых «чашечкой»; в центре тёмно-розовая сердцевина.
+         Лепестки внутри цветка рисуются от дальних к ближним, поэтому
+         при наклоне цветка они перекрывают друг друга как надо;
+       - цвета пастельные, тени мягче, чем у листьев; изнанка почти белая. */
+
+    const SAKURA3D_COLORS = [
+        [247, 193, 207], [244, 169, 188], [250, 218, 223], [240, 160, 181], [248, 184, 200], [238, 151, 174]
+    ];
+    const SAKURA3D_UNDERSIDE = [253, 236, 240];
+    const SAKURA3D_CORE = [217, 101, 127];
+    const SAKURA3D_N = 10;
+    const SAKURA3D_NOTCH = 0.22;       // глубина выемки на кончике (доля длины/2)
+
+    // Контур лепестка: y от +1 (основание) до -1 (кончик), w — половина ширины.
+    // На самом кончике ширина не нулевая (округлые «плечи»), а средняя линия
+    // обрывается раньше — получается выемка
+    const SAKURA3D_PETAL = (() => {
+        const pts = [];
+        for (let i = 0; i <= SAKURA3D_N; i++) {
+            const t = i / SAKURA3D_N;
+            pts.push({ t, y: 1 - 2 * t, w: Math.pow(Math.sin(Math.PI * Math.pow(t, 0.62) * 0.93), 0.75) * 0.62 });
+        }
+        return pts;
+    })();
+
+    function sakura3dEffect() {
+        const rand = (min, max) => min + Math.random() * (max - min);
+        const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+
+        // Одна половинка лепестка в 3D. geo: параметры положения лепестка
+        // (для цветка — угол theta вокруг центра, подъём lift, масштабы)
+        function petalHalf(sign, geo, m, p) {
+            const n = SAKURA3D_N;
+            const pts = [];
+            for (let i = 0; i < n; i++) pts.push([0, SAKURA3D_PETAL[i].y, SAKURA3D_PETAL[i].t]);
+            pts.push([0, -1 + SAKURA3D_NOTCH, 1]);
+            for (let i = n; i >= 0; i--) pts.push([sign * SAKURA3D_PETAL[i].w, SAKURA3D_PETAL[i].y, SAKURA3D_PETAL[i].t]);
+
+            const size = p.size;
+            const focal = size * 7;
+            const cosT = Math.cos(geo.theta), sinT = Math.sin(geo.theta);
+            let zSum = 0;
+
+            const projected = pts.map(([x0, y0, t]) => {
+                // положение в плоскости лепестка (для цветка основание — в центре)
+                const x = x0 * geo.xScale;
+                const y = (y0 - geo.yOffset) * geo.yScale;
+                // складка вдоль средней линии, загнутый кончик и подъём цветка
+                const radial = geo.lift ? Math.abs(y) : 0;
+                const z = -p.fold * Math.abs(x0) * geo.xScale + p.curl * Math.pow(t, 2) * geo.yScale + geo.lift * radial;
+                // поворот вокруг центра цветка
+                const px = x * cosT - y * sinT;
+                const py = x * sinT + y * cosT;
+                // поворот всего цветка / лепестка и перспектива
+                const X = px * size, Y = py * size, Z = z * size;
+                const rx = m[0] * X + m[1] * Y + m[2] * Z;
+                const ry = m[3] * X + m[4] * Y + m[5] * Z;
+                const rz = m[6] * X + m[7] * Y + m[8] * Z;
+                zSum += rz;
+                const k = focal / (focal - rz);
+                return [p.x + rx * k, p.y + ry * k];
+            });
+
+            // нормаль половинки: z = -fold·|x| (+ подъём вдоль лепестка), затем повороты
+            const nl = Math.hypot(p.fold, geo.lift, 1);
+            const nx0 = (sign * p.fold) / nl, ny0 = geo.lift / nl, nz0 = 1 / nl;
+            const nx1 = nx0 * cosT - ny0 * sinT;
+            const ny1 = nx0 * sinT + ny0 * cosT;
+            const wx = m[0] * nx1 + m[1] * ny1 + m[2] * nz0;
+            const wy = m[3] * nx1 + m[4] * ny1 + m[5] * nz0;
+            const wz = m[6] * nx1 + m[7] * ny1 + m[8] * nz0;
+            const facing = wz >= 0 ? 1 : -1;
+            const lit = Math.max(0, facing * (wx * LEAF3D_LIGHT[0] + wy * LEAF3D_LIGHT[1] + wz * LEAF3D_LIGHT[2]));
+            const tone = 0.9 + 0.2 * lit;                 // пастель: тени мягкие
+            const base = facing > 0 ? p.face : p.under;
+            const color = `rgb(${Math.min(255, base[0] * tone) | 0}, ${Math.min(255, base[1] * tone) | 0}, ${Math.min(255, base[2] * tone) | 0})`;
+
+            return { projected, color, z: zSum / pts.length };
+        }
+
+        function drawHalf(ctx, half) {
+            ctx.beginPath();
+            ctx.moveTo(half.projected[0][0], half.projected[0][1]);
+            for (let i = 1; i < half.projected.length; i++) ctx.lineTo(half.projected[i][0], half.projected[i][1]);
+            ctx.closePath();
+            ctx.fillStyle = half.color;
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        const SINGLE = { theta: 0, lift: 0, xScale: 1, yScale: 1, yOffset: 0 };
+
+        return {
+            rate: (mobile) => (mobile ? 4 : 7),
+
+            sortKey: (p) => p.depth,
+
+            spawn(width) {
+                const flower = Math.random() < 0.14;
+                const depth = Math.random();
+                const face = mix(SAKURA3D_COLORS[Math.floor(Math.random() * SAKURA3D_COLORS.length)], LEAF3D_FOG, (1 - depth) * 0.25);
+                return {
+                    x: rand(-width * 0.15, width + 20),
+                    y: rand(-60, -15),
+                    flower,
+                    depth,
+                    size: flower ? 7.5 + depth * 5 : 6.5 + depth * 5,
+                    fold: rand(0.25, 0.5),
+                    curl: rand(0.12, 0.3),
+                    lift: flower ? rand(0.18, 0.4) : 0,
+                    vy: 28 + depth * 42,
+                    drift: rand(8, 34),
+                    amp: rand(22, 52) * (0.6 + 0.4 * depth),
+                    freq: rand(0.7, 1.5),
+                    // лепестки порхают сильнее, цветки почти всегда смотрят лицом
+                    ampX: flower ? rand(0.3, 0.8) : (Math.random() < 0.18 ? rand(1.7, 2.1) : rand(0.6, 1.3)), wX: rand(1.0, 2.0), phX: rand(0, Math.PI * 2),
+                    ampY: flower ? rand(0.3, 0.7) : (Math.random() < 0.18 ? rand(1.5, 1.9) : rand(0.5, 1.15)), wY: rand(0.8, 1.7), phY: rand(0, Math.PI * 2),
+                    spin: flower ? rand(-0.5, 0.5) : rand(-1.4, 1.4),
+                    az: rand(0, Math.PI * 2),
+                    phase: rand(0, Math.PI * 2),
+                    face,
+                    under: mix(face, SAKURA3D_UNDERSIDE, 0.6),
+                    alpha: 0.7 + 0.3 * depth,
+                    age: 0
+                };
+            },
+
+            update(p, dt) {
+                p.age += dt;
+                p.y += p.vy * dt;
+                p.x += (p.drift + Math.cos(p.age * p.freq + p.phase) * p.amp) * dt;
+                p.az += p.spin * dt;
+            },
+
+            isGone(p, width, height) {
+                return p.y - p.size * 2.5 > height || p.x < -120 || p.x > width + 100;
+            },
+
+            draw(ctx, p) {
+                const ax = 0.3 + Math.sin(p.age * p.wX + p.phX) * p.ampX;
+                const ay = Math.sin(p.age * p.wY + p.phY) * p.ampY;
+                const m = rotation3d(ax, ay, p.az);
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.lineWidth = 0.6;
+                ctx.lineJoin = "round";
+                ctx.strokeStyle = "rgba(190, 95, 125, 0.34)";
+
+                if (!p.flower) {
+                    // одиночный лепесток: две половинки, дальняя первой
+                    const halves = [petalHalf(1, SINGLE, m, p), petalHalf(-1, SINGLE, m, p)].sort((a, b) => a.z - b.z);
+                    halves.forEach((half) => drawHalf(ctx, half));
+                    ctx.restore();
+                    return;
+                }
+
+                // цветок: пять лепестков вокруг центра
+                const petals = [];
+                for (let i = 0; i < 5; i++) {
+                    const geo = { theta: (i * Math.PI * 2) / 5, lift: p.lift, xScale: 0.95, yScale: 0.5, yOffset: 1 };
+                    for (const sign of [1, -1]) petals.push(petalHalf(sign, geo, m, p));
+                }
+                petals.sort((a, b) => a.z - b.z);                    // дальние раньше ближних
+
+                const frontFacing = m[8] >= 0;
+                const size = p.size;
+                const focal = size * 7;
+                const core = (() => {
+                    const k = focal / (focal - m[8] * size * 0.06);
+                    return [p.x + m[2] * size * 0.06 * k, p.y + m[5] * size * 0.06 * k];
+                })();
+                const drawCore = () => {
+                    ctx.beginPath();
+                    ctx.arc(core[0], core[1], size * 0.17, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgb(${SAKURA3D_CORE[0]}, ${SAKURA3D_CORE[1]}, ${SAKURA3D_CORE[2]})`;
+                    ctx.fill();
+                };
+
+                if (!frontFacing) drawCore();       // со спины сердцевина прикрыта лепестками
+                petals.forEach((half) => drawHalf(ctx, half));
+                if (frontFacing) drawCore();
                 ctx.restore();
             }
         };
@@ -1029,12 +1426,211 @@
     }
 
 
+    /* ---------- Красные конверты и монетки в 3D ----------
+       Конверт и монетка — плоские рисунки, и честно «сложить» их, как лист
+       или лепесток, нельзя. Поэтому объём собран из трёх приёмов:
+       1. вращение в 3D: рисунок целиком поворачивается матрицей (аффинная
+          проекция: при наклоне он сжимается и сдвигается, как настоящий
+          объект), лицевая сторона и изнанка меняются местами, когда
+          конверт переворачивается;
+       2. толщина: конверт — «плитка» толщиной около 8% высоты. Её торец
+          рисуется несколькими слоями силуэта между лицом и изнанкой, и при
+          наклоне видна тёмно-красная кромка (у монетки — золотой ободок);
+       3. свет: источник слева сверху (тот же, что у листьев). Грань, повёрнутая
+          к свету, чуть светлеет, отвёрнутая — темнеет.
+       Изнанка конверта — тёмно-красная с золотой рамкой (на ней нет печати),
+       у монетки обе стороны одинаковые. Дальние рисуются раньше ближних
+       (sortKey), у дальних размер мельче и прозрачность выше. */
+
+    // Силуэты (скруглённые углы) — для торца, общей подложки и затенения
+    function roundedRectPath(x, y, w, h, r) {
+        const path = new Path2D();
+        path.moveTo(x + r, y);
+        path.lineTo(x + w - r, y);
+        path.arcTo(x + w, y, x + w, y + r, r);
+        path.lineTo(x + w, y + h - r);
+        path.arcTo(x + w, y + h, x + w - r, y + h, r);
+        path.lineTo(x + r, y + h);
+        path.arcTo(x, y + h, x, y + h - r, r);
+        path.lineTo(x, y + r);
+        path.arcTo(x, y, x + r, y, r);
+        path.closePath();
+        return path;
+    }
+
+    const ENV_SILHOUETTE = roundedRectPath(104, 41, 297, 432, 14);       // габариты конверта в единицах viewBox
+    const ENV_BACK_BORDER = roundedRectPath(130, 67, 245, 380, 8);       // золотая рамка на изнанке
+    const ENV_THICKNESS = 36;                                            // толщина «плитки», ед. viewBox
+    const COIN_SILHOUETTE = (() => { const path = new Path2D(); path.arc(0, 0, 7, 0, Math.PI * 2); return path; })();
+    const COIN_THICKNESS = 2.4;                                          // ед.: радиус монетки = 7
+
+    // Плитка с толщиной: слои торца + верхняя грань.
+    //   m — матрица поворота; k — пикселей на единицу рисунка;
+    //   center — центр рисунка (вокруг него вращается); thickness — в единицах рисунка;
+    //   drawTop(facing) рисует лицо (facing > 0) или изнанку (facing < 0)
+    function drawSlab(ctx, p, m, k, center, thickness, silhouette, edgeColor, drawTop) {
+        const facing = m[8] >= 0 ? 1 : -1;
+        const dx = m[2] * k;          // сдвиг на экране на единицу толщины
+        const dy = m[5] * k;
+        const layers = 5;
+
+        const place = (z) => {
+            ctx.transform(m[0] * k, m[3] * k, m[1] * k, m[4] * k, p.x + dx * z, p.y + dy * z);
+            ctx.translate(-center.x, -center.y);
+        };
+
+        // слои торца: дальние раньше ближних
+        ctx.fillStyle = edgeColor;
+        for (let i = 0; i <= layers; i++) {
+            const j = facing > 0 ? i : layers - i;
+            ctx.save();
+            place((-0.5 + j / layers) * thickness);
+            ctx.fill(silhouette);
+            ctx.restore();
+        }
+
+        // верхняя грань — ближайшая к зрителю
+        ctx.save();
+        place(facing * thickness / 2);
+        drawTop(facing);
+        ctx.restore();
+    }
+
+    function envelopes3dEffect() {
+        const rand = (min, max) => min + Math.random() * (max - min);
+
+        // освещённость грани по нормали (m[2], m[5], m[8]): возвращает цвет-подсветку
+        // или затемнение для наложения поверх рисунка (alpha мала)
+        function shade(m, facing) {
+            const lit = Math.max(0, facing * (m[2] * LEAF3D_LIGHT[0] + m[5] * LEAF3D_LIGHT[1] + m[8] * LEAF3D_LIGHT[2]));
+            return lit < 0.55
+                ? `rgba(40, 0, 0, ${((0.55 - lit) * 0.5).toFixed(3)})`
+                : `rgba(255, 255, 255, ${((lit - 0.55) * 0.32).toFixed(3)})`;
+        }
+
+        return {
+            rate: (mobile) => (mobile ? 2.5 : 4),
+
+            sortKey: (p) => p.depth,
+
+            spawn(width) {
+                const coin = Math.random() < 0.2;
+                const depth = Math.random();
+                return {
+                    x: rand(-20, width + 20),
+                    y: rand(-60, -15),
+                    coin,
+                    depth,
+                    size: (coin ? 6 : 7.5) + depth * (coin ? 3.5 : 5),    // как раньше: ~8–12
+                    vy: 38 + depth * 60,
+                    drift: rand(-12, 12),
+                    amp: rand(14, 32) * (0.6 + 0.4 * depth),
+                    freq: rand(0.8, 1.6),
+                    // конверт качается умеренно (лицо чаще видно), монетка вертится сильнее
+                    ampX: coin ? rand(1.4, 2.4) : (Math.random() < 0.18 ? rand(1.7, 2.1) : rand(0.5, 1.2)), wX: rand(1.1, 2.3), phX: rand(0, Math.PI * 2),
+                    ampY: coin ? rand(1.2, 2.0) : (Math.random() < 0.18 ? rand(1.5, 1.9) : rand(0.4, 1.0)), wY: rand(0.9, 2.0), phY: rand(0, Math.PI * 2),
+                    spin: coin ? rand(-2.0, 2.0) : rand(-1.0, 1.0),
+                    az: rand(0, Math.PI * 2),
+                    phase: rand(0, Math.PI * 2),
+                    alpha: 0.72 + 0.28 * depth,
+                    age: 0
+                };
+            },
+
+            update(p, dt) {
+                p.age += dt;
+                p.y += p.vy * dt;
+                p.x += (p.drift + Math.cos(p.age * p.freq + p.phase) * p.amp) * dt;
+                p.az += p.spin * dt;
+            },
+
+            isGone(p, width, height) {
+                return p.y - p.size * 3 > height || p.x < -80 || p.x > width + 80;
+            },
+
+            draw(ctx, p) {
+                const ax = 0.3 + Math.sin(p.age * p.wX + p.phX) * p.ampX;
+                const ay = Math.sin(p.age * p.wY + p.phY) * p.ampY;
+                const m = rotation3d(ax, ay, p.az);
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+
+                if (p.coin) {
+                    const k = p.size / 10;                            // радиус монетки 7 ед. → 0.7·size px
+                    drawSlab(ctx, p, m, k, { x: 0, y: 0 }, COIN_THICKNESS, COIN_SILHOUETTE, "#b4880d", (facing) => {
+                        ctx.fillStyle = "#e0b118";
+                        ctx.fill(COIN, "evenodd");
+                        ctx.lineWidth = 0.7;
+                        ctx.strokeStyle = "rgba(139, 94, 12, 0.6)";
+                        ctx.stroke(COIN);
+                        ctx.fillStyle = shade(m, facing);
+                        ctx.fill(COIN, "evenodd");
+                    });
+                } else {
+                    const k = (2.4 * p.size) / ENV_HEIGHT;           // высота конверта 2.4·size px, как раньше
+                    drawSlab(ctx, p, m, k, ENV_CENTER, ENV_THICKNESS, ENV_SILHOUETTE, "#7d1a14", (facing) => {
+                        if (facing > 0) {
+                            // лицо: рисунок red-envelope.svg
+                            ctx.fillStyle = "#d82b20";
+                            ctx.fill(ENV_BODY, "evenodd");
+                            ctx.fillStyle = "#a62027";
+                            ctx.fill(ENV_FLAP, "evenodd");
+                            ctx.fillStyle = "#e0b118";
+                            ctx.fill(ENV_GOLD, "evenodd");
+                        } else {
+                            // изнанка: тёмно-красная, золотая рамка
+                            ctx.fillStyle = "#b9261d";
+                            ctx.fill(ENV_SILHOUETTE);
+                            ctx.lineWidth = 7;
+                            ctx.strokeStyle = "rgba(224, 177, 24, 0.7)";
+                            ctx.stroke(ENV_BACK_BORDER);
+                        }
+                        ctx.fillStyle = shade(m, facing);
+                        ctx.fill(ENV_SILHOUETTE);
+                    });
+                }
+
+                ctx.restore();
+            }
+        };
+    }
+
+
     /* ---------- Эффект «небесные фонарики» (Праздник фонарей) ----------
-       Тёплые бумажные фонарики медленно поднимаются снизу вверх, мягко
-       светятся и покачиваются — как запускают небесные фонарики на
-       Праздник фонарей. В отличие от остальных эффектов частицы здесь
-       летят ВВЕРХ: спавнятся под нижним краем (у спавна есть height) и
-       уходят за верхний. */
+       Небесные фонарики медленно поднимаются снизу вверх, мягко светятся и
+       покачиваются — как запускают их на Праздник фонарей. В отличие от
+       остальных эффектов частицы здесь летят ВВЕРХ: спавнятся под нижним
+       краем (у спавна есть height) и уходят за верхний.
+
+       Рисунок — sky-lantern.svg (viewBox 512×512): шесть контуров, каждый
+       своего цвета. Два вида фонариков, красные и жёлтые: жёлтые — тот же
+       рисунок, перекрашенный по палитре (LANTERN_PALETTES): каждому
+       контуру соответствует цвет из палитры по порядку. Белое пламя и
+       его ореол одинаковые. Вокруг каждого фонарика — мягкое тёплое
+       свечение, огонёк слегка мерцает. */
+
+    // Контуры в порядке отрисовки (как в исходном SVG): корпус, тёмные тени
+    // и каркас, оранжевое свечение окошек, пламя, основание горелки,
+    // жёлтое ядро пламени
+    const SKY_LANTERN_PARTS = [
+        new Path2D("M103.77 0.08C107.03 0.08 110.29 0.08 113.54 0.08C111 4.05 107.05 7.17 104.36 11.1C97.91 20.49 92.89 30.53 89.16 41.27C81.05 64.63 82.24 89.09 83.81 113.39C85.14 134.01 86.65 154.56 88.8 175.11C91.79 203.69 95.83 231.96 99.84 260.38C101.22 270.13 102.4 279.98 104.21 289.67C110.7 324.44 116.89 359.39 122.18 394.38C125.73 417.9 129.65 441.34 132.15 465.03C132.97 472.82 135.9 486.29 134.91 493.53C129.17 495.08 114.47 493.8 107.78 493.8C105.15 493.8 100.08 494.71 98.03 493.34C97.33 477.53 93.27 458.64 90.14 443.03C83.49 409.78 75.92 376.85 67.09 344.14C61.97 325.17 57.32 306 52.77 286.88C47.28 263.79 41.01 240.66 37.12 217.16C34.94 203.96 33.03 190.66 30.74 177.47C27.44 158.47 25.53 139.18 23.79 119.93C21.29 92.3 19.19 67.62 35.16 43.34C45.4 27.76 59.73 14.38 77.1 7.23C82.13 5.16 87.61 3.27 92.91 2.07C96.23 1.31 100.83 1.81 103.77 0.08ZM150.04 0.08C220.68 0.08 291.32 0.08 361.96 0.08C363.21 1.2 372.12 3.42 375.1 5.28C384.65 11.24 392.12 19.67 397.71 29.4C416.86 62.71 410.59 102.09 408.11 138.64C404.3 195.03 395.68 250.91 386.18 306.5C382.29 329.3 378.83 352.26 374.29 374.94C368.91 401.8 365.63 429.4 362.23 456.58C361.11 465.49 360.54 474.47 359.31 483.36C358.84 486.74 359.15 490.32 357.87 493.53C342.31 493.61 326.74 493.69 311.17 493.76C311.34 489.32 312.4 475.13 310.03 472.06C307.98 466.39 301.78 466.19 296.68 466.19C288.81 466.19 272.18 467.5 265.34 465.94C265.29 462.9 265.24 459.86 265.19 456.83C272.9 457.95 284.23 451.36 290.76 447.69C322.59 429.82 329.31 383.86 308.71 355.48C300.86 344.68 290.41 336.97 278.06 332.28C275.01 331.12 269.62 328.43 266.46 329.98C262.57 326.66 260.09 321.25 255.83 318.14C252.76 315.9 249.16 317.38 248.3 321.02C247.69 323.65 248.44 326.46 247.88 329.1C245.75 328.64 242.6 329.85 240.52 330.39C229.84 333.2 220.64 337.85 212.39 345.41C187.83 367.93 185.47 400.94 201.74 428.8C204.86 434.14 209.72 438.41 214.23 442.52C220.87 448.56 237.85 458.14 246.81 456.83C246.76 459.86 246.71 462.9 246.66 465.94C239.82 467.5 223.19 466.19 215.32 466.19C210.21 466.19 204.02 466.39 201.97 472.06C199.6 475.13 200.66 489.32 200.83 493.76C185.26 493.69 169.69 493.61 154.13 493.53C152.85 490.32 153.16 486.74 152.69 483.36C151.46 474.47 150.89 465.49 149.77 456.58C146.37 429.4 143.09 401.8 137.71 374.94C133.17 352.26 129.71 329.3 125.82 306.5C116.32 250.91 107.7 195.03 103.89 138.64C101.41 102.09 95.14 62.71 114.29 29.4C119.88 19.67 127.35 11.24 136.9 5.28C139.88 3.42 148.79 1.2 150.04 0.08ZM398.46 0.08C401.71 0.08 404.97 0.08 408.23 0.08C411.17 1.81 415.77 1.31 419.09 2.07C424.39 3.27 429.87 5.16 434.9 7.23C452.28 14.38 466.59 27.76 476.84 43.34C492.69 67.43 490.91 92.46 488.23 119.93C486.36 139.17 484.57 158.45 481.26 177.47C478.97 190.66 477.06 203.96 474.88 217.16C470.99 240.66 464.73 263.79 459.23 286.88C454.68 306 450.03 325.17 444.91 344.14C436.08 376.85 428.54 409.78 421.85 443.03C418.72 458.62 414.67 477.55 413.97 493.34C411.92 494.71 406.85 493.8 404.22 493.8C397.53 493.8 382.83 495.08 377.09 493.53C376.09 486.2 379.08 472.93 379.86 465.06C382.21 441.35 386.27 417.9 389.82 394.38C395.14 359.2 402.11 324.31 407.87 289.2C414.08 251.3 419.01 213.3 423.21 175.11C425.47 154.58 426.86 134 428.19 113.39C429.77 89.08 430.96 64.65 422.84 41.27C419.11 30.53 414.09 20.49 407.64 11.1C404.95 7.17 401 4.05 398.46 0.08Z"),
+        new Path2D("M113.54 0.08C125.71 0.08 137.87 0.08 150.04 0.08C148.79 1.2 139.88 3.42 136.9 5.28C127.35 11.24 119.88 19.67 114.29 29.4C95.14 62.71 101.41 102.09 103.89 138.64C107.7 195.03 116.32 250.91 125.82 306.5C129.71 329.3 133.17 352.26 137.71 374.94C143.09 401.8 146.37 429.4 149.77 456.58C150.89 465.49 151.46 474.47 152.69 483.36C153.16 486.74 152.85 490.32 154.13 493.53C169.69 493.61 185.26 493.69 200.83 493.76C200.66 489.32 199.6 475.13 201.97 472.06C201.9 479.23 201.83 486.41 201.76 493.59C237.92 493.59 274.08 493.59 310.24 493.59C310.17 486.41 310.1 479.23 310.03 472.06C312.4 475.13 311.34 489.32 311.17 493.76C326.74 493.69 342.31 493.61 357.87 493.53C359.15 490.32 358.84 486.74 359.31 483.36C360.54 474.47 361.11 465.49 362.23 456.58C365.63 429.4 368.91 401.8 374.29 374.94C378.83 352.26 382.29 329.3 386.18 306.5C395.68 250.91 404.3 195.03 408.11 138.64C410.59 102.09 416.86 62.71 397.71 29.4C392.12 19.67 384.65 11.24 375.1 5.28C372.12 3.42 363.21 1.2 361.96 0.08C374.13 0.08 386.29 0.08 398.46 0.08C401 4.05 404.95 7.17 407.64 11.1C414.09 20.49 419.11 30.53 422.84 41.27C430.96 64.65 429.77 89.08 428.19 113.39C426.86 134 425.47 154.58 423.21 175.11C419.01 213.3 414.08 251.3 407.87 289.2C402.11 324.31 395.14 359.2 389.82 394.38C386.27 417.9 382.21 441.35 379.86 465.06C379.08 472.93 376.09 486.2 377.09 493.53C382.83 495.08 397.53 493.8 404.22 493.8C406.85 493.8 411.92 494.71 413.97 493.34C416.37 494.9 420.56 493.3 423.37 494.17C429.32 496 431.26 503.62 427.74 508.39C426.49 510.09 424.35 510.47 423.12 511.92C311.71 511.92 200.29 511.92 88.88 511.92C87.65 510.47 85.51 510.09 84.26 508.39C80.74 503.62 82.68 496 88.63 494.17C91.44 493.3 95.63 494.9 98.03 493.34C100.08 494.71 105.15 493.8 107.78 493.8C114.47 493.8 129.17 495.08 134.91 493.53C135.9 486.29 132.97 472.82 132.15 465.03C129.65 441.34 125.73 417.9 122.18 394.38C116.89 359.39 110.7 324.44 104.21 289.67C102.4 279.98 101.22 270.13 99.84 260.38C95.83 231.96 91.79 203.69 88.8 175.11C86.65 154.56 85.14 134.01 83.81 113.39C82.24 89.09 81.05 64.63 89.16 41.27C92.89 30.53 97.91 20.49 104.36 11.1C107.05 7.17 111 4.05 113.54 0.08Z"),
+        new Path2D("M247.88 329.1C249.78 335.73 241.69 351.29 238.21 357.18C227.37 375.5 215.21 390.18 221.86 412.88C224.37 421.45 230.7 430.18 238.86 434.22C240.86 435.21 243.78 437.53 245.99 436.72C246.23 436.88 246.46 437.03 246.7 437.19C246.73 443.73 246.77 450.28 246.81 456.83C237.85 458.14 220.87 448.56 214.23 442.52C209.72 438.41 204.86 434.14 201.74 428.8C185.47 400.94 187.83 367.93 212.39 345.41C220.64 337.85 229.84 333.2 240.52 330.39C242.6 329.85 245.75 328.64 247.88 329.1ZM265.19 456.83C265.25 450.28 265.32 443.74 265.38 437.2C278.3 435.85 287.55 422.89 291.17 411.62C293.46 404.5 292.46 396.04 291.16 388.82C288.6 374.66 283.95 361.54 277.78 348.58C275.81 344.45 273.32 340.19 270.77 336.4C269.36 334.3 267.36 332.33 266.46 329.98C269.62 328.43 275.01 331.12 278.06 332.28C290.41 336.97 300.86 344.68 308.71 355.48C329.31 383.86 322.59 429.82 290.76 447.69C284.23 451.36 272.9 457.95 265.19 456.83Z"),
+        new Path2D("M266.46 329.98C267.36 332.33 269.36 334.3 270.77 336.4C273.32 340.19 275.81 344.45 277.78 348.58C283.95 361.54 288.6 374.66 291.16 388.82C292.46 396.04 293.46 404.5 291.17 411.62C287.55 422.89 278.3 435.85 265.38 437.2C265.32 436.88 265.26 436.57 265.2 436.25C269.88 435.61 273.67 429.54 275.24 425.59C279.59 414.71 275.02 398.52 269.3 388.8C267.65 385.99 262.21 378.02 258.81 377.91C255.51 377.8 252.09 387.72 249.67 390.62C240.13 401.99 229.63 413.58 238.25 429.24C240.07 432.55 243.44 434.28 245.99 436.72C243.78 437.53 240.86 435.21 238.86 434.22C230.7 430.18 224.37 421.45 221.86 412.88C215.21 390.18 227.37 375.5 238.21 357.18C241.69 351.29 249.78 335.73 247.88 329.1C248.44 326.46 247.69 323.65 248.3 321.02C249.16 317.38 252.76 315.9 255.83 318.14C260.09 321.25 262.57 326.66 266.46 329.98Z"),
+        new Path2D("M265.2 436.25C265.26 436.57 265.32 436.88 265.38 437.2C265.32 443.74 265.25 450.28 265.19 456.83C265.24 459.86 265.29 462.9 265.34 465.94C272.18 467.5 288.81 466.19 296.68 466.19C301.78 466.19 307.98 466.39 310.03 472.06C310.1 479.23 310.17 486.41 310.24 493.59C274.08 493.59 237.92 493.59 201.76 493.59C201.83 486.41 201.9 479.23 201.97 472.06C204.02 466.39 210.21 466.19 215.32 466.19C223.19 466.19 239.82 467.5 246.66 465.94C246.71 462.9 246.76 459.86 246.81 456.83C246.77 450.28 246.73 443.73 246.7 437.19C249.1 429.69 242 411.58 256 411.58C268.56 411.58 264.47 428.48 265.2 436.25Z"),
+        new Path2D("M265.2 436.25C264.47 428.48 268.56 411.58 256 411.58C242 411.58 249.1 429.69 246.7 437.19C246.46 437.03 246.23 436.88 245.99 436.72C243.44 434.28 240.07 432.55 238.25 429.24C229.63 413.58 240.13 401.99 249.67 390.62C252.09 387.72 255.51 377.8 258.81 377.91C262.21 378.02 267.65 385.99 269.3 388.8C275.02 398.52 279.59 414.71 275.24 425.59C273.67 429.54 269.88 435.61 265.2 436.25Z")
+    ];
+
+    // Цвета по порядку контуров выше
+    const LANTERN_PALETTES = {
+        red:    ["#ff4b4b", "#c83741", "#ff8452", "#ffffff", "#973737", "#fedb79"],
+        yellow: ["#ffd54a", "#e0a62a", "#ffb84d", "#ffffff", "#8a5a1e", "#fff0b0"]
+    };
+
+    // Габариты рисунка в единицах viewBox: ширина ≈ 467, высота 512,
+    // центр (257, 256); огонёк находится примерно в точке (256, 410)
+    const SKY_LANTERN = { width: 467, height: 512, cx: 257, cy: 256, flameY: 410 };
 
     function skyLanternsEffect() {
         const rand = (min, max) => min + Math.random() * (max - min);
@@ -1046,8 +1642,9 @@
                 return {
                     x: rand(width * 0.04, width * 0.96),
                     y: height + 50,
-                    size: rand(9, 15),                 // половина ширины фонарика, px
-                    vy: -rand(26, 50),                 // вверх
+                    size: rand(12, 19),                // половина ширины фонарика, px
+                    palette: Math.random() < 0.5 ? "red" : "yellow",
+                    vy: -rand(34, 60),                 // вверх
                     drift: rand(2, 14),
                     amp: rand(8, 22),
                     freq: rand(0.5, 1.1),
@@ -1068,60 +1665,288 @@
             },
 
             draw(ctx, p) {
-                const r = p.size;
-                const w = r;                           // половина ширины
-                const h = r * 1.35;                    // половина высоты
+                const k = (p.size * 2) / SKY_LANTERN.width;       // px на единицу рисунка
+                const halfH = (SKY_LANTERN.height * k) / 2;
                 const glow = 0.8 + 0.2 * Math.sin(p.age * p.flicker + p.phase);
-                const sway = Math.sin(p.age * p.freq + p.phase) * 0.1;
+                const sway = Math.sin(p.age * p.freq + p.phase) * 0.08;
+                const colors = LANTERN_PALETTES[p.palette];
 
                 ctx.save();
                 ctx.translate(p.x, p.y);
                 ctx.rotate(sway);
 
-                // свечение вокруг (мягкий круг, который гаснет к краю)
-                const halo = ctx.createRadialGradient(0, h * 0.3, 0, 0, h * 0.3, r * 3.4);
+                // свечение вокруг: мягкий тёплый круг, гаснущий к краю
+                const haloY = halfH * 0.3;
+                const halo = ctx.createRadialGradient(0, haloY, 0, 0, haloY, p.size * 3.6);
                 halo.addColorStop(0, `rgba(255, 190, 90, ${0.5 * glow})`);
                 halo.addColorStop(1, "rgba(255, 190, 90, 0)");
                 ctx.fillStyle = halo;
                 ctx.beginPath();
-                ctx.arc(0, h * 0.3, r * 3.4, 0, Math.PI * 2);
+                ctx.arc(0, haloY, p.size * 3.6, 0, Math.PI * 2);
                 ctx.fill();
 
-                // бумажный корпус: сверху уже, книзу шире, как колокол
-                ctx.beginPath();
-                ctx.moveTo(-w * 0.55, -h);
-                ctx.lineTo(w * 0.55, -h);
-                ctx.lineTo(w, h * 0.85);
-                ctx.lineTo(-w, h * 0.85);
-                ctx.closePath();
-                const body = ctx.createLinearGradient(0, -h, 0, h);
-                body.addColorStop(0, "#F59A38");
-                body.addColorStop(1, "#FFD98A");
-                ctx.fillStyle = body;
-                ctx.fill();
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = "rgba(139, 70, 12, 0.5)";
-                ctx.stroke();
+                // сам фонарик из SVG
+                ctx.scale(k, k);
+                ctx.translate(-SKY_LANTERN.cx, -SKY_LANTERN.cy);
+                for (let i = 0; i < SKY_LANTERN_PARTS.length; i++) {
+                    ctx.fillStyle = colors[i];
+                    ctx.fill(SKY_LANTERN_PARTS[i], "evenodd");
+                }
 
-                // вертикальные рёбра
-                ctx.lineWidth = 0.8;
-                ctx.strokeStyle = "rgba(139, 70, 12, 0.3)";
-                ctx.beginPath();
-                ctx.moveTo(0, -h);
-                ctx.lineTo(0, h * 0.85);
-                ctx.moveTo(-w * 0.28, -h);
-                ctx.lineTo(-w * 0.5, h * 0.85);
-                ctx.moveTo(w * 0.28, -h);
-                ctx.lineTo(w * 0.5, h * 0.85);
-                ctx.stroke();
-
-                // горящее «дно» — огонёк внутри
-                const flame = ctx.createRadialGradient(0, h * 0.85, 0, 0, h * 0.85, w);
-                flame.addColorStop(0, `rgba(255, 244, 190, ${0.95 * glow})`);
+                // огонёк внутри мерцает: тёплое пятно поверх пламени
+                const flame = ctx.createRadialGradient(256, SKY_LANTERN.flameY, 0, 256, SKY_LANTERN.flameY, 110);
+                flame.addColorStop(0, `rgba(255, 244, 190, ${0.55 * glow})`);
                 flame.addColorStop(1, "rgba(255, 220, 130, 0)");
                 ctx.fillStyle = flame;
                 ctx.beginPath();
-                ctx.ellipse(0, h * 0.85, w * 0.95, w * 0.5, 0, 0, Math.PI * 2);
+                ctx.arc(256, SKY_LANTERN.flameY, 110, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        };
+    }
+
+
+    /* ---------- Небесные фонарики в 3D ----------
+       Фонарик — не картинка, а модель из десяти бумажных граней (панелей)
+       вокруг вертикальной оси, пять ярусов в высоту. Контур (широкий
+       «плечистый» верх, сужение книзу, плоское основание с горелкой) повторяет
+       твои sky-lantern.svg, цвета — те же палитры, красная и жёлтая.
+
+       - вращение: фонарик медленно вертится вокруг своей вертикальной оси
+         и чуть покачивается, поэтому видны разные грани;
+       - бумага просвечивает: изнутри горит огонёк, и чем ниже ярус, тем он
+         светлее и теплее (смешивается с цветом свечения); дальние грани
+         видны сквозь ближние, поэтому рисуются первыми и ещё светлее;
+       - рёбра между гранями — тёмные линии (как на рисунке);
+       - основание и огонёк: тёмная площадка снизу и яркое мерцающее пятно
+         света, которое видно сквозь стенки;
+       - снаружи — мягкое тёплое свечение, как раньше.
+       Пятьдесят четырёхугольников на фонарик, десяток фонариков — это сотни
+       простых заливок за кадр, для холста мелочь. */
+
+    // Профиль по высоте: y — вниз от верха, r — радиус. Сверху плечи, книзу сужение
+    const LANTERN3D_PROFILE = [
+        { y: -1.1, r: 0.55 }, { y: -1.0, r: 0.85 }, { y: -0.8, r: 0.97 },
+        { y: -0.25, r: 0.88 }, { y: 0.45, r: 0.76 }, { y: 1.0, r: 0.68 }
+    ];
+    const LANTERN3D_SIDES = 10;
+    const LANTERN3D_PALETTES = {
+        red:    { body: [255, 75, 75],  rib: [200, 55, 65],  glow: [255, 132, 82], base: [151, 55, 55] },
+        yellow: { body: [255, 213, 74], rib: [224, 166, 42], glow: [255, 184, 77], base: [138, 90, 30] }
+    };
+
+    // Матрица R = Rz · Rx · Ry: сначала вращение вокруг СОБСТВЕННОЙ вертикальной
+    // оси фонарика (ay), потом наклон (ax) и крен (az)
+    function rotationYXZ(ax, ay, az) {
+        const cx = Math.cos(ax), sx = Math.sin(ax);
+        const cy = Math.cos(ay), sy = Math.sin(ay);
+        const cz = Math.cos(az), sz = Math.sin(az);
+        return [
+            cz * cy - sz * sx * sy, -sz * cx, cz * sy + sz * sx * cy,
+            sz * cy + cz * sx * sy,  cz * cx, sz * sy - cz * sx * cy,
+            -cx * sy,                sx,      cx * cy
+        ];
+    }
+
+    function skyLanterns3dEffect() {
+        const rand = (min, max) => min + Math.random() * (max - min);
+        const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
+        const rgb = (c) => `rgb(${Math.min(255, c[0]) | 0}, ${Math.min(255, c[1]) | 0}, ${Math.min(255, c[2]) | 0})`;
+
+        const N = LANTERN3D_SIDES;
+        const rows = LANTERN3D_PROFILE.length;          // колец вершин
+        const angles = [];
+        for (let i = 0; i < N; i++) angles.push((i * Math.PI * 2) / N);
+
+        return {
+            rate: (mobile) => (mobile ? 0.9 : 1.4),
+
+            sortKey: (p) => p.depth,
+
+            spawn(width, height) {
+                const depth = Math.random();
+                return {
+                    x: rand(width * 0.04, width * 0.96),
+                    y: height + 50,
+                    depth,
+                    size: 11 + depth * 8.5,                       // радиус фонарика, px
+                    palette: Math.random() < 0.5 ? "red" : "yellow",
+                    vy: -rand(34, 60),
+                    drift: rand(2, 14),
+                    amp: rand(8, 22),
+                    freq: rand(0.5, 1.1),
+                    phase: rand(0, Math.PI * 2),
+                    flicker: rand(1.6, 3.2),
+                    yaw: rand(0, Math.PI * 2),                    // поворот вокруг вертикальной оси
+                    spin: rand(0.35, 0.9) * (Math.random() < 0.5 ? 1 : -1),
+                    alpha: 0.78 + 0.22 * depth,
+                    age: 0
+                };
+            },
+
+            update(p, dt) {
+                p.age += dt;
+                p.y += p.vy * dt;
+                p.x += (p.drift + Math.cos(p.age * p.freq + p.phase) * p.amp) * dt;
+                p.yaw += p.spin * dt;
+            },
+
+            isGone(p, width, height) {
+                return p.y + p.size * 4 < 0 || p.x < -100 || p.x > width + 100;
+            },
+
+            draw(ctx, p) {
+                const size = p.size;
+                const pal = LANTERN3D_PALETTES[p.palette];
+                const glow = 0.8 + 0.2 * Math.sin(p.age * p.flicker + p.phase);
+                // лёгкое покачивание (наклон и крен) и взгляд чуть снизу: виден
+                // светящийся низ с огоньком, как у фонарика, улетающего в небо
+                const ax = 0.32 + Math.sin(p.age * p.freq + p.phase) * 0.1;
+                const az = Math.sin(p.age * p.freq * 0.8 + p.phase) * 0.07;
+                const m = rotationYXZ(ax, p.yaw, az);
+                const focal = size * 8;
+
+                // проекция вершин
+                const proj = [];
+                for (let j = 0; j < rows; j++) {
+                    const row = [];
+                    const { y, r } = LANTERN3D_PROFILE[j];
+                    for (let i = 0; i < N; i++) {
+                        const X = Math.cos(angles[i]) * r * size;
+                        const Y = y * size;
+                        const Z = Math.sin(angles[i]) * r * size;
+                        const rx = m[0] * X + m[1] * Y + m[2] * Z;
+                        const ry = m[3] * X + m[4] * Y + m[5] * Z;
+                        const rz = m[6] * X + m[7] * Y + m[8] * Z;
+                        const k = focal / (focal - rz);
+                        row.push([p.x + rx * k, p.y + ry * k]);
+                    }
+                    proj.push(row);
+                }
+
+                // грани: нормаль, обращена ли к зрителю, цвет каждого яруса
+                const panels = [];
+                for (let i = 0; i < N; i++) {
+                    const mid = angles[i] + Math.PI / N;
+                    const cm = Math.cos(mid), sm = Math.sin(mid);
+                    for (let j = 0; j < rows - 1; j++) {
+                        const a = LANTERN3D_PROFILE[j], b = LANTERN3D_PROFILE[j + 1];
+                        const slope = (b.r - a.r) / (b.y - a.y);        // dr/dy (< 0 — сужение книзу)
+                        const len = Math.hypot(cm, slope, sm);
+                        const nx = cm / len, ny = -slope / len, nz = sm / len;
+                        const wx = m[0] * nx + m[1] * ny + m[2] * nz;
+                        const wy = m[3] * nx + m[4] * ny + m[5] * nz;
+                        const wz = m[6] * nx + m[7] * ny + m[8] * nz;
+                        const near = wz >= 0;
+                        const lit = Math.max(0, (near ? 1 : -1) * (wx * LEAF3D_LIGHT[0] + wy * LEAF3D_LIGHT[1] + wz * LEAF3D_LIGHT[2]));
+                        // чем ниже ярус, тем ближе к огоньку: цвет смешивается с цветом свечения
+                        const s = (j + 0.5) / (rows - 1);
+                        const g = (0.1 + 0.55 * Math.pow(s, 1.7)) * (0.85 + 0.15 * glow) + (near ? 0 : 0.18);
+                        const tone = near ? 0.9 + 0.18 * lit : 1.02;
+                        const stripe = i % 2 === 0 ? 1 : 0.95;           // чуть разные по яркости соседние грани
+                        const base = mix(pal.body.map((c) => c * tone * stripe), pal.glow, Math.min(1, g));
+                        panels.push({ near, i, j, color: rgb(base) });
+                    }
+                }
+
+                const quad = (panel) => {
+                    const i2 = (panel.i + 1) % N;
+                    const q = [proj[panel.j][panel.i], proj[panel.j][i2], proj[panel.j + 1][i2], proj[panel.j + 1][panel.i]];
+                    ctx.beginPath();
+                    ctx.moveTo(q[0][0], q[0][1]);
+                    ctx.lineTo(q[1][0], q[1][1]);
+                    ctx.lineTo(q[2][0], q[2][1]);
+                    ctx.lineTo(q[3][0], q[3][1]);
+                    ctx.closePath();
+                };
+
+                // центр огонька и основания — в проекции
+                const project = (x, y, z) => {
+                    const X = x * size, Y = y * size, Z = z * size;
+                    const rx = m[0] * X + m[1] * Y + m[2] * Z;
+                    const ry = m[3] * X + m[4] * Y + m[5] * Z;
+                    const rz = m[6] * X + m[7] * Y + m[8] * Z;
+                    const k = focal / (focal - rz);
+                    return [p.x + rx * k, p.y + ry * k];
+                };
+                const flame = project(0, 0.7, 0);
+                const haloCenter = project(0, 0.3, 0);
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+
+                // внешнее свечение
+                const halo = ctx.createRadialGradient(haloCenter[0], haloCenter[1], 0, haloCenter[0], haloCenter[1], size * 3.6);
+                halo.addColorStop(0, `rgba(255, 190, 90, ${0.5 * glow})`);
+                halo.addColorStop(1, "rgba(255, 190, 90, 0)");
+                ctx.fillStyle = halo;
+                ctx.beginPath();
+                ctx.arc(haloCenter[0], haloCenter[1], size * 3.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.lineJoin = "round";
+                ctx.lineWidth = 0.7;
+                ctx.strokeStyle = `rgba(${pal.rib[0]}, ${pal.rib[1]}, ${pal.rib[2]}, 0.5)`;
+
+                // 1) дальние грани (видны сквозь бумагу, светлее)
+                for (const panel of panels) {
+                    if (panel.near) continue;
+                    quad(panel);
+                    ctx.fillStyle = panel.color;
+                    ctx.fill();
+                }
+
+                // 2) основание-горелка: тёмная площадка снизу
+                const bottom = proj[rows - 1];
+                ctx.beginPath();
+                ctx.moveTo(bottom[0][0], bottom[0][1]);
+                for (let i = 1; i < N; i++) ctx.lineTo(bottom[i][0], bottom[i][1]);
+                ctx.closePath();
+                ctx.fillStyle = rgb(pal.base);
+                ctx.fill();
+
+                // 3) огонёк внутри: яркое мерцающее пятно (видно сквозь ближние грани)
+                const flameGrad = ctx.createRadialGradient(flame[0], flame[1], 0, flame[0], flame[1], size * 0.75);
+                flameGrad.addColorStop(0, `rgba(255, 248, 205, ${0.95 * glow})`);
+                flameGrad.addColorStop(0.45, `rgba(255, 215, 120, ${0.55 * glow})`);
+                flameGrad.addColorStop(1, "rgba(255, 190, 90, 0)");
+                ctx.fillStyle = flameGrad;
+                ctx.beginPath();
+                ctx.arc(flame[0], flame[1], size * 0.75, 0, Math.PI * 2);
+                ctx.fill();
+
+                // 4) ближние грани поверх, чуть прозрачные: огонёк просвечивает
+                ctx.globalAlpha = p.alpha * 0.9;
+                for (const panel of panels) {
+                    if (!panel.near) continue;
+                    quad(panel);
+                    ctx.fillStyle = panel.color;
+                    ctx.fill();
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = p.alpha;
+
+                // 5) верхняя крышка, если смотрим сверху
+                if (-m[7] > 0) {
+                    const top = proj[0];
+                    ctx.beginPath();
+                    ctx.moveTo(top[0][0], top[0][1]);
+                    for (let i = 1; i < N; i++) ctx.lineTo(top[i][0], top[i][1]);
+                    ctx.closePath();
+                    ctx.fillStyle = rgb(mix(pal.body, [255, 255, 255], 0.12));
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                // 6) тёплый блик огонька поверх стенок
+                const spot = ctx.createRadialGradient(flame[0], flame[1], 0, flame[0], flame[1], size * 0.4);
+                spot.addColorStop(0, `rgba(255, 250, 215, ${0.55 * glow})`);
+                spot.addColorStop(1, "rgba(255, 230, 150, 0)");
+                ctx.fillStyle = spot;
+                ctx.beginPath();
+                ctx.arc(flame[0], flame[1], size * 0.4, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.restore();
@@ -1188,10 +2013,14 @@
 
         particles = particles.filter((p) => {
             effect.update(p, dt, width, height);
-            if (effect.isGone(p, width, height)) return false;
-            effect.draw(ctx, p);
-            return true;
+            return !effect.isGone(p, width, height);
         });
+
+        // Эффект может попросить рисовать «дальние» частицы раньше «ближних»
+        // (у объёмных листьев) — тогда ближние перекрывают дальние
+        if (effect.sortKey) particles.sort((a, b) => effect.sortKey(a) - effect.sortKey(b));
+
+        for (const p of particles) effect.draw(ctx, p);
 
         paintButton();
 

@@ -361,6 +361,171 @@ if (novelPageTitleEl) {
         return parsed.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
     }
 
+    /* ---------- Таблица глав: галочка «прочитано» и меню «···» ---------- */
+
+    // Галочка рядом с названием. Класс .icon-read — тот самый, по которому
+    // фильтр «Прочитанные / Непрочитанные» отличает прочитанные строки.
+    // Без <title> внутри: его текст попал бы в поиск по названию главы.
+    function chapterReadMarkHtml() {
+        return '<svg class="icon-read" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Прочитано"><path d="M20 6 9 17l-5-5"/></svg>';
+    }
+
+    function setChapterReadState(row, novelId, chapterNumber, isRead) {
+        row.classList.toggle("is-read", isRead);
+        const titleCell = row.querySelector(".col-title");
+        const mark = titleCell.querySelector(".icon-read");
+        if (isRead && !mark) titleCell.insertAdjacentHTML("beforeend", chapterReadMarkHtml());
+        if (!isRead && mark) mark.remove();
+        setChapterRead(novelId, chapterNumber, isRead);
+    }
+
+    // Копирование в буфер: navigator.clipboard работает только на https
+    // (и localhost), поэтому запасной путь через временное поле
+    async function copyTextToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (error) { /* пробуем запасной путь */ }
+        try {
+            const field = document.createElement("textarea");
+            field.value = text;
+            field.setAttribute("readonly", "");
+            field.style.position = "fixed";
+            field.style.opacity = "0";
+            document.body.appendChild(field);
+            field.select();
+            const ok = document.execCommand("copy");
+            field.remove();
+            return ok;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    // Одно общее меню на всю таблицу: живёт в <body> и позиционируется
+    // под нажатой «···» (position: fixed). Внутри .chapters-table-wrapper
+    // его бы обрезал overflow, а на телефоне оно ещё и ушло бы за край.
+    function setupChapterMenu(tbodyEl, novelId) {
+        const icon = (paths) =>
+            `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+
+        const menu = document.createElement("div");
+        menu.className = "chapter-menu";
+        menu.setAttribute("role", "menu");
+        menu.hidden = true;
+        menu.innerHTML = `
+            <button type="button" class="chapter-menu-item" role="menuitem" data-action="toggle-read">
+                ${icon('<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-10 10.01-3-3"/>')}
+                <span data-role="read-label"></span>
+            </button>
+            <button type="button" class="chapter-menu-item" role="menuitem" data-action="copy-link">
+                ${icon('<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>')}
+                <span data-role="copy-label"></span>
+            </button>
+            <a class="chapter-menu-item" role="menuitem" data-action="comments" href="#">
+                ${icon('<path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>')}
+                <span>Комментарии</span>
+            </a>
+            <button type="button" class="chapter-menu-item" role="menuitem" data-action="report" disabled title="Скоро появится">
+                ${icon('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>')}
+                <span>Сообщить об ошибке</span>
+            </button>`;
+        document.body.appendChild(menu);
+
+        const readLabel = menu.querySelector('[data-role="read-label"]');
+        const copyLabel = menu.querySelector('[data-role="copy-label"]');
+        const commentsLink = menu.querySelector('[data-action="comments"]');
+
+        let openRow = null;
+        let openBtn = null;
+        let closeTimer = null;
+
+        function closeMenu(returnFocus) {
+            if (menu.hidden) return;
+            menu.hidden = true;
+            clearTimeout(closeTimer);
+            if (openBtn) {
+                openBtn.setAttribute("aria-expanded", "false");
+                if (returnFocus) openBtn.focus();
+            }
+            openRow = null;
+            openBtn = null;
+        }
+
+        function openMenuFor(btn) {
+            openRow = btn.closest("tr");
+            openBtn = btn;
+            const chapterNumber = Number(openRow.dataset.chapter);
+
+            readLabel.textContent = openRow.classList.contains("is-read")
+                ? "Отметить непрочитанной"
+                : "Отметить прочитанной";
+            copyLabel.textContent = "Скопировать ссылку";
+            commentsLink.href = `${chapterHref(novelId, chapterNumber)}#comments`;
+
+            // Сначала показываем невидимым — чтобы измерить размер и
+            // решить, где место: справа от «···», под ней или над ней
+            menu.style.visibility = "hidden";
+            menu.hidden = false;
+            const rect = btn.getBoundingClientRect();
+            const margin = 8;
+            const left = Math.max(margin, Math.min(rect.right - menu.offsetWidth, window.innerWidth - menu.offsetWidth - margin));
+            let top = rect.bottom + 4;
+            if (top + menu.offsetHeight > window.innerHeight - margin) {
+                top = Math.max(margin, rect.top - menu.offsetHeight - 4);
+            }
+            menu.style.left = `${left}px`;
+            menu.style.top = `${top}px`;
+            menu.style.visibility = "";
+            btn.setAttribute("aria-expanded", "true");
+        }
+
+        tbodyEl.addEventListener("click", (event) => {
+            const btn = event.target.closest(".chapter-menu-btn");
+            if (!btn) return;
+            const sameButton = btn === openBtn;
+            closeMenu();
+            if (!sameButton) openMenuFor(btn);
+        });
+
+        menu.addEventListener("click", async (event) => {
+            const item = event.target.closest(".chapter-menu-item");
+            if (!item || item.disabled || !openRow) return;
+
+            const chapterNumber = Number(openRow.dataset.chapter);
+            const action = item.dataset.action;
+
+            if (action === "toggle-read") {
+                const makeRead = !openRow.classList.contains("is-read");
+                setChapterReadState(openRow, novelId, chapterNumber, makeRead);
+                closeMenu(true);
+                // Строка могла перестать подходить под фильтр
+                // («Непрочитанные» / «Прочитанные») — пересчитываем список
+                if (typeof applyChapterFilters === "function") applyChapterFilters();
+            } else if (action === "copy-link") {
+                const url = new URL(chapterHref(novelId, chapterNumber), window.location.href).href;
+                const copied = await copyTextToClipboard(url);
+                copyLabel.textContent = copied ? "Ссылка скопирована" : "Не удалось скопировать";
+                closeTimer = setTimeout(() => closeMenu(true), 1200);
+            } else if (action === "comments") {
+                closeMenu(); // переход по ссылке произойдёт сам
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (menu.hidden) return;
+            if (menu.contains(event.target) || event.target.closest(".chapter-menu-btn")) return;
+            closeMenu();
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") closeMenu(true);
+        });
+        // Меню привязано к экранным координатам кнопки, поэтому при
+        // прокрутке или повороте экрана проще закрыть, чем двигать
+        window.addEventListener("scroll", () => closeMenu(), true);
+        window.addEventListener("resize", () => closeMenu());
+    }
+
     async function loadNovelPage() {
         const params = new URLSearchParams(window.location.search);
         const novelId = params.get("id") || "kniga-grez";
@@ -419,6 +584,15 @@ if (novelPageTitleEl) {
             if (translatorName) translatorName.textContent = novel.translator.name;
             if (translatorLink) translatorLink.href = novel.translator.href || "#";
             if (translatorVerified) translatorVerified.hidden = !novel.translator.verified;
+
+            // «Рекомендации переводчика →» в заметках: страница переводчика,
+            // сразу открытая на вкладке «Рекомендации» (?tab=… читает
+            // translator-script.js)
+            const translatorRecsLink = document.getElementById("novelTranslatorRecsLink");
+            if (translatorRecsLink && novel.translator.href) {
+                const base = novel.translator.href.split("#")[0];
+                translatorRecsLink.href = `${base}${base.includes("?") ? "&" : "?"}tab=recommendations`;
+            }
         }
 
         /* ---- Meta line: original status / chapter count / genres ---- */
@@ -531,17 +705,34 @@ if (novelPageTitleEl) {
 
         /* ---- Chapters: volumes sidebar + table rows ---- */
         const chapters = [...(novel.chapters || [])].sort((a, b) => b.number - a.number);
-        const chaptersPerVolume = novel.chaptersPerVolume || 50;
-        const totalVolumes = Math.max(1, Math.ceil((novel.totalChapters || 0) / chaptersPerVolume));
-        const volumeForChapter = (num) => Math.ceil(num / chaptersPerVolume);
+
+        // Тома необязательны. Если у глав в JSON (массив "chapters" в
+        // novels/<id>.json) есть поле "volume": 1, 2, … — над таблицей
+        // появляются пилюли «Том N», а диапазон глав в них считается из
+        // самих данных. Если ни у одной главы поля нет — пилюль нет и
+        // главы идут одним списком. Глава без "volume" среди глав с
+        // томами попадёт только в «Все главы».
+        const hasVolume = (chapter) =>
+            chapter.volume !== undefined && chapter.volume !== null && chapter.volume !== "";
+        const volumeKeys = [...new Set(chapters.filter(hasVolume).map((c) => String(c.volume)))]
+            .sort((a, b) => Number(a) - Number(b));
+        const hasVolumes = volumeKeys.length > 0;
+
+        const chaptersLayoutEl = document.querySelector(".chapters-layout");
+        if (chaptersLayoutEl) chaptersLayoutEl.classList.toggle("chapters-layout--no-volumes", !hasVolumes);
 
         const volumeListEl = document.getElementById("volumeSidebarList");
         if (volumeListEl) {
-            let volumesHtml = `<li class="active" data-volume="all"><span>Все главы</span> <small>${novel.totalChapters || 0}</small></li>`;
-            for (let v = 1; v <= totalVolumes; v++) {
-                const start = (v - 1) * chaptersPerVolume + 1;
-                const end = Math.min(v * chaptersPerVolume, novel.totalChapters || 0);
-                volumesHtml += `<li data-volume="${v}"><span>Том ${v}</span> <small>${start}–${end}</small></li>`;
+            let volumesHtml = "";
+            if (hasVolumes) {
+                volumesHtml = `<li class="active" data-volume="all"><span>Все главы</span> <small>${chapters.length}</small></li>`;
+                volumeKeys.forEach((key) => {
+                    const numbers = chapters.filter((c) => hasVolume(c) && String(c.volume) === key).map((c) => c.number);
+                    const start = Math.min(...numbers);
+                    const end = Math.max(...numbers);
+                    const range = start === end ? `${start}` : `${start}–${end}`;
+                    volumesHtml += `<li data-volume="${key}"><span>Том ${key}</span> <small>${range}</small></li>`;
+                });
             }
             volumeListEl.innerHTML = volumesHtml;
 
@@ -561,18 +752,22 @@ if (novelPageTitleEl) {
 
         const tbodyEl = document.getElementById("chaptersTableBody");
         if (tbodyEl) {
+            const readChapters = new Set(getReadChapters(novelId));
+            const favoriteChapters = new Set(getFavoriteChapters(novelId));
             tbodyEl.innerHTML = chapters
                 .map((chapter) => {
                     const href = chapterHref(novelId, chapter.number);
+                    const isRead = readChapters.has(chapter.number);
+                    const isFavorite = favoriteChapters.has(chapter.number);
                     return `
-                    <tr data-volume="${volumeForChapter(chapter.number)}">
+                    <tr data-volume="${hasVolume(chapter) ? chapter.volume : ""}" data-chapter="${chapter.number}"${isRead ? ' class="is-read"' : ""}>
                         <td class="col-num">${chapter.number}</td>
-                        <td class="col-title"><a href="${href}">${chapter.title || ""}</a></td>
+                        <td class="col-title"><a href="${href}">${chapter.title || ""}</a>${isRead ? chapterReadMarkHtml() : ""}</td>
                         <td class="col-date">${formatDateRu(chapter.date)}</td>
                         <td class="col-actions">
                             <div class="col-actions-inner">
-                                <button type="button" class="btn-icon favorite-btn" aria-label="Сохранить главу" aria-pressed="false"><img src="images/icons/heart.svg" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
-                                <button class="btn-icon">···</button>
+                                <button type="button" class="btn-icon favorite-btn${isFavorite ? " active" : ""}" aria-label="Сохранить главу" aria-pressed="${isFavorite}"><img src="${isFavorite ? "images/icons/heart-filled.svg" : "images/icons/heart.svg"}" alt="" data-outline="images/icons/heart.svg" data-filled="images/icons/heart-filled.svg"></button>
+                                <button type="button" class="btn-icon chapter-menu-btn" aria-label="Действия с главой" aria-haspopup="menu" aria-expanded="false">···</button>
                             </div>
                         </td>
                     </tr>`;
@@ -587,9 +782,12 @@ if (novelPageTitleEl) {
                     const isSaved = button.classList.toggle("active");
                     button.setAttribute("aria-pressed", isSaved);
                     icon.src = isSaved ? icon.dataset.filled : icon.dataset.outline;
+                    setChapterFavorited(novelId, Number(button.closest("tr").dataset.chapter), isSaved);
                     if (typeof applyChapterFilters === "function") applyChapterFilters();
                 });
             });
+
+            setupChapterMenu(tbodyEl, novelId);
         }
 
         /* ---- Continue Reading / floating button ----

@@ -90,65 +90,41 @@
                 </div>
             </section>
 
-            <!-- WHY BUSY BEE (GRID SECTION) -->
+            <!-- WHY BUSY BEE — цветущее дерево с дощечками.
+                 Сцена оживает скриптом (about-script.js); список .tree-data
+                 ниже — источник текстов и координат дощечек (x/y в % от
+                 дерева, len — длина нити), он же запасной вариант без JS
+                 и для скринридеров. -->
             <section class="why-section">
                 <h2 class="about-section-title">Почему Busy Bee?</h2>
+                <p class="tree-hint">Нажмите на дощечку, чтобы прочитать пожелание</p>
 
-                <div class="features-grid">
-                    <!-- Item 1 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                <div class="tree-frame" id="treeFrame">
+                    <div class="tree-stage" id="treeStage">
+                        <div class="tree-scene" id="treeScene">
+                            <img class="tree-bg" src="images/about/tree-bg.jpg" alt="Озеро в горах на закате, на берегу цветущая вишня">
+                            <div class="tree-veil"></div>
+                            <div class="tree-plant" id="treePlant">
+                                <canvas id="treeCanvas" data-src="images/about/tree.webp" aria-hidden="true"></canvas>
+                            </div>
+                            <div class="tree-dim" id="treeDim" hidden></div>
                         </div>
-                        <h3>Удобное чтение</h3>
-                        <p>Чистый интерфейс, без отвлекающих элементов.</p>
                     </div>
-
-                    <!-- Item 2 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.5 7.5"/><circle cx="11" cy="11" r="2"/></svg>
-                        </div>
-                        <h3>Качественные переводы</h3>
-                        <p>Я перевожу сама, с вниманием к смыслу и стилю.</p>
-                    </div>
-
-                    <!-- Item 3 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M12 8a2.5 2.5 0 0 0-2.5 2.5c0 2.2 2.5 4.5 2.5 4.5s2.5-2.3 2.5-4.5A2.5 2.5 0 0 0 12 8z"/></svg>
-                        </div>
-                        <h3>Уважение к авторам</h3>
-                        <p>Мы ценим труд авторов и поддерживаем оригинальные произведения.</p>
-                    </div>
-
-                    <!-- Item 4 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L3 12v9h9l8.24-8.76z"/><line x1="16" y1="8" x2="2" y2="22"/></svg>
-                        </div>
-                        <h3>Без навязчивой рекламы</h3>
-                        <p>Никаких всплывающих окон и баннеров. Только истории.</p>
-                    </div>
-
-                    <!-- Item 5 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        </div>
-                        <h3>Предупреждения о содержании</h3>
-                        <p>Мы заботимся о вашем комфорте.</p>
-                    </div>
-
-                    <!-- Item 6 -->
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        </div>
-                        <h3>Сообщество</h3>
-                        <p>Здесь собираются читатели, которые любят истории так же, как и вы.</p>
+                    <div class="tree-zoom">
+                        <button type="button" id="treeZoomIn" aria-label="Приблизить">+</button>
+                        <button type="button" id="treeZoomOut" aria-label="Отдалить">−</button>
+                        <button type="button" id="treeZoomReset" aria-label="Сбросить масштаб">⟲</button>
                     </div>
                 </div>
+
+                <ul class="tree-data" id="treeData">
+                    <li data-x="35" data-y="41" data-len="3"><strong>Чтение без суеты</strong> <span>Чистый интерфейс, без отвлекающих элементов.</span></li>
+                    <li data-x="19" data-y="59" data-len="2.4"><strong>Переводы с душой</strong> <span>Я перевожу сама, с вниманием к смыслу и стилю.</span></li>
+                    <li data-x="49" data-y="28" data-len="3.4"><strong>Уважение к авторам</strong> <span>Мы ценим труд авторов и поддерживаем оригинальные произведения.</span></li>
+                    <li data-x="62" data-y="51" data-len="2.6"><strong>Тишина без баннеров</strong> <span>Никаких всплывающих окон. Только истории.</span></li>
+                    <li data-x="87" data-y="44" data-len="3"><strong>Бережно к вам</strong> <span>Предупреждения о содержании: мы заботимся о вашем комфорте.</span></li>
+                    <li data-x="75" data-y="68" data-len="2.2"><strong>Читаем вместе</strong> <span>Здесь собираются читатели, которые любят истории так же, как и вы.</span></li>
+                </ul>
             </section>
 
             <!-- PROCESS PIPELINE SECTION -->

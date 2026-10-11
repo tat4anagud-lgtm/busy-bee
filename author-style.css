@@ -270,13 +270,35 @@
 .stat-sub { font-size: 9px; color: var(--text-muted); }
 .stat-link { font-size: 10px; color: var(--honey); text-decoration: none; margin-top: auto; }
 
-/* .rating-row / .rating-score / .stars / .votes-count — уже определены
-   в общем style.css (та же карточка рейтинга, что на novel.html), здесь
-   переопределять не нужно; ниже — только подгонка отступов под тесную
-   stat-card, где не нужен нижний margin от .rating-row */
-.stat-card .rating-row { margin-bottom: 0; gap: 6px; }
-.stat-card .rating-score { font-size: 22px; }
-.stat-card .stars { font-size: 11px; }
+/* Карточка «Средняя оценка». Классы .rating-row / .rating-score / .stars /
+   .votes-count нигде в общем style.css не определены (раньше тут стоял
+   комментарий, что они там есть), поэтому стили заданы здесь, в пределах
+   .stat-card. Число и звёзды выровнены по базовой линии, отступы и размер
+   числа — как у .stat-value в соседних карточках, «(1,3K голосов)» — как
+   .stat-sub. */
+.stat-card .rating-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+.stat-card .rating-score {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-card .stars {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--honey);
+}
+
+.stat-card .votes-count {
+    font-size: 9px;
+    color: var(--text-muted);
+}
 
 .stat-text-val { font-size: 11px; color: var(--text-secondary); margin: 6px 0 0; line-height: 1.3; }
 

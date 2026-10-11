@@ -562,6 +562,7 @@
 .action-btn {
     border: none;
     background: none;
+    font-family: inherit;
     font-size: 10px;
     color: var(--text-muted);
     cursor: pointer;

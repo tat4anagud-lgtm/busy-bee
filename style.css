@@ -1111,7 +1111,11 @@ a {
    BOOK CARDS
    ======================================== */
 
-.book-carousel {
+/* .recommends-carousel (translator page, "Busy Bee рекомендует") had no
+   styles of its own, so the arrows stacked above/below the track instead
+   of sitting on its sides — it shares the layout of .book-carousel */
+.book-carousel,
+.recommends-carousel {
     display: flex;
     align-items: center;
 
@@ -2192,6 +2196,37 @@ a.pill:hover {
 .favorite-btn img {
     width: 14px;
     height: 14px;
+
+    object-fit: contain;
+}
+
+
+/* Like button with a counter (heart + number): quote cards on the author
+   page, post footers on the translator page. Was missing entirely, so the
+   heart rendered at its natural SVG size and the author-page button kept
+   the browser's default grey frame. Colour and font-size are inherited,
+   so each context (.quote-footer, .action-btn) sets its own. */
+.like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    padding: 0;
+
+    border: none;
+    background: none;
+
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+
+    cursor: pointer;
+}
+
+
+.like-btn img {
+    width: 12px;
+    height: 12px;
 
     object-fit: contain;
 }

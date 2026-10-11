@@ -569,10 +569,73 @@
 }
 
 /* ---------- Избранное: цитаты ---------- */
-.fav-quotes-grid {
+.fav-quotes-grid,
+.fav-chapters-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
+}
+
+.fav-chapters-grid:empty {
+    display: none;
+}
+
+/* ---------- Избранное: главы ----------
+   Карточка собрана из тех же частей, что и «Мои цитаты» (.saved-card,
+   .saved-source, .saved-foot…): сверху обложка новеллы и название
+   главы, внизу дата, «Читать» и «Убрать». */
+.fav-chapter-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.fav-chapter-cover {
+    flex: 0 0 auto;
+    width: 48px;
+    aspect-ratio: 2 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface-warm);
+}
+
+.fav-chapter-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fav-chapter-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.fav-chapter-title {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--text-primary);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.fav-chapter-title:hover {
+    color: var(--honey);
+}
+
+/* «Все избранные главы (N) →» под четырьмя карточками в обзоре профиля */
+.fav-chapters-more {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    color: var(--honey);
+    text-decoration: none;
 }
 
 .fav-quotes-grid .user-quote-item {
@@ -780,60 +843,6 @@
     font-size: var(--fs-micro);
     color: var(--text-muted);
     margin-top: 3px;
-}
-
-/* ---------- Achievements Grid ---------- */
-.achievements-hex-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px 10px;
-    text-align: center;
-}
-
-.achievement-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* Шестиугольник: внешний слой (медовый) даёт «рамку»,
-   ::before с чуть меньшим вырезом — заливку. Значок внутри
-   (пока эмодзи) лежит поверх обоих. */
-.hex-badge {
-    --hex: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-
-    position: relative;
-    z-index: 0;
-    width: 42px;
-    height: 48px;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    background: var(--honey);
-    clip-path: var(--hex);
-}
-
-.hex-badge::before {
-    content: "";
-    position: absolute;
-    inset: 1.5px;
-    z-index: -1;
-    background: linear-gradient(160deg, #FBF1D9, #F2DDAA);
-    clip-path: var(--hex);
-}
-
-.achievement-item strong {
-    font-size: var(--fs-small);
-    line-height: 1.25;
-    display: block;
-}
-
-.achievement-item span {
-    font-size: var(--fs-micro);
-    line-height: 1.3;
-    color: var(--text-muted);
 }
 
 /* ---------- Recent Activity Card ---------- */
@@ -1474,7 +1483,8 @@
 
     /* Та же сетка цитат, что и «Мои цитаты» выше, только внутри вкладки
        «Избранное» — раньше была без адаптива вообще, 2 колонки всегда */
-    .fav-quotes-grid {
+    .fav-quotes-grid,
+    .fav-chapters-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -1495,7 +1505,7 @@
 
 
 /* ========================================
-   МОИ КОЛЛЕКЦИИ / ДОСТИЖЕНИЯ
+   МОИ КОЛЛЕКЦИИ
    ======================================== */
 
 /* Заголовок страницы с кнопкой справа */
@@ -1571,59 +1581,267 @@
     color: var(--text-muted);
 }
 
-/* Достижения: карточка = шестиугольник + название и условие */
-.achievements-page-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+/* ========================================
+   ДУХ-СПУТНИК
+   ======================================== */
+
+/* Виджет в обзоре профиля: зверь, имя, стадия */
+.spirit-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
 }
 
-.achievement-card {
+.spirit-widget:empty {
+    display: none;
+}
+
+.spirit-widget img {
+    width: 132px;
+    height: 132px;
+    object-fit: contain;
+}
+
+.spirit-widget strong {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.spirit-stage {
+    display: inline-block;
+    padding: 2px 10px;
+    border: 1px solid var(--honey);
+    border-radius: 12px;
+    background: var(--surface);
+    font-size: var(--fs-small);
+    color: var(--text-primary);
+}
+
+.empty-state-text .inline-link {
+    color: var(--honey);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Выбранный зверь на странице «Дух-спутник» */
+.spirit-hero {
     display: flex;
     align-items: center;
-    gap: 14px;
-    min-width: 0;
-    padding: 16px 18px;
+    gap: 32px;
+    padding: 24px 28px;
 
-    background: var(--surface);
+    background: var(--surface-warm);
     border: 1px solid var(--border);
     border-radius: 14px;
 }
 
-.achievement-card .hex-badge {
-    flex-shrink: 0;
-    margin-bottom: 0;
+.spirit-hero[hidden] {
+    display: none;
 }
 
-.achievement-card-info {
+/* Круглая «сцена» под зверем */
+.spirit-hero-art {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 220px;
+    height: 220px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+.spirit-hero-art img {
+    width: 86%;
+    height: 86%;
+    object-fit: contain;
+}
+
+.spirit-hero-body {
     min-width: 0;
 }
 
-.achievement-card-info strong {
-    display: block;
-    font-size: var(--fs-base);
-    line-height: 1.3;
+.spirit-hero-name {
+    margin: 0 0 2px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--text-primary);
 }
 
-.achievement-card-info span {
-    display: block;
-    margin-top: 2px;
-    font-size: var(--fs-small);
-    line-height: 1.4;
+.spirit-hero-epithet {
+    margin: 0 0 12px;
+    font-size: var(--fs-body);
     color: var(--text-muted);
 }
 
-@media (max-width: 900px) {
-    .achievements-page-grid {
+.spirit-hero-text {
+    margin: 12px 0 0;
+    font-size: var(--fs-base);
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.spirit-hero-hint {
+    margin: 10px 0 0;
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+/* «Путь роста»: малыш → подросток → взрослый → легенда.
+   Пока нарисован только малыш — остальные показаны силуэтом. */
+.spirit-stages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.spirit-stage-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 72px;
+    font-size: var(--fs-micro);
+    color: var(--text-muted);
+}
+
+.spirit-stage-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.spirit-stage-thumb img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.spirit-stage-slot.is-current .spirit-stage-thumb {
+    border-color: var(--honey);
+}
+
+.spirit-stage-slot.is-current {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.spirit-stage-slot.is-locked .spirit-stage-thumb img {
+    filter: brightness(0);
+    opacity: 0.12;
+}
+
+/* Каталог зверей */
+.spirit-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.spirit-card {
+    appearance: none;
+    font: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 12px 14px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-align: center;
+    color: var(--text-primary);
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.spirit-card:hover {
+    background: var(--surface-warm);
+}
+
+.spirit-card[aria-pressed="true"] {
+    background: var(--surface-warm);
+    border-color: var(--honey);
+}
+
+.spirit-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+}
+
+.spirit-card-name {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.spirit-card-epithet {
+    font-size: var(--fs-small);
+    color: var(--text-muted);
+}
+
+.spirit-card-text {
+    font-size: var(--fs-small);
+    line-height: 1.45;
+    color: var(--text-secondary);
+}
+
+.spirit-card-tag {
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    color: var(--honey);
+}
+
+@media (max-width: 1100px) {
+    .spirit-gallery {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .spirit-gallery {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .spirit-hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 20px 16px;
+    }
+
+    .spirit-hero-art {
+        width: 180px;
+        height: 180px;
+    }
+
+    .spirit-stages {
+        justify-content: center;
     }
 }
 
 @media (max-width: 560px) {
-    .achievements-page-grid {
-        grid-template-columns: 1fr;
-    }
-
     .page-head--action {
         flex-direction: column;
     }

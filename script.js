@@ -1201,11 +1201,124 @@ function getReadingProgress(novelId) {
 function saveReadingProgress(novelId, chapterNumber) {
     try {
         const all = JSON.parse(localStorage.getItem(READING_PROGRESS_KEY)) || {};
+        const previousChapter = all[novelId] ? all[novelId].chapter : null;
         all[novelId] = { chapter: chapterNumber, updatedAt: new Date().toISOString() };
         localStorage.setItem(READING_PROGRESS_KEY, JSON.stringify(all));
         markNovelAsReadingIfNew(novelId);
+
+        // Читатель открыл более позднюю главу, чем в прошлый раз, — значит,
+        // ту, на которой он был, он дочитал: отмечаем её прочитанной.
+        // Возврат назад или повторное открытие той же главы ничего не меняют.
+        if (previousChapter && previousChapter < chapterNumber) {
+            setChapterRead(novelId, previousChapter, true);
+        }
     } catch (error) {
         console.error("Couldn't save reading progress:", error);
+    }
+}
+
+/* ---------- Дух-спутник ----------
+   Каталог зверей лежит в spirits/spirits.json, выбранный зверь пока
+   хранится в localStorage: busybee_spirit_pet = { id, chosenAt }.
+   Когда появятся аккаунты на сервере, менять нужно только эти функции
+   (они станут асинхронными) — остальной код про хранилище не знает. */
+const SPIRIT_PET_KEY = "busybee_spirit_pet";
+
+function getSpiritPetId() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(SPIRIT_PET_KEY));
+        return saved && saved.id ? saved.id : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function setSpiritPetId(spiritId) {
+    try {
+        localStorage.setItem(SPIRIT_PET_KEY, JSON.stringify({ id: spiritId, chosenAt: new Date().toISOString() }));
+    } catch (error) {
+        console.error("Couldn't save the spirit companion:", error);
+    }
+}
+
+// { stages: [{ key, label }], spirits: [{ id, name, epithet, description, legend, images }] }
+let spiritsDataCache = null;
+
+async function getSpiritsData() {
+    if (spiritsDataCache) return spiritsDataCache;
+    const response = await fetch("spirits/spirits.json");
+    if (!response.ok) throw new Error("Spirits catalog not found");
+    spiritsDataCache = await response.json();
+    return spiritsDataCache;
+}
+
+/* ---------- Избранные главы (localStorage) ----------
+   Сердечки у глав в таблице на странице новеллы. Формат тот же, что у
+   прочитанных глав ниже: { "<novelId>": [3, 12] } — номера глав. */
+const FAVORITE_CHAPTERS_KEY = "busybee_favorite_chapters";
+
+function getFavoriteChapters(novelId) {
+    try {
+        const all = JSON.parse(localStorage.getItem(FAVORITE_CHAPTERS_KEY)) || {};
+        return Array.isArray(all[novelId]) ? all[novelId] : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+// Все избранные главы по всем новеллам: [{ novelId, number }, …].
+// Порядок: новеллы — как лежат в хранилище, главы внутри — по номеру.
+function getAllFavoriteChapters() {
+    try {
+        const all = JSON.parse(localStorage.getItem(FAVORITE_CHAPTERS_KEY)) || {};
+        return Object.entries(all).flatMap(([novelId, numbers]) =>
+            Array.isArray(numbers) ? numbers.map((number) => ({ novelId, number })) : []
+        );
+    } catch (error) {
+        return [];
+    }
+}
+
+function setChapterFavorited(novelId, chapterNumber, isFavorited) {
+    try {
+        const all = JSON.parse(localStorage.getItem(FAVORITE_CHAPTERS_KEY)) || {};
+        const current = new Set(Array.isArray(all[novelId]) ? all[novelId] : []);
+        if (isFavorited) current.add(chapterNumber);
+        else current.delete(chapterNumber);
+        all[novelId] = Array.from(current).sort((a, b) => a - b);
+        localStorage.setItem(FAVORITE_CHAPTERS_KEY, JSON.stringify(all));
+    } catch (error) {
+        console.error("Couldn't save favorite chapters:", error);
+    }
+}
+
+/* ---------- Прочитанные главы (localStorage) ----------
+   Какие главы читатель уже прочитал — для галочек в таблице глав на
+   странице новеллы. Отмечаются двумя способами: автоматически (см.
+   saveReadingProgress выше) и вручную — пунктом «Отметить прочитанной»
+   в меню «···» у главы.
+   Формат: { "<novelId>": [1, 2, 5] } — номера глав. */
+const READ_CHAPTERS_KEY = "busybee_read_chapters";
+
+function getReadChapters(novelId) {
+    try {
+        const all = JSON.parse(localStorage.getItem(READ_CHAPTERS_KEY)) || {};
+        return Array.isArray(all[novelId]) ? all[novelId] : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function setChapterRead(novelId, chapterNumber, isRead) {
+    try {
+        const all = JSON.parse(localStorage.getItem(READ_CHAPTERS_KEY)) || {};
+        const current = new Set(Array.isArray(all[novelId]) ? all[novelId] : []);
+        if (isRead) current.add(chapterNumber);
+        else current.delete(chapterNumber);
+        all[novelId] = Array.from(current).sort((a, b) => a - b);
+        localStorage.setItem(READ_CHAPTERS_KEY, JSON.stringify(all));
+    } catch (error) {
+        console.error("Couldn't save read chapters:", error);
     }
 }
 

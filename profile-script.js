@@ -12,7 +12,7 @@
      profile.html#quotes               Мои цитаты
      profile.html#notes                Мои заметки
      profile.html#collections          Мои коллекции    (заглушка)
-     profile.html#achievements         Достижения       (заглушка)
+     profile.html#spirit               Дух-спутник      (выбор зверя; рост — позже)
      profile.html#settings             Настройки        (заглушка)
 
    Общие функции (getNovelData, renderNovelGrid, loadSavedEntries,
@@ -92,6 +92,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>`,
         });
+
+        // «Избранное → Главы» в обзоре (первые четыре)
+        renderFavoriteChapters();
+
+        // «Дух-спутник» в обзоре
+        renderSpiritWidget();
     }
 
     /* 1b. «Продолжить чтение» и «Избранное → Новеллы»
@@ -325,16 +331,240 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ============================================================
        3. ИЗБРАННОЕ
        Новеллы: getFavoriteNovelIds() (script.js) — то, что отмечено ♡
-       на странице новеллы. Цитаты и коллекции пока не заполняются
+       на странице новеллы. Главы: getAllFavoriteChapters() (script.js) —
+       ♡ рядом с главой в списке глав новеллы; название и дату главы,
+       обложку новеллы берём из novels/<id>/<id>.json. Одна функция
+       (renderFavoriteChapters) заполняет и страницу «Избранное», и
+       вкладку «Главы» в обзоре профиля. Цитаты и коллекции пока не заполняются
        (см. заметки в разметке): их числа на вкладках остаются 0, а
        панели показывают «пока пусто».
        ============================================================ */
+    // «27 мая 2025 г.» из "2025-05-27". Разбираем строку сами, а не через
+    // new Date("2025-05-27"): так дата считается в UTC и в часовых поясах
+    // западнее Гринвича превращалась бы во вчерашнюю
+    function formatChapterDate(isoDate) {
+        const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(isoDate || "");
+        if (!match) return "";
+        const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+        return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+    }
+
+    function favoriteChapterCardHtml({ novelId, number, novel, chapter }) {
+        const novelHref = `novel.html?id=${encodeURIComponent(novelId)}`;
+        const readHref = chapterHref(novelId, number);
+        const title = chapter && chapter.title
+            ? `Глава ${number} · ${escapeHtml(chapter.title)}`
+            : `Глава ${number}`;
+
+        return `
+            <article class="saved-card fav-chapter-card" data-novel-id="${escapeHtml(novelId)}" data-chapter="${number}">
+                <div class="fav-chapter-main">
+                    <a href="${novelHref}" class="fav-chapter-cover" tabindex="-1" aria-hidden="true"><img src="${escapeHtml(novel.cover)}" alt=""></a>
+                    <div class="fav-chapter-info">
+                        <a href="${readHref}" class="fav-chapter-title">${title}</a>
+                        <span class="saved-source"><a href="${novelHref}">${escapeHtml(novel.title)}</a></span>
+                    </div>
+                </div>
+                <div class="saved-foot">
+                    <span class="saved-date">${formatChapterDate(chapter && chapter.date)}</span>
+                    <div class="saved-actions">
+                        <a href="${readHref}" class="saved-link">Читать</a>
+                        <button type="button" class="saved-delete fav-chapter-remove">Убрать</button>
+                    </div>
+                </div>
+            </article>`;
+    }
+
+    // Рисует избранные главы и на странице «Избранное», и в обзоре профиля
+    // (там — первые четыре и ссылка на остальные). Новелла, чей файл не
+    // нашёлся, пропускается — как в сетке новелл; если главы нет в списке
+    // глав новеллы, карточка всё равно показывается, просто без названия.
+    async function renderFavoriteChapters() {
+        const refs = typeof getAllFavoriteChapters === "function" ? getAllFavoriteChapters() : [];
+
+        const novels = {};
+        await Promise.all(
+            [...new Set(refs.map((ref) => ref.novelId))].map((id) =>
+                getNovelData(id)
+                    .then((novel) => { novels[id] = novel; })
+                    .catch(() => {})
+            )
+        );
+
+        const items = refs
+            .filter((ref) => novels[ref.novelId])
+            .map((ref) => ({
+                ...ref,
+                novel: novels[ref.novelId],
+                chapter: (novels[ref.novelId].chapters || []).find((c) => c.number === ref.number),
+            }));
+
+        // Страница «Избранное → Главы»
+        const grid = document.querySelector('[data-fav-grid="chapters"]');
+        const empty = document.querySelector('[data-fav-empty="chapters"]');
+        const count = document.querySelector('[data-fav-count="chapters"]');
+        if (grid) grid.innerHTML = items.map(favoriteChapterCardHtml).join("");
+        if (empty) empty.hidden = items.length > 0;
+        if (count) count.textContent = items.length;
+
+        // Обзор профиля → «Избранное» → «Главы»
+        const previewGrid = document.getElementById("favoriteChaptersGrid");
+        const previewEmpty = document.getElementById("favoriteChaptersEmpty");
+        const previewMore = document.getElementById("favoriteChaptersMore");
+        const PREVIEW_LIMIT = 4;
+        if (previewGrid) previewGrid.innerHTML = items.slice(0, PREVIEW_LIMIT).map(favoriteChapterCardHtml).join("");
+        if (previewEmpty) previewEmpty.hidden = items.length > 0;
+        if (previewMore) {
+            previewMore.hidden = items.length <= PREVIEW_LIMIT;
+            previewMore.textContent = `Все избранные главы (${items.length}) →`;
+        }
+    }
+
+    // «Убрать» на карточке главы: снимаем ♡ (в хранилище) и перерисовываем.
+    // Слушатель на документе — карточки появляются и пропадают при каждой
+    // перерисовке, а кнопки есть сразу в двух местах (обзор и страница).
+    document.addEventListener("click", (event) => {
+        const button = event.target.closest(".fav-chapter-remove");
+        if (!button) return;
+
+        const card = button.closest(".fav-chapter-card");
+        setChapterFavorited(card.dataset.novelId, Number(card.dataset.chapter), false);
+        renderFavoriteChapters();
+    });
+
     function renderFavorites() {
         renderNovelGrid({
             ids: getFavoriteNovelIds(),
             grid: document.querySelector('[data-fav-grid="novels"]'),
             empty: document.querySelector('[data-fav-empty="novels"]'),
             count: document.querySelector('[data-fav-count="novels"]'),
+        });
+
+        renderFavoriteChapters();
+    }
+
+
+    /* ============================================================
+       ДУХ-СПУТНИК
+       Выбранный зверь: getSpiritPetId() / setSpiritPetId() (script.js);
+       каталог зверей и стадий — spirits/spirits.json (getSpiritsData).
+       Страница показывает выбранного зверя и каталог, виджет в обзоре —
+       только выбранного. Рост пока не считается: все звери «Малыши»,
+       стадию потом будем брать из уровня читателя (см. spiritStageKey).
+       ============================================================ */
+
+    // Какая сейчас стадия. Позже — по уровню/опыту читателя.
+    function spiritStageKey() {
+        return "baby";
+    }
+
+    async function loadSpirits() {
+        try {
+            return await getSpiritsData();
+        } catch (error) {
+            // Причина (404 на spirits/spirits.json, не обновлённый script.js
+            // без getSpiritsData и т.п.) видна в консоли браузера
+            console.error("Не удалось загрузить каталог духов:", error);
+            return { stages: [], spirits: [] };
+        }
+    }
+
+    function spiritImage(spirit, stageKey) {
+        const images = spirit.images || {};
+        return images[stageKey] || images.baby || "";
+    }
+
+    async function renderSpiritWidget() {
+        const widget = document.getElementById("spiritWidget");
+        const empty = document.getElementById("spiritWidgetEmpty");
+        if (!widget) return;
+
+        const { stages, spirits } = await loadSpirits();
+        const spirit = spirits.find((s) => s.id === getSpiritPetId());
+
+        if (!spirit) {
+            widget.innerHTML = "";
+            if (empty) empty.hidden = false;
+            return;
+        }
+
+        const stageKey = spiritStageKey();
+        const stage = stages.find((s) => s.key === stageKey);
+        widget.innerHTML = `
+            <img src="${escapeHtml(spiritImage(spirit, stageKey))}" alt="${escapeHtml(spirit.name)}">
+            <strong>${escapeHtml(spirit.name)}</strong>
+            ${stage ? `<span class="spirit-stage">${escapeHtml(stage.label)}</span>` : ""}`;
+        if (empty) empty.hidden = true;
+    }
+
+    async function renderSpiritView() {
+        const hero = document.getElementById("spiritHero");
+        const gallery = document.getElementById("spiritGallery");
+        const galleryTitle = document.getElementById("spiritGalleryTitle");
+        if (!hero || !gallery) return;
+
+        const { stages, spirits } = await loadSpirits();
+        const chosenId = getSpiritPetId();
+        const chosen = spirits.find((s) => s.id === chosenId);
+        const stageKey = spiritStageKey();
+        const currentIndex = stages.findIndex((s) => s.key === stageKey);
+
+        if (chosen) {
+            // «Путь роста»: пройденные и текущая стадия — своей картинкой, если
+            // она есть, остальные — силуэт малыша
+            const slots = stages.map((stage, index) => {
+                const reached = index <= currentIndex && chosen.images && chosen.images[stage.key];
+                const classes = ["spirit-stage-slot"];
+                if (index === currentIndex) classes.push("is-current");
+                if (!reached) classes.push("is-locked");
+                return `
+                    <div class="${classes.join(" ")}">
+                        <div class="spirit-stage-thumb"><img src="${escapeHtml(spiritImage(chosen, reached ? stage.key : "baby"))}" alt=""></div>
+                        <span>${escapeHtml(stage.label)}</span>
+                    </div>`;
+            }).join("");
+
+            hero.innerHTML = `
+                <div class="spirit-hero-art"><img src="${escapeHtml(spiritImage(chosen, stageKey))}" alt="${escapeHtml(chosen.name)}"></div>
+                <div class="spirit-hero-body">
+                    <h2 class="spirit-hero-name">${escapeHtml(chosen.name)}</h2>
+                    <p class="spirit-hero-epithet">${escapeHtml(chosen.epithet)}</p>
+                    <span class="spirit-stage">${escapeHtml((stages[currentIndex] || {}).label || "")}</span>
+                    <p class="spirit-hero-text">${escapeHtml(chosen.description)}</p>
+                    <div class="spirit-stages" aria-label="Путь роста">${slots}</div>
+                    <p class="spirit-hero-hint">Зверь будет расти вместе с вашим чтением — совсем скоро.</p>
+                </div>`;
+            hero.hidden = false;
+        } else {
+            hero.innerHTML = "";
+            hero.hidden = true;
+        }
+
+        if (galleryTitle) galleryTitle.textContent = chosen ? "Сменить спутника" : "Выберите спутника";
+
+        gallery.innerHTML = spirits.length === 0
+            ? '<p class="empty-state-text">Не удалось загрузить духов. Попробуйте обновить страницу.</p>'
+            : spirits.map((spirit) => `
+                <button type="button" class="spirit-card" data-spirit-id="${escapeHtml(spirit.id)}" aria-pressed="${spirit.id === chosenId}">
+                    <img src="${escapeHtml(spiritImage(spirit, "baby"))}" alt="">
+                    <span class="spirit-card-name">${escapeHtml(spirit.name)}</span>
+                    <span class="spirit-card-epithet">${escapeHtml(spirit.epithet)}</span>
+                    <span class="spirit-card-text">${escapeHtml(spirit.description)}</span>
+                    ${spirit.id === chosenId ? '<span class="spirit-card-tag">Ваш спутник</span>' : ""}
+                </button>`).join("");
+    }
+
+    // Выбор зверя: один слушатель на весь каталог (карточки при каждой
+    // перерисовке создаются заново). После выбора прокручиваем наверх —
+    // к карточке выбранного зверя.
+    const spiritGalleryEl = document.getElementById("spiritGallery");
+    if (spiritGalleryEl) {
+        spiritGalleryEl.addEventListener("click", async (event) => {
+            const card = event.target.closest(".spirit-card");
+            if (!card) return;
+            setSpiritPetId(card.dataset.spiritId);
+            await renderSpiritView();
+            window.scrollTo({ top: 0, behavior: "smooth" });
         });
     }
 
@@ -467,7 +697,7 @@ document.addEventListener("DOMContentLoaded", () => {
         quotes: "Мои цитаты",
         notes: "Мои заметки",
         collections: "Мои коллекции",
-        achievements: "Достижения",
+        spirit: "Дух-спутник",
         settings: "Настройки",
     };
 
@@ -478,6 +708,7 @@ document.addEventListener("DOMContentLoaded", () => {
         favorites: renderFavorites,
         quotes: renderQuotes,
         notes: renderNotes,
+        spirit: renderSpiritView,
     };
 
     const viewEls = document.querySelectorAll(".profile-view");

@@ -81,15 +81,6 @@
 }
 
 
-.star-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: var(--text-muted);
-    cursor: pointer;
-}
-
-
 .original-title {
     margin: 4px 0 12px;
     color: var(--text-muted);
@@ -588,6 +579,19 @@
 }
 
 
+/* Кнопка, у которой пока нет страницы (<button disabled>): та же белая
+   карточка, но чуть бледнее подпись и иконка, без «руки» при наведении.
+   Как только вместо неё появится <a href>, вид вернётся. */
+.note-shortcut:disabled {
+    color: var(--text-muted);
+    cursor: default;
+}
+
+.note-shortcut:disabled img {
+    opacity: 0.5;
+}
+
+
 /* Quotes Section */
 .quotes-section {
     margin-bottom: 40px;
@@ -827,8 +831,21 @@
 
 .chapters-layout {
     display: grid;
-    grid-template-columns: 180px 1fr;
+    grid-template-columns: 180px minmax(0, 1fr);
     gap: 24px;
+}
+
+
+/* Книга без томов (в JSON у глав нет поля "volume"): колонка с томами
+   скрыта, таблица занимает всю ширину. Два класса в селекторе — чтобы
+   это правило побеждало одноклассовые правила .chapters-layout в
+   медиазапросах ниже. */
+.chapters-layout.chapters-layout--no-volumes {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.chapters-layout--no-volumes .volume-sidebar {
+    display: none;
 }
 
 
@@ -933,6 +950,89 @@
 }
 
 
+/* Галочка «прочитано» рядом с названием главы и чуть приглушённое
+   название у прочитанных — так список легче пробежать глазами */
+.chapters-table .icon-read {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-left: 8px;
+    vertical-align: -2px;
+    color: #6A9A5B;
+}
+
+.chapters-table tr.is-read .col-title a {
+    color: var(--text-secondary);
+}
+
+
+/* Кнопка «···» открыта */
+.btn-icon[aria-expanded="true"] {
+    color: var(--text-primary);
+}
+
+
+/* Меню главы («···»). Лежит в <body>, позиционируется из JS. Оформлено
+   как выпадающий список статуса чтения (.reading-status-dropdown). */
+.chapter-menu {
+    position: fixed;
+    z-index: 1100; /* выше плавающей кнопки чтения (1000) */
+
+    min-width: 220px;
+    padding: 6px;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 25px var(--shadow);
+}
+
+.chapter-menu[hidden] {
+    display: none;
+}
+
+.chapter-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+
+    border: none;
+    border-radius: 8px;
+    background: none;
+
+    font-family: inherit;
+    font-size: 12px;
+    text-align: left;
+    text-decoration: none;
+    color: var(--text-secondary);
+
+    cursor: pointer;
+}
+
+.chapter-menu-item svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.chapter-menu-item:hover {
+    background: var(--surface-warm);
+    color: var(--text-primary);
+}
+
+/* «Сообщить об ошибке» — пока без бэкенда: бледная, не нажимается */
+.chapter-menu-item:disabled,
+.chapter-menu-item:disabled:hover {
+    background: none;
+    color: var(--text-muted);
+    opacity: 0.7;
+    cursor: default;
+}
+
+
 /* Floating Action Button */
 .floating-reading-btn {
     position: fixed;
@@ -1028,7 +1128,7 @@
 
     .chapters-header,
     .chapters-layout {
-        grid-template-columns: 150px 1fr;
+        grid-template-columns: 150px minmax(0, 1fr);
         gap: 20px;
     }
 }
@@ -1222,7 +1322,7 @@
     }
 
     .chapters-header {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 12px;
         margin-bottom: 16px;
     }
@@ -1258,17 +1358,29 @@
         width: 40px;
     }
 
+    /* minmax(0, 1fr) вместо 1fr — важно: у обычной 1fr минимальная ширина
+       колонки равна ширине содержимого, а пилюли томов в одну строку шире
+       экрана, поэтому колонка раздувалась и вся таблица выезжала за
+       карточку «Главы». С нулевым минимумом колонка равна ширине
+       карточки, а лишние пилюли уходят в прокрутку внутри списка. */
     .chapters-layout {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 16px;
     }
 
-    /* Список томов: вертикальная колонка → горизонтальные «чипы»,
-       прокручиваются пальцем */
+    .volume-sidebar {
+        min-width: 0;
+    }
+
+    /* Список томов: вертикальная колонка → горизонтальные «чипы» в одну
+       строку, не влезающие — справа, листаются пальцем */
     .volume-sidebar ul {
         display: flex;
+        flex-wrap: nowrap;
         gap: 8px;
         overflow-x: auto;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
         padding-bottom: 4px;
         scrollbar-width: none;
     }
@@ -1353,6 +1465,11 @@
     .col-actions-inner .btn-icon {
         min-width: 36px;
         min-height: 36px;
+    }
+
+    .chapter-menu-item {
+        padding: 12px 10px;
+        font-size: 13px;
     }
 
     .chapters-pagination {
