@@ -86,6 +86,15 @@
       "legend": "Призрачный Барс Ледяных Вершин",
       "images": {
         "baby": "images/spirits/snow-leopard/baby.webp"
+      },
+      "animations": {
+        "baby": {
+          "idle": "images/spirits/snow-leopard/baby-idle.webp",
+          "offset": {
+            "x": 0.106,
+            "y": -0.042
+          }
+        }
       }
     },
     {

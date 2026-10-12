@@ -474,6 +474,31 @@ document.addEventListener("DOMContentLoaded", () => {
         return images[stageKey] || images.baby || "";
     }
 
+    // Картинка зверя для показа «вживую»: если в каталоге есть анимация
+    // (spirit.animations.<стадия>.idle — анимированный WebP с прозрачностью)
+    // и читатель не просил уменьшить движение в системе — берём её, иначе
+    // обычную статичную. В каталоге-сетке анимацию не используем: 12
+    // движущихся картинок разом — лишний вес.
+    function spiritArt(spirit, stageKey) {
+        const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const idle = spirit.animations && spirit.animations[stageKey] && spirit.animations[stageKey].idle;
+        return !reduceMotion && idle ? idle : spiritImage(spirit, stageKey);
+    }
+
+    // Сдвиг анимации внутри круглой «сцены» на странице зверя: доли размера
+    // картинки, x — вправо, y — вниз (минус — вверх). Задаётся в каталоге:
+    // spirit.animations.<стадия>.offset = { "x": 0.1, "y": -0.04 }. У каждого
+    // зверя своя форма (хвост, крылья), поэтому подкручивается по месту.
+    // Работает только вместе с анимацией — у статичной картинки сдвига нет.
+    function spiritArtStyle(spirit, stageKey) {
+        const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const animation = spirit.animations && spirit.animations[stageKey];
+        if (reduceMotion || !animation || !animation.idle || !animation.offset) return "";
+        const x = Number(animation.offset.x) || 0;
+        const y = Number(animation.offset.y) || 0;
+        return ` style="transform: translate(${x * 100}%, ${y * 100}%)"`;
+    }
+
     async function renderSpiritWidget() {
         const widget = document.getElementById("spiritWidget");
         const empty = document.getElementById("spiritWidgetEmpty");
@@ -491,7 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const stageKey = spiritStageKey();
         const stage = stages.find((s) => s.key === stageKey);
         widget.innerHTML = `
-            <img src="${escapeHtml(spiritImage(spirit, stageKey))}" alt="${escapeHtml(spirit.name)}">
+            <img src="${escapeHtml(spiritArt(spirit, stageKey))}" alt="${escapeHtml(spirit.name)}" decoding="async">
             <strong>${escapeHtml(spirit.name)}</strong>
             ${stage ? `<span class="spirit-stage">${escapeHtml(stage.label)}</span>` : ""}`;
         if (empty) empty.hidden = true;
@@ -525,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }).join("");
 
             hero.innerHTML = `
-                <div class="spirit-hero-art"><img src="${escapeHtml(spiritImage(chosen, stageKey))}" alt="${escapeHtml(chosen.name)}"></div>
+                <div class="spirit-hero-art"><img src="${escapeHtml(spiritArt(chosen, stageKey))}" alt="${escapeHtml(chosen.name)}" decoding="async"${spiritArtStyle(chosen, stageKey)}></div>
                 <div class="spirit-hero-body">
                     <h2 class="spirit-hero-name">${escapeHtml(chosen.name)}</h2>
                     <p class="spirit-hero-epithet">${escapeHtml(chosen.epithet)}</p>
