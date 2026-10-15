@@ -21,13 +21,14 @@
    effects.css) подгружает только там, где они действительно нужны.
 
    КАК ЭТО ВЕДЁТ СЕБЯ
-   - Заходишь на страницу в «сезонные» даты → один раз за визит
-     (за вкладку/сессию) листья сыплются около 11 секунд и затихают.
-   - Дальше — по кнопке в углу экрана: нажал → сыплются ещё раз,
-     нажал во время падения → остановились.
-   - Если человек сам остановил листья кнопкой, автозапуск при
-     следующих заходах отключается (запоминается в localStorage),
-     пока он сам не запустит их снова. Чтобы никого не раздражать.
+   - В «сезонные» даты на странице появляется кнопка в углу экрана
+     (у каждого сезона своя иконка). Сам по себе эффект НЕ запускается:
+     нажал → частицы сыплются около 11 секунд и затихают; нажал во
+     время падения → остановились. Так он никого не раздражает.
+   - Автозапуск при заходе (один раз за визит) можно вернуть
+     константой AUTOPLAY = true: тогда, если человек сам остановил
+     эффект кнопкой, при следующих заходах он больше не включится
+     (запоминается в localStorage).
    - Эффект не ловит клики (pointer-events: none), не работает при
      «уменьшить анимацию» в системе (кнопки тогда тоже нет), ставится
      на паузу, когда вкладка не видна, на телефоне листьев меньше.
@@ -70,6 +71,12 @@
     const SEEN_KEY = "busybee_seasonal_seen";  // sessionStorage: в этом визите уже играли
     const MOBILE_MAX_WIDTH = 768;              // как в style.css
 
+    // Включать ли эффект сам при заходе на страницу (один раз за визит).
+    // Сейчас false: эффект запускается только по кнопке в углу — со временем
+    // автозапуск начинает раздражать. true — вернёт прежнее поведение (один
+    // раз при заходе, а если человек сам выключил — больше не включать).
+    const AUTOPLAY = false;
+
     // Рубильник украшений (шапочка на логотипе и т.п.): false — вернёт сайт
     // как было, а снег и листья продолжат работать
     const DECORATIONS_ENABLED = true;
@@ -91,6 +98,11 @@
     // бумажных граней, которые светятся изнутри и медленно вращаются).
     // false — плоские фонарики из твоих sky-lantern.svg.
     const LANTERNS_3D = true;
+
+    // И летняя пчёлка: объёмная модель (полосатое туловище-«капсула», глаза,
+    // усики, жало и два машущих крыла) вместо плоского рисунка с
+    // translator.html. false — прежняя плоская пчёлка.
+    const BEE_3D = true;
 
     // Гирлянда фонариков в шапке (китайский Новый год, Праздник фонарей) —
     // отдельный выключатель. Сейчас выключена: на реальных шрифтах сайта
@@ -1164,6 +1176,224 @@
     const POLLEN_LIFE = 0.7;       // секунд, как pollenFade в translator-style.css
     const POLLEN_EVERY = 0.045;    // как setInterval(spawnPollenDot, 45) на странице переводчика
 
+    /* ---------- Пчёлка в 3D ----------
+       Пчёлка теперь — модель, а не картинка. Форма и цвета — как у пчёлки с
+       translator.html: жёлтое туловище с двумя тёмными полосами, глаз,
+       усик, жало, кремовое крыло. Но это объёмные части:
+       - туловище: «капсула» (суперэллипс) из 16 граней вокруг продольной
+         оси, 18 колец от жала к голове; полосы — кольца другого цвета.
+         Каждая грань затеняется по наклону (свет слева сверху), невидимые
+         грани отбрасываются, остальные рисуются от дальних к ближним;
+       - голова: те же кольца впереди; на ней два глаза (рисуются, только
+         если смотрят на зрителя) и два усика;
+       - жало: тёмный конус сзади;
+       - крылья: два, по бокам спинки, машут вверх-вниз вокруг оси тела
+         (цикл 0.36 с, как раньше); полупрозрачные, дальнее рисуется до
+         туловища, ближнее — после;
+       - полёт: пчёлка разворачивается вокруг вертикальной оси (в обратную
+         сторону она летит, повёрнутая на 180° — видно другой бок, а не
+         зеркало), слегка виляет, наклоняется по траектории и «смотрит»
+         на зрителя сверху. */
+
+    const BEE3D = (() => {
+        const N = 16;                      // граней вокруг оси
+        const M = 18;                      // колец вдоль оси
+        const R = 0.62;                    // максимальный радиус
+        const END = 0.2;                   // радиус на торцах (дальше — шапочка и жало)
+        const rows = [];
+        for (let k = 0; k <= M; k++) {
+            const t = k / M;
+            const u = Math.abs(2 * t - 1);
+            const r = Math.max(R * Math.pow(1 - Math.pow(u, 2.6), 1 / 2.6), END);
+            rows.push({ t, x: 2 * t - 1, r });
+        }
+        return { N, M, rows, stripes: [[0.14, 0.32], [0.43, 0.61]] };
+    })();
+
+    const BEE3D_YELLOW = [254, 212, 2];
+    const BEE3D_DARK = [65, 65, 67];
+    const BEE3D_WING = "251, 230, 183";
+
+    function drawBee3d(ctx, p, m) {
+        const u = p.size / 2.4;                       // пикселей на единицу модели
+        const focal = u * 14;
+        const { N, M, rows, stripes } = BEE3D;
+
+        const project = (x, y, z) => {
+            const X = x * u, Y = y * u, Z = z * u;
+            const rx = m[0] * X + m[1] * Y + m[2] * Z;
+            const ry = m[3] * X + m[4] * Y + m[5] * Z;
+            const rz = m[6] * X + m[7] * Y + m[8] * Z;
+            const k = focal / (focal - rz);
+            return [p.x + rx * k, p.y + ry * k, rz];
+        };
+        const rotate = (x, y, z) => [
+            m[0] * x + m[1] * y + m[2] * z,
+            m[3] * x + m[4] * y + m[5] * z,
+            m[6] * x + m[7] * y + m[8] * z
+        ];
+        const shadeColor = (base, wx, wy, wz, ambient, gain) => {
+            const lit = Math.max(0, wx * LEAF3D_LIGHT[0] + wy * LEAF3D_LIGHT[1] + wz * LEAF3D_LIGHT[2]);
+            const tone = ambient + gain * lit;
+            return `rgb(${Math.min(255, base[0] * tone) | 0}, ${Math.min(255, base[1] * tone) | 0}, ${Math.min(255, base[2] * tone) | 0})`;
+        };
+
+        // ----- крылья: два, по бокам спинки -----
+        const flap = 0.55 + 0.4 * Math.cos((p.age * Math.PI) / 0.18);      // угол взмаха от горизонтали
+        const wings = [];
+        for (const side of [1, -1]) {
+            const pts = [];
+            const W = 8;
+            const B = 1.15;                                                 // размах крыла
+            const chord = (b) => 0.46 * Math.pow(Math.sin(Math.PI * Math.pow(b / B, 0.75) * 0.97), 0.7) + 0.06 * (1 - b / B);
+            for (let j = 0; j <= W; j++) pts.push([chord(B * j / W), B * j / W]);
+            for (let j = W; j >= 0; j--) pts.push([-chord(B * j / W), B * j / W]);
+            let zSum = 0;
+            const proj = pts.map(([a, b]) => {
+                const x = 0.05 - 0.12 * b + a;                              // небольшая стреловидность назад
+                const y = -0.56 - b * Math.sin(flap);                       // вверх
+                const z = side * (0.1 + b * Math.cos(flap));                // в сторону
+                const q = project(x, y, z);
+                zSum += q[2];
+                return q;
+            });
+            wings.push({ proj, z: zSum / pts.length });
+        }
+        const drawWing = (wing) => {
+            ctx.beginPath();
+            ctx.moveTo(wing.proj[0][0], wing.proj[0][1]);
+            for (let i = 1; i < wing.proj.length; i++) ctx.lineTo(wing.proj[i][0], wing.proj[i][1]);
+            ctx.closePath();
+            ctx.fillStyle = `rgba(${BEE3D_WING}, 0.88)`;
+            ctx.fill();
+            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = "rgba(150, 112, 60, 0.45)";
+            ctx.stroke();
+        };
+
+        // ----- жало: тёмный конус сзади (6 граней) -----
+        const stingerTip = project(-1.4, 0, 0);
+        const stinger = [];
+        for (let i = 0; i < 6; i++) {
+            const a0 = (i * Math.PI * 2) / 6, a1 = ((i + 1) * Math.PI * 2) / 6;
+            const p0 = project(-1, -Math.cos(a0) * 0.14, Math.sin(a0) * 0.14);
+            const p1 = project(-1, -Math.cos(a1) * 0.14, Math.sin(a1) * 0.14);
+            const mid = (a0 + a1) / 2;
+            const n = rotate(-0.5, -Math.cos(mid), Math.sin(mid));
+            stinger.push({ tri: [p0, p1, stingerTip], color: shadeColor(BEE3D_DARK, n[0], n[1], n[2], 0.75, 0.55), z: (p0[2] + p1[2] + stingerTip[2]) / 3 });
+        }
+
+        // ----- туловище: кольца вершин и грани -----
+        const ring = rows.map((row) => {
+            const pts = [];
+            for (let i = 0; i < N; i++) {
+                const a = (i * Math.PI * 2) / N;
+                pts.push(project(row.x, -Math.cos(a) * row.r, Math.sin(a) * row.r));
+            }
+            return pts;
+        });
+
+        const quads = [];
+        for (let k = 0; k < M; k++) {
+            const a = rows[k], b = rows[k + 1];
+            const tc = (a.t + b.t) / 2;
+            const dark = stripes.some(([s0, s1]) => tc >= s0 && tc <= s1);
+            const slope = (b.r - a.r) / (b.x - a.x);
+            for (let i = 0; i < N; i++) {
+                const i2 = (i + 1) % N;
+                const mid = ((i + 0.5) * Math.PI * 2) / N;
+                const len = Math.hypot(slope, 1);
+                const n = rotate(-slope / len, -Math.cos(mid) / len, Math.sin(mid) / len);
+                if (n[2] < 0) continue;                                      // невидимые грани отбрасываем
+                const q = [ring[k][i], ring[k][i2], ring[k + 1][i2], ring[k + 1][i]];
+                quads.push({ q, z: (q[0][2] + q[1][2] + q[2][2] + q[3][2]) / 4, color: shadeColor(dark ? BEE3D_DARK : BEE3D_YELLOW, n[0], n[1], n[2], 0.68, 0.42) });
+            }
+        }
+        quads.sort((x, y) => x.z - y.z);
+
+        ctx.lineJoin = "round";
+
+        // дальнее крыло и (если оно за телом) жало — до туловища
+        const farWings = wings.filter((w) => w.z <= 0);
+        const nearWings = wings.filter((w) => w.z > 0);
+        farWings.forEach(drawWing);
+        const stingerBehind = stingerTip[2] <= 0;
+        const drawStinger = () => {
+            stinger.sort((x, y) => x.z - y.z);
+            for (const f of stinger) {
+                ctx.beginPath();
+                ctx.moveTo(f.tri[0][0], f.tri[0][1]);
+                ctx.lineTo(f.tri[1][0], f.tri[1][1]);
+                ctx.lineTo(f.tri[2][0], f.tri[2][1]);
+                ctx.closePath();
+                ctx.fillStyle = f.color;
+                ctx.fill();
+            }
+        };
+        if (stingerBehind) drawStinger();
+
+        // туловище
+        ctx.lineWidth = 0.5;
+        for (const f of quads) {
+            ctx.beginPath();
+            ctx.moveTo(f.q[0][0], f.q[0][1]);
+            ctx.lineTo(f.q[1][0], f.q[1][1]);
+            ctx.lineTo(f.q[2][0], f.q[2][1]);
+            ctx.lineTo(f.q[3][0], f.q[3][1]);
+            ctx.closePath();
+            ctx.fillStyle = f.color;
+            ctx.strokeStyle = f.color;       // тонкая обводка того же цвета скрывает щели между гранями
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // торцевая «шапочка» на морде, если смотрим на неё
+        if (m[6] > 0) {
+            const last = ring[M];
+            ctx.beginPath();
+            ctx.moveTo(last[0][0], last[0][1]);
+            for (let i = 1; i < N; i++) ctx.lineTo(last[i][0], last[i][1]);
+            ctx.closePath();
+            ctx.fillStyle = shadeColor(BEE3D_YELLOW, m[0], m[3], m[6], 0.68, 0.42);
+            ctx.fill();
+        }
+
+        // глаза: на боках головы, видны только когда смотрят на зрителя
+        for (const side of [1, -1]) {
+            const n = rotate(0.35, -0.2, side * 0.92);
+            if (n[2] < 0.12) continue;
+            const e = project(0.7, -0.12, side * 0.5);
+            const radius = 0.13 * u * (0.55 + 0.45 * n[2]);
+            ctx.beginPath();
+            ctx.ellipse(e[0], e[1], radius * (0.55 + 0.45 * n[2]), radius, 0, 0, Math.PI * 2);
+            ctx.fillStyle = "#414143";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(e[0] - radius * 0.25, e[1] - radius * 0.3, radius * 0.28, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.fill();
+        }
+
+        // усики: тонкие загнутые линии от макушки
+        ctx.lineCap = "round";
+        ctx.lineWidth = Math.max(0.9, u * 0.09);
+        ctx.strokeStyle = "#414143";
+        for (const side of [1, -1]) {
+            const a = project(0.8, -0.4, side * 0.14);
+            const b = project(0.98, -0.72, side * 0.2);
+            const c = project(1.16, -0.82, side * 0.24);
+            const d = project(1.22, -0.68, side * 0.25);
+            ctx.beginPath();
+            ctx.moveTo(a[0], a[1]);
+            ctx.quadraticCurveTo(b[0], b[1], c[0], c[1]);
+            ctx.lineTo(d[0], d[1]);
+            ctx.stroke();
+        }
+
+        if (!stingerBehind) drawStinger();
+        nearWings.forEach(drawWing);
+    }
+
     function dandelionEffect() {
         const rand = (min, max) => min + Math.random() * (max - min);
 
@@ -1278,6 +1508,19 @@
                     // и лёгкое покачивание ±8°, как на странице переводчика
                     const tilt = p.dir * Math.atan2(flightVy(p.age), p.vx) * 0.6;
                     const wobble = Math.sin(p.age * (1000 / 110)) * ((8 * Math.PI) / 180);
+
+                    if (BEE_3D) {
+                        // разворот вокруг вертикальной оси: вправо — боком (0), влево — на 180°
+                        // (виден другой бок), плюс неспешное виляние; сверху «смотрим» на пчёлку
+                        const yaw = (p.dir > 0 ? 0 : Math.PI) + 0.4 * Math.sin(p.age * 0.9);
+                        const bank = -0.3 + 0.12 * Math.sin(p.age * 1.7);
+                        const m3 = rotationYXZ(bank, yaw, tilt + wobble * 0.6);
+                        ctx.save();
+                        drawBee3d(ctx, p, m3);
+                        ctx.restore();
+                        return;
+                    }
+
                     // крыло: сжатие по высоте 1 → 0.55 и обратно, полный цикл 0.36 с
                     const flap = 0.775 + 0.225 * Math.cos((p.age * Math.PI) / 0.18);
                     const k = p.size / BEE_WIDTH;
@@ -2087,12 +2330,12 @@
     });
 
 
-    /* ---------- Автозапуск: один раз за визит ---------- */
+    /* ---------- Автозапуск: один раз за визит (выключен, см. AUTOPLAY) ---------- */
 
     const alreadySeen = store.get("sessionStorage", SEEN_KEY);
     const userTurnedOff = store.get("localStorage", OFF_KEY) === "1";
 
-    if (!alreadySeen && !userTurnedOff) {
+    if (AUTOPLAY && !alreadySeen && !userTurnedOff) {
         setTimeout(start, 700);
     }
 })();

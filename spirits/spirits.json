@@ -89,10 +89,26 @@
       },
       "animations": {
         "baby": {
-          "idle": "images/spirits/snow-leopard/baby-idle.webp",
-          "offset": {
-            "x": 0.106,
-            "y": -0.042
+          "display": {
+            "size": 1.0,
+            "x": 0.045,
+            "y": -0.009
+          },
+          "idle": {
+            "src": "images/spirits/snow-leopard/baby-idle.webp",
+            "duration": 10000
+          },
+          "sleepIn": {
+            "src": "images/spirits/snow-leopard/baby-sleep-in.webp",
+            "duration": 5800
+          },
+          "sleep": {
+            "src": "images/spirits/snow-leopard/baby-sleep.webp",
+            "duration": 4500
+          },
+          "sleepOut": {
+            "src": "images/spirits/snow-leopard/baby-sleep-out.webp",
+            "duration": 5800
           }
         }
       }

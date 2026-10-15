@@ -474,29 +474,206 @@ document.addEventListener("DOMContentLoaded", () => {
         return images[stageKey] || images.baby || "";
     }
 
-    // Картинка зверя для показа «вживую»: если в каталоге есть анимация
-    // (spirit.animations.<стадия>.idle — анимированный WebP с прозрачностью)
-    // и читатель не просил уменьшить движение в системе — берём её, иначе
-    // обычную статичную. В каталоге-сетке анимацию не используем: 12
-    // движущихся картинок разом — лишний вес.
-    function spiritArt(spirit, stageKey) {
-        const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        const idle = spirit.animations && spirit.animations[stageKey] && spirit.animations[stageKey].idle;
-        return !reduceMotion && idle ? idle : spiritImage(spirit, stageKey);
-    }
-
-    // Сдвиг анимации внутри круглой «сцены» на странице зверя: доли размера
-    // картинки, x — вправо, y — вниз (минус — вверх). Задаётся в каталоге:
-    // spirit.animations.<стадия>.offset = { "x": 0.1, "y": -0.04 }. У каждого
-    // зверя своя форма (хвост, крылья), поэтому подкручивается по месту.
-    // Работает только вместе с анимацией — у статичной картинки сдвига нет.
-    function spiritArtStyle(spirit, stageKey) {
+    /* ---- Анимация зверя ----
+       В каталоге: spirit.animations.<стадия> = {
+         display:  { size, x, y }  — размер и сдвиг внутри круглой «сцены»
+                                      (доли ширины сцены; x вправо, y вниз),
+         idle / sleepIn / sleep / sleepOut: { src, duration } — анимированные
+                                      WebP: ожидание, засыпание, сон, пробуждение
+       }
+       Все клипы одного зверя нарисованы на одном общем холсте, поэтому при
+       смене клипа он не «прыгает». Анимацию показываем, только если она есть
+       и читатель не просил уменьшить движение; иначе — статичная картинка. */
+    function spiritAnimation(spirit, stageKey) {
         const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         const animation = spirit.animations && spirit.animations[stageKey];
-        if (reduceMotion || !animation || !animation.idle || !animation.offset) return "";
-        const x = Number(animation.offset.x) || 0;
-        const y = Number(animation.offset.y) || 0;
-        return ` style="transform: translate(${x * 100}%, ${y * 100}%)"`;
+        return !reduceMotion && animation && animation.idle && animation.idle.src ? animation : null;
+    }
+
+    // Картинка для виджета в обзоре: ожидание, если есть, иначе статичная
+    function spiritArt(spirit, stageKey) {
+        const animation = spiritAnimation(spirit, stageKey);
+        return animation ? animation.idle.src : spiritImage(spirit, stageKey);
+    }
+
+    // Ночью (с 23:00 до 6:00) зверь спит
+    function spiritIsNight() {
+        const hour = new Date().getHours();
+        return hour >= 23 || hour < 6;
+    }
+
+    // Зверь на странице «Дух-спутник»: статичная картинка или две
+    // наложенные друг на друга (слои), между которыми проигрыватель
+    // переключает клипы с плавным проявлением
+    function spiritHeroArtHtml(spirit, stageKey) {
+        const animation = spiritAnimation(spirit, stageKey);
+        if (!animation) {
+            return `<img src="${escapeHtml(spiritImage(spirit, stageKey))}" alt="${escapeHtml(spirit.name)}" decoding="async">`;
+        }
+        const display = animation.display || {};
+        const size = (Number(display.size) || 1) * 100;
+        const x = (Number(display.x) || 0) * 100;
+        const y = (Number(display.y) || 0) * 100;
+        const asleep = spiritIsNight() && animation.sleep && animation.sleep.src;
+        const first = asleep ? animation.sleep.src : animation.idle.src;
+        return `
+            <div class="spirit-anim" role="img" aria-label="${escapeHtml(spirit.name)}" style="width:${size}%;height:${size}%;transform:translate(${x}%,${y}%)">
+                <img class="spirit-anim-layer is-active" src="${escapeHtml(first)}" alt="" decoding="async">
+                <img class="spirit-anim-layer" alt="" aria-hidden="true" decoding="async">
+            </div>`;
+    }
+
+    /* ---- Проигрыватель: ожидание ⇄ сон ----
+       idle ──(засыпает)──▶ sleepIn ──▶ sleep ──(просыпается)──▶ sleepOut ──▶ idle
+       Засыпает ночью, а днём — если 10 минут не было движений мышью,
+       прокрутки и нажатий. Днём любое действие будит; ночью зверь будится
+       кликом по нему и снова засыпает через 5 минут.
+       Анимированный WebP сам не умеет «начать сначала», поэтому каждый клип
+       скачивается один раз (в память), а при каждом запуске получает новый
+       blob-адрес — анимация гарантированно стартует с первого кадра, а сеть
+       не нагружается. Для проверки в консоли: spiritDebug.sleep() /
+       spiritDebug.wake() / spiritDebug.state(). */
+    let activeSpiritPlayer = null;
+
+    function destroySpiritPlayer() {
+        if (activeSpiritPlayer) {
+            activeSpiritPlayer.destroy();
+            activeSpiritPlayer = null;
+        }
+    }
+
+    function createSpiritPlayer(root, animation) {
+        const INACTIVE_MS = 10 * 60 * 1000;
+        const NIGHT_AWAKE_MS = 5 * 60 * 1000;
+        const FADE_MS = 250;
+
+        const layers = Array.from(root.querySelectorAll(".spirit-anim-layer"));
+        const clips = { idle: animation.idle, sleepIn: animation.sleepIn, sleep: animation.sleep, sleepOut: animation.sleepOut };
+        const canSleep = Boolean(clips.sleepIn && clips.sleep && clips.sleepOut && clips.sleepIn.src && clips.sleep.src && clips.sleepOut.src);
+
+        const loading = {};
+        let state = spiritIsNight() && canSleep ? "sleep" : "idle";
+        let front = 0;
+        let timer = null;
+        let destroyed = false;
+        let wakeRequested = false;
+        let lastActivity = Date.now();
+        let awakeUntil = 0;
+
+        function loadClip(name) {
+            if (!loading[name]) {
+                loading[name] = fetch(clips[name].src).then((response) => {
+                    if (!response.ok) throw new Error(`Clip ${name} not found`);
+                    return response.blob();
+                });
+            }
+            return loading[name];
+        }
+
+        async function show(name) {
+            const blob = await loadClip(name);
+            if (destroyed) return;
+            const back = layers[1 - front];
+            const previousUrl = back.dataset.blobUrl;
+            const url = URL.createObjectURL(blob);
+            back.dataset.blobUrl = url;
+            back.src = url;
+            try { await back.decode(); } catch (error) { /* покажем как есть */ }
+            if (destroyed) return;
+            back.classList.add("is-active");
+            layers[front].classList.remove("is-active");
+            front = 1 - front;
+            if (previousUrl) URL.revokeObjectURL(previousUrl);
+        }
+
+        function after(ms, callback) {
+            clearTimeout(timer);
+            timer = setTimeout(() => { if (!destroyed) callback(); }, Math.max(ms, 0));
+        }
+
+        async function goSleep() {
+            if (!canSleep || destroyed || state !== "idle") return;
+            try {
+                await Promise.all([loadClip("sleepIn"), loadClip("sleep"), loadClip("sleepOut")]);
+            } catch (error) {
+                console.error("Не удалось загрузить анимации сна:", error);
+                return;
+            }
+            if (destroyed || state !== "idle") return;
+            state = "sleepIn";
+            await show("sleepIn");
+            after(clips.sleepIn.duration - FADE_MS, enterSleep);
+        }
+
+        async function enterSleep() {
+            state = "sleep";
+            await show("sleep");
+            if (wakeRequested) {
+                wakeRequested = false;
+                wake();
+            }
+        }
+
+        async function wake() {
+            if (!canSleep || destroyed) return;
+            if (state === "sleepIn") { wakeRequested = true; return; }
+            if (state !== "sleep") return;
+            state = "sleepOut";
+            await show("sleepOut");
+            after(clips.sleepOut.duration - FADE_MS, async () => {
+                state = "idle";
+                await show("idle");
+            });
+        }
+
+        function shouldSleep() {
+            const now = Date.now();
+            if (now < awakeUntil) return false;
+            return spiritIsNight() || now - lastActivity >= INACTIVE_MS;
+        }
+
+        function onActivity() {
+            lastActivity = Date.now();
+            if ((state === "sleep" || state === "sleepIn") && !spiritIsNight()) wake();
+        }
+
+        function onClick() {
+            if (state === "sleep" || state === "sleepIn") {
+                awakeUntil = Date.now() + NIGHT_AWAKE_MS;
+                wake();
+            }
+        }
+
+        const activityEvents = ["mousemove", "keydown", "scroll", "touchstart", "pointerdown"];
+        activityEvents.forEach((name) => window.addEventListener(name, onActivity, { passive: true }));
+        root.addEventListener("click", onClick);
+
+        // Раз в 15 секунд проверяем, не пора ли спать (только если зверя видно)
+        const tick = setInterval(() => {
+            if (state === "idle" && shouldSleep() && root.offsetParent !== null) goSleep();
+        }, 15000);
+
+        // Стартуем сразу в нужном состоянии: если ночь — слой уже показывает сон,
+        // остальные клипы подгрузятся, когда понадобятся
+        if (canSleep) loadClip("sleep").catch(() => {});
+
+        const player = {
+            sleep: goSleep,
+            wake,
+            state: () => state,
+            destroy() {
+                destroyed = true;
+                clearTimeout(timer);
+                clearInterval(tick);
+                activityEvents.forEach((name) => window.removeEventListener(name, onActivity));
+                root.removeEventListener("click", onClick);
+                layers.forEach((layer) => { if (layer.dataset.blobUrl) URL.revokeObjectURL(layer.dataset.blobUrl); });
+                if (window.spiritDebug === debugApi) delete window.spiritDebug;
+            },
+        };
+        const debugApi = { sleep: goSleep, wake, state: () => state };
+        window.spiritDebug = debugApi;
+        return player;
     }
 
     async function renderSpiritWidget() {
@@ -549,8 +726,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>`;
             }).join("");
 
+            destroySpiritPlayer();
             hero.innerHTML = `
-                <div class="spirit-hero-art"><img src="${escapeHtml(spiritArt(chosen, stageKey))}" alt="${escapeHtml(chosen.name)}" decoding="async"${spiritArtStyle(chosen, stageKey)}></div>
+                <div class="spirit-hero-art">${spiritHeroArtHtml(chosen, stageKey)}</div>
                 <div class="spirit-hero-body">
                     <h2 class="spirit-hero-name">${escapeHtml(chosen.name)}</h2>
                     <p class="spirit-hero-epithet">${escapeHtml(chosen.epithet)}</p>
@@ -560,7 +738,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p class="spirit-hero-hint">Зверь будет расти вместе с вашим чтением — совсем скоро.</p>
                 </div>`;
             hero.hidden = false;
+
+            const animation = spiritAnimation(chosen, stageKey);
+            const animRoot = hero.querySelector(".spirit-anim");
+            if (animation && animRoot) activeSpiritPlayer = createSpiritPlayer(animRoot, animation);
         } else {
+            destroySpiritPlayer();
             hero.innerHTML = "";
             hero.hidden = true;
         }
